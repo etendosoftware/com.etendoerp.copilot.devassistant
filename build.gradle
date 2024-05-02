@@ -1,0 +1,48 @@
+/**
+*   This file was generated automatically by the 'createModuleBuild' task.
+*   Created at: 2023-10-04T18:32:00.568197Z.
+*
+*   WARNING: Do not put your credentials directly in this file.
+*
+*/
+
+group          = "com.etendoerp"
+version        = "1.0.0"
+description    = "This Module includes tools and wizards to allow the developer to add Columns and fields through Copilot."
+ext.artifact   = "copilot.devassistant"
+ext.repository = "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
+
+configurations {
+    moduleDependencyContainer
+}
+
+publishing {
+    publications {
+        "com.etendoerp.copilot.copilot.devassistant"(MavenPublication) {
+            from components.java
+            groupId    = group
+            artifactId = artifact
+            version    = version
+        }
+    }
+    repositories {
+        maven {
+            url "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
+    }
+}
+
+/**
+* Declare Java dependencies using 'implementation'
+* Ex: implementation "com.sun.mail:javax.mail:1.6.2"
+*/
+dependencies {
+
+}
