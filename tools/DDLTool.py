@@ -1,9 +1,7 @@
 from datetime import datetime
 from typing import Dict, Type, Optional
 from uuid import uuid4
-import psycopg2
 from pydantic import BaseModel, Field
-
 from copilot.core.tool_wrapper import ToolWrapper
 
 
