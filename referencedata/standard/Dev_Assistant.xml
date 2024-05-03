@@ -25,6 +25,5 @@ You ask to the user for name for the table and a module prefix. The name will be
     <codeInterpreter>false</codeInterpreter>
     <retrieval>false</retrieval>
     <provider xsi:nil="true"/>
-    <openaiVectordbID>vs_fv8QDFaUruQVoRly9SeYUsmr</openaiVectordbID>
   </ETCOP_App>
 </ob:Openbravo>
