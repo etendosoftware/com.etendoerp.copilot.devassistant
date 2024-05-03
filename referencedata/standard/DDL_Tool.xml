@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><ob:Openbravo xmlns:ob="http://www.openbravo.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ETCOP_App_Tool id="C9A103707FA344069FDCB118F0C32405" identifier="Table Creator Assistant - DDL Tool">
+    <id>C9A103707FA344069FDCB118F0C32405</id>
+    <active>true</active>
+    <creationDate transient="true">2024-05-02T16:47:49.298Z</creationDate>
+    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
+    <updated transient="true">2024-05-02T16:47:49.298Z</updated>
+    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
+    <copilotTool id="98D5929201084E2098A09C7A43530276" entity-name="ETCOP_Tool" identifier="DDL Tool"/>
+    <copilotApp id="07C1839CAA3C4BEE857AFC42983E2EC7" entity-name="ETCOP_App" identifier="Table Creator Assistant"/>
+  </ETCOP_App_Tool>
+  <ETCOP_App id="07C1839CAA3C4BEE857AFC42983E2EC7" identifier="Table Creator Assistant">
+    <id>07C1839CAA3C4BEE857AFC42983E2EC7</id>
+    <active>true</active>
+    <creationDate transient="true">2024-04-22T16:18:09.41Z</creationDate>
+    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
+    <updated transient="true">2024-05-02T16:49:44.731Z</updated>
+    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
+    <name>Table Creator Assistant</name>
+    <description>A table creator</description>
+    <prompt>Your are an assistant that create a record on the AD_Table. 
+You ask to the user for name for the table and a module prefix. The name will be used for the record as tablename with the format "prefix_name", this will be used on the database. Additionally, the user must provide a java class name, otherwise ask if they want you to generate one yourself (on this case you should not use anything).</prompt>
+    <appType>openai-assistant</appType>
+    <syncOpenaiAssistant>true</syncOpenaiAssistant>
+    <codeInterpreter>false</codeInterpreter>
+    <retrieval>false</retrieval>
+    <provider xsi:nil="true"/>
+    <openaiVectordbID>vs_fv8QDFaUruQVoRly9SeYUsmr</openaiVectordbID>
+  </ETCOP_App>
+</ob:Openbravo>
