@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data>
+<!--98D5929201084E2098A09C7A43530276--><ETCOP_TOOL>
+<!--98D5929201084E2098A09C7A43530276-->  <ETCOP_TOOL_ID><![CDATA[98D5929201084E2098A09C7A43530276]]></ETCOP_TOOL_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
+<!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-03 08:49:10.237]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
+<!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
+<!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
+<!--98D5929201084E2098A09C7A43530276-->  <DESCRIPTION><![CDATA[This tool register a table on the AD_Table in Etendo.]]></DESCRIPTION>
+<!--98D5929201084E2098A09C7A43530276-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "DDLTool",
+    "description": "This tool register a table on the AD_Table in Etendo.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "i_prefix": {
+          "description": "This is the prefix of the module in database.",
+          "title": "Prefix",
+          "type": "string"
+        },
+        "i_name": {
+          "description": "This is the name of the table, this construct the database name adding the prefix before and a '_'.",
+          "title": "Name",
+          "type": "string"
+        },
+        "i_classname": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "description": "This is the java class name associated to the table, if this is not provided will be generated automatically.",
+          "title": "ClassName"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--98D5929201084E2098A09C7A43530276-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--98D5929201084E2098A09C7A43530276--></ETCOP_TOOL>
+
+</data>
