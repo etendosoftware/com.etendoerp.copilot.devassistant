@@ -1,58 +1,78 @@
-from datetime import datetime
+import json
 from typing import Dict, Type, Optional
-from uuid import uuid4
 from pydantic import BaseModel, Field
+from copilot.core import utils
+from copilot.core.threadcontext import ThreadContext
 from copilot.core.tool_wrapper import ToolWrapper
-
+from copilot.core.utils import copilot_debug
 
 class DDLToolInput(BaseModel):
-    i_prefix: str = Field(
-        title="Prefix",
-        description="This is the prefix of the module in database."
+    i_mode: int = Field(
+        title="Mode",
+        description="This parameter indicates what want to do the user. The availables modes are:"
+                    "REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.",
+        enum=['REGISTER_TABLE']
     )
-    i_name: str = Field(
+    i_prefix: Optional[str]  = Field(
+        title="Prefix",
+        description="This is the prefix of the module in database. Only used for REGISTER_TABLE mode. "
+    )
+    i_name: Optional[str]  = Field(
         title="Name",
-        description="This is the name of the table, this construct the database name adding the prefix before and a '_'."
+        description="This is the name of the table, this construct the database name adding the prefix before and a '_'. Only used for REGISTER_TABLE mode."
     )
     i_classname: Optional[str] = Field(
         None,
         title="ClassName",
-        description="This is the java class name associated to the table, if this is not provided will be generated automatically."
+        description="This is the java class name associated to the table, if this is not provided will be generated automatically. Only used for REGISTER_TABLE mode."
     )
 
 
-def get_data_package(prefix, i_database, i_username, i_password, i_hostname, i_port):
-    conn = psycopg2.connect(database=i_database, user=i_username, password=i_password, host=i_hostname, port=i_port)
-    cursor = conn.cursor()
+def _get_headers(access_token: Optional[str]) -> Dict:
+    """
+    This method generates headers for an HTTP request.
 
-    query = """
-            SELECT pck.ad_package_id
-            FROM ad_module_dbprefix mpre
-            LEFT JOIN ad_module mo ON mo.ad_module_id = mpre.ad_module_id
-            LEFT JOIN ad_package pck ON pck.ad_module_id = mo.ad_module_id
-            WHERE mpre."name" ilike %s
-       """
-    cursor.execute(query,(prefix,))
-    ad_package_id = cursor.fetchall()
+    Parameters:
+    access_token (str, optional): The access token to be included in the headers. If provided, an 'Authorization' field is added to the headers with the value 'Bearer {access_token}'.
 
-    # Cerrar la conexión a la base de datos
-    cursor.close()
-    conn.close()
+    Returns:
+    dict: A dictionary representing the headers. If an access token is provided, the dictionary includes an 'Authorization' field.
+    """
+    headers = {}
 
-    return ad_package_id
+    if access_token:
+        headers["Authorization"] = f"Bearer {access_token}"
+    return headers
 
-def get_table_id(i_database,i_username,i_password,i_hostname,i_port):
-    conn = psycopg2.connect(database=i_database, user=i_username, password=i_password, host=i_hostname,port=i_port)
-    cursor = conn.cursor()
-    query = """
-            SELECT get_uuid()
-            """
-    cursor.execute(query)
-    table_id = cursor.fetchall()
-    cursor.close()
-    conn.close()
 
-    return table_id
+available_modes = ["REGISTER_TABLE"]
+
+
+def register_table(url, acces_token, prefix, name, classname):
+    import requests
+    webhook_name = "RegisterTable"
+    body_params = {
+        "DBPrefix": prefix,  # a la izq es como esta registrado en etendo y a la derecha, como lo tengo al valor
+        "JavaClass": classname,
+        "Name": name
+
+    }
+    post_result = call_webhook(acces_token, body_params, url, webhook_name)
+    return post_result
+
+
+def call_webhook(access_token, body_params, url, webhook_name):
+    import requests
+    headers = _get_headers(access_token)
+    endpoint = "/webhooks/?name=" + webhook_name
+    import json
+    json_data= json.dumps(body_params)
+    post_result = requests.post(url=(url + endpoint), data=json_data, headers=headers)
+    if post_result.ok:
+         return json.loads(post_result.text)
+    else:
+        copilot_debug(post_result.text)
+        return {"error":post_result.text}
 
 
 class DDLTool(ToolWrapper):
@@ -62,64 +82,22 @@ class DDLTool(ToolWrapper):
 
     def run(self, input_params: Dict, *args, **kwargs):
 
-        import psycopg2
-        from datetime import datetime
-
-        i_hostname: str = 'localhost'
-        i_username: str = 'tad'
-        i_password: str = 'tad'
-        i_database: str = 'etendo2'
-        i_port: str = '5433'
-
-        # Establishing connection
-        db_uri = f"postgresql://{i_username}:{i_password}@{i_hostname}:{i_port}/{i_database}"
-
+        mode = input_params.get('i_mode')
         prefix = input_params.get('i_prefix')
-        tablename: str = prefix + '_' + input_params.get('i_name')
+        name = input_params.get('i_name')
+        tablename: str = prefix.upper() + '_' + name
         classname: str = input_params.get('i_classname')
-        if  classname is None:
-            classname = tablename.replace("_","")
 
-        datapackage = get_data_package(prefix, i_database, i_username, i_password, i_hostname, i_port)
-        ad_table_id = get_table_id(i_database, i_username, i_password, i_hostname, i_port)
+        extra_info = ThreadContext.get_data('extra_info')
+        access_token = extra_info.get('auth').get('ETENDO_TOKEN')
+        etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
 
-        conn = psycopg2.connect(db_uri)
-        cursor = conn.cursor()
+        if classname is None:
+            classname = tablename.replace("_", "")
 
-        data = {
-                "AD_Table_ID": ad_table_id[0],
-                "AD_Client_ID": '0',
-                "AD_Org_ID": '0',
-                "IsActive": 'Y',
-                "Created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "CreatedBy": '0',
-                "Updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "UpdatedBy": '0',
-                "AccessLevel": '3',
-                "AD_Package_ID": datapackage[0],
-                "Name": tablename,
-                "TableName": tablename,
-                "ClassName": classname,
-                "Description": input_params.get('i_name')
-                }
+        if mode == "REGISTER_TABLE":
+            return register_table(etendo_host, access_token, prefix, name, classname)
 
-        # Formulate the SQL INSERT query
-        columns = ', '.join(data.keys())
-        placeholders = ', '.join(['%s'] * len(data))
-        values = tuple(data.values())
+        else:
+            return {"error": "Wrong Mode. Available modes are " + str(available_modes)}
 
-        query = f"INSERT INTO PUBLIC.AD_TABLE ({columns}) VALUES ({placeholders});"
-
-        try:
-            cursor.execute(query, values)
-            conn.commit()
-            message = "The insertion was completed successfully."
-        except Exception as e:
-            conn.rollback()
-            message = f"An error occurred: {e}"
-        finally:
-            cursor.close()
-            conn.close()
-
-
-        return {"message": message}

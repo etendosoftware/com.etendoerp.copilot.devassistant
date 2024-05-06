@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-03 08:49:10.237]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-06 11:51:26.602]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -21,15 +21,27 @@
     "parameters": {
       "type": "object",
       "properties": {
+        "i_mode": {
+          "description": "This parameter indicates what want to do the user. The availables modes are:REGISTER_TABLE: Register the Database table into the Etendo Application Dictionary to be recognized for it.",
+          "enum": ["REGISTER_TABLE"],
+          "title": "Mode",
+          "type": "integer"
+        },
         "i_prefix": {
-          "description": "This is the prefix of the module in database.",
-          "title": "Prefix",
-          "type": "string"
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the prefix of the module in database. Only used for REGISTER_TABLE mode. ",
+          "title": "Prefix"
         },
         "i_name": {
-          "description": "This is the name of the table, this construct the database name adding the prefix before and a '_'.",
-          "title": "Name",
-          "type": "string"
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the name of the table, this construct the database name adding the prefix before and a '_'. Only used for REGISTER_TABLE mode.",
+          "title": "Name"
         },
         "i_classname": {
           "anyOf": [
@@ -37,7 +49,7 @@
             {"type": "null"}
           ],
           "default": null,
-          "description": "This is the java class name associated to the table, if this is not provided will be generated automatically.",
+          "description": "This is the java class name associated to the table, if this is not provided will be generated automatically. Only used for REGISTER_TABLE mode.",
           "title": "ClassName"
         }
       }
