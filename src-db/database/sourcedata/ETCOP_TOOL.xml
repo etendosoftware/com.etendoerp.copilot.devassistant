@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-06 11:51:26.602]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-08 12:03:20.178]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -22,8 +22,14 @@
       "type": "object",
       "properties": {
         "i_mode": {
-          "description": "This parameter indicates what want to do the user. The availables modes are:REGISTER_TABLE: Register the Database table into the Etendo Application Dictionary to be recognized for it.",
-          "enum": ["REGISTER_TABLE"],
+          "description": "This parameter indicates what want to do the user. The available modes are:REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be recognized for it. It works incrementally, so if the table columns are already registered, it will not be duplicated and the new columns will be added.SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the correct names.REGISTER_WINDOW_AND_TAB: Register a window and tab in the Etendo Application Dictionary, to show the table data in the application. It checks if there exists a window and tab with for the table, if not, it creates it. If the window and tab already exists, it will not be duplicated. If it neccesary, its possible to Force the creation of the window and tab with the parameter ForceCreate.REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, to be recognized for it.It works incrementally, so if the fields are already registered, it will not be duplicated and the new fields will be added.",
+          "enum": [
+            "REGISTER_TABLE",
+            "REGISTER_COLUMNS",
+            "SYNC_TERMINOLOGY",
+            "REGISTER_WINDOW_AND_TAB",
+            "REGISTER_FIELDS"
+          ],
           "title": "Mode",
           "type": "integer"
         },
@@ -32,7 +38,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This is the prefix of the module in database. Only used for REGISTER_TABLE mode. ",
+          "description": "This is the prefix of the module in database. Only used for REGISTER_TABLE mode and REGISTER_COLUMNS mode.",
           "title": "Prefix"
         },
         "i_name": {
@@ -40,7 +46,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This is the name of the table, this construct the database name adding the prefix before and a '_'. Only used for REGISTER_TABLE mode.",
+          "description": "This is the name of the table, this construct the database name adding the prefix before a '_'. Only used for REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW_AND_TAB mode.",
           "title": "Name"
         },
         "i_classname": {
@@ -51,6 +57,30 @@
           "default": null,
           "description": "This is the java class name associated to the table, if this is not provided will be generated automatically. Only used for REGISTER_TABLE mode.",
           "title": "ClassName"
+        },
+        "i_record_id": {
+          "anyOf": [
+            {"type": "integer"},
+            {"type": "null"}
+          ],
+          "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS and REGISTER_WINDOW_AND_TAB mode.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary.",
+          "title": "Record ID"
+        },
+        "i_cleanTerminology": {
+          "anyOf": [
+            {"type": "boolean"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates if the terminology must be cleaned before the synchronization. This do a default modification of the terminology to remove the _ and add spaces. Only used for SYNC_TERMINOLOGY mode.",
+          "title": "Clean Terminology"
+        },
+        "i_forceCreate": {
+          "anyOf": [
+            {"type": "boolean"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates if the window and tab must be created even if it already exists. Only used for REGISTER_WINDOW_AND_TAB mode. If not provided, the default value is False.",
+          "title": "Force Create"
         }
       }
     }
