@@ -44,14 +44,15 @@ public class RegisterTable extends BaseWebhookService {
     //lectura de datapackage
     try {
       DataPackage dataPackage = getDataPackage(dbPrefix);
-      createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
-      responseVars.put("message", "Table registered successfully.");
+      Table adTable = createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
+      responseVars.put("message",
+          String.format("Table registered successfully in Etendo with the ID: '%s'.", adTable.getId()));
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
   }
 
-  private void createAdTable(DataPackage dataPackage, String javaclass, String tableName, String description) {
+  private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String description) {
     Table adTable = OBProvider.getInstance().get(Table.class);
     adTable.setNewOBObject(true);
     Client client = OBDal.getInstance().get(Client.class, "0");
@@ -72,6 +73,7 @@ public class RegisterTable extends BaseWebhookService {
     OBDal.getInstance().save(adTable);
 
     OBDal.getInstance().flush();
+    return adTable;
 
 
   }

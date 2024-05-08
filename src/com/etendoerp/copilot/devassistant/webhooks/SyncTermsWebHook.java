@@ -34,8 +34,6 @@ public class SyncTermsWebHook extends BaseWebhookService {
       logIfDebug(String.format("Parameter: %s = %s", entry.getKey(), entry.getValue()));
     }
     try {
-
-
       DalConnectionProvider conn = new DalConnectionProvider(false);
       String pinstance = SequenceIdData.getUUID();
       OBContext context = OBContext.getOBContext();
