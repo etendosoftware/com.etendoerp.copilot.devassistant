@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-06 11:51:26.602]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-07 10:54:41.351]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -22,8 +22,11 @@
       "type": "object",
       "properties": {
         "i_mode": {
-          "description": "This parameter indicates what want to do the user. The availables modes are:REGISTER_TABLE: Register the Database table into the Etendo Application Dictionary to be recognized for it.",
-          "enum": ["REGISTER_TABLE"],
+          "description": "This parameter indicates what want to do the user. The availables modes are:REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.CREATE_TABLE: Create a table on the database.",
+          "enum": [
+            "REGISTER_TABLE",
+            "CREATE_TABLE"
+          ],
           "title": "Mode",
           "type": "integer"
         },
