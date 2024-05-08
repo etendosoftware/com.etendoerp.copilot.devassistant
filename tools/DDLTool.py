@@ -30,17 +30,19 @@ class DDLToolInput(BaseModel):
                     "to be recognized for it."
                     "It works incrementally, so if the fields are already registered, it will not be duplicated and "
                     "the new fields will be added.",
-        enum=['CREATE_TABLE','REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY', 'REGISTER_WINDOW_AND_TAB', 'REGISTER_FIELDS']
+        enum=['CREATE_TABLE', 'REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY', 'REGISTER_WINDOW_AND_TAB',
+              'REGISTER_FIELDS']
     )
     i_prefix: Optional[str] = Field(
         title="Prefix",
-        description="This is the prefix of the module in database. Only used for REGISTER_TABLE and REGISTER_COLUMNS"
+        description="This is the prefix of the module in database. Only used for CREATE_TABLE, REGISTER_TABLE and REGISTER_COLUMNS"
     )
     i_name: Optional[str] = Field(
         title="Name",
         description="This is the name of the table, this construct the database name adding the prefix "
                     "before a '_'."
-                    " Only used for REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW_AND_TAB mode."
+                    " Only used for CREATE_TABLE, REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW_AND_TAB mode."
+                    "In the mode CREATE_TABLE, this is the name of the table in the database."
                     "In the mode REGISTER_TABLE, this is the name of the table in the Etendo Application Dictionary."
                     "In the mode REGISTER_COLUMNS, this is the name of the table in the Etendo Application Dictionary."
                     "In the mode REGISTER_WINDOW_AND_TAB, this is the name of the table in the Etendo Application "
@@ -93,11 +95,11 @@ def _get_headers(access_token: Optional[str]) -> Dict:
     return headers
 
 
-available_modes = [ "CREATE_TABLE","REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY", "REGISTER_WINDOW_AND_TAB",
+available_modes = ["CREATE_TABLE", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY", "REGISTER_WINDOW_AND_TAB",
                    "REGISTER_FIELDS"]
 
 
-def register_table(url, acces_token, prefix, name, classname):
+def register_table(url, access_token, prefix, name, classname):
     if classname is None:
         classname = prefix.upper() + name[0].upper() + name[1:]
 
@@ -226,7 +228,6 @@ class DDLTool(ToolWrapper):
         access_token = extra_info.get('auth').get('ETENDO_TOKEN')
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
 
-        
         if mode == "REGISTER_TABLE":
             return register_table(etendo_host, access_token, prefix, name, classname)
         elif mode == "REGISTER_COLUMNS":
