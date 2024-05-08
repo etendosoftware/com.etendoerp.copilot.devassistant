@@ -82,6 +82,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
           String.format(copdevTabCreated, tab.getName(), tab.getId(),
               window.getName()));
     } catch (Exception e) {
+      OBDal.getInstance().rollbackAndClose();
       responseVars.put("error", e.getMessage());
     }
 
@@ -129,6 +130,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     tab.setWindow(window);
     tab.setTabLevel((long) 0);
     tab.setUIPattern("STD");
+    tab.setSequenceNumber((long) 10)  ;
     tab.setModule(window.getModule());
     OBDal.getInstance().save(tab);
     return tab;
