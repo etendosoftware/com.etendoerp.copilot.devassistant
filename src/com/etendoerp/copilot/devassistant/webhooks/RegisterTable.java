@@ -45,13 +45,10 @@ public class RegisterTable extends BaseWebhookService {
     try {
       DataPackage dataPackage = getDataPackage(dbPrefix);
       createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
-      responseVars.put("message", "Table created successfully.");
+      responseVars.put("message", "Table registered successfully.");
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
-      return;
     }
-
-
   }
 
   private void createAdTable(DataPackage dataPackage, String javaclass, String tableName, String description) {
@@ -86,16 +83,16 @@ public class RegisterTable extends BaseWebhookService {
     ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
 
     if (modPref == null) {
-      throw new OBException("El prefijo no existe");
+      throw new OBException("The prefix does not exist.");
     }
 
     Module module = modPref.getModule();
     if (!module.isInDevelopment()) {
-      throw new OBException("El modulo no esta en desarrollo.");
+      throw new OBException("The module is not in development.");
     }
     List<DataPackage> dataPackList = module.getDataPackageList();
     if (dataPackList.isEmpty()) {
-      throw new OBException("El modulo no tiene data package");
+      throw new OBException("The module has not a datapackage.");
     }
     return dataPackList.get(0);
   }
