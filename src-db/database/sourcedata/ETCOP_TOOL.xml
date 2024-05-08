@@ -24,6 +24,7 @@
         "i_mode": {
           "description": "This parameter indicates what want to do the user. The available modes are:REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be recognized for it. It works incrementally, so if the table columns are already registered, it will not be duplicated and the new columns will be added.SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the correct names.REGISTER_WINDOW_AND_TAB: Register a window and tab in the Etendo Application Dictionary, to show the table data in the application. It checks if there exists a window and tab with for the table, if not, it creates it. If the window and tab already exists, it will not be duplicated. If it neccesary, its possible to Force the creation of the window and tab with the parameter ForceCreate.REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, to be recognized for it.It works incrementally, so if the fields are already registered, it will not be duplicated and the new fields will be added.",
           "enum": [
+            "CREATE_TABLE",
             "REGISTER_TABLE",
             "REGISTER_COLUMNS",
             "SYNC_TERMINOLOGY",
