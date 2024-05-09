@@ -6,7 +6,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
-import org.jetbrains.annotations.NotNull;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
@@ -89,7 +88,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
 
   }
 
-  private @NotNull Menu createMenuElem(OBContext context, Window window) {
+  private Menu createMenuElem(OBContext context, Window window) {
     Menu menu = OBProvider.getInstance().get(Menu.class);
     menu.setNewOBObject(true);
     menu.setOrganization(context.getCurrentOrganization());
@@ -105,7 +104,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     return menu;
   }
 
-  private @NotNull Window createWindow(String name, Table table, OBContext context) {
+  private Window createWindow(String name, Table table, OBContext context) {
     Window window;
     window = OBProvider.getInstance().get(Window.class);
     window.setNewOBObject(true);
@@ -118,7 +117,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     return window;
   }
 
-  private @NotNull Tab createTab(Window window, String name, Table table, OBContext context) {
+  private Tab createTab(Window window, String name, Table table, OBContext context) {
     Tab tab;
     OBDal.getInstance().save(window);
     tab = OBProvider.getInstance().get(Tab.class);
@@ -130,7 +129,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     tab.setWindow(window);
     tab.setTabLevel((long) 0);
     tab.setUIPattern("STD");
-    tab.setSequenceNumber((long) 10)  ;
+    tab.setSequenceNumber((long) 10);
     tab.setModule(window.getModule());
     OBDal.getInstance().save(tab);
     return tab;
