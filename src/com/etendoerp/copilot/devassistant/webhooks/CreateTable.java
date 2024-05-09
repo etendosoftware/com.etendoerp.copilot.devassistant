@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,15 +35,26 @@ public class CreateTable extends BaseWebhookService {
       log.info("Parameter: " + entry.getKey() + " = " + entry.getValue());
     }
 
+    String mode = parameter.get("mode");
     String query = parameter.get("query");
 
     try {
       Connection conn = OBDal.getInstance().getConnection();
+
       PreparedStatement statement = conn.prepareStatement(query);
+
       log.info(query);
+
       boolean result = statement.execute();
-      log.info("Query executed and return:" + result);
-      responseVars.put("message", "Table created successfully.");
+
+      log.info("Query executed and return: " + result);
+
+      if (mode.equals("CREATE_TABLE")) {
+        responseVars.put("message", "Table created successfully.");
+      }
+      if (mode.equals("ADD_COLUMN")) {
+        responseVars.put("message", "Column added successfully.");
+      }
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
