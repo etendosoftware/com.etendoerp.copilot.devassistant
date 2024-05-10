@@ -157,7 +157,9 @@ def call_webhook(access_token, body_params, url, webhook_name):
     endpoint = "/webhooks/?name=" + webhook_name
     import json
     json_data = json.dumps(body_params)
-    post_result = requests.post(url=(url + endpoint), data=json_data, headers=headers)
+    full_url = (url + endpoint)
+    copilot_debug(f"Calling Webhook(POST): {full_url}")
+    post_result = requests.post(url=full_url, data=json_data, headers=headers)
     if post_result.ok:
         return json.loads(post_result.text)
     else:
@@ -225,9 +227,14 @@ class DDLTool(ToolWrapper):
         force_create = input_params.get('i_forceCreate')
 
         extra_info = ThreadContext.get_data('extra_info')
+        if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
+            return {"error": "No access token provided, to work with Etendo, an access token is required."
+                             "Make sure that the Webservices are enabled to the user role and the WS are configured for"
+                             " the Entity."
+                    }
         access_token = extra_info.get('auth').get('ETENDO_TOKEN')
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
-
+        copilot_debug(f"ETENDO_HOST: {etendo_host}")
         if mode == "REGISTER_TABLE":
             return register_table(etendo_host, access_token, prefix, name, classname)
         elif mode == "REGISTER_COLUMNS":
