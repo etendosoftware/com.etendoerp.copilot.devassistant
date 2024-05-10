@@ -10,6 +10,7 @@ import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
@@ -46,7 +47,7 @@ public class RegisterTable extends BaseWebhookService {
       DataPackage dataPackage = getDataPackage(dbPrefix);
       Table adTable = createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
       responseVars.put("message",
-          String.format("Table registered successfully in Etendo with the ID: '%s'.", adTable.getId()));
+          String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
@@ -85,16 +86,16 @@ public class RegisterTable extends BaseWebhookService {
     ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
 
     if (modPref == null) {
-      throw new OBException("The prefix does not exist.");
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbprefix));
     }
 
     Module module = modPref.getModule();
     if (!module.isInDevelopment()) {
-      throw new OBException("The module is not in development.");
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
     }
     List<DataPackage> dataPackList = module.getDataPackageList();
     if (dataPackList.isEmpty()) {
-      throw new OBException("The module has not a datapackage.");
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
     }
     return dataPackList.get(0);
   }

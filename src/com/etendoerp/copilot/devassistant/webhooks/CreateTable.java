@@ -1,5 +1,7 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
@@ -14,6 +16,7 @@ import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
@@ -39,13 +42,14 @@ public class CreateTable extends BaseWebhookService {
     try {
       Connection conn = OBDal.getInstance().getConnection();
       PreparedStatement statement = conn.prepareStatement(query);
-      log.info(query);
+      logIfDebug(query);
       boolean result = statement.execute();
-      log.info("Query executed and return:" + result);
-      responseVars.put("message", "Table created successfully.");
+      logIfDebug("Query executed and return:" + result);
+      responseVars.put("message", OBMessageUtils.messageBD("copdev_TableCreationSucc"));
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
   }
+
 }

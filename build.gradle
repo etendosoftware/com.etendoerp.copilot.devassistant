@@ -53,5 +53,6 @@ repositories {
 * Ex: implementation "com.sun.mail:javax.mail:1.6.2"
 */
 dependencies {
+    implementation('com.etendoerp:webhookevents:1.7.0')
 
 }
