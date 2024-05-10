@@ -21,6 +21,7 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   private static final String REGISTER_FIELDS_PROCESS = "174";
+  public static final String ERROR_PROPERTY = "error";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -30,7 +31,7 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
       Tab tab = OBDal.getInstance().get(Tab.class, tabID);
 
       if (tab == null) {
-        responseVars.put("error", String.format(OBMessageUtils.messageBD("COPDEV_TabNotFound"), tabID));
+        responseVars.put(ERROR_PROPERTY, String.format(OBMessageUtils.messageBD("COPDEV_TabNotFound"), tabID));
         return;
       }
       String recordId = tab.getId();
@@ -49,10 +50,10 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
       if (StringUtils.equalsIgnoreCase(myMessage.getType(), "Success")) {
         responseVars.put("message", textResponse);
       } else {
-        responseVars.put("error", textResponse);
+        responseVars.put(ERROR_PROPERTY, textResponse);
       }
     } catch (Exception e) {
-      responseVars.put("error", e.getMessage());
+      responseVars.put(ERROR_PROPERTY, e.getMessage());
     }
   }
 }

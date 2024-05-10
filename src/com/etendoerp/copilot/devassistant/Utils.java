@@ -16,6 +16,10 @@ import org.openbravo.scheduling.ProcessRunner;
 import org.openbravo.service.db.DalConnectionProvider;
 
 public class Utils {
+  private Utils() {
+    throw new IllegalStateException("Utility class");
+  }
+
   public static OBError execPInstanceProcess(String registerColumnsProcess, String recordId) throws ServletException {
     DalConnectionProvider conn = new DalConnectionProvider(false);
     String pinstance = SequenceIdData.getUUID();

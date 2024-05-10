@@ -21,6 +21,7 @@ public class RegisterColumnsWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String REGISTER_COLUMNS_PROCESS = "173";
+  public static final String ERROR_PROPERTY = "error";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -32,22 +33,21 @@ public class RegisterColumnsWebHook extends BaseWebhookService {
       tableCriteria.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
       Table table = (Table) tableCriteria.setMaxResults(1).uniqueResult();
       if (table == null) {
-        responseVars.put("error", String.format(OBMessageUtils.messageBD("COPDEV_TableNotFound"), tableName));
+        responseVars.put(ERROR_PROPERTY, String.format(OBMessageUtils.messageBD("COPDEV_TableNotFound"), tableName));
         return;
       }
       String recordId = table.getId();
-      String registerColumnsProcess = REGISTER_COLUMNS_PROCESS;
-      OBError myMessage = Utils.execPInstanceProcess(registerColumnsProcess, recordId);
+      OBError myMessage = Utils.execPInstanceProcess(REGISTER_COLUMNS_PROCESS, recordId);
       String textResponse = myMessage.getTitle() + " - " + myMessage.getMessage();
       if (StringUtils.equalsIgnoreCase(myMessage.getType(), "Success")) {
         responseVars.put("message", textResponse);
       } else {
-        responseVars.put("error", textResponse);
+        responseVars.put(ERROR_PROPERTY, textResponse);
 
       }
     } catch (Exception e) {
       log.error("Error executing process", e);
-      responseVars.put("error", e.getMessage());
+      responseVars.put(ERROR_PROPERTY, e.getMessage());
     }
   }
 

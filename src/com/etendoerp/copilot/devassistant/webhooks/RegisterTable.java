@@ -4,6 +4,7 @@ import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
@@ -37,7 +38,7 @@ public class RegisterTable extends BaseWebhookService {
     String description = parameter.get("Description");
 
     if (javaClass == null) {
-      javaClass = dbPrefix.toUpperCase() + name.replace("_", "");
+      javaClass = StringUtils.upperCase(dbPrefix) + StringUtils.replace(name, "_", "");
     }
     try {
       DataPackage dataPackage = getDataPackage(dbPrefix);
