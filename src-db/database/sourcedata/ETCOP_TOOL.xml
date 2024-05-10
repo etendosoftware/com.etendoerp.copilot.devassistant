@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-07 10:54:41.351]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-08 16:47:36.026]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -22,10 +22,11 @@
       "type": "object",
       "properties": {
         "i_mode": {
-          "description": "This parameter indicates what want to do the user. The availables modes are:REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.CREATE_TABLE: Create a table on the database.",
+          "description": "This parameter indicates what want to do the user. The available modes are:REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.CREATE_TABLE: Create a table on the database.ADD_COLUMN: This mode works adding a specific column to a created table.",
           "enum": [
             "REGISTER_TABLE",
-            "CREATE_TABLE"
+            "CREATE_TABLE",
+            "ADD_COLUMN"
           ],
           "title": "Mode",
           "type": "integer"
@@ -35,7 +36,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This is the prefix of the module in database. Only used for REGISTER_TABLE mode. ",
+          "description": "This is the prefix of the module in database. Only used for REGISTER_TABLE and CREATE_TABLE mode. ",
           "title": "Prefix"
         },
         "i_name": {
@@ -43,7 +44,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This is the name of the table, this construct the database name adding the prefix before and a '_'. Only used for REGISTER_TABLE mode.",
+          "description": "This is the name of the table, this construct the database name adding the prefix before and a '_'. Only used for REGISTER_TABLE and CREATE_TABLE mode.",
           "title": "Name"
         },
         "i_classname": {
@@ -54,6 +55,47 @@
           "default": null,
           "description": "This is the java class name associated to the table, if this is not provided will be generated automatically. Only used for REGISTER_TABLE mode.",
           "title": "ClassName"
+        },
+        "i_column": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the column name to be added to a created table. Only used for ADD_COLUMN mode.",
+          "title": "Column Name"
+        },
+        "i_column_type": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the type of column, it depends of what information the user wants to add to the column. Only used for ADD_COLUMN mode.",
+          "title": "Column Type"
+        },
+        "i_can_be_null": {
+          "anyOf": [
+            {"type": "boolean"},
+            {"type": "null"}
+          ],
+          "description": "This is a column attribute that signalize if the column can be null or not. Only used for ADD_COLUMN mode.",
+          "title": "Can Be Null"
+        },
+        "i_default_value": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "description": "This is a default value for the column, this stay None if the user does not specific a default value. Only used for ADD_COLUMN mode.",
+          "enum": [],
+          "title": "Column Default Value"
+        },
+        "i_yes_or_no": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "title": "Yes or No"
         }
       }
     }
