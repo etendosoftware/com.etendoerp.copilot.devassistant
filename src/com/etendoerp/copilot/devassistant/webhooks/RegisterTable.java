@@ -1,5 +1,7 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
+
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,11 +30,7 @@ public class RegisterTable extends BaseWebhookService {
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    log.info("Executing process");
-    for (Map.Entry<String, String> entry : parameter.entrySet()) {
-      log.info("Parameter: " + entry.getKey() + " = " + entry.getValue());
-    }
-
+    logExecutionInit(parameter, log);
     String dbPrefix = parameter.get("DBPrefix");
     String javaClass = parameter.get("JavaClass");
     String name = parameter.get("Name");
@@ -41,8 +39,6 @@ public class RegisterTable extends BaseWebhookService {
     if (javaClass == null) {
       javaClass = dbPrefix.toUpperCase() + name.replace("_", "");
     }
-
-    //lectura de datapackage
     try {
       DataPackage dataPackage = getDataPackage(dbPrefix);
       Table adTable = createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
@@ -70,13 +66,9 @@ public class RegisterTable extends BaseWebhookService {
     adTable.setJavaClassName(javaclass);
     adTable.setDescription(description);
     adTable.setDBTableName(tableName);
-
     OBDal.getInstance().save(adTable);
-
     OBDal.getInstance().flush();
     return adTable;
-
-
   }
 
   private DataPackage getDataPackage(String dbprefix) {
@@ -84,11 +76,9 @@ public class RegisterTable extends BaseWebhookService {
     modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbprefix));
     modPrefCrit.setMaxResults(1);
     ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
-
     if (modPref == null) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbprefix));
     }
-
     Module module = modPref.getModule();
     if (!module.isInDevelopment()) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
