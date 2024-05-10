@@ -46,8 +46,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
       Window window;
       if (tab != null && StringUtils.equalsIgnoreCase(forceCreate, "false")) {
         window = tab.getWindow();
-        String copdevTabAlreadyExists = "Tab %s with ID:'%s' already exists in Window %s.";
-        //OBMessageUtils.messageBD("COPDEV_TabAlreadyExists");
+        String copdevTabAlreadyExists = OBMessageUtils.messageBD("COPDEV_TabAlreadyExists");
         responseVars.put("error",
             String.format(copdevTabAlreadyExists, tab.getName(), tab.getId(), window.getName()));
         return;
@@ -75,8 +74,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
       OBDal.getInstance().flush();
 
 
-      String copdevTabCreated = "Tab %s with ID:'%s' created in Window %s.";
-      //OBMessageUtils.messageBD("COPDEV_TabCreated");//TODO: move message to ad_message
+      String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");
       responseVars.put("message",
           String.format(copdevTabCreated, tab.getName(), tab.getId(),
               window.getName()));
