@@ -38,10 +38,9 @@ public class CreateTable extends BaseWebhookService {
     }
 
     String query = parameter.get("query");
+    Connection conn = OBDal.getInstance().getConnection();
 
-    try {
-      Connection conn = OBDal.getInstance().getConnection();
-      PreparedStatement statement = conn.prepareStatement(query);
+    try (PreparedStatement statement = conn.prepareStatement(query)) {
       logIfDebug(query);
       boolean result = statement.execute();
       logIfDebug("Query executed and return:" + result);

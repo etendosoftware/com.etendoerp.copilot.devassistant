@@ -1,6 +1,7 @@
-import json
 from typing import Dict, Type, Optional
+
 from pydantic import BaseModel, Field
+
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
 from copilot.core.tool_wrapper import ToolWrapper
@@ -139,8 +140,6 @@ def create_table(url, access_token, prefix, name):
 
                 TABLESPACE pg_default;
 
-                ALTER TABLE IF EXISTS public.{prefix}_{name}
-                    OWNER to tad;
         """
 
     webhook_name = "CreateTable"
@@ -198,7 +197,7 @@ def register_fields(etendo_host, access_token, record_id):
     return post_result
 
 
-def register_window_and_tab(etendo_host, access_token, record_id, prefix, name, force_create):
+def register_window_and_tab(etendo_host, access_token, record_id, name, force_create):
     webhook_name = "RegisterWindowAndTab"
     if force_create is None:
         force_create = False
@@ -242,7 +241,7 @@ class DDLTool(ToolWrapper):
         elif mode == "SYNC_TERMINOLOGY":
             return sync_terminoloy(etendo_host, access_token, clean_terminology)
         elif mode == "REGISTER_WINDOW_AND_TAB":
-            return register_window_and_tab(etendo_host, access_token, record_id, prefix, name, force_create)
+            return register_window_and_tab(etendo_host, access_token, record_id, name, force_create)
         elif mode == "REGISTER_FIELDS":
             return register_fields(etendo_host, access_token, record_id)
         elif mode == "CREATE_TABLE":
