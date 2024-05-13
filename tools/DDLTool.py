@@ -66,7 +66,24 @@ class DDLToolInput(BaseModel):
         title="Column Default Value",
         description="This is a default value for the column, this stay None if the user does not specific a default "
                     "value. Only used for ADD_COLUMN mode.",
-        enum=['Y', 'N']
+        enum=["'Y'::bpchar", "'N'::bpchar", "now()", "0"]
+    )
+    i_description: str = Field(
+        title="Description",
+        description="This is a description of the information that contains the field. Only used for REGISTER_TABLE "
+                    "mode."
+    )
+    i_help: str = Field(
+        title="Help",
+        description="This is a help for the complete these register. Is a short explanation of the content must has "
+                    "the field. Only used for REGISTER_TABLE mode."
+    )
+    i_data_access_level: str = Field(
+        default="3",
+        title="Data Access Level",
+        description="This is the level for access to data, this is a number that represents the role can access to "
+                    "data. Only used for REGISTER_TABLE mode.",
+        enum=["1", "3", "4", "6", "7"]
     )
 
 
@@ -92,16 +109,25 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 available_modes = ["REGISTER_TABLE", "CREATE_TABLE", "ADD_COLUMN"]
 
 
-def register_table(url, access_token, prefix, name, classname):
+def register_table(url, access_token, prefix, name, classname, dalevel, description, _help):
     import requests
-    if classname is None:
-        classname = prefix + name
+    """if classname is None:
+        capitalized_lst = []
+        class_list = name.split(" ")
+        for word in class_list:
+            capitalized_lst.append(word.capitalize())
+        classname = "".join(capitalized_lst)"""
+    if dalevel is None:
+        dalevel = "3"
 
     webhook_name = "RegisterTable"
     body_params = {
         "DBPrefix": prefix,
         "JavaClass": classname,
-        "Name": name
+        "Name": name,
+        "DataAccessLevel": dalevel,
+        "Description": description,
+        "Help": _help
     }
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
@@ -198,22 +224,27 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
 
     dbtype = mapping[type_name]
 
-    query_constraint = " "
-    default = ""
+    query_collate = 'COLLATE pg_catalog."default"'
     query_null = " "
+    default = ""
+    query_constraint = " "
+
+    if dbtype == TIMESTAMP_WITHOUT_TIMEZONE or dbtype == "numeric":
+        query_collate = ""
+        can_be_null = False
 
     if not can_be_null:
         query_null = " NOT NULL"
 
     if default_value is not None:
-        default = f" DEFAULT '{default_value}'::bpchar"
+        default = f" DEFAULT {default_value}"
 
     if dbtype == CHAR1:
         query_constraint = f", ADD CONSTRAINT {prefix}_{name}_{column}_chk CHECK ({column} = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))"
 
     query = f"""
             ALTER TABLE IF EXISTS public.{prefix}_{name}
-                ADD COLUMN {column} {dbtype} COLLATE pg_catalog."default" {query_null} {default} {query_constraint};
+                ADD COLUMN {column} {dbtype} {query_collate} {query_null} {default} {query_constraint};
             """
 
     webhook_name = "CreateTable"
@@ -252,9 +283,14 @@ class DDLTool(ToolWrapper):
         #TABLE DATA
         prefix = input_params.get('i_prefix')
         name = input_params.get('i_name')
-        classname: str = input_params.get('i_classname')
 
-        #VARIABLES ADD_COLUMN
+        #REGISTER VARIABLES
+        classname: str = input_params.get('i_classname')
+        dalevel: str = input_params.get('i_data_access_level')
+        description: str = input_params.get('i_description')
+        _help: str = input_params.get('i_help')
+
+        #ADD_COLUMN VARIABLES
         column: str = input_params.get('i_column')
         column_type: str = input_params.get('i_column_type')
         default_value: str = input_params.get('i_default_value')
@@ -266,10 +302,11 @@ class DDLTool(ToolWrapper):
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
 
         if mode == "REGISTER_TABLE":
-            return register_table(etendo_host, access_token, prefix, name, classname)
+            return register_table(etendo_host, access_token, prefix, name, classname, dalevel, description, _help)
         elif mode == "CREATE_TABLE":
             return create_table(etendo_host, access_token, mode, prefix, name)
         elif mode == "ADD_COLUMN":
-            return add_column(etendo_host, access_token, mode, prefix, name, column, column_type, default_value, can_be_null)
+            return add_column(etendo_host, access_token, mode, prefix, name, column, column_type, default_value,
+                              can_be_null)
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}

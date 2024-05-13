@@ -35,23 +35,30 @@ public class RegisterTable extends BaseWebhookService {
     String dbPrefix = parameter.get("DBPrefix");
     String javaClass = parameter.get("JavaClass");
     String name = parameter.get("Name");
+    String dalevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
+    String _help = parameter.get("Help");
 
-    if (javaClass == null) {
-      javaClass = dbPrefix.toUpperCase() + name.replace("_", "");
+    String tableName = dbPrefix + "_" + name;
+
+    if (javaClass == null || javaClass == "null") {
+      javaClass = name.replace("_", "");
     }
+
 
     //lectura de datapackage
     try {
-      DataPackage dataPackage = getDataPackage(dbPrefix);
-      createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
-      responseVars.put("message", "Table registered successfully.");
+        getTableExists(tableName);
+        DataPackage dataPackage = getDataPackage(dbPrefix);
+        createAdTable(dataPackage, javaClass, tableName, dalevel, description, _help);
+        responseVars.put("message", "Table registered successfully.");
+
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
   }
 
-  private void createAdTable(DataPackage dataPackage, String javaclass, String tableName, String description) {
+  private void createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String description, String _help) {
     Table adTable = OBProvider.getInstance().get(Table.class);
     adTable.setNewOBObject(true);
     Client client = OBDal.getInstance().get(Client.class, "0");
@@ -62,11 +69,12 @@ public class RegisterTable extends BaseWebhookService {
     adTable.setCreatedBy(OBContext.getOBContext().getUser());
     adTable.setUpdated(new Date());
     adTable.setUpdatedBy(OBContext.getOBContext().getUser());
-    adTable.setDataAccessLevel("3");
+    adTable.setDataAccessLevel(dalevel);
     adTable.setDataPackage(dataPackage);
     adTable.setName(tableName);
     adTable.setJavaClassName(javaclass);
     adTable.setDescription(description);
+    adTable.setHelp(_help);
     adTable.setDBTableName(tableName);
 
     OBDal.getInstance().save(adTable);
@@ -75,6 +83,19 @@ public class RegisterTable extends BaseWebhookService {
 
 
   }
+
+  private boolean getTableExists(String tableName) {
+    OBCriteria<Table> tableNameCrit = OBDal.getInstance().createCriteria(Table.class);
+    tableNameCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
+    tableNameCrit.setMaxResults(1);
+    Table tableExist = (Table) tableNameCrit.uniqueResult();
+
+    if (tableExist != null) {
+      throw new OBException("The table name is already in use.");
+    }
+    return true;
+  }
+
 
   private DataPackage getDataPackage(String dbprefix) {
     OBCriteria<ModuleDBPrefix> modPrefCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
