@@ -42,23 +42,14 @@ public class RegisterTable extends BaseWebhookService {
 
     String tableName = dbPrefix + "_" + name;
 
-    if (javaClass == null|| javaClass == "null") {
+    if (javaClass == null || javaClass == "null") {
       javaClass = StringUtils.replace(name, "_", "");
     }
 
-    try {
-        getTableExists(tableName);
-        DataPackage dataPackage = getDataPackage(dbPrefix);
-        createAdTable(dataPackage, javaClass, tableName, dalevel, description, _help);
-        responseVars.put("message", "Table registered successfully.");
-
-    if (javaClass == null) {
-      javaClass = StringUtils.replace(name, "_", "");
-    }
     try {
       getTableExists(tableName);
       DataPackage dataPackage = getDataPackage(dbPrefix);
-      Table adTable = createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
+      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, _help);
       responseVars.put("message",
           String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
@@ -67,7 +58,9 @@ public class RegisterTable extends BaseWebhookService {
   }
 
 
-  private void createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String description, String _help) {
+
+  private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String
+      description, String _help) {
     Table adTable = OBProvider.getInstance().get(Table.class);
     adTable.setNewOBObject(true);
     Client client = OBDal.getInstance().get(Client.class, "0");
@@ -83,12 +76,14 @@ public class RegisterTable extends BaseWebhookService {
     adTable.setName(tableName);
     adTable.setJavaClassName(javaclass);
     adTable.setDescription(description);
-    adTable.setHelp(_help);
+    adTable.setHelpComment(_help);
     adTable.setDBTableName(tableName);
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
+
     return adTable;
   }
+
 
   private boolean getTableExists(String tableName) {
     OBCriteria<Table> tableNameCrit = OBDal.getInstance().createCriteria(Table.class);
@@ -102,13 +97,15 @@ public class RegisterTable extends BaseWebhookService {
     return true;
   }
 
-  private DataPackage getDataPackage(String dbprefix) {
+
+  private DataPackage getDataPackage(String dbPrefix) {
+
     OBCriteria<ModuleDBPrefix> modPrefCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbprefix));
+    modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbPrefix));
     modPrefCrit.setMaxResults(1);
     ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
     if (modPref == null) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbprefix));
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbPrefix));
     }
     Module module = modPref.getModule();
     if (!module.isInDevelopment()) {
@@ -121,3 +118,4 @@ public class RegisterTable extends BaseWebhookService {
     return dataPackList.get(0);
   }
 }
+
