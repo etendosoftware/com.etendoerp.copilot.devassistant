@@ -35,14 +35,29 @@ public class RegisterTable extends BaseWebhookService {
     String dbPrefix = parameter.get("DBPrefix");
     String javaClass = parameter.get("JavaClass");
     String name = parameter.get("Name");
+    String dalevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
+    String _help = parameter.get("Help");
 
-    if (javaClass == null) {
-      javaClass = StringUtils.upperCase(dbPrefix) + StringUtils.replace(name, "_", "");
+    String tableName = dbPrefix + "_" + name;
+
+    if (javaClass == null || javaClass == "null") {
+      javaClass = StringUtils.replace(name, "_", " ");
+      String[] words = javaClass.split(" ");
+      StringBuilder formattedName = new StringBuilder();
+      for (String word : words) {
+        if (!word.isEmpty()) {
+          formattedName.append(Character.toUpperCase(word.charAt(0)));
+          formattedName.append(word.substring(1));
+        }
+      }
+      javaClass = formattedName.toString();
     }
+
     try {
+      getTableExists(tableName);
       DataPackage dataPackage = getDataPackage(dbPrefix);
-      Table adTable = createAdTable(dataPackage, javaClass, dbPrefix + "_" + name, description);
+      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, _help);
       responseVars.put("message",
           String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
@@ -50,7 +65,10 @@ public class RegisterTable extends BaseWebhookService {
     }
   }
 
-  private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String description) {
+
+
+  private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String
+      description, String _help) {
     Table adTable = OBProvider.getInstance().get(Table.class);
     adTable.setNewOBObject(true);
     Client client = OBDal.getInstance().get(Client.class, "0");
@@ -61,24 +79,41 @@ public class RegisterTable extends BaseWebhookService {
     adTable.setCreatedBy(OBContext.getOBContext().getUser());
     adTable.setUpdated(new Date());
     adTable.setUpdatedBy(OBContext.getOBContext().getUser());
-    adTable.setDataAccessLevel("3");
+    adTable.setDataAccessLevel(dalevel);
     adTable.setDataPackage(dataPackage);
     adTable.setName(tableName);
     adTable.setJavaClassName(javaclass);
     adTable.setDescription(description);
+    adTable.setHelpComment(_help);
     adTable.setDBTableName(tableName);
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
+
     return adTable;
   }
 
-  private DataPackage getDataPackage(String dbprefix) {
+
+  private boolean getTableExists(String tableName) {
+    OBCriteria<Table> tableNameCrit = OBDal.getInstance().createCriteria(Table.class);
+    tableNameCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
+    tableNameCrit.setMaxResults(1);
+    Table tableExist = (Table) tableNameCrit.uniqueResult();
+
+    if (tableExist != null) {
+      throw new OBException("The table name is already in use.");
+    }
+    return true;
+  }
+
+
+  private DataPackage getDataPackage(String dbPrefix) {
+
     OBCriteria<ModuleDBPrefix> modPrefCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbprefix));
+    modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbPrefix));
     modPrefCrit.setMaxResults(1);
     ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
     if (modPref == null) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbprefix));
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbPrefix));
     }
     Module module = modPref.getModule();
     if (!module.isInDevelopment()) {
@@ -91,3 +126,4 @@ public class RegisterTable extends BaseWebhookService {
     return dataPackList.get(0);
   }
 }
+
