@@ -1,3 +1,5 @@
+import string
+import random
 from typing import Dict, Type, Optional
 
 from pydantic import BaseModel, Field
@@ -40,10 +42,11 @@ class DDLToolInput(BaseModel):
                     "to be recognized for it."
                     "It works incrementally, so if the fields are already registered, it will not be duplicated and "
                     "the new fields will be added.",
-        enum=['CREATE_TABLE', 'ADD_COLUMN', 'REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY', 'REGISTER_WINDOW_AND_TAB',
+        enum=['CREATE_TABLE', 'ADD_COLUMN', 'REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY',
+              'REGISTER_WINDOW_AND_TAB',
               'REGISTER_FIELDS']
-                
-        )
+
+    )
     i_prefix: Optional[str] = Field(
         title="Prefix",
         description="This is the prefix of the module in database. Only used for CREATE_TABLE, REGISTER_TABLE and REGISTER_COLUMNS"
@@ -79,8 +82,8 @@ class DDLToolInput(BaseModel):
               "Image BLOB", "Integer", "Link", "List", "Masked String", "Memo", "Non Transactional Sequence", "Number",
               "OBKMO_Widget in Form Reference", "OBUISEL_Multi Selector Reference", "OBUISEL_SelectorAsLink Reference",
               "OBUISEL_Selector Reference", "Password (decryptable)", "Password (not decryptable)", "PAttribute",
-              "Price","Product Characteristics", "Quantity", "Rich Text Area", "RowID", "Search", "Search Vector",
-              "String","Table","TableDir", "Text", "Time", "Transactional Sequence", "Tree Reference",
+              "Price", "Product Characteristics", "Quantity", "Rich Text Area", "RowID", "Search", "Search Vector",
+              "String", "Table", "TableDir", "Text", "Time", "Transactional Sequence", "Tree Reference",
               "Window Reference", "YesNo"]
     )
     i_can_be_null: Optional[bool] = Field(
@@ -153,7 +156,8 @@ def _get_headers(access_token: Optional[str]) -> Dict:
     return headers
 
 
-available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY", "REGISTER_WINDOW_AND_TAB",
+available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
+                   "REGISTER_WINDOW_AND_TAB",
                    "REGISTER_FIELDS"]
 
 
@@ -176,7 +180,32 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
     return post_result
 
 
+def get_const_name(prefix, name1: str, name2: str, suffix):
+    proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix
+    if (len(proposal) > 32) and ("_" in name1 or "_" in name2):
+        name1 = name1.replace("_", "")
+        name2 = name2.replace("_", "")
+    offset = 1
+    while len(proposal) > 32 and offset < 15:
+        name1offsetted = name1[offset:] if len(name1) > offset else name1
+        name2offsetted = name2[offset:] if len(name2) > offset else name2
+        proposal = (prefix + "_" + name1offsetted + "_" + name2offsetted + "_" + suffix)
+        offset += 1
+    if len(proposal) > 32:
+        length = 32 - len(prefix) - len(suffix) - 2
+        random_string = ''.join(random.choices(string.ascii_letters, k=length))
+        proposal = prefix + "_" + random_string + "_" + suffix
+
+    #print(len(proposal))
+    return proposal
+
+
 def create_table(url, access_token, mode, prefix, name):
+    const_isactive = get_const_name(prefix, name, 'isactive', 'chk')
+    constr_pk = get_const_name(prefix, name, '', 'pk')
+    constr_fk_client = get_const_name(prefix, name, 'ad_client', 'fk')
+    constr_fk_org = get_const_name(prefix, name, 'ad_org', 'fk')
+
     query = f"""
                 CREATE TABLE IF NOT EXISTS public.{prefix}_{name}
                 (
@@ -188,16 +217,16 @@ def create_table(url, access_token, mode, prefix, name):
                     createdby character varying(32) COLLATE pg_catalog."default" NOT NULL,
                     updated timestamp without time zone NOT NULL DEFAULT now(),
                     updatedby character varying(32) COLLATE pg_catalog."default" NOT NULL,
-                    CONSTRAINT {prefix}_{name}_pk PRIMARY KEY ({prefix}_{name}_id),
-                    CONSTRAINT {prefix}_{name}_ad_client FOREIGN KEY (ad_client_id)
+                    CONSTRAINT {constr_pk} PRIMARY KEY ({prefix}_{name}_id),
+                    CONSTRAINT {constr_fk_client} FOREIGN KEY (ad_client_id)
                         REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE
                         ON UPDATE NO ACTION
                         ON DELETE NO ACTION,
-                    CONSTRAINT {prefix}_{name}_ad_org FOREIGN KEY (ad_org_id)
+                    CONSTRAINT {constr_fk_org} FOREIGN KEY (ad_org_id)
                         REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE
                         ON UPDATE NO ACTION
                         ON DELETE NO ACTION,
-                    CONSTRAINT {prefix}_{name}_isactv_chk CHECK (isactive = ANY (ARRAY['Y'::bpchar,'N'::bpchar]))
+                    CONSTRAINT  {const_isactive} CHECK (isactive = ANY (ARRAY['Y'::bpchar,'N'::bpchar]))
                 )
 
                 TABLESPACE pg_default;
@@ -209,6 +238,7 @@ def create_table(url, access_token, mode, prefix, name):
         "mode": mode,
         "query": query
     }
+
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
 
@@ -298,7 +328,7 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
-    #print(query)
+    # print(query)
 
 
 def call_webhook(access_token, body_params, url, webhook_name):
@@ -371,25 +401,27 @@ class DDLTool(ToolWrapper):
         # read the parameters
         mode = input_params.get('i_mode')
 
-        #TABLE DATA
+        # TABLE DATA
         prefix = input_params.get('i_prefix')
-        prefix = prefix.upper()
+        if prefix is not None:
+            prefix = prefix.upper()
         name = input_params.get('i_name')
-        name = name.replace(" ", "_")
+        if name is not None:
+            name = name.replace(" ", "_")
 
-        #REGISTER VARIABLES
+        # REGISTER VARIABLES
         classname: str = input_params.get('i_classname')
         dalevel: str = input_params.get('i_data_access_level')
         description: str = input_params.get('i_description')
         _help: str = input_params.get('i_help')
 
-        #ADD_COLUMN VARIABLES
+        # ADD_COLUMN VARIABLES
         column: str = input_params.get('i_column')
         column_type: str = input_params.get('i_column_type')
         default_value: str = input_params.get('i_default_value')
         can_be_null: bool = input_params.get('i_can_be_null')
 
-        #WEBHOOK DATA        
+        # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
         clean_terminology = input_params.get('i_cleanTerminology')
         force_create = input_params.get('i_forceCreate')
