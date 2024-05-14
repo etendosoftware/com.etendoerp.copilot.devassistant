@@ -63,7 +63,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
 
       Menu menu = createMenuElem(context, window);
 
-      createTreeNode(context, menu);
+      //createTreeNode(context, menu);
       OBDal.getInstance().flush();
 
       String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");

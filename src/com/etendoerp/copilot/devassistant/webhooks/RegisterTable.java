@@ -39,11 +39,19 @@ public class RegisterTable extends BaseWebhookService {
     String description = parameter.get("Description");
     String _help = parameter.get("Help");
 
-
     String tableName = dbPrefix + "_" + name;
 
     if (javaClass == null || javaClass == "null") {
-      javaClass = StringUtils.replace(name, "_", "");
+      javaClass = StringUtils.replace(name, "_", " ");
+      String[] words = javaClass.split(" ");
+      StringBuilder formattedName = new StringBuilder();
+      for (String word : words) {
+        if (!word.isEmpty()) {
+          formattedName.append(Character.toUpperCase(word.charAt(0)));
+          formattedName.append(word.substring(1));
+        }
+      }
+      javaClass = formattedName.toString();
     }
 
     try {

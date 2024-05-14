@@ -265,6 +265,9 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
 
     dbtype = mapping[type_name]
 
+    column = column.split(" ")
+    column = "".join([word.capitalize() for word in column])
+
     query_collate = 'COLLATE pg_catalog."default"'
     query_null = " "
     default = ""
@@ -360,7 +363,8 @@ def register_window_and_tab(etendo_host, access_token, record_id, name, force_cr
 
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
-    description = "This tool register a table on the AD_Table in Etendo."
+    description = ("This tool can register a table in Etendo, create tables on the data base and add specifics columns "
+                   "to a new table or a created table, also can register columns and create window in Etendo.")
     args_schema: Type[BaseModel] = DDLToolInput
 
     def run(self, input_params: Dict, *args, **kwargs):
@@ -369,7 +373,9 @@ class DDLTool(ToolWrapper):
 
         #TABLE DATA
         prefix = input_params.get('i_prefix')
+        prefix = prefix.upper()
         name = input_params.get('i_name')
+        name = name.replace(" ", "_")
 
         #REGISTER VARIABLES
         classname: str = input_params.get('i_classname')
@@ -397,6 +403,7 @@ class DDLTool(ToolWrapper):
         access_token = extra_info.get('auth').get('ETENDO_TOKEN')
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
+
         if mode == "REGISTER_TABLE":
             return register_table(etendo_host, access_token, prefix, name, classname, dalevel, description, _help)
         elif mode == "REGISTER_COLUMNS":

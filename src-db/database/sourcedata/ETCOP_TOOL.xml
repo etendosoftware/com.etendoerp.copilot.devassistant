@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-13 09:57:39.551]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-13 15:48:45.494]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -22,11 +22,11 @@
       "type": "object",
       "properties": {
         "i_mode": {
-          "description": "This parameter indicates what want to do the user. The available modes are:CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the table with default columns(the ones that are always present in the tables of the Etendo Application).REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it. ADD_COLUMN: This mode works adding a specific column to a created table. REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be recognized for it. It works incrementally, so if the table columns are already registered, it will not be duplicated and the new columns will be added.SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the correct names.REGISTER_WINDOW_AND_TAB: Register a window and tab in the Etendo Application Dictionary, to show the table data in the application. This Mode requires the parameter Record ID to be provided(id of the table, returned by the register table mode) and a name for the window and tab. It checks if there exists a window and tab with for the table, if not, it creates it. If the window and tab already exists, it will not be duplicated. If it neccesary, its possible to Force the creation of the window and tab with the parameter ForceCreate.REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, to be recognized for it.It works incrementally, so if the fields are already registered, it will not be duplicated and the new fields will be added.",
+          "description": "This parameter indicates what want to do the user. The available modes are:CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the table with default columns(the ones that are always present in the tables of the Etendo Application).ADD_COLUMN: This mode works adding a specific column to a created table.REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be recognized for it. It works incrementally, so if the table columns are already registered, it will not be duplicated and the new columns will be added.SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the correct names.REGISTER_WINDOW_AND_TAB: Register a window and tab in the Etendo Application Dictionary, to show the table data in the application. This Mode requires the parameter Record ID to be provided(id of the table, returned by the register table mode) and a name for the window and tab. It checks if there exists a window and tab with for the table, if not, it creates it. If the window and tab already exists, it will not be duplicated. If it neccesary, its possible to Force the creation of the window and tab with the parameter ForceCreate.REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, to be recognized for it.It works incrementally, so if the fields are already registered, it will not be duplicated and the new fields will be added.",
           "enum": [
             "CREATE_TABLE",
-            "REGISTER_TABLE",
             "ADD_COLUMN",
+            "REGISTER_TABLE",
             "REGISTER_COLUMNS",
             "SYNC_TERMINOLOGY",
             "REGISTER_WINDOW_AND_TAB",
@@ -48,7 +48,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This is the name of the table, this construct the database name adding the prefix before a '_'. Only used for CREATE_TABLE, REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW_AND_TAB mode.In the mode CREATE_TABLE, this is the name of the table in the database.In the mode REGISTER_TABLE, this is the name of the table in the Etendo Application Dictionary.In the mode REGISTER_COLUMNS, this is the name of the table in the Etendo Application Dictionary.In the mode REGISTER_WINDOW_AND_TAB, this is the name of the table in the Etendo Application Dictionary. For example, if the Table is PREFIX_Dogs, the name for the window and tab will be Dogs.",
+          "description": "This is the name of the table, this construct the database name adding the prefix before a '_'.Only used for CREATE_TABLE, REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW_AND_TAB mode.In the mode CREATE_TABLE, this is the name of the table in the database.In the mode REGISTER_TABLE, this is the name of the table in the Etendo Application Dictionary.In the mode REGISTER_COLUMNS, this is the name of the table in the Etendo Application Dictionary.In the mode REGISTER_WINDOW_AND_TAB, this is the name of the table in the Etendo Application Dictionary. For example, if the Table is PREFIX_Dogs, the name for the window and tab will be Dogs.",
           "title": "Name"
         },
         "i_classname": {
@@ -158,12 +158,8 @@
           "type": "string"
         },
         "i_data_access_level": {
-          "anyOf": [
-            {"type": "string"},
-            {"type": "null"}
-          ],
           "default": "3",
-          "description": "This is the level for access to data, this is a number that represents the role can access to data.",
+          "description": "This is the level for access to data, this is a number that represents the role can access to data. Only used for REGISTER_TABLE mode.",
           "enum": [
             "1",
             "3",
@@ -171,7 +167,8 @@
             "6",
             "7"
           ],
-          "title": "Data Access Level"
+          "title": "Data Access Level",
+          "type": "string"
         },
         "i_record_id": {
           "anyOf": [
