@@ -47,7 +47,7 @@ public class RegisterTable extends BaseWebhookService {
       String[] words = javaClass.split(" ");
       StringBuilder formattedName = new StringBuilder();
       for (String word : words) {
-        if (!word.isEmpty()) {
+        if (!StringUtils.isEmpty(word)) {
           formattedName.append(Character.toUpperCase(word.charAt(0)));
           formattedName.append(word.substring(1));
         }
