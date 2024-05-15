@@ -1,5 +1,6 @@
 import string
 import random
+
 from typing import Dict, Type, Optional
 
 from pydantic import BaseModel, Field
@@ -162,7 +163,6 @@ available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COL
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, _help):
-    import requests
 
     if dalevel is None:
         dalevel = "3"

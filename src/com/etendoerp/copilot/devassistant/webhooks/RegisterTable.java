@@ -24,6 +24,7 @@ import org.openbravo.model.common.enterprise.Organization;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class RegisterTable extends BaseWebhookService {
 
@@ -41,7 +42,7 @@ public class RegisterTable extends BaseWebhookService {
 
     String tableName = dbPrefix + "_" + name;
 
-    if (javaClass == null || javaClass == "null") {
+    if (javaClass == null || Objects.equals(javaClass, "null")) {
       javaClass = StringUtils.replace(name, "_", " ");
       String[] words = javaClass.split(" ");
       StringBuilder formattedName = new StringBuilder();
