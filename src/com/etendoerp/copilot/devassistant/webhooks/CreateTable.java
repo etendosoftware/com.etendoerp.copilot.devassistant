@@ -51,7 +51,7 @@ public class CreateTable extends BaseWebhookService {
         responseVars.put("message", OBMessageUtils.messageBD("copdev_TableCreationSucc"));
       }
       if (StringUtils.equals(mode, "ADD_COLUMN")) {
-        responseVars.put("message", "Column added successfully.");
+        responseVars.put("message", OBMessageUtils.messageBD("copdev_ColumnAddedSucc"));
       }
 
     } catch (Exception e) {
