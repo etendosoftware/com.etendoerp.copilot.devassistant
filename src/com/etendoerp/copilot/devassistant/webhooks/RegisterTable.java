@@ -43,7 +43,7 @@ public class RegisterTable extends BaseWebhookService {
     String tableName = dbPrefix + "_" + name;
 
     if (javaClass == null || Objects.equals(javaClass, "null")) {
-      javaClass = StringUtils.replace(name, "_", " ");
+      javaClass = StringUtils.replaceChars(name, "_", " ");
       String[] words = javaClass.split(" ");
       StringBuilder formattedName = new StringBuilder();
       for (String word : words) {
@@ -56,7 +56,7 @@ public class RegisterTable extends BaseWebhookService {
     }
 
     try {
-      getTableExists(tableName);
+      alreadyExistTable(tableName);
       DataPackage dataPackage = getDataPackage(dbPrefix);
       Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, _help);
       responseVars.put("message",
@@ -94,7 +94,7 @@ public class RegisterTable extends BaseWebhookService {
   }
 
 
-  private boolean getTableExists(String tableName) {
+  private boolean alreadyExistTable(String tableName) {
     OBCriteria<Table> tableNameCrit = OBDal.getInstance().createCriteria(Table.class);
     tableNameCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
     tableNameCrit.setMaxResults(1);

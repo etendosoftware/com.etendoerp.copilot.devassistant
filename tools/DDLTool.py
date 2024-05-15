@@ -196,7 +196,6 @@ def get_const_name(prefix, name1: str, name2: str, suffix):
         random_string = ''.join(random.choices(string.ascii_letters, k=length))
         proposal = prefix + "_" + random_string + "_" + suffix
 
-    #print(len(proposal))
     return proposal
 
 
