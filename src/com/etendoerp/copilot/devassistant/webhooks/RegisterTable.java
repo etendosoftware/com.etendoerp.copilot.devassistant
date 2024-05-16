@@ -101,7 +101,7 @@ public class RegisterTable extends BaseWebhookService {
     Table tableExist = (Table) tableNameCrit.uniqueResult();
 
     if (tableExist != null) {
-      throw new OBException("The table name is already in use.");
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_TableNameAlreadyUse")));
     }
     return true;
   }
