@@ -38,7 +38,7 @@ public class RegisterTable extends BaseWebhookService {
     String name = parameter.get("Name");
     String dalevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
-    String _help = parameter.get("Help");
+    String helpTable = parameter.get("Help");
 
     String tableName = dbPrefix + "_" + name;
 
@@ -58,7 +58,7 @@ public class RegisterTable extends BaseWebhookService {
     try {
       alreadyExistTable(tableName);
       DataPackage dataPackage = getDataPackage(dbPrefix);
-      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, _help);
+      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, helpTable);
       responseVars.put("message",
           String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
@@ -69,7 +69,7 @@ public class RegisterTable extends BaseWebhookService {
 
 
   private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String
-      description, String _help) {
+      description, String helpTable) {
     Table adTable = OBProvider.getInstance().get(Table.class);
     adTable.setNewOBObject(true);
     Client client = OBDal.getInstance().get(Client.class, "0");
@@ -85,7 +85,7 @@ public class RegisterTable extends BaseWebhookService {
     adTable.setName(tableName);
     adTable.setJavaClassName(javaclass);
     adTable.setDescription(description);
-    adTable.setHelpComment(_help);
+    adTable.setHelpComment(helpTable);
     adTable.setDBTableName(tableName);
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
