@@ -24,6 +24,7 @@ import org.openbravo.model.common.enterprise.Organization;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class RegisterTable extends BaseWebhookService {
 
@@ -37,16 +38,16 @@ public class RegisterTable extends BaseWebhookService {
     String name = parameter.get("Name");
     String dalevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
-    String _help = parameter.get("Help");
+    String helpTable = parameter.get("Help");
 
     String tableName = dbPrefix + "_" + name;
 
-    if (javaClass == null || javaClass == "null") {
-      javaClass = StringUtils.replace(name, "_", " ");
+    if (javaClass == null || Objects.equals(javaClass, "null")) {
+      javaClass = StringUtils.replaceChars(name, "_", " ");
       String[] words = javaClass.split(" ");
       StringBuilder formattedName = new StringBuilder();
       for (String word : words) {
-        if (!word.isEmpty()) {
+        if (!StringUtils.isEmpty(word)) {
           formattedName.append(Character.toUpperCase(word.charAt(0)));
           formattedName.append(word.substring(1));
         }
@@ -55,9 +56,9 @@ public class RegisterTable extends BaseWebhookService {
     }
 
     try {
-      getTableExists(tableName);
+      alreadyExistTable(tableName);
       DataPackage dataPackage = getDataPackage(dbPrefix);
-      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, _help);
+      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, helpTable);
       responseVars.put("message",
           String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
@@ -68,7 +69,7 @@ public class RegisterTable extends BaseWebhookService {
 
 
   private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String
-      description, String _help) {
+      description, String helpTable) {
     Table adTable = OBProvider.getInstance().get(Table.class);
     adTable.setNewOBObject(true);
     Client client = OBDal.getInstance().get(Client.class, "0");
@@ -84,7 +85,7 @@ public class RegisterTable extends BaseWebhookService {
     adTable.setName(tableName);
     adTable.setJavaClassName(javaclass);
     adTable.setDescription(description);
-    adTable.setHelpComment(_help);
+    adTable.setHelpComment(helpTable);
     adTable.setDBTableName(tableName);
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
@@ -93,14 +94,14 @@ public class RegisterTable extends BaseWebhookService {
   }
 
 
-  private boolean getTableExists(String tableName) {
+  private boolean alreadyExistTable(String tableName) {
     OBCriteria<Table> tableNameCrit = OBDal.getInstance().createCriteria(Table.class);
     tableNameCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
     tableNameCrit.setMaxResults(1);
     Table tableExist = (Table) tableNameCrit.uniqueResult();
 
     if (tableExist != null) {
-      throw new OBException("The table name is already in use.");
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_TableNameAlreadyUse")));
     }
     return true;
   }

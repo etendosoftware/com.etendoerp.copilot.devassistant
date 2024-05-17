@@ -1,5 +1,6 @@
 import string
 import random
+
 from typing import Dict, Type, Optional
 
 from pydantic import BaseModel, Field
@@ -161,8 +162,7 @@ available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COL
                    "REGISTER_FIELDS"]
 
 
-def register_table(url, access_token, prefix, name, classname, dalevel, description, _help):
-    import requests
+def register_table(url, access_token, prefix, name, classname, dalevel, description, helpTable):
 
     if dalevel is None:
         dalevel = "3"
@@ -174,7 +174,7 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
         "Name": name,
         "DataAccessLevel": dalevel,
         "Description": description,
-        "Help": _help
+        "Help": helpTable
     }
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
@@ -196,7 +196,6 @@ def get_const_name(prefix, name1: str, name2: str, suffix):
         random_string = ''.join(random.choices(string.ascii_letters, k=length))
         proposal = prefix + "_" + random_string + "_" + suffix
 
-    #print(len(proposal))
     return proposal
 
 
@@ -413,7 +412,7 @@ class DDLTool(ToolWrapper):
         classname: str = input_params.get('i_classname')
         dalevel: str = input_params.get('i_data_access_level')
         description: str = input_params.get('i_description')
-        _help: str = input_params.get('i_help')
+        helpTable: str = input_params.get('i_help')
 
         # ADD_COLUMN VARIABLES
         column: str = input_params.get('i_column')
@@ -437,7 +436,7 @@ class DDLTool(ToolWrapper):
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 
         if mode == "REGISTER_TABLE":
-            return register_table(etendo_host, access_token, prefix, name, classname, dalevel, description, _help)
+            return register_table(etendo_host, access_token, prefix, name, classname, dalevel, description, helpTable)
         elif mode == "REGISTER_COLUMNS":
             return register_columns(etendo_host, access_token, prefix, name)
         elif mode == "SYNC_TERMINOLOGY":

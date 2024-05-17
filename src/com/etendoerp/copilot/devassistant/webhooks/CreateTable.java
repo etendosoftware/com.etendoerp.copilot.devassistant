@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
@@ -46,11 +47,11 @@ public class CreateTable extends BaseWebhookService {
       logIfDebug(query);
       boolean result = statement.execute();
       logIfDebug("Query executed and return:" + result);
-      if (mode.equals("CREATE_TABLE")) {
+      if (StringUtils.equals(mode, "CREATE_TABLE")) {
         responseVars.put("message", OBMessageUtils.messageBD("copdev_TableCreationSucc"));
       }
-      if (mode.equals("ADD_COLUMN")) {
-        responseVars.put("message", "Column added successfully.");
+      if (StringUtils.equals(mode, "ADD_COLUMN")) {
+        responseVars.put("message", OBMessageUtils.messageBD("copdev_ColumnAddedSucc"));
       }
 
     } catch (Exception e) {
