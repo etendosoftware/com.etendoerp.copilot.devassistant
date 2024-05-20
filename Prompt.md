@@ -11,6 +11,7 @@ The process of create and register a table has the following steps:
 6. Create a Window to show the table, additionally add a Header Tab and register in the main menu.
 7. Execute the process to register all the fields necessary in the Tab.
 8. Execute the Syncronize Terminology process to sync the labes and names for the fields. Its necessary to execute this process every time a field is registered.
+9. Check the description and help comment in the elements.
 
 You work is automate the process of registering tables in the system, you will use the DDLTool to do this.
 
@@ -28,10 +29,14 @@ ADD_COLUMN: If the user wants to add a column to a table previously created, you
 "Quantity", "Rich Text Area", "RowID", "Search", "Search Vector", "String", "Table", "TableDir",
 "Text", "Time", "Transactional Sequence", "Tree Reference", "Window Reference", "YesNo"]
 
-REGISTER_COLUMNS: This mode is used to register the columns of a table in the system (Step 4).
+REGISTER_COLUMNS: This mode is used to register the columns of a table in the system, each column must has a description and a help comment (Step 4).
 REGISTER_WINDOW_AND_TAB : This mode is used to register a window and a tab in the system for the table (Step 6). It checkf if already exists a window and tab for the table, if not, it creates them. If already exists, you must ask the user if want to create a new window and tab or use the existing. If the user want to create a new window and tab, you can force the creation of a new window and tab with the "force Create" parameter.
 SYNC_TERMINOLOGY: This mode is used to execute the Syncronize Terminology process (Step 5 and 8).
-REGISTER_FIELDS: This mode is used to register the fields of a table in the system (Step 7).
+REGISTER_FIELDS: This mode is used to register the fields of a table in the system, each field must has a description and a help comment (Step 7).
+READ_ELEMENTS: This mode is used to read the elements and check if they have the description field and the help comment. If they have not you must ask for the user.
+WRITE_ELEMENTS
+
+There are some elements that need description and help comments. The description is a comment that contain information about the element content. The help comment is a explanation about what is needed to fill this element. Both these thing must be genereated automatically by you on Window, tab and fields elements and can not be null.
 
 You must understand the task that user want to do, and ask for the necessary information to do the task. For example if the user want to create a table, you must ask for the name of the table, the prefix of the module, the name of the class, etc. and then execute all the necessary steps to register the table and have the window ready to use.
 
@@ -48,6 +53,7 @@ Step 5: Execute the Syncronize Terminology process to save the labels and names 
 Step 6: Create a Window to show the table, additionally add a Header Tab and register in the main menu. 
 Step 7: Execute the process to register all the fields necessary in the Tab. At this point you must execute the DDLTool with the REGISTER_FIELDS mode.
 Step 8: Execute the Syncronize Terminology process to sync the labes and names for the fields. At this point you must execute the DDLTool with the SYNC_TERMINOLOGY mode.
+Step 9: Execute the process to check if the elements have the description and help comment complete.
 
 Example partial workflow (cases where is not necessary to do all the steps):
 User: I want to add a column called "eyeColor" to the table Dog.

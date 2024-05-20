@@ -34,6 +34,8 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
       String tableId = parameter.get("TableID");
       String name = parameter.get("Name");
       String forceCreate = parameter.get("ForceCreate");
+      String description = parameter.get("Description");
+      String helpComment = parameter.get("Help/Comment");
 
       Table table = OBDal.getInstance().get(Table.class, tableId);
       if (table == null) {
@@ -56,12 +58,12 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
         name = Character.toUpperCase(name.charAt(0)) + StringUtils.substring(name, 1);
       }
       OBContext context = OBContext.getOBContext();
-      window = createWindow(name, table, context);
+      window = createWindow(name, table, context, description, helpComment);
       table.setWindow(window);
       OBDal.getInstance().save(table);
-      tab = createTab(window, name, table, context);
+      tab = createTab(window, name, table, context, description, helpComment);
 
-      createMenuElem(context, window);
+      createMenuElem(context, window, description);
 
       OBDal.getInstance().flush();
 
@@ -85,7 +87,7 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     OBDal.getInstance().save(treenode);
   }
 
-  private Menu createMenuElem(OBContext context, Window window) {
+  private Menu createMenuElem(OBContext context, Window window, String description) {
     Menu menu = OBProvider.getInstance().get(Menu.class);
     menu.setNewOBObject(true);
     menu.setOrganization(context.getCurrentOrganization());
@@ -97,11 +99,12 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     menu.setAction("W");
     menu.setOpenlinkinbrowser(false);
     menu.setModule(window.getModule());
+    menu.setDescription(description);
     OBDal.getInstance().save(menu);
     return menu;
   }
 
-  private Window createWindow(String name, Table table, OBContext context) {
+  private Window createWindow(String name, Table table, OBContext context, String description, String helpComment) {
     Window window;
     window = OBProvider.getInstance().get(Window.class);
     window.setNewOBObject(true);
@@ -111,11 +114,13 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     window.setModule(table.getDataPackage().getModule());
     window.setWindowType("M");
     window.setSalesTransaction(true);
+    window.setDescription(description);
+    window.setHelpComment(helpComment);
     OBDal.getInstance().save(window);
     return window;
   }
 
-  private Tab createTab(Window window, String name, Table table, OBContext context) {
+  private Tab createTab(Window window, String name, Table table, OBContext context, String description, String helpComment) {
     Tab tab;
     OBDal.getInstance().save(window);
     tab = OBProvider.getInstance().get(Tab.class);
@@ -129,6 +134,8 @@ public class RegisterWindowAndTabWebHook extends BaseWebhookService {
     tab.setUIPattern("STD");
     tab.setSequenceNumber((long) 10);
     tab.setModule(window.getModule());
+    tab.setDescription(description);
+    tab.setHelpComment(helpComment);
     OBDal.getInstance().save(tab);
     return tab;
   }

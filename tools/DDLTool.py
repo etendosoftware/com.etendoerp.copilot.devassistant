@@ -42,10 +42,10 @@ class DDLToolInput(BaseModel):
                     "REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, "
                     "to be recognized for it."
                     "It works incrementally, so if the fields are already registered, it will not be duplicated and "
-                    "the new fields will be added.",
+                    "the new fields will be added."
+                    "READ_ELEMENTS: Check if the record has a description and help comment.",
         enum=['CREATE_TABLE', 'ADD_COLUMN', 'REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY',
-              'REGISTER_WINDOW_AND_TAB',
-              'REGISTER_FIELDS']
+              'REGISTER_WINDOW_AND_TAB', 'REGISTER_FIELDS', 'READ_ELEMENTS']
 
     )
     i_prefix: Optional[str] = Field(
@@ -101,13 +101,15 @@ class DDLToolInput(BaseModel):
     )
     i_description: str = Field(
         title="Description",
-        description="This is a description of the information that contains the field. Only used for REGISTER_TABLE "
-                    "mode."
+        description="This is a description of the information that contains the field. Is a space to write additional "
+                    "related information. This can not be None, infer a description to add. "
+                    "Only used for REGISTER_TABLE and REGISTER_WINDOW_AND_TAB and REGISTER_FIELDS mode."
     )
     i_help: str = Field(
         title="Help",
         description="This is a help for the complete these register. Is a short explanation of the content must has "
-                    "the field. Only used for REGISTER_TABLE mode."
+                    "the field. This can not be None, infer a help comment to add. "
+                    "Only used for REGISTER_TABLE and REGISTER_WINDOW_AND_TAB and REGISTER_FIELDS mode."
     )
     i_data_access_level: str = Field(
         default="3",
@@ -124,6 +126,7 @@ class DDLToolInput(BaseModel):
                     "In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be "
                     "returned by the REGISTER_WINDOW mode)."
                     "In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary."
+                    "In the mode READ_ELEMETNS, this is the ID of eache column in the created table."
     )
     i_cleanTerminology: Optional[bool] = Field(
         title="Clean Terminology",
@@ -158,11 +161,10 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 
 
 available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
-                   "REGISTER_WINDOW_AND_TAB",
-                   "REGISTER_FIELDS"]
+                   "REGISTER_WINDOW_AND_TAB", "REGISTER_FIELDS", "READ_ELEMENTS"]
 
 
-def register_table(url, access_token, prefix, name, classname, dalevel, description, helpTable):
+def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
 
     if dalevel is None:
         dalevel = "3"
@@ -174,7 +176,7 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
         "Name": name,
         "DataAccessLevel": dalevel,
         "Description": description,
-        "Help": helpTable
+        "Help": help_comment
     }
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
@@ -327,7 +329,6 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
-    # print(query)
 
 
 def call_webhook(access_token, body_params, url, webhook_name):
@@ -368,23 +369,52 @@ def sync_terminoloy(etendo_host, access_token, clean_terminology):
     return post_result
 
 
-def register_fields(etendo_host, access_token, record_id):
+def register_fields(etendo_host, access_token, record_id, description, help_comment):
     webhook_name = "RegisterFields"
     body_params = {
-        "WindowTabID": record_id
+        "WindowTabID": record_id,
+        "Description": description,
+        "Help/Comment": help_comment
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
 
-def register_window_and_tab(etendo_host, access_token, record_id, name, force_create):
+def register_window_and_tab(etendo_host, access_token, record_id, name, force_create, description, help_comment):
+    fixed_name = name
+    if "_" in name:
+        fixed_name = name.replace("_", " ")
+        fixed_name = fixed_name.split(" ")
+        fixed_name = " ".join([word.capitalize() for word in fixed_name])
+
     webhook_name = "RegisterWindowAndTab"
     if force_create is None:
         force_create = False
     body_params = {
         "TableID": record_id,
-        "Name": name,
-        "ForceCreate": force_create
+        "Name": fixed_name,
+        "ForceCreate": force_create,
+        "Description": description,
+        "Help/Comment": help_comment
+    }
+    post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
+    return post_result
+
+
+def read_elements(etendo_host, access_token, record_id):
+    webhook_name = "ElementsHandler"
+    body_params = {
+        "TableID": record_id
+    }
+    post_result = call_webhook(access_token, body_params,etendo_host, webhook_name)
+    return post_result
+
+
+def write_elements(etendo_host, access_token, record_id, description):
+    webhook_name = "ElementsHandler"
+    body_params = {
+        "ColumnId": record_id,
+        "Description": description
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
@@ -411,8 +441,10 @@ class DDLTool(ToolWrapper):
         # REGISTER VARIABLES
         classname: str = input_params.get('i_classname')
         dalevel: str = input_params.get('i_data_access_level')
+
+        # ELEMENT VARIABLES
         description: str = input_params.get('i_description')
-        helpTable: str = input_params.get('i_help')
+        help_comment: str = input_params.get('i_help')
 
         # ADD_COLUMN VARIABLES
         column: str = input_params.get('i_column')
@@ -436,19 +468,25 @@ class DDLTool(ToolWrapper):
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 
         if mode == "REGISTER_TABLE":
-            return register_table(etendo_host, access_token, prefix, name, classname, dalevel, description, helpTable)
+            return register_table(etendo_host, access_token, prefix, name, classname, dalevel, description,
+                                  help_comment)
         elif mode == "REGISTER_COLUMNS":
             return register_columns(etendo_host, access_token, prefix, name)
         elif mode == "SYNC_TERMINOLOGY":
             return sync_terminoloy(etendo_host, access_token, clean_terminology)
         elif mode == "REGISTER_WINDOW_AND_TAB":
-            return register_window_and_tab(etendo_host, access_token, record_id, name, force_create)
+            return register_window_and_tab(etendo_host, access_token, record_id, name, force_create, description,
+                                           help_comment)
         elif mode == "REGISTER_FIELDS":
-            return register_fields(etendo_host, access_token, record_id)
+            return register_fields(etendo_host, access_token, record_id, description, help_comment)
         elif mode == "CREATE_TABLE":
             return create_table(etendo_host, access_token, mode, prefix, name)
         elif mode == "ADD_COLUMN":
             return add_column(etendo_host, access_token, mode, prefix, name, column, column_type, default_value,
                               can_be_null)
+        elif mode == "READ_ELEMENTS":
+            return read_elements(etendo_host, access_token, record_id)
+        elif mode == "WRITE_ELEMENTS":
+            return write_elements(etendo_host, access_token, record_id, description)
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}
