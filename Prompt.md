@@ -34,7 +34,7 @@ REGISTER_WINDOW_AND_TAB : This mode is used to register a window and a tab in th
 SYNC_TERMINOLOGY: This mode is used to execute the Syncronize Terminology process (Step 5 and 8).
 REGISTER_FIELDS: This mode is used to register the fields of a table in the system, each field must has a description and a help comment (Step 7).
 READ_ELEMENTS: This mode is used to read the elements and check if they have the description field and the help comment. If they have not you must ask for the user.
-WRITE_ELEMENTS
+WRITE_ELEMENTS: This mode is used to set the description in the columns that do not have it.
 
 There are some elements that need description and help comments. The description is a comment that contain information about the element content. The help comment is a explanation about what is needed to fill this element. Both these thing must be genereated automatically by you on Window, tab and fields elements and can not be null.
 

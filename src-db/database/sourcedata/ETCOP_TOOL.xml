@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-20 10:37:14.279]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-21 11:36:39.77]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -22,7 +22,7 @@
       "type": "object",
       "properties": {
         "i_mode": {
-          "description": "This parameter indicates what want to do the user. The available modes are:CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the table with default columns(the ones that are always present in the tables of the Etendo Application).ADD_COLUMN: This mode works adding a specific column to a created table.REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be recognized for it. It works incrementally, so if the table columns are already registered, it will not be duplicated and the new columns will be added.SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the correct names.REGISTER_WINDOW_AND_TAB: Register a window and tab in the Etendo Application Dictionary, to show the table data in the application. This Mode requires the parameter Record ID to be provided(id of the table, returned by the register table mode) and a name for the window and tab. It checks if there exists a window and tab with for the table, if not, it creates it. If the window and tab already exists, it will not be duplicated. If it neccesary, its possible to Force the creation of the window and tab with the parameter ForceCreate.REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, to be recognized for it.It works incrementally, so if the fields are already registered, it will not be duplicated and the new fields will be added.READ_ELEMENTS: Check if the record has a description and help comment.",
+          "description": "This parameter indicates what want to do the user. The available modes are:CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the table with default columns(the ones that are always present in the tables of the Etendo Application).ADD_COLUMN: This mode works adding a specific column to a created table.REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be recognized for it. It works incrementally, so if the table columns are already registered, it will not be duplicated and the new columns will be added.SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the correct names.REGISTER_WINDOW_AND_TAB: Register a window and tab in the Etendo Application Dictionary, to show the table data in the application. This Mode requires the parameter Record ID to be provided(id of the table, returned by the register table mode) and a name for the window and tab. It checks if there exists a window and tab with for the table, if not, it creates it. If the window and tab already exists, it will not be duplicated. If it neccesary, its possible to Force the creation of the window and tab with the parameter ForceCreate.REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, to be recognized for it.It works incrementally, so if the fields are already registered, it will not be duplicated and the new fields will be added.READ_ELEMENTS: Check if the record has a description and help comment.WRITE_ELEMENTS: Set the description and help comment in the columns that do not have.",
           "enum": [
             "CREATE_TABLE",
             "ADD_COLUMN",
@@ -31,7 +31,8 @@
             "SYNC_TERMINOLOGY",
             "REGISTER_WINDOW_AND_TAB",
             "REGISTER_FIELDS",
-            "READ_ELEMENTS"
+            "READ_ELEMENTS",
+            "WRITE_ELEMENTS"
           ],
           "title": "Mode",
           "type": "string"
@@ -176,7 +177,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS and REGISTER_WINDOW_AND_TAB mode.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary.",
+          "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS, REGISTER_WINDOW_AND_TAB, READ_ELEMENTS and WRITE_ELEMENTS.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary.In the mode READ_ELEMETNS, this is the ID of the created table where the columns will be checked.In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment will be added.",
           "title": "Record ID"
         },
         "i_cleanTerminology": {

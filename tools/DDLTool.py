@@ -43,9 +43,10 @@ class DDLToolInput(BaseModel):
                     "to be recognized for it."
                     "It works incrementally, so if the fields are already registered, it will not be duplicated and "
                     "the new fields will be added."
-                    "READ_ELEMENTS: Check if the record has a description and help comment.",
+                    "READ_ELEMENTS: Check if the record has a description and help comment."
+                    "WRITE_ELEMENTS: Set the description and help comment in the columns that do not have.",
         enum=['CREATE_TABLE', 'ADD_COLUMN', 'REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY',
-              'REGISTER_WINDOW_AND_TAB', 'REGISTER_FIELDS', 'READ_ELEMENTS']
+              'REGISTER_WINDOW_AND_TAB', 'REGISTER_FIELDS', 'READ_ELEMENTS', 'WRITE_ELEMENTS']
 
     )
     i_prefix: Optional[str] = Field(
@@ -122,11 +123,13 @@ class DDLToolInput(BaseModel):
         title="Record ID",
         description="This is the record ID of the element to process in the Mode. "
                     "This ID is a string with 32 characters in Hexadecimal format. "
-                    "Only used for REGISTER_FIELDS and REGISTER_WINDOW_AND_TAB mode."
+                    "Only used for REGISTER_FIELDS, REGISTER_WINDOW_AND_TAB, READ_ELEMENTS and WRITE_ELEMENTS."
                     "In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be "
                     "returned by the REGISTER_WINDOW mode)."
                     "In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary."
-                    "In the mode READ_ELEMETNS, this is the ID of eache column in the created table."
+                    "In the mode READ_ELEMENTS, this is the ID of the created table where the columns will be checked."
+                    "In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment "
+                    "will be added."
     )
     i_cleanTerminology: Optional[bool] = Field(
         title="Clean Terminology",
@@ -161,7 +164,7 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 
 
 available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
-                   "REGISTER_WINDOW_AND_TAB", "REGISTER_FIELDS", "READ_ELEMENTS"]
+                   "REGISTER_WINDOW_AND_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS"]
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
@@ -401,20 +404,23 @@ def register_window_and_tab(etendo_host, access_token, record_id, name, force_cr
     return post_result
 
 
-def read_elements(etendo_host, access_token, record_id):
+def read_elements(etendo_host, access_token, mode, record_id):
     webhook_name = "ElementsHandler"
     body_params = {
+        "mode": mode,
         "TableID": record_id
     }
-    post_result = call_webhook(access_token, body_params,etendo_host, webhook_name)
+    post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
 
-def write_elements(etendo_host, access_token, record_id, description):
+def write_elements(etendo_host, access_token, mode, record_id, description, help_comment):
     webhook_name = "ElementsHandler"
     body_params = {
+        "mode": mode,
         "ColumnId": record_id,
-        "Description": description
+        "Description": description,
+        "HelpComment": help_comment
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
@@ -485,8 +491,8 @@ class DDLTool(ToolWrapper):
             return add_column(etendo_host, access_token, mode, prefix, name, column, column_type, default_value,
                               can_be_null)
         elif mode == "READ_ELEMENTS":
-            return read_elements(etendo_host, access_token, record_id)
+            return read_elements(etendo_host, access_token, mode, record_id)
         elif mode == "WRITE_ELEMENTS":
-            return write_elements(etendo_host, access_token, record_id, description)
+            return write_elements(etendo_host, access_token, mode, record_id, description, help_comment)
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}
