@@ -41,6 +41,7 @@ public class CreateTable extends BaseWebhookService {
 
     String mode = parameter.get("mode");
     String query = parameter.get("query");
+    String name = parameter.get("Name");
     Connection conn = OBDal.getInstance().getConnection();
 
     try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -48,10 +49,10 @@ public class CreateTable extends BaseWebhookService {
       boolean result = statement.execute();
       logIfDebug("Query executed and return:" + result);
       if (StringUtils.equals(mode, "CREATE_TABLE")) {
-        responseVars.put("message", OBMessageUtils.messageBD("copdev_TableCreationSucc"));
+        responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_TableCreationSucc"), name));
       }
       if (StringUtils.equals(mode, "ADD_COLUMN")) {
-        responseVars.put("message", OBMessageUtils.messageBD("copdev_ColumnAddedSucc"));
+        responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_ColumnAddedSucc"), name));
       }
 
     } catch (Exception e) {

@@ -33,9 +33,7 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
     String mode = parameter.get("mode");
     if (StringUtils.equals(mode, "READ_ELEMENTS")) {
       String tableId = parameter.get("TableID");
-      OBCriteria<Table> tableCriteria = OBDal.getInstance().createCriteria(Table.class);
-      tableCriteria.add(Restrictions.ilike(Table.PROPERTY_ID, tableId));
-      Table table = (Table) tableCriteria.setMaxResults(1).uniqueResult();
+      Table table = OBDal.getInstance().get(Table.class, tableId);
       List<Column> columns = table.getADColumnList();
 
       try {
@@ -53,9 +51,7 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
         String columnId = parameter.get("ColumnId");
         String description = parameter.get("Description");
         String helpComment = parameter.get("HelpComment");
-        OBCriteria<Column> columnCriteria = OBDal.getInstance().createCriteria(Column.class);
-        columnCriteria.add(Restrictions.ilike(Column.PROPERTY_ID, columnId));
-        Column column = (Column) columnCriteria.setMaxResults(1).uniqueResult();
+        Column column = OBDal.getInstance().get(Column.class, columnId);
         column.setDescription(description);
         column.setHelpComment(helpComment);
         Element element = column.getApplicationElement();

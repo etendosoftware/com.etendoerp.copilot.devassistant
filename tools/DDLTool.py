@@ -24,7 +24,8 @@ class DDLToolInput(BaseModel):
         title="Mode",
         description="This parameter indicates what want to do the user. The available modes are:"
                     "CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the "
-                    "table with default columns(the ones that are always present in the tables of the Etendo Application)."
+                    "table with default columns (the ones that are always present in the tables of the Etendo "
+                    "Application)."
                     "ADD_COLUMN: This mode works adding a specific column to a created table."
                     "REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it."
                     "REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be "
@@ -51,7 +52,8 @@ class DDLToolInput(BaseModel):
     )
     i_prefix: Optional[str] = Field(
         title="Prefix",
-        description="This is the prefix of the module in database. Only used for CREATE_TABLE, REGISTER_TABLE and REGISTER_COLUMNS"
+        description="This is the prefix of the module in database. Only used for CREATE_TABLE, REGISTER_TABLE and "
+                    "REGISTER_COLUMNS"
     )
     i_name: Optional[str] = Field(
         title="Name",
@@ -62,7 +64,8 @@ class DDLToolInput(BaseModel):
                     "In the mode REGISTER_TABLE, this is the name of the table in the Etendo Application Dictionary."
                     "In the mode REGISTER_COLUMNS, this is the name of the table in the Etendo Application Dictionary."
                     "In the mode REGISTER_WINDOW_AND_TAB, this is the name of the table in the Etendo Application "
-                    "Dictionary. For example, if the Table is PREFIX_Dogs, the name for the window and tab will be Dogs."
+                    "Dictionary. For example, if the Table is PREFIX_Dogs, the name for the window and tab will be "
+                    "Dogs."
     )
     i_classname: Optional[str] = Field(
         None,
@@ -108,7 +111,7 @@ class DDLToolInput(BaseModel):
     )
     i_help: str = Field(
         title="Help",
-        description="This is a help for the complete these register. Is a short explanation of the content must has "
+        description="This is a help for complete this register. Is a short explanation of the content must has "
                     "the field. This can not be None, infer a help comment to add. "
                     "Only used for REGISTER_TABLE and REGISTER_WINDOW_AND_TAB and REGISTER_FIELDS mode."
     )
@@ -164,7 +167,7 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 
 
 available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
-                   "REGISTER_WINDOW_AND_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS"]
+                   "REGISTER_WINDOW_AND_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS", "ADD_FOREIGN"]
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
@@ -187,17 +190,17 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
 
 def get_const_name(prefix, name1: str, name2: str, suffix):
     proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix
-    if (len(proposal) > 32) and ("_" in name1 or "_" in name2):
+    if (len(proposal) > 30) and ("_" in name1 or "_" in name2):
         name1 = name1.replace("_", "")
         name2 = name2.replace("_", "")
     offset = 1
-    while len(proposal) > 32 and offset < 15:
+    while len(proposal) > 30 and offset < 15:
         name1offsetted = name1[offset:] if len(name1) > offset else name1
         name2offsetted = name2[offset:] if len(name2) > offset else name2
         proposal = (prefix + "_" + name1offsetted + "_" + name2offsetted + "_" + suffix)
         offset += 1
-    if len(proposal) > 32:
-        length = 32 - len(prefix) - len(suffix) - 2
+    if len(proposal) > 30:
+        length = 30 - len(prefix) - len(suffix) - 2
         random_string = ''.join(random.choices(string.ascii_letters, k=length))
         proposal = prefix + "_" + random_string + "_" + suffix
 
@@ -240,6 +243,7 @@ def create_table(url, access_token, mode, prefix, name):
     webhook_name = "CreateTable"
     body_params = {
         "mode": mode,
+        "Name": name,
         "query": query
     }
 
@@ -328,6 +332,7 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
     webhook_name = "CreateTable"
     body_params = {
         "mode": mode,
+        "Name": column,
         "query": query
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
@@ -440,6 +445,7 @@ class DDLTool(ToolWrapper):
         prefix = input_params.get('i_prefix')
         if prefix is not None:
             prefix = prefix.upper()
+
         name = input_params.get('i_name')
         if name is not None:
             name = name.replace(" ", "_")
