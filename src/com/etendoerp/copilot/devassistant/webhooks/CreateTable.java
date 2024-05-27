@@ -48,10 +48,21 @@ public class CreateTable extends BaseWebhookService {
       logIfDebug(query);
       boolean result = statement.execute();
       logIfDebug("Query executed and return:" + result);
+
       if (StringUtils.equals(mode, "CREATE_TABLE")) {
+
+        if (name == null) {
+          name = "Table Name";
+        }
+
         responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_TableCreationSucc"), name));
       }
       if (StringUtils.equals(mode, "ADD_COLUMN")) {
+
+        if (name == null) {
+          name = "Column Name";
+        }
+
         responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_ColumnAddedSucc"), name));
       }
 

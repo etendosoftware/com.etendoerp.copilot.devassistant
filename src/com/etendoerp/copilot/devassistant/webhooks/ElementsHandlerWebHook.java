@@ -34,11 +34,16 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
     if (StringUtils.equals(mode, "READ_ELEMENTS")) {
       String tableId = parameter.get("TableID");
       Table table = OBDal.getInstance().get(Table.class, tableId);
+
+      if (table == null) {
+        throw new IllegalArgumentException("Table with ID " + tableId + " not found.");
+      }
+
       List<Column> columns = table.getADColumnList();
 
       try {
         for (Column column : columns) {
-          if (column.getDescription() == null || column.getHelpComment() == null) {
+          if (StringUtils.isBlank(column.getDescription()) || StringUtils.isBlank(column.getHelpComment())) {
             responseVars.put(column.getName(), column.getId());
           }
         }

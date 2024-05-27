@@ -22,7 +22,7 @@ TIMESTAMP_WITHOUT_TIMEZONE = "timestamp without time zone"
 class DDLToolInput(BaseModel):
     i_mode: str = Field(
         title="Mode",
-        description="This parameter indicates what want to do the user. The available modes are:"
+        description="This parameter indicates what want to do the user. The available modes are: "
                     "CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the "
                     "table with default columns (the ones that are always present in the tables of the Etendo "
                     "Application)."
@@ -111,9 +111,9 @@ class DDLToolInput(BaseModel):
     )
     i_help: str = Field(
         title="Help",
-        description="This is a help for complete this register. Is a short explanation of the content must has "
-                    "the field. This can not be None, infer a help comment to add. "
-                    "Only used for REGISTER_TABLE and REGISTER_WINDOW_AND_TAB and REGISTER_FIELDS mode."
+        description="This is a help for complete this register. It is a short explanation of the content the field must"
+                    "have. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, "
+                    "REGISTER_WINDOW_AND_TAB, and REGISTER_FIELDS mode.",
     )
     i_data_access_level: str = Field(
         default="3",
