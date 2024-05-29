@@ -145,6 +145,18 @@ class DDLToolInput(BaseModel):
         description="This parameter indicates if the window and tab must be created even if it already exists. "
                     "Only used for REGISTER_WINDOW_AND_TAB mode. If not provided, the default value is False."
     )
+    i_parentTable: Optional[str] = Field(
+        title="Parent Table",
+        description="This parameter indicates if the table where will be added the foreign key is the parent table."
+                    "When a table is a parent table, it should contain the foreign key."
+                    "Only used for ADD_FOREIGN mode."
+    )
+    i_childTable: Optional[str] = Field(
+        title="Child Table",
+        description="This parameter indicates if the table is a child of other one connected by a foreign key."
+                    "When a table is a child table, it ID is being pointed for a foreign key."
+                    "Only used for ADD_FOREIGN mode."
+    )
 
 
 def _get_headers(access_token: Optional[str]) -> Dict:
@@ -171,7 +183,6 @@ available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COL
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
-
     if dalevel is None:
         dalevel = "3"
 
@@ -189,6 +200,11 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
 
 
 def get_const_name(prefix, name1: str, name2: str, suffix):
+    if name1.startswith(prefix + "_") or (name1.upper()).startswith(prefix + "_"):
+        name1 = name1[len(prefix) + 1:]
+    if name2.startswith(prefix + "_") or (name2.upper()).startswith(prefix.upper() + "_"):
+        name2 = name2[len(prefix) + 1:]
+
     proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix
     if (len(proposal) > 30) and ("_" in name1 or "_" in name2):
         name1 = name1.replace("_", "")
@@ -240,7 +256,7 @@ def create_table(url, access_token, mode, prefix, name):
 
         """
 
-    webhook_name = "CreateTable"
+    webhook_name = "DDLHook"
     body_params = {
         "mode": mode,
         "Name": name,
@@ -326,10 +342,10 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
 
     query = f"""
             ALTER TABLE IF EXISTS public.{prefix}_{name}
-                ADD COLUMN {column} {dbtype} {query_collate} {query_null} {default} {query_constraint};
+                ADD COLUMN IF NOT EXISTS {column} {dbtype} {query_collate} {query_null} {default} {query_constraint};
             """
 
-    webhook_name = "CreateTable"
+    webhook_name = "DDLHook"
     body_params = {
         "mode": mode,
         "Name": column,
@@ -431,6 +447,36 @@ def write_elements(etendo_host, access_token, mode, record_id, description, help
     return post_result
 
 
+def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table):
+    prefix = prefix.lower()
+    parent_table = parent_table.lower()
+    child_table = child_table.lower()
+
+    key_column = child_table + "_id"
+
+    #add_column(etendo_host, access_token, "ADD_COLUMN", prefix, child_table, key_column, "ID", None, False)
+
+    constraint_fk = get_const_name(prefix, parent_table, child_table, 'fk')
+
+    query = f"""
+            ALTER TABLE IF EXISTS public.{parent_table}
+                ADD CONSTRAINT {constraint_fk} FOREIGN KEY ({key_column})
+                REFERENCES public.{child_table} ({key_column}) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION;
+            """
+
+    webhook_name = "DDLHook"
+    body_params = {
+        "mode": mode,
+        "query": query,
+        "Name": constraint_fk
+    }
+
+    post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
+    return post_result
+
+
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
     description = ("This tool can register a table in Etendo, create tables on the data base and add specifics columns "
@@ -463,6 +509,10 @@ class DDLTool(ToolWrapper):
         column_type: str = input_params.get('i_column_type')
         default_value: str = input_params.get('i_default_value')
         can_be_null: bool = input_params.get('i_can_be_null')
+
+        # ADD_FOREIGN VARIABLES
+        parent_table: str = input_params.get('i_parentTable')
+        child_table: str = input_params.get('i_childTable')
 
         # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
@@ -500,5 +550,7 @@ class DDLTool(ToolWrapper):
             return read_elements(etendo_host, access_token, mode, record_id)
         elif mode == "WRITE_ELEMENTS":
             return write_elements(etendo_host, access_token, mode, record_id, description, help_comment)
+        elif mode == "ADD_FOREIGN":
+            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table)
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}

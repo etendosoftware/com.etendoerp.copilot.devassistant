@@ -4,31 +4,17 @@ import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Restrictions;
-import org.openbravo.base.exception.OBException;
-import org.openbravo.base.provider.OBProvider;
-import org.openbravo.dal.core.OBContext;
-import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.datamodel.Table;
-import org.openbravo.model.ad.module.DataPackage;
-import org.openbravo.model.ad.module.Module;
-import org.openbravo.model.ad.module.ModuleDBPrefix;
-import org.openbravo.model.ad.system.Client;
-import org.openbravo.model.common.enterprise.Organization;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class CreateTable extends BaseWebhookService {
+public class DDLHookWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
 
@@ -52,9 +38,10 @@ public class CreateTable extends BaseWebhookService {
 
       if (StringUtils.equals(mode, "CREATE_TABLE")) {
         responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_TableCreationSucc"), name));
-      }
-      if (StringUtils.equals(mode, "ADD_COLUMN")) {
+      }else if (StringUtils.equals(mode, "ADD_COLUMN")) {
         responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_ColumnAddedSucc"), name));
+      }else if (StringUtils.equals(mode, "ADD_FOREIGN")) {
+        responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_ForeignAddedSucc"), name));
       }
 
     } catch (Exception e) {
