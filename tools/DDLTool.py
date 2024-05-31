@@ -18,6 +18,8 @@ VARCHAR32 = "character varying(32)"
 
 TIMESTAMP_WITHOUT_TIMEZONE = "timestamp without time zone"
 
+MAX_LENGTH = 30
+
 
 class DDLToolInput(BaseModel):
     i_mode: str = Field(
@@ -200,25 +202,28 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
 
 
 def get_const_name(prefix, name1: str, name2: str, suffix):
+    # "name1" and "name2" are the names of the tables involved in the relationship of the constraint.
     if name1.startswith(prefix + "_") or (name1.upper()).startswith(prefix + "_"):
         name1 = name1[len(prefix) + 1:]
     if name2.startswith(prefix + "_") or (name2.upper()).startswith(prefix.upper() + "_"):
         name2 = name2[len(prefix) + 1:]
 
     proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix
-    if (len(proposal) > 30) and ("_" in name1 or "_" in name2):
+    if (len(proposal) > MAX_LENGTH) and ("_" in name1 or "_" in name2):
         name1 = name1.replace("_", "")
         name2 = name2.replace("_", "")
     offset = 1
-    while len(proposal) > 30 and offset < 15:
+    while len(proposal) > MAX_LENGTH and offset < 15:
         name1offsetted = name1[offset:] if len(name1) > offset else name1
         name2offsetted = name2[offset:] if len(name2) > offset else name2
         proposal = (prefix + "_" + name1offsetted + "_" + name2offsetted + "_" + suffix)
         offset += 1
-    if len(proposal) > 30:
-        length = 30 - len(prefix) - len(suffix) - 2
+    if len(proposal) > MAX_LENGTH:
+        length = MAX_LENGTH - len(prefix) - len(suffix) - 2
         random_string = ''.join(random.choices(string.ascii_letters, k=length))
         proposal = prefix + "_" + random_string + "_" + suffix
+
+    proposal = proposal.replace("__", "_")
 
     return proposal
 
@@ -258,9 +263,9 @@ def create_table(url, access_token, mode, prefix, name):
 
     webhook_name = "DDLHook"
     body_params = {
-        "mode": mode,
+        "Mode": mode,
         "Name": name,
-        "query": query
+        "Query": query
     }
 
     post_result = call_webhook(access_token, body_params, url, webhook_name)
@@ -320,7 +325,7 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
     dbtype = mapping[type_name]
 
     column = column.split(" ")
-    column = "".join([word.capitalize() for word in column])
+    column = "_".join([word.lower() for word in column])
 
     query_collate = 'COLLATE pg_catalog."default"'
     query_null = " "
@@ -347,9 +352,9 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
 
     webhook_name = "DDLHook"
     body_params = {
-        "mode": mode,
+        "Mode": mode,
         "Name": column,
-        "query": query
+        "Query": query
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
@@ -375,7 +380,7 @@ def register_columns(etendo_host, access_token, prefix, name):
     db_tablename: str = prefix.upper() + '_' + name
     webhook_name = "RegisterColumns"
     body_params = {
-        "tableName": db_tablename
+        "TableName": db_tablename
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
@@ -387,7 +392,7 @@ def sync_terminoloy(etendo_host, access_token, clean_terminology):
     body_params = {}
     if clean_terminology:
         body_params = {
-            "cleanTerminology": clean_terminology
+            "CleanTerminology": clean_terminology
         }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
@@ -428,7 +433,7 @@ def register_window_and_tab(etendo_host, access_token, record_id, name, force_cr
 def read_elements(etendo_host, access_token, mode, record_id):
     webhook_name = "ElementsHandler"
     body_params = {
-        "mode": mode,
+        "Mode": mode,
         "TableID": record_id
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
@@ -438,7 +443,7 @@ def read_elements(etendo_host, access_token, mode, record_id):
 def write_elements(etendo_host, access_token, mode, record_id, description, help_comment):
     webhook_name = "ElementsHandler"
     body_params = {
-        "mode": mode,
+        "Mode": mode,
         "ColumnId": record_id,
         "Description": description,
         "HelpComment": help_comment
@@ -447,29 +452,32 @@ def write_elements(etendo_host, access_token, mode, record_id, description, help
     return post_result
 
 
-def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table):
+def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column):
+    if parent_table.startswith(prefix + "_") or (parent_table.upper()).startswith(prefix + "_"):
+        parent_table = parent_table[len(prefix) + 1:]
+    if child_table.startswith(prefix + "_") or (child_table.upper()).startswith(prefix.upper() + "_"):
+        child_table = child_table[len(prefix) + 1:]
+
     prefix = prefix.lower()
     parent_table = parent_table.lower()
     child_table = child_table.lower()
 
-    key_column = child_table + "_id"
-
-    #add_column(etendo_host, access_token, "ADD_COLUMN", prefix, child_table, key_column, "ID", None, False)
+    child_table_id = child_table + "_id"
 
     constraint_fk = get_const_name(prefix, parent_table, child_table, 'fk')
 
     query = f"""
             ALTER TABLE IF EXISTS public.{parent_table}
-                ADD CONSTRAINT {constraint_fk} FOREIGN KEY ({key_column})
-                REFERENCES public.{child_table} ({key_column}) MATCH SIMPLE
+                ADD CONSTRAINT {constraint_fk} FOREIGN KEY ({parent_column})
+                REFERENCES public.{child_table} ({child_table_id}) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION;
             """
 
     webhook_name = "DDLHook"
     body_params = {
-        "mode": mode,
-        "query": query,
+        "Mode": mode,
+        "Query": query,
         "Name": constraint_fk
     }
 

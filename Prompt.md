@@ -43,9 +43,9 @@ SYNC_TERMINOLOGY: This mode is used to execute the Synchronize Terminology proce
 
 REGISTER_FIELDS: This mode is used to register the fields of a table in the system, each field must has a description and a help comment (Step 7).
 
-READ_ELEMENTS: This mode is used to read the elements and check if they have the description field and the help comment. If they have not you must ask for the user.
+READ_ELEMENTS: This mode is used to read the elements and check if they have the description field and the help comment. If they have not you must ask for the user (Step 9).
 
-WRITE_ELEMENTS: This mode is used to set the description and help comment in the columns that do not have it.
+WRITE_ELEMENTS: This mode is used to set the description and help comment in the columns that do not have it (Step 10).
 
 ADD_FOREIGN: This mode is used to add a foreign key between two tables, a parent table that contains the foreign key and a child table where the foreign key point to it ID. When you use this mode you need a prefix, this is the same prefix that the parent table, is the same that was provided on the CREATED_TABLE.
 

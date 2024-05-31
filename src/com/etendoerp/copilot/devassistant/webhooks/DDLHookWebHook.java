@@ -25,8 +25,8 @@ public class DDLHookWebHook extends BaseWebhookService {
       log.info("Parameter: " + entry.getKey() + " = " + entry.getValue());
     }
 
-    String mode = parameter.get("mode");
-    String query = parameter.get("query");
+    String mode = parameter.get("Mode");
+    String query = parameter.get("Query");
     String name = parameter.get("Name");
     Connection conn = OBDal.getInstance().getConnection();
 
@@ -36,12 +36,12 @@ public class DDLHookWebHook extends BaseWebhookService {
       logIfDebug("Query executed and return:" + result);
       name = getDefaultName(mode, name);
 
-      if (StringUtils.equals(mode, "CREATE_TABLE")) {
-        responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_TableCreationSucc"), name));
-      }else if (StringUtils.equals(mode, "ADD_COLUMN")) {
-        responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_ColumnAddedSucc"), name));
-      }else if (StringUtils.equals(mode, "ADD_FOREIGN")) {
-        responseVars.put("message", String.format(OBMessageUtils.messageBD("copdev_ForeignAddedSucc"), name));
+      if (StringUtils.equals(mode, DDLToolMode.CREATE_TABLE)) {
+        responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_TableCreationSucc"), name));
+      } else if (StringUtils.equals(mode, DDLToolMode.ADD_COLUMN)) {
+        responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_ColumnAddedSucc"), name));
+      } else if (StringUtils.equals(mode, DDLToolMode.ADD_FOREIGN)) {
+        responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_ForeignAddedSucc"), name));
       }
 
     } catch (Exception e) {
@@ -51,10 +51,10 @@ public class DDLHookWebHook extends BaseWebhookService {
 
   private String getDefaultName(String mode, String name) {
     if (name == null) {
-      if (StringUtils.equals(mode, "CREATE_TABLE")) {
-        return "Table Name";
-      } else if (StringUtils.equals(mode, "ADD_COLUMN")) {
-        return "Column Name";
+      if (StringUtils.equals(mode, DDLToolMode.CREATE_TABLE)) {
+        return String.format(OBMessageUtils.messageBD("COPDEV_DefaultTableName"));
+      } else if (StringUtils.equals(mode, DDLToolMode.ADD_COLUMN)) {
+        return String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
       }
     }
     return name;
