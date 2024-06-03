@@ -559,6 +559,6 @@ class DDLTool(ToolWrapper):
         elif mode == "WRITE_ELEMENTS":
             return write_elements(etendo_host, access_token, mode, record_id, description, help_comment)
         elif mode == "ADD_FOREIGN":
-            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table)
+            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column)
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}

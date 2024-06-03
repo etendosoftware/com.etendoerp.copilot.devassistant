@@ -38,63 +38,66 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
     logExecutionInit(parameter, log);
     String mode = parameter.get("Mode");
 
+    if (StringUtils.equals(mode, DDLToolMode.READ_ELEMENTS)) {    // Method to read the elements of a table
+      read_mode(parameter, responseVars);
+    } else if (StringUtils.equals(mode, DDLToolMode.WRITE_ELEMENTS)) {    // Method to set the Description and HelpComment
+      write_mode(parameter, responseVars);
+    } else {
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_WrongMode")));
+    }
+  }
 
-    // Method to read the elements of a table
-
-    if (StringUtils.equals(mode, DDLToolMode.READ_ELEMENTS)) {
-      String tableId = parameter.get("TableID");
-      Table table = OBDal.getInstance().get(Table.class, tableId);
-
-      if (table == null) {
-        throw new IllegalArgumentException("Table with ID " + tableId + " not found.");
+  private static void write_mode(Map<String, String> parameter, Map<String, String> responseVars) {
+    try {
+      String columnId = parameter.get("ColumnId");
+      if (columnId == null) {
+        throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidElementID")));
       }
 
-      List<Column> columns = table.getADColumnList();
-
-      try {
-        for (Column column : columns) {
-          if (StringUtils.isBlank(column.getDescription()) || StringUtils.isBlank(column.getHelpComment())) {
-            responseVars.put(column.getName(), column.getId());
-          }
-        }
-      } catch (Exception e) {
-        responseVars.put("error", e.getMessage());
+      String description = parameter.get("Description");
+      String helpComment = parameter.get("HelpComment");
+      Column column = OBDal.getInstance().get(Column.class, columnId);
+      if (column == null) {
+        throw new IllegalArgumentException("Column with ID " + columnId + " not found.");
       }
+      column.setName(StringUtils.replace(column.getName(), "_", " "));
+      column.setDescription(description);
+      column.setHelpComment(helpComment);
+      Element element = column.getApplicationElement();
+      if (element == null) {
+        throw new IllegalArgumentException("Element not found.");
+      }
+      element.setName(StringUtils.replace(element.getName(), "_", " "));
+      element.setDescription(description);
+      element.setHelpComment(helpComment);
+      logIfDebug(log,column.getName());
+      logIfDebug(log,element.getName());
+
+      responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_Help&DescriptionAdded"), column.getName()));
+
+    } catch (Exception e) {
+      responseVars.put("error", e.getMessage());
+    }
+  }
+
+  private static void read_mode(Map<String, String> parameter, Map<String, String> responseVars) {
+    String tableId = parameter.get("TableID");
+    Table table = OBDal.getInstance().get(Table.class, tableId);
+
+    if (table == null) {
+      throw new IllegalArgumentException("Table with ID " + tableId + " not found.");
     }
 
-    // Method to set the Description and HelpComment
+    List<Column> columns = table.getADColumnList();
 
-    if (StringUtils.equals(mode, DDLToolMode.WRITE_ELEMENTS)) {
-      try {
-        String columnId = parameter.get("ColumnId");
-        if (columnId == null) {
-          throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidElementID")));
+    try {
+      for (Column column : columns) {
+        if (StringUtils.isBlank(column.getDescription()) || StringUtils.isBlank(column.getHelpComment())) {
+          responseVars.put(column.getName(), column.getId());
         }
-
-        String description = parameter.get("Description");
-        String helpComment = parameter.get("HelpComment");
-        Column column = OBDal.getInstance().get(Column.class, columnId);
-        if (column == null) {
-          throw new IllegalArgumentException("Column with ID " + columnId + " not found.");
-        }
-        column.setName(StringUtils.replace(column.getName(), "_", " "));
-        column.setDescription(description);
-        column.setHelpComment(helpComment);
-        Element element = column.getApplicationElement();
-        if (element == null) {
-          throw new IllegalArgumentException("Element not found.");
-        }
-        element.setName(StringUtils.replace(element.getName(), "_", " "));
-        element.setDescription(description);
-        element.setHelpComment(helpComment);
-        logIfDebug(log,column.getName());
-        logIfDebug(log,element.getName());
-
-        responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_Help&DescriptionAdded"), column.getName()));
-
-      } catch (Exception e) {
-        responseVars.put("error", e.getMessage());
       }
+    } catch (Exception e) {
+      responseVars.put("error", e.getMessage());
     }
   }
 }
