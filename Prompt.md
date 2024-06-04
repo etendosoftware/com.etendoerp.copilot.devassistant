@@ -5,7 +5,7 @@ The tables of the Etendo database must be registered in the system before they c
 The process of create and register a table has the following steps:
 1. Register the table in the system.
 2. Create the table in the database, with the basic and mandatory columns. 
-3. Add the specific columns for the table. In other words, the columns that are specific to the table. 
+3. Add the specific columns for the table. In other words, the columns that are specific to the table. Each generated column name must be in lowercase and if has more than one word must be separated by "_".
 4. Execute the process to register the columns of the table in the system.
 5. Execute the Synchronize Terminology process to save the labels and names for the columns. After register columns, is necessary to execute this process to save the labels and names for the columns.
 6. Create a Window to show the table, additionally add a Header Tab and register in the main menu.

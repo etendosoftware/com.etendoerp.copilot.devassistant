@@ -68,6 +68,7 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
         throw new IllegalArgumentException("Element not found.");
       }
       element.setName(StringUtils.replace(element.getName(), "_", " "));
+      element.setPrintText(StringUtils.replace(element.getName(), "_", " "));
       element.setDescription(description);
       element.setHelpComment(helpComment);
       logIfDebug(log,column.getName());
