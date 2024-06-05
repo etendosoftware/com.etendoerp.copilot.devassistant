@@ -33,21 +33,22 @@ class DDLToolInput(BaseModel):
                     " not be duplicated and the new columns will be added."
                     "SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the "
                     "correct names."
-                    "REGISTER_WINDOW_AND_TAB: Register a window and tab in the Etendo Application Dictionary, to show "
-                    "the table data in the application. This Mode requires the parameter Record ID to be provided(id of"
-                    " the table, returned by the register table mode) and a name for the window and tab."
-                    " It checks if there exists a window and tab with for the table, "
-                    "if not, it creates it. If the window and tab already exists, it will not be duplicated. If it "
-                    "neccesary, its possible to Force the creation of the window and tab with the parameter "
-                    "ForceCreate."
+                    "REGISTER_WINDOW: Register a window and tab in the Etendo Application Dictionary, to show "
+                    "the table data in the application. This Mode requires the parameter prefix and name."
+                    "It checks if there exists a window with the name for the table, if not, it creates it. If the "
+                    "window already exists, it will not be duplicated."
+                    "REGISTER_TAB: Register a tab on a window previously created, this mode need the window_id provided"
+                    "for the RegisterWindow mode, and the RecordId that is the table ID will be added."
                     "REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, "
                     "to be recognized for it."
                     "It works incrementally, so if the fields are already registered, it will not be duplicated and "
                     "the new fields will be added."
                     "READ_ELEMENTS: Check if the record has a description and help comment."
-                    "WRITE_ELEMENTS: Set the description and help comment in the columns that do not have.",
+                    "WRITE_ELEMENTS: Set the description and help comment in the columns that do not have."
+                    "ADD_FOREIGN: This mode is useful to create a foreign key between two tables, a parent table and a "
+                    "child table.",
         enum=['CREATE_TABLE', 'ADD_COLUMN', 'REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY',
-              'REGISTER_WINDOW_AND_TAB', 'REGISTER_FIELDS', 'READ_ELEMENTS', 'WRITE_ELEMENTS']
+              'REGISTER_WINDOW', 'REGISTER_TAB', 'REGISTER_FIELDS', 'READ_ELEMENTS', 'WRITE_ELEMENTS', 'ADD_FOREIGN']
 
     )
     i_prefix: Optional[str] = Field(
@@ -59,11 +60,11 @@ class DDLToolInput(BaseModel):
         title="Name",
         description="This is the name of the table, this construct the database name adding the prefix "
                     "before a '_'."
-                    "Only used for CREATE_TABLE, REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW_AND_TAB mode."
+                    "Only used for CREATE_TABLE, REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW mode."
                     "In the mode CREATE_TABLE, this is the name of the table in the database."
                     "In the mode REGISTER_TABLE, this is the name of the table in the Etendo Application Dictionary."
                     "In the mode REGISTER_COLUMNS, this is the name of the table in the Etendo Application Dictionary."
-                    "In the mode REGISTER_WINDOW_AND_TAB, this is the name of the table in the Etendo Application "
+                    "In the mode REGISTER_WINDOW, this is the name of the table in the Etendo Application "
                     "Dictionary. For example, if the Table is PREFIX_Dogs, the name for the window and tab will be "
                     "Dogs."
     )
@@ -107,13 +108,13 @@ class DDLToolInput(BaseModel):
         title="Description",
         description="This is a description of the information that contains the field. Is a space to write additional "
                     "related information. This can not be None, infer a description to add. "
-                    "Only used for REGISTER_TABLE and REGISTER_WINDOW_AND_TAB and REGISTER_FIELDS mode."
+                    "Only used for REGISTER_TABLE and REGISTER_WINDOW and REGISTER_FIELDS mode."
     )
     i_help: str = Field(
         title="Help",
         description="This is a help for complete this register. It is a short explanation of the content the field must"
                     "have. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, "
-                    "REGISTER_WINDOW_AND_TAB, and REGISTER_FIELDS mode.",
+                    "REGISTER_WINDOW, and REGISTER_FIELDS mode.",
     )
     i_data_access_level: str = Field(
         default="3",
@@ -126,13 +127,14 @@ class DDLToolInput(BaseModel):
         title="Record ID",
         description="This is the record ID of the element to process in the Mode. "
                     "This ID is a string with 32 characters in Hexadecimal format. "
-                    "Only used for REGISTER_FIELDS, REGISTER_WINDOW_AND_TAB, READ_ELEMENTS and WRITE_ELEMENTS."
+                    "Only used for REGISTER_FIELDS, REGISTER_WINDOW, READ_ELEMENTS and WRITE_ELEMENTS."
                     "In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be "
                     "returned by the REGISTER_WINDOW mode)."
-                    "In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary."
+                    "In the mode REGISTER_WINDOW, this is the ID of the table in the Application Dictionary."
                     "In the mode READ_ELEMENTS, this is the ID of the created table where the columns will be checked."
                     "In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment "
                     "will be added."
+                    "In the mode REGISTER_TAB, this is the ID of the table will associated to the tab."
     )
     i_cleanTerminology: Optional[bool] = Field(
         title="Clean Terminology",
@@ -143,19 +145,31 @@ class DDLToolInput(BaseModel):
     i_forceCreate: Optional[bool] = Field(
         title="Force Create",
         description="This parameter indicates if the window and tab must be created even if it already exists. "
-                    "Only used for REGISTER_WINDOW_AND_TAB mode. If not provided, the default value is False."
+                    "Only used for REGISTER_WINDOW mode. If not provided, the default value is False."
     )
-    i_parentTable: Optional[str] = Field(
+
+    i_tabLevel: Optional[str] = Field(
+        title="Tab Level",
+        description="This parameter indicates the tab level in the structure, the main table has the tab level = 0. "
+                    "The rest of the tabs has bigger     levels, if a tab must be 'inside' other has a next tab level "
+                    "(a tab with tab level 3 is inside other tab with tab level 2)."
+                    "This parameter must not be null or None",
+        enum=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
+    )
+    i_parent_table: Optional[str] = Field(
         title="Parent Table",
-        description="This parameter indicates if the table where will be added the foreign key is the parent table."
-                    "When a table is a parent table, it should contain the foreign key."
-                    "Only used for ADD_FOREIGN mode."
+        description="This parameter indicates if the table is a parent table of a foreign key. When a foreign key is "
+                    "created point from a parent table to the id of a child table."
     )
-    i_childTable: Optional[str] = Field(
+    i_child_table: Optional[str] = Field (
         title="Child Table",
-        description="This parameter indicates if the table is a child of other one connected by a foreign key."
-                    "When a table is a child table, it ID is being pointed for a foreign key."
-                    "Only used for ADD_FOREIGN mode."
+        description="This parameter indicates if the table is a child table of a foreign key. When a foreign key is "
+                    "created point from a parent table to the id of a child table."
+    )
+    i_window_id: Optional[str] = Field (
+        title="WindowID",
+        description="This parameter is the id of the window previously created, is obtained in the RegisterWindowAndTab mode."
+                    "This is used when a tab is registered. Only used on NewTab mode."
     )
 
 
@@ -179,7 +193,7 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 
 
 available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
-                   "REGISTER_WINDOW_AND_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS", "ADD_FOREIGN"]
+                   "REGISTER_WINDOW","REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS", "ADD_FOREIGN"]
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
@@ -404,23 +418,25 @@ def register_fields(etendo_host, access_token, record_id, description, help_comm
     return post_result
 
 
-def register_window_and_tab(etendo_host, access_token, record_id, name, force_create, description, help_comment):
+def register_window(etendo_host, access_token, prefix, name, force_create, description, help_comment):
+
     fixed_name = name
     if "_" in name:
         fixed_name = name.replace("_", " ")
         fixed_name = fixed_name.split(" ")
         fixed_name = " ".join([word.capitalize() for word in fixed_name])
 
-    webhook_name = "RegisterWindowAndTab"
+    webhook_name = "RegisterWindow"
     if force_create is None:
         force_create = False
     body_params = {
-        "TableID": record_id,
+        "DBPrefix": prefix,
         "Name": fixed_name,
-        "ForceCreate": force_create,
+        #"ForceCreate": force_create,
         "Description": description,
         "Help/Comment": help_comment
     }
+
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
@@ -477,6 +493,20 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
     return post_result
 
 
+def register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment, record_id):
+
+    webhook_name = "RegisterTab"
+    body_params = {
+        "WindowID": window_id,
+        "TabLevel": tab_level,
+        "Description": description,
+        "HelpComment": help_comment,
+        "TableID": record_id
+    }
+
+    post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
+    return post_result
+
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
     description = ("This tool can register a table in Etendo, create tables on the data base and add specifics columns "
@@ -504,6 +534,10 @@ class DDLTool(ToolWrapper):
         description: str = input_params.get('i_description')
         help_comment: str = input_params.get('i_help')
 
+        # REGISTER TAB VARIABLES
+        tab_level: str = input_params.get('i_tabLevel')
+        window_id: str = input_params.get('i_window_id')
+
         # ADD_COLUMN VARIABLES
         column: str = input_params.get('i_column')
         column_type: str = input_params.get('i_column_type')
@@ -513,12 +547,14 @@ class DDLTool(ToolWrapper):
         # ADD_FOREIGN VARIABLES
         parent_table: str = input_params.get('i_parentTable')
         child_table: str = input_params.get('i_childTable')
+        parent_column: str = input_params.get('i_parentColumn')
 
         # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
         clean_terminology = input_params.get('i_cleanTerminology')
         force_create = input_params.get('i_forceCreate')
 
+        # EXTRA INFO
         extra_info = ThreadContext.get_data('extra_info')
         if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
             return {"error": "No access token provided, to work with Etendo, an access token is required."
@@ -529,6 +565,7 @@ class DDLTool(ToolWrapper):
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 
+        # MODE SELECTOR
         if mode == "REGISTER_TABLE":
             return register_table(etendo_host, access_token, prefix, name, classname, dalevel, description,
                                   help_comment)
@@ -536,9 +573,8 @@ class DDLTool(ToolWrapper):
             return register_columns(etendo_host, access_token, prefix, name)
         elif mode == "SYNC_TERMINOLOGY":
             return sync_terminoloy(etendo_host, access_token, clean_terminology)
-        elif mode == "REGISTER_WINDOW_AND_TAB":
-            return register_window_and_tab(etendo_host, access_token, record_id, name, force_create, description,
-                                           help_comment)
+        elif mode == "REGISTER_WINDOW":
+            return register_window(etendo_host, access_token, prefix, name, force_create, description, help_comment)
         elif mode == "REGISTER_FIELDS":
             return register_fields(etendo_host, access_token, record_id, description, help_comment)
         elif mode == "CREATE_TABLE":
@@ -551,6 +587,9 @@ class DDLTool(ToolWrapper):
         elif mode == "WRITE_ELEMENTS":
             return write_elements(etendo_host, access_token, mode, record_id, description, help_comment)
         elif mode == "ADD_FOREIGN":
-            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table)
+            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column)
+        elif mode == "REGISTER_TAB":
+            return register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment,
+                                record_id)
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}
