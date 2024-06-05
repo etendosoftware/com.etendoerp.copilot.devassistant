@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-22 16:37:35.503]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-04 09:43:41.056]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -32,7 +32,8 @@
             "REGISTER_WINDOW_AND_TAB",
             "REGISTER_FIELDS",
             "READ_ELEMENTS",
-            "WRITE_ELEMENTS"
+            "WRITE_ELEMENTS",
+            "ADD_FOREIGN"
           ],
           "title": "Mode",
           "type": "string"
@@ -177,7 +178,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS, REGISTER_WINDOW_AND_TAB, READ_ELEMENTS and WRITE_ELEMENTS.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary.In the mode READ_ELEMENTS, this is the ID of the created table where the columns will be checked.In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment will be added.In the mode ADD_NEWTAB, this is the ID of the window was created.",
+          "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS, REGISTER_WINDOW_AND_TAB, READ_ELEMENTS and WRITE_ELEMENTS.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary.In the mode READ_ELEMENTS, this is the ID of the created table where the columns will be checked.In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment will be added.In the mode NEWTAB, this is the ID of the table will associated to the tab.",
           "title": "Record ID"
         },
         "i_cleanTerminology": {
@@ -195,6 +196,56 @@
           ],
           "description": "This parameter indicates if the window and tab must be created even if it already exists. Only used for REGISTER_WINDOW_AND_TAB mode. If not provided, the default value is False.",
           "title": "Force Create"
+        },
+        "i_tabLevel": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates the tab level in the structure, the main table has the tab level = 0. The rest of the tabs has bigger tab levels, if a tab must be 'inside' other has a next tab level (a tab with tab level 3 is inside other tab with tab level 2).This parameter must not be null or None",
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+          ],
+          "title": "Tab Level"
+        },
+        "i_parent_table": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates if the table is a parent table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.",
+          "title": "Parent Table"
+        },
+        "i_child_table": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates if the table is a child table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.",
+          "title": "Child Table"
+        },
+        "i_window_id": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter is the id of the window previously created, is obtained in the RegisterWindowAndTab mode.This is used when a tab is registered. Only used on NewTab mode.",
+          "title": "WindowID"
         }
       }
     }
