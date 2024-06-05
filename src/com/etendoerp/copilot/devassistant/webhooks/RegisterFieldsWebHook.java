@@ -44,6 +44,7 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
           .filter(field -> !field.getColumn().isKeyColumn())
           .forEach(field -> {
             field.setShowInGridView(true);
+            field.setName(StringUtils.replace(field.getName(), "_", " "));
             OBDal.getInstance().save(field);
           });
       OBDal.getInstance().flush();

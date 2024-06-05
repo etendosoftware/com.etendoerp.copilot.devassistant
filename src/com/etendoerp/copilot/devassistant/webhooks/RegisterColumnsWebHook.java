@@ -28,7 +28,7 @@ public class RegisterColumnsWebHook extends BaseWebhookService {
     logExecutionInit(parameter, log);
     try {
 
-      String tableName = parameter.get("tableName");
+      String tableName = parameter.get("TableName");
       OBCriteria<Table> tableCriteria = OBDal.getInstance().createCriteria(Table.class);
       tableCriteria.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
       Table table = (Table) tableCriteria.setMaxResults(1).uniqueResult();
