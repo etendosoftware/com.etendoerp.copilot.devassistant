@@ -195,7 +195,8 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 
 
 available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
-                   "REGISTER_WINDOW","REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS", "ADD_FOREIGN"]
+                   "REGISTER_WINDOW", "REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS",
+                   "ADD_FOREIGN"]
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
@@ -357,7 +358,15 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
         default = f" DEFAULT {default_value}"
 
     if dbtype == CHAR1:
-        query_constraint = f", ADD CONSTRAINT {prefix}_{name}_{column}_chk CHECK ({column} = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))"
+        proposal = prefix + "_" + name + "_" + column + "_chk"
+        column_offsetted = column
+        offset = 1
+        while len(proposal) > MAX_LENGTH and offset < 15:
+            name_offsetted = name[offset:] if len(name) > offset else name
+            column_offsetted = column[offset:] if len(column) > offset else column
+            proposal = (prefix + "_" + name_offsetted + "_" + column_offsetted + "_chk")
+            offset += 1
+        query_constraint = f", ADD CONSTRAINT {proposal}_chk CHECK ({column_offsetted} = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))"
 
     query = f"""
             ALTER TABLE IF EXISTS public.{prefix}_{name}
