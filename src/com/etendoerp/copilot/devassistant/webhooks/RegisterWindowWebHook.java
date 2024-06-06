@@ -34,10 +34,15 @@ public class RegisterWindowWebHook extends BaseWebhookService {
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, log);
     try {
+<<<<<<< HEAD
       //String tableId = parameter.get("TableID");
       String dbPrefix = parameter.get("DBPrefix");
       String name = parameter.get("Name");
       //String forceCreate = parameter.get("ForceCreate");
+=======
+      String dbPrefix = parameter.get("DBPrefix");
+      String name = parameter.get("Name");
+>>>>>>> feature/EML-528
       String description = parameter.get("Description");
       String helpComment = parameter.get("Help/Comment");
 
@@ -50,20 +55,29 @@ public class RegisterWindowWebHook extends BaseWebhookService {
       OBContext context = OBContext.getOBContext();
 
       Window window = createWindow(name, dataPackage, context, description, helpComment);
+<<<<<<< HEAD
 
       /*
       table.setWindow(window);
       OBDal.getInstance().save(table);
       tab = createTab(window, name, table, context, description, helpComment);
       */
+=======
+>>>>>>> feature/EML-528
 
       createMenuElem(context, window, description);
 
       OBDal.getInstance().flush();
 
+<<<<<<< HEAD
       String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");
       //responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), window.getName(), window.getId()));
       responseVars.put("message", window.getId());
+=======
+      String copdevWindowCreated = OBMessageUtils.messageBD("COPDEV_WindowCreated");
+      responseVars.put("message", String.format(copdevWindowCreated, window.getName(), window.getId()));
+
+>>>>>>> feature/EML-528
 
 
     } catch (Exception e) {
@@ -116,6 +130,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     OBDal.getInstance().save(window);
     return window;
   }
+<<<<<<< HEAD
   /*
   private Tab createTab(Window window, String name, Table table, OBContext context, String description, String helpComment) {
     Tab tab;
@@ -136,6 +151,8 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     OBDal.getInstance().save(tab);
     return tab;
   }*/
+=======
+>>>>>>> feature/EML-528
 
   private DataPackage getDataPackage(String dbPrefix) {
 
