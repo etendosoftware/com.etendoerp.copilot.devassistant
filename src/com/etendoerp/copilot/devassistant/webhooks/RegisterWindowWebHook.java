@@ -34,10 +34,8 @@ public class RegisterWindowWebHook extends BaseWebhookService {
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, log);
     try {
-      //String tableId = parameter.get("TableID");
       String dbPrefix = parameter.get("DBPrefix");
       String name = parameter.get("Name");
-      //String forceCreate = parameter.get("ForceCreate");
       String description = parameter.get("Description");
       String helpComment = parameter.get("Help/Comment");
 
@@ -51,19 +49,13 @@ public class RegisterWindowWebHook extends BaseWebhookService {
 
       Window window = createWindow(name, dataPackage, context, description, helpComment);
 
-      /*
-      table.setWindow(window);
-      OBDal.getInstance().save(table);
-      tab = createTab(window, name, table, context, description, helpComment);
-      */
-
       createMenuElem(context, window, description);
 
       OBDal.getInstance().flush();
 
-      String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");
-      //responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), window.getName(), window.getId()));
-      responseVars.put("message", window.getId());
+      String copdevWindowCreated = OBMessageUtils.messageBD("COPDEV_WindowCreated");
+      responseVars.put("message", String.format(copdevWindowCreated, window.getName(), window.getId()));
+
 
 
     } catch (Exception e) {
@@ -116,26 +108,6 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     OBDal.getInstance().save(window);
     return window;
   }
-  /*
-  private Tab createTab(Window window, String name, Table table, OBContext context, String description, String helpComment) {
-    Tab tab;
-    OBDal.getInstance().save(window);
-    tab = OBProvider.getInstance().get(Tab.class);
-    tab.setNewOBObject(true);
-    tab.setClient(context.getCurrentClient());
-    tab.setOrganization(context.getCurrentOrganization());
-    tab.setTable(table);
-    tab.setWindow(window);
-    tab.setUIPattern("STD");
-    tab.setSequenceNumber((long) 10);
-    tab.setModule(window.getModule());
-    tab.setDescription(description);
-    tab.setHelpComment(helpComment);
-    tab.setTabLevel((long) 0);
-    tab.setName(name + " Header");
-    OBDal.getInstance().save(tab);
-    return tab;
-  }*/
 
   private DataPackage getDataPackage(String dbPrefix) {
 

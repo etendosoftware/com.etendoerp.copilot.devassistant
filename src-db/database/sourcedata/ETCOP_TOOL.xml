@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-04 15:57:59.149]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-06 11:56:08.213]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -152,12 +152,12 @@
           "title": "Column Default Value"
         },
         "i_description": {
-          "description": "This is a description of the information that contains the field. Is a space to write additional related information. This can not be None, infer a description to add. Only used for REGISTER_TABLE and REGISTER_WINDOW and REGISTER_FIELDS mode.",
+          "description": "It is an explanation, in a detailed and orderly manner. Description serves primarily to set the scene and explain the meaning of the information contained in the field.This is a description of the information that contains the field. Is a space to write additional related information. This can not be None, infer a description to add. Only used for REGISTER_TABLE and REGISTER_WINDOW and REGISTER_FIELDS mode.",
           "title": "Description",
           "type": "string"
         },
         "i_help": {
-          "description": "This is a help for complete this register. It is a short explanation of the content the field musthave. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, REGISTER_WINDOW, and REGISTER_FIELDS mode.",
+          "description": "This field provides a more detailed and contextual explanation of the nature and purpose of the field in question. The description offers a broad overview of the meaning and importance of the field. It may include details on why certain information is collected, how it will be used, and any relevant additional considerations. It is a short explanation of the content the field musthave. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, REGISTER_WINDOW, and REGISTER_FIELDS mode.",
           "title": "Help",
           "type": "string"
         },
@@ -203,7 +203,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This parameter indicates the tab level in the structure, the main table has the tab level = 0. The rest of the tabs has bigger     levels, if a tab must be 'inside' other has a next tab level (a tab with tab level 3 is inside other tab with tab level 2).This parameter must not be null or None",
+          "description": "This parameter indicates the tab level in the structure, the main table has the tab level = 0. The rest of the tabs has bigger     levels, if a tab must be 'inside' other has a next tab level (a tab with tab level 3 is inside other tab with tab level 2).This parameter must not be null or None.Only used on REGISTER_TAB mode.",
           "enum": [
             "0",
             "1",
@@ -229,7 +229,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This parameter indicates if the table is a parent table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.",
+          "description": "This parameter indicates if the table is a parent table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.Only used on ADD_FOREIGN mode.",
           "title": "Parent Table"
         },
         "i_child_table": {
@@ -237,7 +237,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This parameter indicates if the table is a child table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.",
+          "description": "This parameter indicates if the table is a child table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.Only used on ADD_FOREIGN mode.",
           "title": "Child Table"
         },
         "i_window_id": {
@@ -245,8 +245,16 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This parameter is the id of the window previously created, is obtained in the RegisterWindowAndTab mode.This is used when a tab is registered. Only used on NewTab mode.",
+          "description": "This parameter is the id of the window previously created, is obtained in the REGISTER_WINDOWmode. This is used when a tab is registered. Only used on REGISTER_TAB mode.",
           "title": "WindowID"
+        },
+        "i_sequence_number": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates the tab sequence number, with a smaller number indicating that it is displayed further to the left.",
+          "title": "Sequence Number"
         }
       }
     }
