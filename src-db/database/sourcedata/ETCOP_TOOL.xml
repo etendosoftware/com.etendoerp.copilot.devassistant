@@ -7,11 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<<<<<<< HEAD
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-04 09:43:41.056]]></UPDATED>
-=======
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-06 11:56:08.213]]></UPDATED>
->>>>>>> feature/EML-528
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -21,7 +17,10 @@
   "type": "function",
   "function": {
     "name": "DDLTool",
-    "description": "This tool can register a table in Etendo, create tables on the data base and add specifics columns to a new table or a created table, also can register columns and create window in Etendo.",
+    "description": "The DDLTool is a versatile tool designed to facilitate the creation and management of tables, columns, and windows within a system. Its functionality is based on a series of operation modes, each intended to perform specific tasks within the database development process. These modes guide the user through key steps, from the initial registration of tables to terminology synchronization and detailed field and element management.
+                    The available modes in the DDLTool range from table registration to terminology synchronization and the addition of foreign keys. For each mode, clear instructions and options are provided to define essential parameters, such as table names, column descriptions, and tab levels. Additionally, the tool offers the flexibility to automatically generate certain values if the user does not provide them, thereby simplifying the development process.
+                    A highlight of the DDLTool is its ability to ensure consistency and organization in database design. For example, when adding columns or fields, detailed descriptions and help comments are requested, enhancing understanding and documentation of the system. Similarly, when registering tabs in windows, hierarchical levels are established to ensure intuitive navigation in the final interface.
+                    In addition to facilitating the initial creation of database structures, the DDLTool also focuses on maintaining consistency throughout the project lifecycle. Terminology synchronization modes allow for efficient updating of column labels and names, ensuring that the information presented in the user interface is accurate and up to date.",
     "parameters": {
       "type": "object",
       "properties": {
@@ -183,11 +182,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-<<<<<<< HEAD
-          "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS, REGISTER_WINDOW_AND_TAB, READ_ELEMENTS and WRITE_ELEMENTS.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW_AND_TAB, this is the ID of the table in the Application Dictionary.In the mode READ_ELEMENTS, this is the ID of the created table where the columns will be checked.In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment will be added.In the mode NEWTAB, this is the ID of the table will associated to the tab.",
-=======
           "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS, REGISTER_WINDOW, READ_ELEMENTS and WRITE_ELEMENTS.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW, this is the ID of the table in the Application Dictionary.In the mode READ_ELEMENTS, this is the ID of the created table where the columns will be checked.In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment will be added.In the mode REGISTER_TAB, this is the ID of the table will associated to the tab.",
->>>>>>> feature/EML-528
           "title": "Record ID"
         },
         "i_cleanTerminology": {
@@ -211,11 +206,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-<<<<<<< HEAD
-          "description": "This parameter indicates the tab level in the structure, the main table has the tab level = 0. The rest of the tabs has bigger tab levels, if a tab must be 'inside' other has a next tab level (a tab with tab level 3 is inside other tab with tab level 2).This parameter must not be null or None",
-=======
           "description": "This parameter indicates the tab level in the structure, the main table has the tab level = 0. The rest of the tabs has bigger     levels, if a tab must be 'inside' other has a next tab level (a tab with tab level 3 is inside other tab with tab level 2).This parameter must not be null or None.Only used on REGISTER_TAB mode.",
->>>>>>> feature/EML-528
           "enum": [
             "0",
             "1",
@@ -241,11 +232,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-<<<<<<< HEAD
-          "description": "This parameter indicates if the table is a parent table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.",
-=======
           "description": "This parameter indicates if the table is a parent table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.Only used on ADD_FOREIGN mode.",
->>>>>>> feature/EML-528
           "title": "Parent Table"
         },
         "i_child_table": {
@@ -253,11 +240,7 @@
             {"type": "string"},
             {"type": "null"}
           ],
-<<<<<<< HEAD
-          "description": "This parameter indicates if the table is a child table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.",
-=======
           "description": "This parameter indicates if the table is a child table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.Only used on ADD_FOREIGN mode.",
->>>>>>> feature/EML-528
           "title": "Child Table"
         },
         "i_window_id": {
@@ -265,10 +248,6 @@
             {"type": "string"},
             {"type": "null"}
           ],
-<<<<<<< HEAD
-          "description": "This parameter is the id of the window previously created, is obtained in the RegisterWindowAndTab mode.This is used when a tab is registered. Only used on NewTab mode.",
-          "title": "WindowID"
-=======
           "description": "This parameter is the id of the window previously created, is obtained in the REGISTER_WINDOWmode. This is used when a tab is registered. Only used on REGISTER_TAB mode.",
           "title": "WindowID"
         },
@@ -279,7 +258,6 @@
           ],
           "description": "This parameter indicates the tab sequence number, with a smaller number indicating that it is displayed further to the left.",
           "title": "Sequence Number"
->>>>>>> feature/EML-528
         }
       }
     }
