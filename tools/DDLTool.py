@@ -108,15 +108,10 @@ class DDLToolInput(BaseModel):
     )
     i_description: str = Field(
         title="Description",
-<<<<<<< HEAD
-        description="This is a description of the information that contains the field. Is a space to write additional "
-                    "related information. This can not be None, infer a description to add. "
-=======
         description="It is an explanation, in a detailed and orderly manner. Description serves primarily to set the "
                     "scene and explain the meaning of the information contained in the field.This is a description of "
                     "the information that contains the field. Is a space to write additional related information. "
                     "This can not be None, infer a description to add. "
->>>>>>> feature/EML-528
                     "Only used for REGISTER_TABLE and REGISTER_WINDOW and REGISTER_FIELDS mode."
     )
     i_help: str = Field(
@@ -154,22 +149,6 @@ class DDLToolInput(BaseModel):
                     "default modification of the terminology to remove the _ and add spaces. "
                     "Only used for SYNC_TERMINOLOGY mode."
     )
-<<<<<<< HEAD
-    i_forceCreate: Optional[bool] = Field(
-        title="Force Create",
-        description="This parameter indicates if the window and tab must be created even if it already exists. "
-                    "Only used for REGISTER_WINDOW mode. If not provided, the default value is False."
-    )
-
-    i_tabLevel: Optional[str] = Field(
-        title="Tab Level",
-        description="This parameter indicates the tab level in the structure, the main table has the tab level = 0. "
-                    "The rest of the tabs has bigger     levels, if a tab must be 'inside' other has a next tab level "
-                    "(a tab with tab level 3 is inside other tab with tab level 2)."
-                    "This parameter must not be null or None",
-        enum=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
-    )
-=======
 
     i_tabLevel: Optional[str] = Field(
         title="Tab Level",
@@ -180,23 +159,10 @@ class DDLToolInput(BaseModel):
                     "Only used on REGISTER_TAB mode.",
         enum=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
     )
->>>>>>> feature/EML-528
     i_parent_table: Optional[str] = Field(
         title="Parent Table",
         description="This parameter indicates if the table is a parent table of a foreign key. When a foreign key is "
                     "created point from a parent table to the id of a child table."
-<<<<<<< HEAD
-    )
-    i_child_table: Optional[str] = Field (
-        title="Child Table",
-        description="This parameter indicates if the table is a child table of a foreign key. When a foreign key is "
-                    "created point from a parent table to the id of a child table."
-    )
-    i_window_id: Optional[str] = Field (
-        title="WindowID",
-        description="This parameter is the id of the window previously created, is obtained in the RegisterWindowAndTab mode."
-                    "This is used when a tab is registered. Only used on NewTab mode."
-=======
                     "Only used on ADD_FOREIGN mode."
     )
     i_child_table: Optional[str] = Field(
@@ -214,7 +180,6 @@ class DDLToolInput(BaseModel):
         title="Sequence Number",
         description="This parameter indicates the tab sequence number, with a smaller number indicating that it is "
                     "displayed further to the left."
->>>>>>> feature/EML-528
     )
 
 
@@ -238,12 +203,8 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 
 
 available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
-<<<<<<< HEAD
-                   "REGISTER_WINDOW","REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS", "ADD_FOREIGN"]
-=======
                    "REGISTER_WINDOW", "REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS",
                    "ADD_FOREIGN"]
->>>>>>> feature/EML-528
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
@@ -479,12 +440,7 @@ def register_fields(etendo_host, access_token, record_id, description, help_comm
     return post_result
 
 
-<<<<<<< HEAD
-def register_window(etendo_host, access_token, prefix, name, force_create, description, help_comment):
-
-=======
 def register_window(etendo_host, access_token, prefix, name, description, help_comment):
->>>>>>> feature/EML-528
     fixed_name = name
     if "_" in name:
         fixed_name = name.replace("_", " ")
@@ -492,19 +448,10 @@ def register_window(etendo_host, access_token, prefix, name, description, help_c
         fixed_name = " ".join([word.capitalize() for word in fixed_name])
 
     webhook_name = "RegisterWindow"
-<<<<<<< HEAD
-    if force_create is None:
-        force_create = False
-    body_params = {
-        "DBPrefix": prefix,
-        "Name": fixed_name,
-        #"ForceCreate": force_create,
-=======
 
     body_params = {
         "DBPrefix": prefix,
         "Name": fixed_name,
->>>>>>> feature/EML-528
         "Description": description,
         "Help/Comment": help_comment
     }
@@ -568,34 +515,21 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
     return post_result
 
 
-<<<<<<< HEAD
-def register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment, record_id):
-
-=======
 def register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment, record_id,
                  sequence_number):
->>>>>>> feature/EML-528
     webhook_name = "RegisterTab"
     body_params = {
         "WindowID": window_id,
         "TabLevel": tab_level,
         "Description": description,
         "HelpComment": help_comment,
-<<<<<<< HEAD
-        "TableID": record_id
-=======
         "TableID": record_id,
         "SequenceNumber": sequence_number
->>>>>>> feature/EML-528
     }
 
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/EML-528
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
     description = ("This tool can register a table in Etendo, create tables on the data base and add specifics columns "
@@ -626,10 +560,7 @@ class DDLTool(ToolWrapper):
         # REGISTER TAB VARIABLES
         tab_level: str = input_params.get('i_tabLevel')
         window_id: str = input_params.get('i_window_id')
-<<<<<<< HEAD
-=======
         sequence_number: str = input_params.get('i_sequence_number')
->>>>>>> feature/EML-528
 
         # ADD_COLUMN VARIABLES
         column: str = input_params.get('i_column')
@@ -646,10 +577,6 @@ class DDLTool(ToolWrapper):
         record_id = input_params.get('i_record_id')
         clean_terminology = input_params.get('i_cleanTerminology')
 
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/EML-528
         # EXTRA INFO
         extra_info = ThreadContext.get_data('extra_info')
         if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
@@ -670,11 +597,7 @@ class DDLTool(ToolWrapper):
         elif mode == "SYNC_TERMINOLOGY":
             return sync_terminoloy(etendo_host, access_token, clean_terminology)
         elif mode == "REGISTER_WINDOW":
-<<<<<<< HEAD
-            return register_window(etendo_host, access_token, prefix, name, force_create, description, help_comment)
-=======
             return register_window(etendo_host, access_token, prefix, name, description, help_comment)
->>>>>>> feature/EML-528
         elif mode == "REGISTER_FIELDS":
             return register_fields(etendo_host, access_token, record_id, description, help_comment)
         elif mode == "CREATE_TABLE":
@@ -690,10 +613,6 @@ class DDLTool(ToolWrapper):
             return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column)
         elif mode == "REGISTER_TAB":
             return register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment,
-<<<<<<< HEAD
-                                record_id)
-=======
                                 record_id, sequence_number)
->>>>>>> feature/EML-528
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}

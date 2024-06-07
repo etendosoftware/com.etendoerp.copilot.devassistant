@@ -38,12 +38,13 @@ public class RegisterTabWebHook extends BaseWebhookService {
       String sequenceNumber = parameter.get("SequenceNumber");
 >>>>>>> feature/EML-528
 
+
       Table table = OBDal.getInstance().get(Table.class, tableId);
       if (table == null) {
         responseVars.put(ERROR_PROPERTY, String.format(OBMessageUtils.messageBD("COPDEV_TableNotFound"), tableId));
         return;
       }
-      String name = StringUtils.replace(table.getName(), "_", " ");
+      String name = table.getName().replace("_", " ");
 
       OBCriteria<Tab> tabCrit = OBDal.getInstance().createCriteria(Tab.class);
       tabCrit.add(Restrictions.eq(Tab.PROPERTY_TABLE + ".id", tableId));
