@@ -530,7 +530,6 @@ def register_tab(etendo_host, access_token, window_id, tab_level, description, h
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
     description = ("This tool can register a table in Etendo, create tables on the data base and add specifics columns "
@@ -577,7 +576,6 @@ class DDLTool(ToolWrapper):
         # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
         clean_terminology = input_params.get('i_cleanTerminology')
-
 
         # EXTRA INFO
         extra_info = ThreadContext.get_data('extra_info')
