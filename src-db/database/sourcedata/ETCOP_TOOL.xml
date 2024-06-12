@@ -1,5 +1,48 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <data>
+<!--69474550D5874F378D1B029B8989BAB3--><ETCOP_TOOL>
+<!--69474550D5874F378D1B029B8989BAB3-->  <ETCOP_TOOL_ID><![CDATA[69474550D5874F378D1B029B8989BAB3]]></ETCOP_TOOL_ID>
+<!--69474550D5874F378D1B029B8989BAB3-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--69474550D5874F378D1B029B8989BAB3-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--69474550D5874F378D1B029B8989BAB3-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--69474550D5874F378D1B029B8989BAB3-->  <CREATED><![CDATA[2024-06-10 15:54:37.008]]></CREATED>
+<!--69474550D5874F378D1B029B8989BAB3-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
+<!--69474550D5874F378D1B029B8989BAB3-->  <UPDATED><![CDATA[2024-06-10 16:29:28.341]]></UPDATED>
+<!--69474550D5874F378D1B029B8989BAB3-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
+<!--69474550D5874F378D1B029B8989BAB3-->  <VALUE><![CDATA[CreateReferencesTool]]></VALUE>
+<!--69474550D5874F378D1B029B8989BAB3-->  <NAME><![CDATA[CreateReferencesTool]]></NAME>
+<!--69474550D5874F378D1B029B8989BAB3-->  <DESCRIPTION><![CDATA[This tool creates a list reference in the Etendo Application Dictionary.]]></DESCRIPTION>
+<!--69474550D5874F378D1B029B8989BAB3-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--69474550D5874F378D1B029B8989BAB3-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "CreateReferencesTool",
+    "description": "This tool creates a list reference in the Etendo Application Dictionary.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "i_prefix": {
+          "description": "This is the prefix of the module in the database.",
+          "title": "Prefix",
+          "type": "string"
+        },
+        "i_name": {
+          "description": "This is the name of the reference.",
+          "title": "Name",
+          "type": "string"
+        },
+        "i_reference_list": {
+          "description": "Comma-separated list of reference items.",
+          "title": "Reference List",
+          "type": "string"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--69474550D5874F378D1B029B8989BAB3-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--69474550D5874F378D1B029B8989BAB3--></ETCOP_TOOL>
+
 <!--98D5929201084E2098A09C7A43530276--><ETCOP_TOOL>
 <!--98D5929201084E2098A09C7A43530276-->  <ETCOP_TOOL_ID><![CDATA[98D5929201084E2098A09C7A43530276]]></ETCOP_TOOL_ID>
 <!--98D5929201084E2098A09C7A43530276-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
@@ -7,17 +50,17 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-05-17 14:56:23.561]]></UPDATED>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[0]]></UPDATEDBY>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-10 16:20:34.099]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
-<!--98D5929201084E2098A09C7A43530276-->  <DESCRIPTION><![CDATA[This tool register a table on the AD_Table in Etendo.]]></DESCRIPTION>
+<!--98D5929201084E2098A09C7A43530276-->  <DESCRIPTION><![CDATA[This tool can register a table in Etendo, create tables on the data base and add specifics columns to a new table or a created table, also can register columns and create window in Etendo.]]></DESCRIPTION>
 <!--98D5929201084E2098A09C7A43530276-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--98D5929201084E2098A09C7A43530276-->  <JSON_STRUCTURE><![CDATA[{
   "type": "function",
   "function": {
     "name": "DDLTool",
-    "description": "This tool register a table on the AD_Table in Etendo.",
+    "description": "This tool can register a table in Etendo, create tables on the data base and add specifics columns to a new table or a created table, also can register columns and create window in Etendo.",
     "parameters": {
       "type": "object",
       "properties": {
