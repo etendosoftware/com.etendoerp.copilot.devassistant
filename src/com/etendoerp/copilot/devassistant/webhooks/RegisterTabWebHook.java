@@ -33,10 +33,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
       String description = parameter.get("Description");
       String helpComment = parameter.get("Help/Comment");
       String tableId = parameter.get("TableID");
-<<<<<<< HEAD
-=======
       String sequenceNumber = parameter.get("SequenceNumber");
->>>>>>> feature/EML-528
 
 
       Table table = OBDal.getInstance().get(Table.class, tableId);
@@ -68,11 +65,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
       window = OBDal.getInstance().get(Window.class, windowId);
       table.setWindow(window);
       OBDal.getInstance().save(table);
-<<<<<<< HEAD
-      tab = createTab(window, name, table, context, description, helpComment, tabLevel);
-=======
       tab = createTab(window, name, table, context, description, helpComment, tabLevel, sequenceNumber);
->>>>>>> feature/EML-528
 
       OBDal.getInstance().flush();
 
@@ -85,11 +78,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
     }
   }
 
-<<<<<<< HEAD
-  private Tab createTab(Window window, String name, Table table, OBContext context, String description, String helpComment, String tabLevel) {
-=======
   private Tab createTab(Window window, String name, Table table, OBContext context, String description, String helpComment, String tabLevel, String sequenceNumber) {
->>>>>>> feature/EML-528
     Tab tab;
     OBDal.getInstance().save(window);
     tab = OBProvider.getInstance().get(Tab.class);
@@ -99,11 +88,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
     tab.setTable(table);
     tab.setWindow(window);
     tab.setUIPattern("STD");
-<<<<<<< HEAD
-    tab.setSequenceNumber((long) 10);
-=======
     tab.setSequenceNumber(Long.parseLong(sequenceNumber));
->>>>>>> feature/EML-528
     tab.setModule(window.getModule());
     tab.setDescription(description);
     tab.setHelpComment(helpComment);
