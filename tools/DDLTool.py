@@ -50,7 +50,8 @@ class DDLToolInput(BaseModel):
                     "ADD_FOREIGN: This mode is useful to create a foreign key between two tables, a parent table and a "
                     "child table.",
         enum=['CREATE_TABLE', 'ADD_COLUMN', 'REGISTER_TABLE', 'REGISTER_COLUMNS', 'SYNC_TERMINOLOGY',
-              'REGISTER_WINDOW', 'REGISTER_TAB', 'REGISTER_FIELDS', 'READ_ELEMENTS', 'WRITE_ELEMENTS', 'ADD_FOREIGN']
+              'REGISTER_WINDOW', 'REGISTER_TAB', 'REGISTER_FIELDS', 'READ_ELEMENTS', 'WRITE_ELEMENTS', 'ADD_FOREIGN',
+              'GET_CONTEXT']
 
     )
     i_prefix: Optional[str] = Field(
@@ -67,8 +68,8 @@ class DDLToolInput(BaseModel):
                     "In the mode REGISTER_TABLE, this is the name of the table in the Etendo Application Dictionary."
                     "In the mode REGISTER_COLUMNS, this is the name of the table in the Etendo Application Dictionary."
                     "In the mode REGISTER_WINDOW, this is the name of the table in the Etendo Application "
-                    "Dictionary. For example, if the Table is PREFIX_Dogs, the name for the window and tab will be "
-                    "Dogs."
+                    "Dictionary. For example, if the Table is PREFIX_Dog, the name for the window and tab will be "
+                    "Dog."
     )
     i_classname: Optional[str] = Field(
         None,
@@ -143,7 +144,7 @@ class DDLToolInput(BaseModel):
                     "will be added."
                     "In the mode REGISTER_TAB, this is the ID of the table will associated to the tab."
     )
-    i_cleanTerminology: Optional[bool] = Field(
+    i_clean_terminology: Optional[bool] = Field(
         title="Clean Terminology",
         description="This parameter indicates if the terminology must be cleaned before the synchronization. This do a "
                     "default modification of the terminology to remove the _ and add spaces. "
@@ -161,15 +162,20 @@ class DDLToolInput(BaseModel):
     )
     i_parent_table: Optional[str] = Field(
         title="Parent Table",
-        description="This parameter indicates if the table is a parent table of a foreign key. When a foreign key is "
-                    "created point from a parent table to the id of a child table."
+        description="This parameter is the name in database (its own prefix and name) of the parent table of a foreign "
+                    "key. When a foreign key is created point from a parent table to the id of a child table."
                     "Only used on ADD_FOREIGN mode."
     )
     i_child_table: Optional[str] = Field(
         title="Child Table",
-        description="This parameter indicates if the table is a child table of a foreign key. When a foreign key is "
-                    "created point from a parent table to the id of a child table."
+        description="This parameter is the name in database (its own prefix and name) of the child table of a foreign "
+                    "key. When a foreign key is created point from a parent table to the id of a child table."
                     "Only used on ADD_FOREIGN mode."
+    )
+    i_parent_column: Optional[str] = Field(
+        title="Parent Column",
+        description="is defined as the name assigned to the column in the parent table that acts as a foreign key, "
+                    "establishing a relationship with the primary key of the child table."
     )
     i_window_id: Optional[str] = Field(
         title="WindowID",
@@ -181,7 +187,11 @@ class DDLToolInput(BaseModel):
         description="This parameter indicates the tab sequence number, with a smaller number indicating that it is "
                     "displayed further to the left."
     )
-
+    i_key_word: Optional[str] = Field(
+        title="Key Word",
+        description="This parameters indicates the element that is searched. Only used on GET_CONTEXT mode.",
+        enum=['table', 'window', 'tab']
+    )
 
 def _get_headers(access_token: Optional[str]) -> Dict:
     """
@@ -204,7 +214,7 @@ def _get_headers(access_token: Optional[str]) -> Dict:
 
 available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COLUMNS", "SYNC_TERMINOLOGY",
                    "REGISTER_WINDOW", "REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS",
-                   "ADD_FOREIGN"]
+                   "ADD_FOREIGN", "GET_CONTEXT"]
 
 
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
@@ -226,7 +236,7 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
 
 def get_const_name(prefix, name1: str, name2: str, suffix):
     # "name1" and "name2" are the names of the tables involved in the relationship of the constraint.
-    if name1.startswith(prefix + "_") or (name1.upper()).startswith(prefix + "_"):
+    if name1.startswith(prefix + "_") or (name1.upper()).startswith(prefix.upper() + "_"):
         name1 = name1[len(prefix) + 1:]
     if name2.startswith(prefix + "_") or (name2.upper()).startswith(prefix.upper() + "_"):
         name2 = name2[len(prefix) + 1:]
@@ -482,22 +492,28 @@ def write_elements(etendo_host, access_token, mode, record_id, description, help
     return post_result
 
 
-def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column):
-    if parent_table.startswith(prefix + "_") or (parent_table.upper()).startswith(prefix + "_"):
-        parent_table = parent_table[len(prefix) + 1:]
-    if child_table.startswith(prefix + "_") or (child_table.upper()).startswith(prefix.upper() + "_"):
-        child_table = child_table[len(prefix) + 1:]
-
+def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column, external):
     prefix = prefix.lower()
     parent_table = parent_table.lower()
     child_table = child_table.lower()
 
+    if parent_column is None or parent_column == "None":
+        parent_column = child_table
+
+    if parent_table.startswith(prefix + "_"):
+        parent_table = parent_table[len(prefix) + 1:]
+
     child_table_id = child_table + "_id"
 
-    constraint_fk = get_const_name(prefix, parent_table, child_table, 'fk')
+    if external or not child_table.startswith(prefix + "_"):
+        parent_column = "em_" + child_table_id
+        add_column(etendo_host, access_token, "ADD_COLUMN", prefix, parent_table, parent_column,
+                   "ID", None, False)
+
+    constraint_fk = get_const_name('em_' + prefix, parent_table, child_table, 'fk')
 
     query = f"""
-            ALTER TABLE IF EXISTS public.{parent_table}
+            ALTER TABLE IF EXISTS public.{prefix}_{parent_table}
                 ADD CONSTRAINT {constraint_fk} FOREIGN KEY ({parent_column})
                 REFERENCES public.{child_table} ({child_table_id}) MATCH SIMPLE
                 ON UPDATE NO ACTION
@@ -530,13 +546,38 @@ def register_tab(etendo_host, access_token, window_id, tab_level, description, h
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
+
+def get_context(etendo_host, access_token, mode, name, key_word):
+    query = f"SELECT ad_{key_word}_id FROM ad_{key_word} WHERE name ilike '%{name}%'"
+
+    webhook_name = "DDLHook"
+    body_params = {
+        "Mode": mode,
+        "Query": query,
+        "Element": key_word,
+        "Name": name
+    }
+
+    post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
+    return post_result
+
+
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
-    description = ("This tool can register a table in Etendo, create tables on the data base and add specifics columns "
-                   "to a new table or a created table, also can register columns and create window in Etendo.")
+    description = ("This tool can register tables, windows and tabs in Etendo, create tables on the data base and add"
+                   "specifics columns to a new table or a created table, also can register columns and create window"
+                   "in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management of"
+                   "tables, columns, and windows within a system. Its functionality is based on a series of operation"
+                   "modes, each intended to perform specific tasks within the database development process. These modes"
+                   "guide the user through key steps, from the initial registration of tables to terminology "
+                   "synchronization and detailed field and element management."
+                   "The available modes in the DDLTool range from table registration to terminology synchronization and"
+                   "the addition of foreign keys. For each mode, clear instructions and options are provided to define"
+                   "essential parameters, such as table names, column descriptions, and tab levels. Additionally, the"
+                   "tool offers the flexibility to automatically generate certain values if the user does not provide.")
     args_schema: Type[BaseModel] = DDLToolInput
 
-    def run(self, input_params: Dict, *args, **kwargs):
+    def run(self, input_params: dict, *args, **kwargs):
         # read the parameters
         mode = input_params.get('i_mode')
 
@@ -569,13 +610,15 @@ class DDLTool(ToolWrapper):
         can_be_null: bool = input_params.get('i_can_be_null')
 
         # ADD_FOREIGN VARIABLES
-        parent_table: str = input_params.get('i_parentTable')
-        child_table: str = input_params.get('i_childTable')
-        parent_column: str = input_params.get('i_parentColumn')
+        parent_table: str = input_params.get('i_parent_table')
+        child_table: str = input_params.get('i_child_table')
+        parent_column: str = input_params.get('i_parent_column')
+        external: bool = input_params.get('i_external')
 
         # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
-        clean_terminology = input_params.get('i_cleanTerminology')
+        clean_terminology = input_params.get('i_clean_terminology')
+        key_word = input_params.get('i_key_word')
 
         # EXTRA INFO
         extra_info = ThreadContext.get_data('extra_info')
@@ -610,9 +653,12 @@ class DDLTool(ToolWrapper):
         elif mode == "WRITE_ELEMENTS":
             return write_elements(etendo_host, access_token, mode, record_id, description, help_comment)
         elif mode == "ADD_FOREIGN":
-            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column)
+            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column,
+                               external)
         elif mode == "REGISTER_TAB":
             return register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment,
                                 record_id, sequence_number)
+        elif mode == "GET_CONTEXT":
+            return get_context(etendo_host, access_token, mode, name, key_word)
         else:
             return {"error": "Wrong Mode. Available modes are " + str(available_modes)}

@@ -22,6 +22,7 @@ import org.openbravo.model.ad.ui.Menu;
 import org.openbravo.model.ad.ui.Window;
 import org.openbravo.model.ad.utility.Tree;
 import org.openbravo.model.ad.utility.TreeNode;
+import org.quartz.SimpleTrigger;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
@@ -29,6 +30,8 @@ public class RegisterWindowWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
+  public static final String windowType = "M";
+  public static final String menuSetAction = "W";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -40,6 +43,10 @@ public class RegisterWindowWebHook extends BaseWebhookService {
       String helpComment = parameter.get("Help/Comment");
 
       DataPackage dataPackage = getDataPackage(dbPrefix);
+
+      if (name.startsWith(dbPrefix)) {
+        name = name.substring(dbPrefix.length());
+      }
 
       //check that the name has the first letter in uppercase
       if (!Character.isUpperCase(name.charAt(0))) {
@@ -85,7 +92,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     menu.setWindow(window);
     menu.setSummaryLevel(false);
     menu.setActive(true);
-    menu.setAction("W");
+    menu.setAction(menuSetAction);
     menu.setOpenlinkinbrowser(false);
     menu.setModule(window.getModule());
     menu.setDescription(description);
@@ -101,7 +108,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     window.setOrganization(context.getCurrentOrganization());
     window.setName(name);
     window.setModule(dataPackage.getModule());
-    window.setWindowType("M");
+    window.setWindowType(windowType);
     window.setSalesTransaction(true);
     window.setDescription(description);
     window.setHelpComment(helpComment);

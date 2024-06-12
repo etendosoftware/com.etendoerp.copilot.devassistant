@@ -23,9 +23,11 @@ public class RegisterTabWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
+  public static final String STD = "STD";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
+
     logExecutionInit(parameter, log);
     try {
       String windowId = parameter.get("WindowID");
@@ -87,7 +89,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
     tab.setOrganization(context.getCurrentOrganization());
     tab.setTable(table);
     tab.setWindow(window);
-    tab.setUIPattern("STD");
+    tab.setUIPattern(STD);
     tab.setSequenceNumber(Long.parseLong(sequenceNumber));
     tab.setModule(window.getModule());
     tab.setDescription(description);
