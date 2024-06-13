@@ -1,4 +1,4 @@
-feature/EML-528package com.etendoerp.copilot.devassistant.webhooks;
+package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
