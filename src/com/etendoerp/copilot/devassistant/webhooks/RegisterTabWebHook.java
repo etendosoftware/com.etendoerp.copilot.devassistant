@@ -23,15 +23,17 @@ public class RegisterTabWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
+  public static final String STD = "STD";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
+
     logExecutionInit(parameter, log);
     try {
       String windowId = parameter.get("WindowID");
       String tabLevel = parameter.get("TabLevel");
       String description = parameter.get("Description");
-      String helpComment = parameter.get("Help/Comment");
+      String helpComment = parameter.get("HelpComment");
       String tableId = parameter.get("TableID");
       String sequenceNumber = parameter.get("SequenceNumber");
 
@@ -70,7 +72,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
       OBDal.getInstance().flush();
 
       String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");
-      responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), window.getName()));
+      responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), tab.getTabLevel(), tab.getTable().getName(), window.getName()));
 
     } catch (Exception e) {
       OBDal.getInstance().rollbackAndClose();
@@ -87,7 +89,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
     tab.setOrganization(context.getCurrentOrganization());
     tab.setTable(table);
     tab.setWindow(window);
-    tab.setUIPattern("STD");
+    tab.setUIPattern(STD);
     tab.setSequenceNumber(Long.parseLong(sequenceNumber));
     tab.setModule(window.getModule());
     tab.setDescription(description);

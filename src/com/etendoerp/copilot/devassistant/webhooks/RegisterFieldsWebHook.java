@@ -28,6 +28,9 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
     logExecutionInit(parameter, log);
     try {
       String tabID = parameter.get("WindowTabID");
+      String helpComment = parameter.get("HelpComment");
+      String description = parameter.get("Description");
+
       Tab tab = OBDal.getInstance().get(Tab.class, tabID);
 
       if (tab == null) {
@@ -43,6 +46,8 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
       fields.stream()
           .filter(field -> !field.getColumn().isKeyColumn())
           .forEach(field -> {
+            field.setHelpComment(helpComment);
+            field.setDescription(description);
             field.setShowInGridView(true);
             if (field.getName() != null) {
               field.setName(StringUtils.replace(field.getName(), "_", " "));

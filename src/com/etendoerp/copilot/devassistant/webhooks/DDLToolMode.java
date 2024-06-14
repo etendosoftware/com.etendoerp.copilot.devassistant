@@ -5,6 +5,10 @@ package com.etendoerp.copilot.devassistant.webhooks;
  */
 public class DDLToolMode {
 
+  private DDLToolMode(){
+
+  }
+
   /**
    * Constant representing the "CREATE_TABLE" mode, used to create a new table.
    */
@@ -29,4 +33,9 @@ public class DDLToolMode {
    * Constant representing the "ADD_FOREIGN" mode, used to add a foreign key constraint to a table.
    */
   public static final String ADD_FOREIGN = "ADD_FOREIGN";
+
+  /**
+   * Constant representing the "GET_CONTEXT" mode, used to retrieve the context information.
+   */
+  public static final String GET_CONTEXT = "GET_CONTEXT";
 }
