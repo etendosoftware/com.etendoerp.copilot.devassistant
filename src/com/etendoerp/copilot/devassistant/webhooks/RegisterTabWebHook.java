@@ -33,7 +33,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
       String windowId = parameter.get("WindowID");
       String tabLevel = parameter.get("TabLevel");
       String description = parameter.get("Description");
-      String helpComment = parameter.get("Help/Comment");
+      String helpComment = parameter.get("HelpComment");
       String tableId = parameter.get("TableID");
       String sequenceNumber = parameter.get("SequenceNumber");
 
@@ -72,7 +72,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
       OBDal.getInstance().flush();
 
       String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");
-      responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), window.getName()));
+      responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), tab.getTabLevel(), tab.getTable().getName(), window.getName()));
 
     } catch (Exception e) {
       OBDal.getInstance().rollbackAndClose();

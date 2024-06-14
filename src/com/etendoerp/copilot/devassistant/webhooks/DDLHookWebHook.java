@@ -32,6 +32,7 @@ public class DDLHookWebHook extends BaseWebhookService {
     String mode = parameter.get("Mode");
     String query = parameter.get("Query");
     String name = parameter.get("Name");
+    String element = parameter.get("Element");
 
     Connection conn = OBDal.getInstance().getConnection();
 

@@ -40,7 +40,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
       String dbPrefix = parameter.get("DBPrefix");
       String name = parameter.get("Name");
       String description = parameter.get("Description");
-      String helpComment = parameter.get("Help/Comment");
+      String helpComment = parameter.get("HelpComment");
 
       DataPackage dataPackage = getDataPackage(dbPrefix);
 

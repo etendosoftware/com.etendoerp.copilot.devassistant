@@ -193,6 +193,7 @@ class DDLToolInput(BaseModel):
         enum=['table', 'window', 'tab']
     )
 
+
 def _get_headers(access_token: Optional[str]) -> Dict:
     """
     This method generates headers for an HTTP request.
@@ -444,7 +445,7 @@ def register_fields(etendo_host, access_token, record_id, description, help_comm
     body_params = {
         "WindowTabID": record_id,
         "Description": description,
-        "Help/Comment": help_comment
+        "HelpComment": help_comment
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
@@ -463,7 +464,7 @@ def register_window(etendo_host, access_token, prefix, name, description, help_c
         "DBPrefix": prefix,
         "Name": fixed_name,
         "Description": description,
-        "Help/Comment": help_comment
+        "HelpComment": help_comment
     }
 
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
@@ -492,25 +493,31 @@ def write_elements(etendo_host, access_token, mode, record_id, description, help
     return post_result
 
 
-def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column, external):
+def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, external):
+    if prefix is None or prefix == "None":
+        prefix = parent_table.split("_")[0]
+
     prefix = prefix.lower()
     parent_table = parent_table.lower()
     child_table = child_table.lower()
-
-    if parent_column is None or parent_column == "None":
-        parent_column = child_table
 
     if parent_table.startswith(prefix + "_"):
         parent_table = parent_table[len(prefix) + 1:]
 
     child_table_id = child_table + "_id"
 
+    add_column(etendo_host, access_token, "ADD_COLUMN", prefix, parent_table, child_table_id, "ID", None, False)
+
+    parent_column = child_table_id
+
     if external or not child_table.startswith(prefix + "_"):
         parent_column = "em_" + child_table_id
         add_column(etendo_host, access_token, "ADD_COLUMN", prefix, parent_table, parent_column,
                    "ID", None, False)
+        prefix = "em_" + prefix
 
-    constraint_fk = get_const_name('em_' + prefix, parent_table, child_table, 'fk')
+    constraint_fk = get_const_name(prefix, parent_table, child_table, 'fk')
+    register_columns(etendo_host, access_token, prefix, parent_table)
 
     query = f"""
             ALTER TABLE IF EXISTS public.{prefix}_{parent_table}
@@ -548,8 +555,10 @@ def register_tab(etendo_host, access_token, window_id, tab_level, description, h
 
 
 def get_context(etendo_host, access_token, mode, name, key_word):
+
     query = f"SELECT ad_{key_word}_id FROM ad_{key_word} WHERE name ilike '%{name}%'"
 
+    key_word = key_word.upper()
     webhook_name = "DDLHook"
     body_params = {
         "Mode": mode,
@@ -586,7 +595,7 @@ class DDLTool(ToolWrapper):
         if prefix is not None:
             prefix = prefix.upper()
 
-        name = input_params.get('i_name')
+        name: str = input_params.get('i_name')
         if name is not None:
             name = name.replace(" ", "_")
 
@@ -653,8 +662,7 @@ class DDLTool(ToolWrapper):
         elif mode == "WRITE_ELEMENTS":
             return write_elements(etendo_host, access_token, mode, record_id, description, help_comment)
         elif mode == "ADD_FOREIGN":
-            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, parent_column,
-                               external)
+            return add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, external)
         elif mode == "REGISTER_TAB":
             return register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment,
                                 record_id, sequence_number)

@@ -7,7 +7,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-12 10:04:06.548]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-12 14:41:37.197]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
@@ -262,25 +262,13 @@
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "This parameters indicates the element that is searched.",
+          "description": "This parameters indicates the element that is searched. Only used on GET_CONTEXT mode.",
           "enum": [
             "table",
             "window",
             "tab"
           ],
           "title": "Key Word"
-        },
-        "i_element": {
-          "anyOf": [
-            {"type": "string"},
-            {"type": "null"}
-          ],
-          "description": "This parameter indicates what is being searched for the read_elements mode. Only used in READ_ELEMENTS mode",
-          "enum": [
-            "TAB",
-            "COLUMN"
-          ],
-          "title": "Element"
         }
       }
     }
