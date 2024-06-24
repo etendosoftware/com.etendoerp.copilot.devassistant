@@ -74,7 +74,7 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
       logIfDebug(log,column.getName());
       logIfDebug(log,element.getName());
 
-      responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_Help&DescriptionAdded"), column.getName()));
+      responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_Help&DescriptionAdded"), column.getName(), element.getName(), element.getPrintText()));
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());

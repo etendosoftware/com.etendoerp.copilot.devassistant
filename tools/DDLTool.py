@@ -113,16 +113,16 @@ class DDLToolInput(BaseModel):
                     "scene and explain the meaning of the information contained in the field.This is a description of "
                     "the information that contains the field. Is a space to write additional related information. "
                     "This can not be None, infer a description to add. "
-                    "Only used for REGISTER_TABLE and REGISTER_WINDOW and REGISTER_FIELDS mode."
+                    "Only used for REGISTER_TABLE, REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode."
     )
     i_help: str = Field(
         title="Help",
-        description="This field provides a more detailed and contextual explanation of the nature and purpose of the "
+        description="This field provides a more detailed and contextual explanation of the use and purpose of the "
                     "field in question. The description offers a broad overview of the meaning and importance of the "
                     "field. It may include details on why certain information is collected, how it will be used, and "
                     "any relevant additional considerations. It is a short explanation of the content the field must"
                     "have. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, "
-                    "REGISTER_WINDOW, and REGISTER_FIELDS mode.",
+                    "REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode.",
     )
     i_data_access_level: str = Field(
         default="3",
