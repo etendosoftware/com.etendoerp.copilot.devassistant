@@ -501,28 +501,27 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
     parent_table = parent_table.lower()
     child_table = child_table.lower()
 
-    if parent_table.startswith(prefix + "_"):
-        parent_table = parent_table[len(prefix) + 1:]
+    if child_table.startswith(prefix + "_"):
+        child_table = child_table[len(prefix) + 1:]
 
-    child_table_id = child_table + "_id"
+    parent_table_id = parent_table + "_id"
+    parent_column = parent_table_id
 
-    add_column(etendo_host, access_token, "ADD_COLUMN", prefix, parent_table, child_table_id, "ID", None, False)
-
-    parent_column = child_table_id
-
-    if external or not child_table.startswith(prefix + "_"):
-        parent_column = "em_" + child_table_id
+    if external or not parent_table.startswith(prefix + "_"):
+        parent_column = "em_" + parent_column
         add_column(etendo_host, access_token, "ADD_COLUMN", prefix, parent_table, parent_column,
                    "ID", None, False)
         prefix = "em_" + prefix
+    else:
+        add_column(etendo_host, access_token, "ADD_COLUMN", prefix, child_table, parent_table_id, "ID", None, False)
 
-    constraint_fk = get_const_name(prefix, parent_table, child_table, 'fk')
-    register_columns(etendo_host, access_token, prefix, parent_table)
+    constraint_fk = get_const_name(prefix, child_table, parent_table, 'fk')
+    register_columns(etendo_host, access_token, prefix, child_table)
 
     query = f"""
-            ALTER TABLE IF EXISTS public.{prefix}_{parent_table}
+            ALTER TABLE IF EXISTS public.{prefix}_{child_table}
                 ADD CONSTRAINT {constraint_fk} FOREIGN KEY ({parent_column})
-                REFERENCES public.{child_table} ({child_table_id}) MATCH SIMPLE
+                REFERENCES public.{parent_table} ({parent_table_id}) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION;
             """
@@ -621,7 +620,6 @@ class DDLTool(ToolWrapper):
         # ADD_FOREIGN VARIABLES
         parent_table: str = input_params.get('i_parent_table')
         child_table: str = input_params.get('i_child_table')
-        parent_column: str = input_params.get('i_parent_column')
         external: bool = input_params.get('i_external')
 
         # WEBHOOK DATA
