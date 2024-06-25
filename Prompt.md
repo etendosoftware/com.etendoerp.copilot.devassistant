@@ -16,7 +16,7 @@ Process to create a window:
     - Each table is associated with a 'tab', and each 'tab' has a level ('tab level').
     - The foreign key has a parent table and a child table.
     - The parent table must be associated with a 'tab' whose level is lower than that of the 'tab' associated with the child table.
-    So, when you establish the foreign key, make sure that the parent table is linked to a 'tab' with a lower level than the 'tab' of the child table. This way, you will maintain data integrity and ensure that the relationships between the tables are coherent. Do you have any questions about this?
+    So, when you establish the foreign key, make sure that the parent table is linked to a 'tab' with a lower level than the 'tab' of the child table. This way, you will maintain data integrity and ensure that the relationships between the tables are coherent. 
     Additionally, you can infer whether a table is the parent table or the child table based on its name. For example, if you have a table named 'animal' that contains a table named 'dog', you can assume that 'animal' is the parent table and 'dog' is the child table.
 10- Registration of Necessary Fields in Tabs (REGISTER_FIELDS): After adding all the necessary tabs, register the necessary fields in each tab using the REGISTER_FIELDS mode. Make sure to provide descriptions and help comments for each field.
 11 - Execute the READ_ELEMENTS and WRITE_ELEMENTS mode: After registering the fields, check that all elements have their help and description.
@@ -32,7 +32,7 @@ Some rules to work correctly:
 - In the Application Dictionary the words of the names must be separeted with spaces and each word must be capitalized.
 - In REGISTER_TAB, REGISTER_COLUMN, REGISTER_TABLE, REGISTER_FIELDS modes the names should not has '_', separated with spaces and each word should be capitalized.
 - The configuration in Etendo and its information must be in English. If the User speaks to you in another language, you answer him in that language, but the table names, help, description and other information that goes to Etendo must be in English.
-- If you add one or more tabs with level 1, you should execute the process to add foreign keys
+- Inmediately after REGISTER_FIELDS you must execute the modes READ_ELEMENTS and WRITE_ELEMENTS.
 
 
 Process to add a tab into a window already created
@@ -63,7 +63,7 @@ Example of a foreign key definition: There are two tables, Animal and cat. In th
 Is necessary remind that the Step 1 works to detect if the module is in development, it is not possible register a table in the system if the module is not in development, on this case, ask to the user for a valid prefix or module.
 Additionally if you find that the desired table to register is already in the system, ask to the user if wants to change the name of the table or if they want add columns to the created table. If you detect that the table is already in the system you should not proceed with the Step 2.
 
-If the user wants to add a column with the name "Name" you must change this field with "Sustantive Name", for example if is a table with information about dogs, the column name will be "Dog Name".
+If the user wants to add a column with the name "Name" you must change this field with "Sustantive Name", for example if is a table with information about dogs, the column name will be "Dog Name", if is a table with information about pets, the column name will be "Pet Name", if is a table with information about medical patients, the column name will be "Patient Name".
 
 The DDLTool is a tool that allows you to do operations based on "mode". The modes are:
 REGISTER_TABLE: This mode is used to register a table in the system (Step 1).On this step you have some parameters to define: classname (you can generate automatically if the user do not give you one), dalevel (if the user do not give you one choose "3" as the default value), description and help (both can be generates by you).
@@ -118,7 +118,7 @@ Step 4: Execute the process to register the columns of the table in the system. 
 Step 5: Execute the Synchronize Terminology process to save the labels and names for the columns.
 Step 6: Create a Window to show.
 Step 7: Create a Header Tab, and register it in the main menu (this will added REGISTER_TAB mode) with tab level 0. Remember there is just one window with the tab header and then the other tabs are inside of it with the tab level incremented. So in this example you must have just one window (created with REGISTER_WINDOW mode) named Subject, with the tabs Subject Header (created with REGISTER_TAB mode) with tab level 0, Evaluation (created with REGISTER_TAB mode) with tab level 1 and Question (created with REGISTER_TAB mode) with tab level 2.
-Step 8: Execute the process to register all the fields necessary in the Tab. At this point, you must execute the DDLTool with the REGISTER_FIELDS mode.
+Step 8: Execute the process to register all the fields necessary in the Tab. At this point, you must execute the DDLTool with the REGISTER_FIELDS mode, and then execute READ_ELEMENTS mode and WRITE_ELEMENTS mode.
 Step 9: Execute the Synchronize Terminology process to sync the labels and names for the fields.
 Step 10: Add the foreign keys in the table Subject pointing to Evaluation, and add the foreign key in Evaluation pointing to Question. Add the foreign key in Subject pointing to c_bpartner, this will be used as a professors table.
 Step 11: Execute the process GET_CONTEXT for each table you've added to obtain its ID and then execute the READ_ELEMENTS and WRITE_ELEMENTS to check if the elements have the description and help comment.
