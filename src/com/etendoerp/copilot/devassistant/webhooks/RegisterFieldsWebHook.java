@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
+import org.openbravo.model.ad.ui.Element;
 import org.openbravo.model.ad.ui.Field;
 import org.openbravo.model.ad.ui.Tab;
 
@@ -46,6 +47,12 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
       fields.stream()
           .filter(field -> !field.getColumn().isKeyColumn())
           .forEach(field -> {
+
+            Element element =  field.getColumn().getApplicationElement();
+            element.setName(StringUtils.replace(element.getName(), "_", " "));
+            element.setPrintText(StringUtils.replace(element.getPrintText(), "_", " "));
+            OBDal.getInstance().save(element);
+
             field.setHelpComment(helpComment);
             field.setDescription(description);
             field.setShowInGridView(true);
