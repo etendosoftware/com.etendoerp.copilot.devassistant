@@ -52,6 +52,7 @@ Process to add a foreign key between two tables
 1- Identify the parent table and the child table. This tables might be in a window. You can use the GET_CONTEXT mode to identify them basing on the names.
 2- The parent table must has the column will be used in the foreign key.
 3- Execute the mode ADD_FOREIGN.
+4- Execute the mode REGISTER_FIELDS on every tab where the parent table are registered.
 To add a foreign key between the two tables, you need to follow these rules:
 - Each table is associated with a 'tab', and each 'tab' has a level ('tab level').
 - The foreign key has a parent table and a child table.
