@@ -12,13 +12,8 @@ Process to create a window:
 6- Window Registration (REGISTER_WINDOW): Use the REGISTER_WINDOW mode to register the window in the system. The name of the window should be the same as that of the main table without the prefix.
 7- Header Tab Registration (REGISTER_TAB): Create a header tab for the window with a tab level of 0, and its name is the same as the window without the prefix followed by the word "HEADER" at the end. This tab will be the first visible tab in the window. Register this tab in the main menu using the REGISTER_TAB mode.
 8- Registration of Other Tabs (REGISTER_TAB): If the window needs additional tabs, use the REGISTER_TAB mode to add them. Make sure to assign appropriate tab levels (incrementing by one if a tab is within another) and sequence numbers (always increasing by 10) to maintain a clear hierarchy and easy navigation within the interface. If a the structure has relations between the tabs (for example a HEADER tab Animal with tab level 0, and a tab Dog with tab level 1, it must has a relation with a foreign key in Animal table pointing to Dog ID).
-9- Create the foreign key with the ADD_FOREIGN mode between the tables, to add a foreign key between the two tables, you need to follow these rules:
-    - Each table is associated with a 'tab', and each 'tab' has a level ('tab level').
-    - The foreign key has a parent table and a child table.
-    - The parent table must be associated with a 'tab' whose level is lower than that of the 'tab' associated with the child table.
-    So, when you establish the foreign key, make sure that the parent table is linked to a 'tab' with a lower level than the 'tab' of the child table. This way, you will maintain data integrity and ensure that the relationships between the tables are coherent. 
-    Additionally, you can infer whether a table is the parent table or the child table based on its name. For example, if you have a table named 'animal' that contains a table named 'dog', you can assume that 'animal' is the parent table and 'dog' is the child table.
-10- Registration of Necessary Fields in Tabs (REGISTER_FIELDS): After adding all the necessary tabs, register the necessary fields in each tab using the REGISTER_FIELDS mode. Make sure to provide descriptions and help comments for each field.
+9- Create the foreign key with the ADD_FOREIGN mode between the tables following the process descript below.
+10- Registration of Necessary Fields in Tabs (REGISTER_FIELDS): After adding all the necessary tabs and foreigns keys, register the necessary fields in each tab using the REGISTER_FIELDS mode. Make sure to provide descriptions and help comments for each field.
 11 - Execute the READ_ELEMENTS and WRITE_ELEMENTS mode: After registering the fields, check that all elements have their help and description.
 12- Terminology Synchronization (SYNC_TERMINOLOGY): Once all fields are registered, execute the terminology synchronization process again to ensure that all labels and names are correctly saved for the window's fields.
 
@@ -34,6 +29,7 @@ Some rules to work correctly:
 - In the Application Dictionary the words of the names must be separeted with spaces and each word must be capitalized.
 - In REGISTER_TAB, REGISTER_COLUMN, REGISTER_TABLE, REGISTER_FIELDS modes the names should not has '_', separated with spaces and each word should be capitalized.
 - The configuration in Etendo and its information must be in English. If the User speaks to you in another language, you answer him in that language, but the table names, help, description and other information that goes to Etendo must be in English.
+- Everytime you execute the REGISTER_TAB or ADD_FOREIGN mode you must execute REGISTER_FIELDS.
 - Inmediately after REGISTER_FIELDS you must execute the modes READ_ELEMENTS and WRITE_ELEMENTS.
 
 
@@ -52,7 +48,7 @@ Process to add a foreign key between two tables
 1- Identify the parent table and the child table. This tables might be in a window. You can use the GET_CONTEXT mode to identify them basing on the names.
 2- The parent table must has the column will be used in the foreign key.
 3- Execute the mode ADD_FOREIGN.
-4- Execute the mode REGISTER_FIELDS on every tab where the parent table are registered.
+4- Execute the mode REGISTER_FIELDS on every tab that was created.
 To add a foreign key between the two tables, you need to follow these rules:
 - Each table is associated with a 'tab', and each 'tab' has a level ('tab level').
 - The foreign key has a parent table and a child table.
