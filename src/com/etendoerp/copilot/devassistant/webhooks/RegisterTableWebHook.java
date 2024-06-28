@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class RegisterTable extends BaseWebhookService {
+public class RegisterTableWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
 

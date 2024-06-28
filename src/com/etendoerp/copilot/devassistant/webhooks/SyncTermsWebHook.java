@@ -36,7 +36,7 @@ public class SyncTermsWebHook extends BaseWebhookService {
       } else {
         responseVars.put("error", textResponse);
       }
-      if (!(parameter.get("cleanTerms") != null && StringUtils.equalsIgnoreCase(parameter.get("cleanTerms"), "true"))) {
+      if (!(parameter.get("CleanTerms") != null && StringUtils.equalsIgnoreCase(parameter.get("CleanTerms"), "true"))) {
         return;
       }
       OBCriteria<Module> modCrit = OBDal.getInstance().createCriteria(Module.class);
@@ -49,8 +49,8 @@ public class SyncTermsWebHook extends BaseWebhookService {
           Restrictions.eq(Element.PROPERTY_DBCOLUMNNAME, Element.PROPERTY_PRINTTEXT)));
       List<Element> elemList = elemCrit.list();
       for (Element element : elemList) {
-        element.setName(StringUtils.replaceChars(element.getName(), "_", ""));
-        element.setPrintText(StringUtils.replaceChars(element.getPrintText(), "_", ""));
+        element.setName(StringUtils.replaceChars(StringUtils.capitalize(element.getName()), "_", " "));
+        element.setPrintText(StringUtils.replaceChars(StringUtils.capitalize(element.getPrintText()), "_", " "));
         OBDal.getInstance().save(element);
       }
       OBDal.getInstance().flush();
