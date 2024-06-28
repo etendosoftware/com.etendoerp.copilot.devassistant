@@ -509,21 +509,59 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
 
     if external or not parent_table.startswith(prefix + "_"):
         parent_column = "em_" + parent_column
-        add_column(etendo_host, access_token, "ADD_COLUMN", prefix, parent_table, parent_column,
-                   "ID", None, False)
         prefix = "em_" + prefix
-    else:
-        add_column(etendo_host, access_token, "ADD_COLUMN", prefix, child_table, parent_table_id, "ID", None, False)
+
+    add_column(etendo_host, access_token, "ADD_COLUMN", prefix, child_table, parent_column, "ID", None, False)
 
     constraint_fk = get_const_name(prefix, child_table, parent_table, 'fk')
     register_columns(etendo_host, access_token, prefix, child_table)
 
     query = f"""
-            ALTER TABLE IF EXISTS public.{prefix}_{child_table}
-                ADD CONSTRAINT {constraint_fk} FOREIGN KEY ({parent_column})
-                REFERENCES public.{parent_table} ({parent_table_id}) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION;
+            DO $$
+            DECLARE
+                foreign_key_exists BOOLEAN;
+            BEGIN
+                -- Verificar si la relación de clave foránea ya existe
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM pg_constraint c
+                    JOIN pg_class t ON c.conrelid = t.oid
+                    JOIN pg_namespace n ON t.relnamespace = n.oid
+                    JOIN pg_class r ON c.confrelid = r.oid
+                    WHERE c.contype = 'f' -- Restricciones de clave foránea
+                    AND t.relname = '{prefix}_{child_table}'
+                    AND r.relname = '{parent_table}'
+                    AND c.conkey = ARRAY(SELECT attnum
+                                         FROM pg_attribute
+                                         WHERE attrelid = t.oid
+                                         AND attname = '{parent_column}')
+                    AND c.confkey = ARRAY(SELECT attnum
+                                          FROM pg_attribute
+                                          WHERE attrelid = r.oid
+                                          AND attname = '{parent_table_id}')
+                ) INTO foreign_key_exists;
+            
+                -- Si la clave foránea ya existe, ejecutar solo la actualización
+                IF foreign_key_exists THEN
+                    UPDATE ad_column
+                    SET isparent = 'Y'
+                    WHERE name ILIKE '{parent_column}'
+                    AND isupdateable = 'Y';
+                ELSE
+                    -- Si la clave foránea no existe, ejecutar la actualización y agregar la restricción
+                    UPDATE ad_column
+                    SET isparent = 'Y'
+                    WHERE name ILIKE '{parent_column}'
+                    AND isupdateable = 'Y';
+            
+                    ALTER TABLE IF EXISTS public.{prefix}_{child_table}
+                    ADD CONSTRAINT {constraint_fk} FOREIGN KEY ({parent_column})
+                    REFERENCES public.{parent_table} ({parent_table_id}) MATCH SIMPLE
+                    ON UPDATE NO ACTION
+                    ON DELETE NO ACTION;
+                END IF;
+            END $$;
+
             """
 
     webhook_name = "DDLHook"
@@ -621,6 +659,7 @@ class DDLTool(ToolWrapper):
         parent_table: str = input_params.get('i_parent_table')
         child_table: str = input_params.get('i_child_table')
         external: bool = input_params.get('i_external')
+
 
         # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
