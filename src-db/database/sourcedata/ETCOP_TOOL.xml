@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data>
+<!--98D5929201084E2098A09C7A43530276--><ETCOP_TOOL>
+<!--98D5929201084E2098A09C7A43530276-->  <ETCOP_TOOL_ID><![CDATA[98D5929201084E2098A09C7A43530276]]></ETCOP_TOOL_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
+<!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-06-27 14:28:14.77]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[0]]></UPDATEDBY>
+<!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
+<!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
+<!--98D5929201084E2098A09C7A43530276-->  <DESCRIPTION><![CDATA[This tool can register tables, windows and tabs in Etendo, create tables on the data base and addspecifics columns to a new table or a created table, also can register columns and create windowin Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management oftables, columns, and windows within a system. Its functionality is based on a series of operationmodes, each intended to perform specific tasks within the database development process. These modesguide the user through key steps, from the initial registration of tables to terminology synchronization and detailed field and element management.The available modes in the DDLTool range from table registration to terminology synchronization andthe addition of foreign keys. For each mode, clear instructions and options are provided to defineessential parameters, such as table names, column descriptions, and tab levels. Additionally, thetool offers the flexibility to automatically generate certain values if the user does not provide.]]></DESCRIPTION>
+<!--98D5929201084E2098A09C7A43530276-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--98D5929201084E2098A09C7A43530276-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "DDLTool",
+    "description": "This tool can register tables, windows and tabs in Etendo, create tables on the data base and addspecifics columns to a new table or a created table, also can register columns and create windowin Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management oftables, columns, and windows within a system. Its functionality is based on a series of operationmodes, each intended to perform specific tasks within the database development process. These modesguide the user through key steps, from the initial registration of tables to terminology synchronization and detailed field and element management.The available modes in the DDLTool range from table registration to terminology synchronization andthe addition of foreign keys. For each mode, clear instructions and options are provided to defineessential parameters, such as table names, column descriptions, and tab levels. Additionally, thetool offers the flexibility to automatically generate certain values if the user does not provide.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "i_mode": {
+          "description": "This parameter indicates what want to do the user. The available modes are: CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the table with default columns (the ones that are always present in the tables of the Etendo Application).ADD_COLUMN: This mode works adding a specific column to a created table.REGISTER_TABLE: Register a table in the Etendo Application Dictionary to be recognized for it.REGISTER_COLUMNS: Register the columns of a table in the Etendo Application Dictionary, to be recognized for it. It works incrementally, so if the table columns are already registered, it will not be duplicated and the new columns will be added.SYNC_TERMINOLOGY: Synchronize the terminology of the Etendo Application Dictionary with the correct names.REGISTER_WINDOW: Register a window and tab in the Etendo Application Dictionary, to show the table data in the application. This Mode requires the parameter prefix and name.It checks if there exists a window with the name for the table, if not, it creates it. If the window already exists, it will not be duplicated.REGISTER_TAB: Register a tab on a window previously created, this mode need the window_id providedfor the RegisterWindow mode, and the RecordId that is the table ID will be added.REGISTER_FIELDS: Register the fields of a tab in the Etendo Application Dictionary, to be recognized for it.It works incrementally, so if the fields are already registered, it will not be duplicated and the new fields will be added.READ_ELEMENTS: Check if the record has a description and help comment.WRITE_ELEMENTS: Set the description and help comment in the columns that do not have.ADD_FOREIGN: This mode is useful to create a foreign key between two tables, a parent table and a child table.",
+          "enum": [
+            "CREATE_TABLE",
+            "ADD_COLUMN",
+            "REGISTER_TABLE",
+            "REGISTER_COLUMNS",
+            "SYNC_TERMINOLOGY",
+            "REGISTER_WINDOW",
+            "REGISTER_TAB",
+            "REGISTER_FIELDS",
+            "READ_ELEMENTS",
+            "WRITE_ELEMENTS",
+            "ADD_FOREIGN",
+            "GET_CONTEXT"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "i_prefix": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the prefix of the module in database. Only used for CREATE_TABLE, REGISTER_TABLE and REGISTER_COLUMNS",
+          "title": "Prefix"
+        },
+        "i_name": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the name of the table, this construct the database name adding the prefix before a '_'.Only used for CREATE_TABLE, REGISTER_TABLE, REGISTER_COLUMNS and REGISTER_WINDOW mode.In the mode CREATE_TABLE, this is the name of the table in the database.In the mode REGISTER_TABLE, this is the name of the table in the Etendo Application Dictionary.In the mode REGISTER_COLUMNS, this is the name of the table in the Etendo Application Dictionary.In the mode REGISTER_WINDOW, this is the name of the table in the Etendo Application Dictionary. For example, if the Table is PREFIX_Dog, the name for the window and tab will be Dog.",
+          "title": "Name"
+        },
+        "i_classname": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "description": "This is the java class name associated to the table, if this is not provided will be generated automatically. Only used for REGISTER_TABLE mode.",
+          "title": "ClassName"
+        },
+        "i_column": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the column name to be added to a created table. Only used for ADD_COLUMN mode.",
+          "title": "Column Name"
+        },
+        "i_column_type": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the type of column, it depends of what information the user wants to add to the column. Only used for ADD_COLUMN mode.",
+          "enum": [
+            "Absolute DateTime",
+            "Absolute Time",
+            "Amount",
+            "Assignment",
+            "Binary",
+            "Button",
+            "Button List",
+            "Color",
+            "Date",
+            "DateTime",
+            "DateTime_From (Date)",
+            "DateTime_To (Date)",
+            "General Quantity",
+            "ID",
+            "Image",
+            "Image BLOB",
+            "Integer",
+            "Link",
+            "List",
+            "Masked String",
+            "Memo",
+            "Non Transactional Sequence",
+            "Number",
+            "OBKMO_Widget in Form Reference",
+            "OBUISEL_Multi Selector Reference",
+            "OBUISEL_SelectorAsLink Reference",
+            "OBUISEL_Selector Reference",
+            "Password (decryptable)",
+            "Password (not decryptable)",
+            "PAttribute",
+            "Price",
+            "Product Characteristics",
+            "Quantity",
+            "Rich Text Area",
+            "RowID",
+            "Search",
+            "Search Vector",
+            "String",
+            "Table",
+            "TableDir",
+            "Text",
+            "Time",
+            "Transactional Sequence",
+            "Tree Reference",
+            "Window Reference",
+            "YesNo"
+          ],
+          "title": "Column Type"
+        },
+        "i_can_be_null": {
+          "anyOf": [
+            {"type": "boolean"},
+            {"type": "null"}
+          ],
+          "description": "This is a column attribute that signalize if the column can be null or not. Only used for ADD_COLUMN mode.",
+          "title": "Can Be Null"
+        },
+        "i_default_value": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "description": "This is a default value for the column, this stay None if the user does not specific a default value. Only used for ADD_COLUMN mode.",
+          "enum": [
+            "'Y'::bpchar",
+            "'N'::bpchar",
+            "now()",
+            "0"
+          ],
+          "title": "Column Default Value"
+        },
+        "i_description": {
+          "description": "It is an explanation, in a detailed and orderly manner. Description serves primarily to set the scene and explain the meaning of the information contained in the field.This is a description of the information that contains the field. Is a space to write additional related information. This can not be None, infer a description to add. Only used for REGISTER_TABLE, REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode.",
+          "title": "Description",
+          "type": "string"
+        },
+        "i_help": {
+          "description": "This field provides a more detailed and contextual explanation of the use and purpose of the field in question. The description offers a broad overview of the meaning and importance of the field. It may include details on why certain information is collected, how it will be used, and any relevant additional considerations. It is a short explanation of the content the field musthave. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode.",
+          "title": "Help",
+          "type": "string"
+        },
+        "i_data_access_level": {
+          "default": "3",
+          "description": "This is the level for access to data, this is a number that represents the role can access to data. Only used for REGISTER_TABLE mode.",
+          "enum": [
+            "1",
+            "3",
+            "4",
+            "6",
+            "7"
+          ],
+          "title": "Data Access Level",
+          "type": "string"
+        },
+        "i_record_id": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This is the record ID of the element to process in the Mode. This ID is a string with 32 characters in Hexadecimal format. Only used for REGISTER_FIELDS, REGISTER_WINDOW, READ_ELEMENTS and WRITE_ELEMENTS.In the mode REGISTER_FIELDS, this is the ID of tab in the Application Dictionary (This id must be returned by the REGISTER_WINDOW mode).In the mode REGISTER_WINDOW, this is the ID of the table in the Application Dictionary.In the mode READ_ELEMENTS, this is the ID of the created table where the columns will be checked.In the mode WRITE_ELEMENTS, this is the ID of each column where the description and help comment will be added.In the mode REGISTER_TAB, this is the ID of the table will associated to the tab.",
+          "title": "Record ID"
+        },
+        "i_clean_terminology": {
+          "anyOf": [
+            {"type": "boolean"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates if the terminology must be cleaned before the synchronization. This do a default modification of the terminology to remove the _ and add spaces. Only used for SYNC_TERMINOLOGY mode.",
+          "title": "Clean Terminology"
+        },
+        "i_tabLevel": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates the tab level in the structure, the main table has the tab level = 0. The rest of the tabs has bigger     levels, if a tab must be 'inside' other has a next tab level (a tab with tab level 3 is inside other tab with tab level 2).This parameter must not be null or None.Only used on REGISTER_TAB mode.",
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+          ],
+          "title": "Tab Level"
+        },
+        "i_parent_table": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter is the name in database (its own prefix and name) of the parent table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.Only used on ADD_FOREIGN mode.",
+          "title": "Parent Table"
+        },
+        "i_child_table": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter is the name in database (its own prefix and name) of the child table of a foreign key. When a foreign key is created point from a parent table to the id of a child table.Only used on ADD_FOREIGN mode.",
+          "title": "Child Table"
+        },
+        "i_parent_column": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "is defined as the name assigned to the column in the parent table that acts as a foreign key, establishing a relationship with the primary key of the child table.",
+          "title": "Parent Column"
+        },
+        "i_window_id": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter is the id of the window previously created, is obtained in the REGISTER_WINDOWmode. This is used when a tab is registered. Only used on REGISTER_TAB mode.",
+          "title": "WindowID"
+        },
+        "i_sequence_number": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameter indicates the tab sequence number, with a smaller number indicating that it is displayed further to the left.",
+          "title": "Sequence Number"
+        },
+        "i_key_word": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "This parameters indicates the element that is searched. Only used on GET_CONTEXT mode.",
+          "enum": [
+            "table",
+            "window",
+            "tab"
+          ],
+          "title": "Key Word"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--98D5929201084E2098A09C7A43530276-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--98D5929201084E2098A09C7A43530276--></ETCOP_TOOL>
+
+</data>

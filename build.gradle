@@ -1,6 +1,6 @@
 /**
 *   This file was generated automatically by the 'createModuleBuild' task.
-*   Created at: 2023-10-04T18:32:00.568197Z.
+*   Created at: 2024-05-03T14:12:17.952101Z.
 *
 *   WARNING: Do not put your credentials directly in this file.
 *
@@ -8,7 +8,7 @@
 
 group          = "com.etendoerp"
 version        = "1.0.0"
-description    = "This Module includes tools and wizards to allow the developer to add Columns and fields through Copilot."
+description    = "Developer's assistant for Copilot"
 ext.artifact   = "copilot.devassistant"
 ext.repository = "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
 
@@ -18,7 +18,7 @@ configurations {
 
 publishing {
     publications {
-        "com.etendoerp.copilot.copilot.devassistant"(MavenPublication) {
+        "com.etendoerp.copilot.devassistant"(MavenPublication) {
             from components.java
             groupId    = group
             artifactId = artifact
@@ -37,6 +37,15 @@ repositories {
     maven {
         url "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
     }
+    maven {
+        url "https://repo.futit.cloud/repository/maven-releases"
+    }
+    maven {
+        url "https://repo.futit.cloud/repository/maven-public-releases"
+    }
+    maven {
+        url "https://repo.futit.cloud/repository/maven-public-jars"
+    }
 }
 
 /**
@@ -44,5 +53,7 @@ repositories {
 * Ex: implementation "com.sun.mail:javax.mail:1.6.2"
 */
 dependencies {
+    implementation('com.etendoerp:copilot:1.2.6')
+    implementation('com.etendoerp:webhookevents:1.8.0')
 
 }
