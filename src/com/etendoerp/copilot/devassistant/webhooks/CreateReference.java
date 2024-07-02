@@ -17,7 +17,7 @@ import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Class to create references through webhook services.
