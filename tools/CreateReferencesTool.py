@@ -23,6 +23,18 @@ class CreateReferencesInput(BaseModel):
         description="Comma-separated list of reference items."
     )
 
+    i_help: Optional[str] = Field(
+        title="Help",
+        description="Help text for the reference.",
+        default=None
+    )
+
+    i_description: Optional[str] = Field(
+        title="Description",
+        description="Description of the reference.",
+        default=None
+    )
+
 def _get_headers(access_token: Optional[str]) -> Dict[str, str]:
     headers = {}
     if access_token:
@@ -55,6 +67,8 @@ class CreateReferencesTool(ToolWrapper):
         prefix = input_params.get('i_prefix', "").upper()
         name = input_params.get('i_name', "").replace(" ", "_")
         reference_list = input_params.get('i_reference_list', "")
+        help_text = input_params.get('i_help', "")
+        description = input_params.get('i_description', "")
 
         extra_info = ThreadContext.get_data('extra_info')
         if not extra_info or not extra_info.get('auth') or not extra_info.get('auth').get('ETENDO_TOKEN'):
@@ -70,7 +84,9 @@ class CreateReferencesTool(ToolWrapper):
         body_params = {
             "Prefix": prefix,
             "NameReference": name,
-            "ReferenceList": reference_list
+            "ReferenceList": reference_list,
+            "Help": help_text,
+            "Description": description
         }
 
         post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)

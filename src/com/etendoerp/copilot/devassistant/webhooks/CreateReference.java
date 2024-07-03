@@ -16,15 +16,13 @@ import org.openbravo.model.ad.domain.List;
 import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
-import org.apache.commons.lang.StringUtils;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Class to create references through webhook services.
  * This class handles the creation of references and their items.
- * Requires the parameters: referenceList, prefix, and nameReference.
+ * Requires the parameters: referenceList, prefix, nameReference, help, and description.
  */
 public class CreateReference extends BaseWebhookService {
 
@@ -42,8 +40,10 @@ public class CreateReference extends BaseWebhookService {
       String list = parameter.get("ReferenceList");
       String prefix = parameter.get("Prefix");
       String name = parameter.get("NameReference");
+      String help = parameter.get("Help");
+      String description = parameter.get("Description");
 
-      Reference newReference = createReference(name, prefix);
+      Reference newReference = createReference(name, prefix, help, description);
       createReferenceListItems(list, newReference);
 
       OBDal.getInstance().flush();
@@ -69,14 +69,22 @@ public class CreateReference extends BaseWebhookService {
     if (StringUtils.isBlank(parameter.get("NameReference"))) {
       throw new IllegalArgumentException("NameReference parameter is missing");
     }
+    if (StringUtils.isBlank(parameter.get("Help"))) {
+      throw new IllegalArgumentException("Help parameter is missing");
+    }
+    if (StringUtils.isBlank(parameter.get("Description"))) {
+      throw new IllegalArgumentException("Description parameter is missing");
+    }
   }
 
-  private Reference createReference(String name, String prefix) {
+  private Reference createReference(String name, String prefix, String help, String description) {
     Reference newReference = OBProvider.getInstance().get(Reference.class);
     newReference.setNewOBObject(true);
     newReference.setName(name);
     newReference.setModule(getModuleByPrefix(prefix));
     newReference.setParentReference(OBDal.getInstance().get(Reference.class, DEFAULT_PARENT_REFERENCE_ID));
+    newReference.setHelpComment(help);
+    newReference.setDescription(description);
     OBDal.getInstance().save(newReference);
     return newReference;
   }
