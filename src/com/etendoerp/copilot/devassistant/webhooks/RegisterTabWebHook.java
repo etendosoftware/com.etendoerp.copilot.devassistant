@@ -21,36 +21,37 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 public class RegisterTabWebHook extends BaseWebhookService {
 
-  private static final Logger log = LogManager.getLogger();
+  private static final String WINDOW_ID = "WindowID";
+  private static final String TAB_LEVEL = "TabLevel";
+  private static final String DESCRIPTION = "Description";
+  private static final String HELP_COMMENT = "HelpComment";
+  private static final String TABLE_ID = "TableID";
+  private static final String SEQUENCE_NUMBER = "SequenceNumber";
+  private static final Logger LOG = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
   public static final String STD = "STD";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
 
-    logExecutionInit(parameter, log);
+    logExecutionInit(parameter, LOG);
     try {
-      String windowId = parameter.get("WindowID");
-      String tabLevel = parameter.get("TabLevel");
-      String description = parameter.get("Description");
-      String helpComment = parameter.get("HelpComment");
-      String tableId = parameter.get("TableID");
-      String sequenceNumber = parameter.get("SequenceNumber");
 
+      String windowId = parameter.get(WINDOW_ID);
+      String tabLevel = parameter.get(TAB_LEVEL);
+      String description = parameter.get(DESCRIPTION);
+      String helpComment = parameter.get(HELP_COMMENT);
+      String tableId = parameter.get(TABLE_ID);
+      String sequenceNumber = parameter.get(SEQUENCE_NUMBER);
 
       Table table = OBDal.getInstance().get(Table.class, tableId);
-      String prefix = table.getDBTableName().split("_")[0];
-      if (table == null) {
-        responseVars.put(ERROR_PROPERTY, String.format(OBMessageUtils.messageBD("COPDEV_TableNotFound"), tableId));
-        return;
-      }
+
       String name = table.getName().replace("_", " ");
 
       OBCriteria<Tab> tabCrit = OBDal.getInstance().createCriteria(Tab.class);
       tabCrit.add(Restrictions.eq(Tab.PROPERTY_TABLE + ".id", tableId));
       Tab tab = (Tab) tabCrit.setMaxResults(1).uniqueResult();
       Window window;
-
 
       if (tab != null) {
         window = tab.getWindow();
@@ -59,6 +60,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
             String.format(copdevTabAlreadyExists, tab.getName(), tab.getId(), window.getName()));
         return;
       }
+
       //check that the name has the first letter in uppercase
       if (!Character.isUpperCase(name.charAt(0))) {
         name = Character.toUpperCase(name.charAt(0)) + StringUtils.substring(name, 1);
@@ -68,7 +70,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
       window = OBDal.getInstance().get(Window.class, windowId);
       table.setWindow(window);
       OBDal.getInstance().save(table);
-      tab = createTab(window, name, table, context, description, helpComment, tabLevel, sequenceNumber, prefix);
+      tab = createTab(window, name, table, context, description, helpComment, tabLevel, sequenceNumber);
 
       OBDal.getInstance().flush();
 
@@ -82,7 +84,7 @@ public class RegisterTabWebHook extends BaseWebhookService {
   }
 
   private Tab createTab(Window window, String name, Table table, OBContext context, String description,
-      String helpComment, String tabLevel, String sequenceNumber, String prefix) {
+      String helpComment, String tabLevel, String sequenceNumber) {
     Tab tab;
     OBDal.getInstance().save(window);
     tab = OBProvider.getInstance().get(Tab.class);
@@ -97,10 +99,6 @@ public class RegisterTabWebHook extends BaseWebhookService {
     tab.setDescription(description);
     tab.setHelpComment(helpComment);
     tab.setTabLevel(Long.parseLong(tabLevel));
-
-    /*if (StringUtils.startsWith(name, prefix)) {
-      name = name.substring(prefix.length()+1);
-    }*/
 
     if (Long.parseLong(tabLevel) == 0) {
       tab.setName(name + " Header");

@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
-import org.hibernate.query.Query;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
@@ -19,20 +18,24 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 public class DDLHookWebHook extends BaseWebhookService {
 
-  private static final Logger log = LogManager.getLogger();
-  private static final String message = "message";
+  private static final String QUERY_EXECUTED = "QueryExecuted";
+  private static final String COLUMNS = "Columns";
+  private static final String DATA = "Data";
+
+  private static final Logger LOG = LogManager.getLogger();
+  private static final String MESSAGE = "message";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    log.info("Executing process");
+    LOG.info("Executing process");
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
-      log.info("Parameter: " + entry.getKey() + " = " + entry.getValue());
+      LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
     String mode = parameter.get("Mode");
     String query = parameter.get("Query");
     String name = parameter.get("Name");
-    String element = parameter.get("Element");
+
 
     Connection conn = OBDal.getInstance().getConnection();
 
@@ -43,11 +46,11 @@ public class DDLHookWebHook extends BaseWebhookService {
       name = getDefaultName(mode, name);
 
       if (StringUtils.equals(mode, DDLToolMode.CREATE_TABLE)) {
-        responseVars.put(message, String.format(OBMessageUtils.messageBD("COPDEV_TableCreationSucc"), name));
+        responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_TableCreationSucc"), name));
       } else if (StringUtils.equals(mode, DDLToolMode.ADD_COLUMN)) {
-        responseVars.put(message, String.format(OBMessageUtils.messageBD("COPDEV_ColumnAddedSucc"), name));
+        responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_ColumnAddedSucc"), name));
       } else if (StringUtils.equals(mode, DDLToolMode.ADD_FOREIGN)) {
-        responseVars.put(message, String.format(OBMessageUtils.messageBD("COPDEV_ForeignAddedSucc"), name));
+        responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_ForeignAddedSucc"), name));
       } else if (StringUtils.equals(mode, DDLToolMode.GET_CONTEXT)) {
           ResultSet result = statement.executeQuery();
           //we will return the result as a JSON object
@@ -66,9 +69,9 @@ public class DDLHookWebHook extends BaseWebhookService {
             }
             data.put(row);
           }
-          responseVars.put("QueryExecuted", query);
-          responseVars.put("Columns", columns.toString());
-          responseVars.put("Data", data.toString());
+          responseVars.put(QUERY_EXECUTED, query);
+          responseVars.put(COLUMNS, columns.toString());
+          responseVars.put(DATA, data.toString());
       }
 
     } catch (Exception e) {
@@ -77,7 +80,7 @@ public class DDLHookWebHook extends BaseWebhookService {
   }
 
   private String getDefaultName(String mode, String name) {
-    if (name == null) {
+    if (StringUtils.isNotBlank(name)) {
       if (StringUtils.equals(mode, DDLToolMode.CREATE_TABLE)) {
         return String.format(OBMessageUtils.messageBD("COPDEV_DefaultTableName"));
       } else if (StringUtils.equals(mode, DDLToolMode.ADD_COLUMN)) {

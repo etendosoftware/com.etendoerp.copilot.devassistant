@@ -49,8 +49,16 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
           .forEach(field -> {
 
             Element element =  field.getColumn().getApplicationElement();
-            element.setName(StringUtils.replace(element.getName(), "_", " "));
-            element.setPrintText(StringUtils.replace(element.getPrintText(), "_", " "));
+            String elementName = element.getName();
+            String elementPrinTxt = element.getPrintText();
+            if (StringUtils.isBlank(elementName)) {
+              elementName = field.getColumn().getName();
+            }
+            if (StringUtils.isBlank(elementPrinTxt)) {
+              elementPrinTxt = field.getColumn().getName();
+            }
+            element.setName(StringUtils.replace(elementName, "_", " "));
+            element.setPrintText(StringUtils.replace(elementPrinTxt, "_", " "));
             OBDal.getInstance().save(element);
 
             field.setHelpComment(helpComment);
