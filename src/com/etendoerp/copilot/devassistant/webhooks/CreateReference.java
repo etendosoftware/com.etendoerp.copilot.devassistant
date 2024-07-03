@@ -39,9 +39,9 @@ public class CreateReference extends BaseWebhookService {
     try {
       validateParameters(parameter);
 
-      String list = parameter.get("referenceList");
-      String prefix = parameter.get("prefix");
-      String name = parameter.get("nameReference");
+      String list = parameter.get("ReferenceList");
+      String prefix = parameter.get("Prefix");
+      String name = parameter.get("NameReference");
 
       Reference newReference = createReference(name, prefix);
       createReferenceListItems(list, newReference);
@@ -60,14 +60,14 @@ public class CreateReference extends BaseWebhookService {
   }
 
   private void validateParameters(Map<String, String> parameter) {
-    if (StringUtils.isBlank(parameter.get("referenceList"))) {
-      throw new IllegalArgumentException("referenceList parameter is missing");
+    if (StringUtils.isBlank(parameter.get("ReferenceList"))) {
+      throw new IllegalArgumentException("ReferenceList parameter is missing");
     }
-    if (StringUtils.isBlank(parameter.get("prefix"))) {
-      throw new IllegalArgumentException("prefix parameter is missing");
+    if (StringUtils.isBlank(parameter.get("Prefix"))) {
+      throw new IllegalArgumentException("Prefix parameter is missing");
     }
-    if (StringUtils.isBlank(parameter.get("nameReference"))) {
-      throw new IllegalArgumentException("nameReference parameter is missing");
+    if (StringUtils.isBlank(parameter.get("NameReference"))) {
+      throw new IllegalArgumentException("NameReference parameter is missing");
     }
   }
 

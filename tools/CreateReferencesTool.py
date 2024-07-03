@@ -44,9 +44,9 @@ def call_webhook(access_token: Optional[str], body_params: Dict, url: str, webho
         copilot_debug(post_result.text)
         return {"error": post_result.text}
 
-class CreateReferences(ToolWrapper):
+class CreateReferencesTool(ToolWrapper):
     """This tool creates a list reference in the Etendo Application Dictionary."""
-    name = 'CreateReferences'
+    name = 'CreateReferencesTool'
     description = "Creates a list reference in the Etendo Application Dictionary."
     args_schema: Type[BaseModel] = CreateReferencesInput
 
@@ -63,18 +63,14 @@ class CreateReferences(ToolWrapper):
                              " the Entity."}
 
         access_token = extra_info.get('auth').get('ETENDO_TOKEN')
-        etendo_host = utils.read_optional_env_var("ETENDO_HOST", "https://host.docker.internal:8080/etendo")
-
-        if not etendo_host.startswith("https://"):
-            raise ValueError("The ETENDO_HOST must use HTTPS protocol for secure communication.")
-
+        etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 
         webhook_name = "CreateReference"
         body_params = {
-            "prefix": prefix,
-            "nameReference": name,
-            "referenceList": reference_list
+            "Prefix": prefix,
+            "NameReference": name,
+            "ReferenceList": reference_list
         }
 
         post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
