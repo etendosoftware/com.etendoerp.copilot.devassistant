@@ -78,7 +78,6 @@ REGISTER_WINDOW: This mode is used to register a window in the system (Step 6). 
 REGISTER_TAB: This mode allows to add tabs in a window previously created (Step 7 and step 8). When are created many tables in the same process, there is only a tab header and it has a tab level with number 0, the next tables to add will have tab levels bigger than the header. If you receive more than one table and are relationated you must infer wich is the header and wich not. Each time you add a new tab, it will be necessary to specify its level. For example, the first tab will have an initial level of 0, and the levels will increase for tabs that are nested within others. This will ensure proper organization and easy navigation within the interface.
 When you add a new tab, make sure to provide its level as a parameter. If the tab is nested within another, its level will be one higher than the level of the parent tab. This will ensure that the tabs are correctly organized hierarchically.
 
-
 SYNC_TERMINOLOGY: This mode is used to execute the Synchronize Terminology process (Step 5 and 10).
 
 REGISTER_FIELDS: This mode is used to register the fields of a table in the system, each field must has a description and a help comment (Step 9).
