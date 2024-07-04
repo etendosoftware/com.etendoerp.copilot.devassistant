@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
@@ -15,14 +16,13 @@ import org.openbravo.model.ad.domain.List;
 import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
-import org.apache.commons.lang.StringUtils;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 /**
  * Class to create references through webhook services.
  * This class handles the creation of references and their items.
- * Requires the parameters: referenceList, prefix, and nameReference.
+ * Requires the parameters: referenceList, prefix, nameReference, help, and description.
  */
 public class CreateReference extends BaseWebhookService {
 
@@ -37,11 +37,13 @@ public class CreateReference extends BaseWebhookService {
     try {
       validateParameters(parameter);
 
-      String list = parameter.get("referenceList");
-      String prefix = parameter.get("prefix");
-      String name = parameter.get("nameReference");
+      String list = parameter.get("ReferenceList");
+      String prefix = parameter.get("Prefix");
+      String name = parameter.get("NameReference");
+      String help = parameter.get("Help");
+      String description = parameter.get("Description");
 
-      Reference newReference = createReference(name, prefix);
+      Reference newReference = createReference(name, prefix, help, description);
       createReferenceListItems(list, newReference);
 
       OBDal.getInstance().flush();
@@ -58,23 +60,31 @@ public class CreateReference extends BaseWebhookService {
   }
 
   private void validateParameters(Map<String, String> parameter) {
-    if (StringUtils.isBlank(parameter.get("referenceList"))) {
-      throw new IllegalArgumentException("referenceList parameter is missing");
+    if (StringUtils.isBlank(parameter.get("ReferenceList"))) {
+      throw new IllegalArgumentException("ReferenceList parameter is missing");
     }
-    if (StringUtils.isBlank(parameter.get("prefix"))) {
-      throw new IllegalArgumentException("prefix parameter is missing");
+    if (StringUtils.isBlank(parameter.get("Prefix"))) {
+      throw new IllegalArgumentException("Prefix parameter is missing");
     }
-    if (StringUtils.isBlank(parameter.get("nameReference"))) {
-      throw new IllegalArgumentException("nameReference parameter is missing");
+    if (StringUtils.isBlank(parameter.get("NameReference"))) {
+      throw new IllegalArgumentException("NameReference parameter is missing");
+    }
+    if (StringUtils.isBlank(parameter.get("Help"))) {
+      throw new IllegalArgumentException("Help parameter is missing");
+    }
+    if (StringUtils.isBlank(parameter.get("Description"))) {
+      throw new IllegalArgumentException("Description parameter is missing");
     }
   }
 
-  private Reference createReference(String name, String prefix) {
+  private Reference createReference(String name, String prefix, String help, String description) {
     Reference newReference = OBProvider.getInstance().get(Reference.class);
     newReference.setNewOBObject(true);
     newReference.setName(name);
     newReference.setModule(getModuleByPrefix(prefix));
     newReference.setParentReference(OBDal.getInstance().get(Reference.class, DEFAULT_PARENT_REFERENCE_ID));
+    newReference.setHelpComment(help);
+    newReference.setDescription(description);
     OBDal.getInstance().save(newReference);
     return newReference;
   }
