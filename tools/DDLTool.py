@@ -619,17 +619,18 @@ def validate_extra_info():
 
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
-    description = ("This tool can register tables, windows, and tabs in Etendo, create tables in the database, and add "
-                   "specific columns to a new or existing table. It can also register columns and create windows in "
-                   "Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management of "
-                   "tables, columns, and windows within a system. Its functionality is based on a series of operation "
-                   "modes, each intended to perform specific tasks within the database development process. These "
-                   "modes guide the user through key steps, from the initial registration of tables to terminology "
-                   "synchronization and detailed field and element management. The available modes in the DDLTool "
-                   "range from table registration to terminology synchronization and the addition of foreign keys. For "
-                   "each mode, clear instructions and options are provided to define essential parameters, such as "
-                   "table names, column descriptions, and tab levels. Additionally, the tool offers the flexibility to "
-                   "automatically generate certain values if the user does not provide them.",)
+    description: str = ("This tool can register tables, windows, and tabs in Etendo, create tables in the database, and"
+                        "add specific columns to a new or existing table. It can also register columns and create "
+                        "windows in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and "
+                        "management of tables, columns, and windows within a system. Its functionality is based on a "
+                        "series of operation modes, each intended to perform specific tasks within the database "
+                        "development process. These modes guide the user through key steps, from the initial "
+                        "registration of tables to terminology synchronization and detailed field and element "
+                        "management. The available modes in the DDLTool range from table registration to terminology "
+                        "synchronization and the addition of foreign keys. For each mode, clear instructions and "
+                        "options are provided to define essential parameters, such as table names, column descriptions,"
+                        "and tab levels. Additionally, the tool offers the flexibility to automatically generate "
+                        "certain values if the user does not provide them.")
     args_schema: Type[BaseModel] = DDLToolInput
 
     def run(self, input_params: dict, *args, **kwargs):
