@@ -1,3 +1,5 @@
 [DDLTool]
 "requests" = "*"
 
+[CreateReferencesTool]
+"requests" = "*"
