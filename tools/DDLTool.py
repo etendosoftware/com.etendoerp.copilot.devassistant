@@ -629,7 +629,7 @@ class DDLTool(ToolWrapper):
                    "range from table registration to terminology synchronization and the addition of foreign keys. For "
                    "each mode, clear instructions and options are provided to define essential parameters, such as "
                    "table names, column descriptions, and tab levels. Additionally, the tool offers the flexibility to "
-                   "automatically generate certain values if the user does not provide them.",)
+                   "automatically generate certain values if the user does not provide them.")
     args_schema: Type[BaseModel] = DDLToolInput
 
     def run(self, input_params: dict, *args, **kwargs):
