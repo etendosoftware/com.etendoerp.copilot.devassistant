@@ -1,23 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <data>
-<!--98D5929201084E2098A09C7A43530276--><ETCOP_TOOL>
-<!--98D5929201084E2098A09C7A43530276-->  <ETCOP_TOOL_ID><![CDATA[98D5929201084E2098A09C7A43530276]]></ETCOP_TOOL_ID>
-<!--98D5929201084E2098A09C7A43530276-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
-<!--98D5929201084E2098A09C7A43530276-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
-<!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<<<<<<< HEAD
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-07-05 16:28:35.027]]></UPDATED>
-=======
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-07-05 19:53:57.067]]></UPDATED>
->>>>>>> b099f681b18a968e1265bfc25ecf9b2dfd7892de
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[0]]></UPDATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
-<!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
-<!--98D5929201084E2098A09C7A43530276-->  <DESCRIPTION><![CDATA[This tool can register tables, windows, and tabs in Etendo, create tables in the database, andadd specific columns to a new or existing table. It can also register columns and create windows in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management of tables, columns, and windows within a system. Its functionality is based on a series of operation modes, each intended to perform specific tasks within the database development process. These modes guide the user through key steps, from the initial registration of tables to terminology synchronization and detailed field and element management. The available modes in the DDLTool range from table registration to terminology synchronization and the addition of foreign keys. For each mode, clear instructions and options are provided to define essential parameters, such as table names, column descriptions,and tab levels. Additionally, the tool offers the flexibility to automatically generate certain values if the user does not provide them.]]></DESCRIPTION>
-<!--98D5929201084E2098A09C7A43530276-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
-<!--98D5929201084E2098A09C7A43530276-->  <JSON_STRUCTURE><![CDATA[{
+<!--EF215FA410EA48998C8B3CDF79078960--><ETCOP_TOOL>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <ETCOP_TOOL_ID><![CDATA[EF215FA410EA48998C8B3CDF79078960]]></ETCOP_TOOL_ID>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <CREATED><![CDATA[2024-07-08 08:55:46.236]]></CREATED>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <UPDATED><![CDATA[2024-07-08 08:56:29.86]]></UPDATED>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <VALUE><![CDATA[DDLTool]]></VALUE>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <NAME><![CDATA[DDLTool]]></NAME>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <DESCRIPTION><![CDATA[This tool can register tables, windows, and tabs in Etendo, create tables in the database, andadd specific columns to a new or existing table. It can also register columns and create windows in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management of tables, columns, and windows within a system. Its functionality is based on a series of operation modes, each intended to perform specific tasks within the database development process. These modes guide the user through key steps, from the initial registration of tables to terminology synchronization and detailed field and element management. The available modes in the DDLTool range from table registration to terminology synchronization and the addition of foreign keys. For each mode, clear instructions and options are provided to define essential parameters, such as table names, column descriptions,and tab levels. Additionally, the tool offers the flexibility to automatically generate certain values if the user does not provide them.]]></DESCRIPTION>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <JSON_STRUCTURE><![CDATA[{
   "type": "function",
   "function": {
     "name": "DDLTool",
@@ -278,7 +274,7 @@
     }
   }
 }]]></JSON_STRUCTURE>
-<!--98D5929201084E2098A09C7A43530276-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
-<!--98D5929201084E2098A09C7A43530276--></ETCOP_TOOL>
+<!--EF215FA410EA48998C8B3CDF79078960-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--EF215FA410EA48998C8B3CDF79078960--></ETCOP_TOOL>
 
 </data>
