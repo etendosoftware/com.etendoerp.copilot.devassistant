@@ -20,18 +20,14 @@ import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.model.ad.ui.Menu;
 import org.openbravo.model.ad.ui.Window;
-import org.openbravo.model.ad.utility.Tree;
-import org.openbravo.model.ad.utility.TreeNode;
-import org.quartz.SimpleTrigger;
-
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 public class RegisterWindowWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
-  public static final String windowType = "M";
-  public static final String menuSetAction = "W";
+  public static final String WINDOW_TYPE = "M";
+  public static final String MENU_SET_ACTION = "W";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -45,7 +41,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
       DataPackage dataPackage = getDataPackage(dbPrefix);
 
       if (name.startsWith(dbPrefix)) {
-        name = name.substring(dbPrefix.length());
+        name = StringUtils.removeStart(name, dbPrefix);
       }
 
       //check that the name has the first letter in uppercase
@@ -71,18 +67,6 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     }
   }
 
-  private void createTreeNode(OBContext context, Menu menu) {
-    TreeNode treenode = OBProvider.getInstance().get(TreeNode.class);
-    treenode.setNewOBObject(true);
-    treenode.setClient(context.getCurrentClient());
-    treenode.setOrganization(context.getCurrentOrganization());
-    treenode.setNode(menu.getId());
-    treenode.setTree(OBDal.getInstance().get(Tree.class, "10"));
-    treenode.setReportSet("0");
-    treenode.setSequenceNumber((long) 9999);
-    OBDal.getInstance().save(treenode);
-  }
-
   private Menu createMenuElem(OBContext context, Window window, String description) {
     Menu menu = OBProvider.getInstance().get(Menu.class);
     menu.setNewOBObject(true);
@@ -92,7 +76,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     menu.setWindow(window);
     menu.setSummaryLevel(false);
     menu.setActive(true);
-    menu.setAction(menuSetAction);
+    menu.setAction(MENU_SET_ACTION);
     menu.setOpenlinkinbrowser(false);
     menu.setModule(window.getModule());
     menu.setDescription(description);
@@ -108,7 +92,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     window.setOrganization(context.getCurrentOrganization());
     window.setName(name);
     window.setModule(dataPackage.getModule());
-    window.setWindowType(windowType);
+    window.setWindowType(WINDOW_TYPE);
     window.setSalesTransaction(true);
     window.setDescription(description);
     window.setHelpComment(helpComment);
@@ -126,7 +110,7 @@ public class RegisterWindowWebHook extends BaseWebhookService {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbPrefix));
     }
     Module module = modPref.getModule();
-    if (!module.isInDevelopment()) {
+    if (Boolean.FALSE.equals(module.isInDevelopment())) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
     }
     List<DataPackage> dataPackList = module.getDataPackageList();

@@ -120,7 +120,7 @@ class DDLToolInput(BaseModel):
         description="This field provides a more detailed and contextual explanation of the use and purpose of the "
                     "field in question. The description offers a broad overview of the meaning and importance of the "
                     "field. It may include details on why certain information is collected, how it will be used, and "
-                    "any relevant additional considerations. It is a short explanation of the content the field must"
+                    "any relevant additional considerations. It is a short explanation of the content the field must "
                     "have. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, "
                     "REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode.",
     )
@@ -189,7 +189,7 @@ class DDLToolInput(BaseModel):
     )
     i_key_word: Optional[str] = Field(
         title="Key Word",
-        description="This parameters indicates the element that is searched. Only used on GET_CONTEXT mode.",
+        description="This parameter indicates the element that is searched. Only used on GET_CONTEXT mode.",
         enum=['table', 'window', 'tab']
     )
 
@@ -521,14 +521,13 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
             DECLARE
                 foreign_key_exists BOOLEAN;
             BEGIN
-                -- Verificar si la relación de clave foránea ya existe
                 SELECT EXISTS (
                     SELECT 1
                     FROM pg_constraint c
                     JOIN pg_class t ON c.conrelid = t.oid
                     JOIN pg_namespace n ON t.relnamespace = n.oid
                     JOIN pg_class r ON c.confrelid = r.oid
-                    WHERE c.contype = 'f' -- Restricciones de clave foránea
+                    WHERE c.contype = 'f' 
                     AND t.relname = '{prefix}_{child_table}'
                     AND r.relname = '{parent_table}'
                     AND c.conkey = ARRAY(SELECT attnum
@@ -541,14 +540,12 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
                                           AND attname = '{parent_table_id}')
                 ) INTO foreign_key_exists;
             
-                -- Si la clave foránea ya existe, ejecutar solo la actualización
                 IF foreign_key_exists THEN
                     UPDATE ad_column
                     SET isparent = 'Y'
                     WHERE name ILIKE '{parent_column}'
                     AND isupdateable = 'Y';
                 ELSE
-                    -- Si la clave foránea no existe, ejecutar la actualización y agregar la restricción
                     UPDATE ad_column
                     SET isparent = 'Y'
                     WHERE name ILIKE '{parent_column}'
@@ -592,6 +589,9 @@ def register_tab(etendo_host, access_token, window_id, tab_level, description, h
 
 
 def get_context(etendo_host, access_token, mode, name, key_word):
+    allowed_keywords = ['table', 'window', 'tab']
+    if key_word not in allowed_keywords:
+        return {"error": f"Invalid key_word. Allowed values are {allowed_keywords}"}
 
     query = f"SELECT ad_{key_word}_id FROM ad_{key_word} WHERE name ilike '%{name}%'"
 
@@ -608,19 +608,29 @@ def get_context(etendo_host, access_token, mode, name, key_word):
     return post_result
 
 
+def validate_extra_info():
+    extra_info = ThreadContext.get_data('extra_info')
+    if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
+        return {"error": "No access token provided, to work with Etendo, an access token is required."
+                         "Make sure that the Webservices are enabled to the user role and the WS are configured for"
+                         " the Entity."}
+    return extra_info.get('auth').get('ETENDO_TOKEN')
+
+
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
-    description = ("This tool can register tables, windows and tabs in Etendo, create tables on the data base and add"
-                   "specifics columns to a new table or a created table, also can register columns and create window"
-                   "in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management of"
-                   "tables, columns, and windows within a system. Its functionality is based on a series of operation"
-                   "modes, each intended to perform specific tasks within the database development process. These modes"
-                   "guide the user through key steps, from the initial registration of tables to terminology "
-                   "synchronization and detailed field and element management."
-                   "The available modes in the DDLTool range from table registration to terminology synchronization and"
-                   "the addition of foreign keys. For each mode, clear instructions and options are provided to define"
-                   "essential parameters, such as table names, column descriptions, and tab levels. Additionally, the"
-                   "tool offers the flexibility to automatically generate certain values if the user does not provide.")
+    description: str = ("This tool can register tables, windows, and tabs in Etendo, create tables in the database, and"
+                        "add specific columns to a new or existing table. It can also register columns and create "
+                        "windows in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and "
+                        "management of tables, columns, and windows within a system. Its functionality is based on a "
+                        "series of operation modes, each intended to perform specific tasks within the database "
+                        "development process. These modes guide the user through key steps, from the initial "
+                        "registration of tables to terminology synchronization and detailed field and element "
+                        "management. The available modes in the DDLTool range from table registration to terminology "
+                        "synchronization and the addition of foreign keys. For each mode, clear instructions and "
+                        "options are provided to define essential parameters, such as table names, column descriptions,"
+                        "and tab levels. Additionally, the tool offers the flexibility to automatically generate "
+                        "certain values if the user does not provide them.")
     args_schema: Type[BaseModel] = DDLToolInput
 
     def run(self, input_params: dict, *args, **kwargs):
@@ -660,20 +670,14 @@ class DDLTool(ToolWrapper):
         child_table: str = input_params.get('i_child_table')
         external: bool = input_params.get('i_external')
 
-
         # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
         clean_terminology = input_params.get('i_clean_terminology')
         key_word = input_params.get('i_key_word')
 
         # EXTRA INFO
-        extra_info = ThreadContext.get_data('extra_info')
-        if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
-            return {"error": "No access token provided, to work with Etendo, an access token is required."
-                             "Make sure that the Webservices are enabled to the user role and the WS are configured for"
-                             " the Entity."
-                    }
-        access_token = extra_info.get('auth').get('ETENDO_TOKEN')
+        access_token = validate_extra_info()
+
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 

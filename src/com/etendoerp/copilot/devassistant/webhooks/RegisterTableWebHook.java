@@ -117,7 +117,7 @@ public class RegisterTableWebHook extends BaseWebhookService {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbPrefix));
     }
     Module module = modPref.getModule();
-    if (!module.isInDevelopment()) {
+    if (Boolean.FALSE.equals(module.isInDevelopment())) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
     }
     List<DataPackage> dataPackList = module.getDataPackageList();
