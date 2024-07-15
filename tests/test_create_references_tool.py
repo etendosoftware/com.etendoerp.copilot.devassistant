@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from tools import CreateReferencesTool
 from copilot.core.threadcontext import ThreadContext
 
-# Fixture para la respuesta mock exitosa
+# Fixture for the successful mock response
 @pytest.fixture
 def mock_response_success():
     mock_response = MagicMock()
@@ -12,14 +12,14 @@ def mock_response_success():
     mock_response.json.return_value = {"result": "success"}
     return mock_response
 
-# Fixture para el mock de requests.post
+# Fixture for the mock of requests.post
 @pytest.fixture
 def mock_requests_post(monkeypatch):
     mock_post = MagicMock()
     monkeypatch.setattr("requests.post", mock_post)
     return mock_post
 
-# Fixture para los parámetros de entrada válidos
+# Fixture for the valid input parameters
 @pytest.fixture
 def valid_input_params():
     return {
@@ -30,19 +30,19 @@ def valid_input_params():
         "i_description": "Description example"
     }
 
-# Fixture para simular el contexto de hilo con token de acceso
+# Fixture to simulate thread context with access token
 @pytest.fixture
 def thread_context_extra_info(monkeypatch):
     extra_info = {'auth': {'ETENDO_TOKEN': 'test_token'}}
     monkeypatch.setattr(ThreadContext, 'get_data', lambda key: extra_info)
     return extra_info
 
-# Prueba para entradas válidas
+# Test for valid inputs
 @unit
 def test_create_references_valid(valid_input_params, mock_requests_post, thread_context_extra_info):
     tool = CreateReferencesTool()
 
-    # Configura el mock de la respuesta exitosa
+    # Setup the mock for the successful response
     mock_response = MagicMock()
     mock_response.ok = True
     mock_response.json.return_value = {"result": "success"}
@@ -55,7 +55,7 @@ def test_create_references_valid(valid_input_params, mock_requests_post, thread_
     assert "error" not in result, "Should not return an error for valid inputs."
     assert result == {"result": "success"}
 
-# Prueba para manejo de token ausente
+# Test for handling missing token
 @unit
 def test_create_references_tool_no_token(valid_input_params, monkeypatch):
     monkeypatch.setattr(ThreadContext, 'get_data', lambda key: {})
@@ -67,7 +67,7 @@ def test_create_references_tool_no_token(valid_input_params, monkeypatch):
     expected_error_message = "No access token provided. To work with Etendo, an access token is required.Make sure that the Webservices are enabled for the user role and the WS are configured for the Entity."
     assert response["error"] == expected_error_message
 
-# Prueba parametrizada para diferentes respuestas esperadas
+# Parameterized test for different expected responses
 @unit
 @pytest.mark.parametrize(
     "expected_response, mock_response",
@@ -90,7 +90,7 @@ def test_create_references_tool(mock_requests_post, valid_input_params, thread_c
     if isinstance(response, MagicMock):
         response = response()
 
-    # Mensaje de depuración para los resultados de la prueba
+    # Debug message for test results
     print(f"Response: {response}")
     print(f"Expected Response: {expected_response}")
 

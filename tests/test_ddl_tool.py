@@ -5,7 +5,7 @@ from copilot.core.threadcontext import ThreadContext
 from tools import DDLTool
 from tools.DDLTool import DDLToolInput
 
-
+# Fixture for valid input parameters for creating a table
 @pytest.fixture
 def valid_input_params_create_table():
     return {
@@ -14,6 +14,7 @@ def valid_input_params_create_table():
         "i_name": "valid_table_name"
     }
 
+# Fixture for valid input parameters for adding a column
 @pytest.fixture
 def valid_input_params_add_column():
     return {
@@ -25,24 +26,26 @@ def valid_input_params_add_column():
         "i_can_be_null": True
     }
 
+# Fixture to simulate thread context with access token
 @pytest.fixture
 def thread_context_extra_info(monkeypatch):
     extra_info = {'auth': {'ETENDO_TOKEN': 'test_token'}}
     monkeypatch.setattr(ThreadContext, 'get_data', lambda key: extra_info)
     return extra_info
 
+# Fixture for the mock of requests.post
 @pytest.fixture
 def mock_requests_post(monkeypatch):
     mock_post = MagicMock()
     monkeypatch.setattr("requests.post", mock_post)
     return mock_post
 
-
+# Test for valid inputs in CREATE_TABLE mode
 @unit
 def test_create_table_valid(valid_input_params_create_table, mock_requests_post, thread_context_extra_info):
     tool = DDLTool()
 
-    # Configura la respuesta mock exitosa como una cadena JSON válida
+    # Setup the mock for the successful response as a valid JSON string
     mock_response = MagicMock()
     mock_response.ok = True
     mock_response.text = '{"result": "table_created"}'
@@ -53,11 +56,12 @@ def test_create_table_valid(valid_input_params_create_table, mock_requests_post,
     assert "error" not in result, "Should not return an error for valid inputs in CREATE_TABLE mode."
     assert result == {"result": "table_created"}
 
+# Test for valid inputs in ADD_COLUMN mode
 @unit
 def test_add_column_valid(valid_input_params_add_column, mock_requests_post, thread_context_extra_info):
     tool = DDLTool()
 
-    # Configura la respuesta mock exitosa como una cadena JSON válida
+    # Setup the mock for the successful response as a valid JSON string
     mock_response = MagicMock()
     mock_response.ok = True
     mock_response.text = '{"result": "column_added"}'
@@ -68,9 +72,10 @@ def test_add_column_valid(valid_input_params_add_column, mock_requests_post, thr
     assert "error" not in result, "Should not return an error for valid inputs in ADD_COLUMN mode."
     assert result == {"result": "column_added"}
 
+# Test for handling missing token
 @unit
 def test_missing_token(valid_input_params_create_table, monkeypatch):
-    # Limpia el contexto explícitamente para esta prueba
+    # Clear the context explicitly for this test
     monkeypatch.setattr(ThreadContext, 'get_data', lambda key: {})
 
     tool = DDLTool()
@@ -82,6 +87,7 @@ def test_missing_token(valid_input_params_create_table, monkeypatch):
                              " the Entity."
     assert response["error"] == expected_error_message
 
+# Parameterized test for different expected responses
 @unit
 @pytest.mark.parametrize(
     "input_params, expected_response",
