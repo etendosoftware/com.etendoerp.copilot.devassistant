@@ -4,6 +4,7 @@ import random
 from typing import Dict, Type, Optional
 
 from pydantic import BaseModel, Field
+from langsmith import traceable
 
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
@@ -193,7 +194,7 @@ class DDLToolInput(BaseModel):
         enum=['table', 'window', 'tab']
     )
 
-
+@traceable
 def _get_headers(access_token: Optional[str]) -> Dict:
     """
     This method generates headers for an HTTP request.
@@ -217,7 +218,7 @@ available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COL
                    "REGISTER_WINDOW", "REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS",
                    "ADD_FOREIGN", "GET_CONTEXT"]
 
-
+@traceable
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
     if dalevel is None:
         dalevel = "3"
@@ -234,7 +235,7 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
 
-
+@traceable
 def get_const_name(prefix, name1: str, name2: str, suffix):
     # "name1" and "name2" are the names of the tables involved in the relationship of the constraint.
     if name1.startswith(prefix + "_") or (name1.upper()).startswith(prefix.upper() + "_"):
@@ -261,7 +262,7 @@ def get_const_name(prefix, name1: str, name2: str, suffix):
 
     return proposal
 
-
+@traceable
 def create_table(url, access_token, mode, prefix, name):
     const_isactive = get_const_name(prefix, name, 'isactive', 'chk')
     constr_pk = get_const_name(prefix, name, '', 'pk')
@@ -305,7 +306,7 @@ def create_table(url, access_token, mode, prefix, name):
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
 
-
+@traceable
 def add_column(etendo_host, access_token, mode, prefix, name, column, type_name, default_value, can_be_null):
     mapping = {
         "Absolute DateTime": TIMESTAMP_WITHOUT_TIMEZONE,
@@ -401,7 +402,7 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def call_webhook(access_token, body_params, url, webhook_name):
     import requests
     headers = _get_headers(access_token)
@@ -417,7 +418,7 @@ def call_webhook(access_token, body_params, url, webhook_name):
         copilot_debug(post_result.text)
         return {"error": post_result.text}
 
-
+@traceable
 def register_columns(etendo_host, access_token, prefix, name):
     db_tablename: str = prefix.upper() + '_' + name
     webhook_name = "RegisterColumns"
@@ -427,7 +428,7 @@ def register_columns(etendo_host, access_token, prefix, name):
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def sync_terminoloy(etendo_host, access_token, clean_terminology):
     webhook_name = "SyncTerms"
 
@@ -439,7 +440,7 @@ def sync_terminoloy(etendo_host, access_token, clean_terminology):
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def register_fields(etendo_host, access_token, record_id, description, help_comment):
     webhook_name = "RegisterFields"
     body_params = {
@@ -450,7 +451,7 @@ def register_fields(etendo_host, access_token, record_id, description, help_comm
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def register_window(etendo_host, access_token, prefix, name, description, help_comment):
     fixed_name = name
     if "_" in name:
@@ -470,7 +471,7 @@ def register_window(etendo_host, access_token, prefix, name, description, help_c
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def read_elements(etendo_host, access_token, mode, record_id):
     webhook_name = "ElementsHandler"
     body_params = {
@@ -480,7 +481,7 @@ def read_elements(etendo_host, access_token, mode, record_id):
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def write_elements(etendo_host, access_token, mode, record_id, description, help_comment):
     webhook_name = "ElementsHandler"
     body_params = {
@@ -492,7 +493,7 @@ def write_elements(etendo_host, access_token, mode, record_id, description, help
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, external):
     if prefix is None or prefix == "None":
         prefix = parent_table.split("_")[0]
@@ -571,7 +572,7 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment, record_id,
                  sequence_number):
     webhook_name = "RegisterTab"
@@ -587,7 +588,7 @@ def register_tab(etendo_host, access_token, window_id, tab_level, description, h
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
-
+@traceable
 def get_context(etendo_host, access_token, mode, name, key_word):
     allowed_keywords = ['table', 'window', 'tab']
     if key_word not in allowed_keywords:
@@ -633,6 +634,7 @@ class DDLTool(ToolWrapper):
                         "certain values if the user does not provide them.")
     args_schema: Type[BaseModel] = DDLToolInput
 
+    @traceable
     def run(self, input_params: dict, *args, **kwargs):
         # read the parameters
         mode = input_params.get('i_mode')
