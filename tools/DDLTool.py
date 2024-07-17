@@ -1,10 +1,9 @@
-import string
 import random
-
+import string
 from typing import Dict, Type, Optional
 
-from pydantic import BaseModel, Field
 from langsmith import traceable
+from pydantic import BaseModel, Field
 
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
@@ -194,6 +193,7 @@ class DDLToolInput(BaseModel):
         enum=['table', 'window', 'tab']
     )
 
+
 @traceable
 def _get_headers(access_token: Optional[str]) -> Dict:
     """
@@ -218,6 +218,7 @@ available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COL
                    "REGISTER_WINDOW", "REGISTER_TAB", "REGISTER_FIELDS", "READ_ELEMENTS", "WRITE_ELEMENTS",
                    "ADD_FOREIGN", "GET_CONTEXT"]
 
+
 @traceable
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
     if dalevel is None:
@@ -234,6 +235,7 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
     }
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
+
 
 @traceable
 def get_const_name(prefix, name1: str, name2: str, suffix):
@@ -261,6 +263,7 @@ def get_const_name(prefix, name1: str, name2: str, suffix):
     proposal = proposal.replace("__", "_")
 
     return proposal
+
 
 @traceable
 def create_table(url, access_token, mode, prefix, name):
@@ -305,6 +308,7 @@ def create_table(url, access_token, mode, prefix, name):
 
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
+
 
 @traceable
 def add_column(etendo_host, access_token, mode, prefix, name, column, type_name, default_value, can_be_null):
@@ -402,6 +406,7 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
+
 @traceable
 def call_webhook(access_token, body_params, url, webhook_name):
     import requests
@@ -418,6 +423,7 @@ def call_webhook(access_token, body_params, url, webhook_name):
         copilot_debug(post_result.text)
         return {"error": post_result.text}
 
+
 @traceable
 def register_columns(etendo_host, access_token, prefix, name):
     db_tablename: str = prefix.upper() + '_' + name
@@ -427,6 +433,7 @@ def register_columns(etendo_host, access_token, prefix, name):
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
+
 
 @traceable
 def sync_terminoloy(etendo_host, access_token, clean_terminology):
@@ -440,6 +447,7 @@ def sync_terminoloy(etendo_host, access_token, clean_terminology):
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
+
 @traceable
 def register_fields(etendo_host, access_token, record_id, description, help_comment):
     webhook_name = "RegisterFields"
@@ -450,6 +458,7 @@ def register_fields(etendo_host, access_token, record_id, description, help_comm
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
+
 
 @traceable
 def register_window(etendo_host, access_token, prefix, name, description, help_comment):
@@ -471,6 +480,7 @@ def register_window(etendo_host, access_token, prefix, name, description, help_c
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
+
 @traceable
 def read_elements(etendo_host, access_token, mode, record_id):
     webhook_name = "ElementsHandler"
@@ -480,6 +490,7 @@ def read_elements(etendo_host, access_token, mode, record_id):
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
+
 
 @traceable
 def write_elements(etendo_host, access_token, mode, record_id, description, help_comment):
@@ -492,6 +503,7 @@ def write_elements(etendo_host, access_token, mode, record_id, description, help
     }
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
+
 
 @traceable
 def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, external):
@@ -572,6 +584,7 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
 
+
 @traceable
 def register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment, record_id,
                  sequence_number):
@@ -587,6 +600,7 @@ def register_tab(etendo_host, access_token, window_id, tab_level, description, h
 
     post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
     return post_result
+
 
 @traceable
 def get_context(etendo_host, access_token, mode, name, key_word):
@@ -679,7 +693,8 @@ class DDLTool(ToolWrapper):
 
         # EXTRA INFO
         access_token = validate_extra_info()
-
+        if ("error" in access_token):
+            return access_token
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 
