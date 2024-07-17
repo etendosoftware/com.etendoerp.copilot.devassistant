@@ -2,6 +2,7 @@ import requests
 import json
 from typing import Dict, Type, Optional
 from pydantic import BaseModel, Field
+from langsmith import traceable
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
 from copilot.core.tool_wrapper import ToolWrapper
@@ -35,12 +36,14 @@ class CreateReferencesInput(BaseModel):
         default=None
     )
 
+@traceable
 def _get_headers(access_token: Optional[str]) -> Dict[str, str]:
     headers = {}
     if access_token:
         headers["Authorization"] = f"Bearer {access_token}"
     return headers
 
+@traceable
 def call_webhook(access_token: Optional[str], body_params: Dict, url: str, webhook_name: str) -> Dict:
     headers = _get_headers(access_token)
     endpoint = f"/webhooks/?name={webhook_name}"
@@ -62,6 +65,7 @@ class CreateReferencesTool(ToolWrapper):
     description = "Creates a list reference in the Etendo Application Dictionary."
     args_schema: Type[BaseModel] = CreateReferencesInput
 
+    @traceable
     def run(self, input_params: Dict, *args, **kwargs) -> Dict:
         """Runs the process to create a reference in the Etendo Application Dictionary."""
         prefix = input_params.get('i_prefix', "").upper()
