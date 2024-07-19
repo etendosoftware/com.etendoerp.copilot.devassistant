@@ -1,9 +1,11 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 from langsmith import unit
+
 from copilot.core.threadcontext import ThreadContext
 from tools import DDLTool
-from tools.DDLTool import DDLToolInput
+
 
 # Fixture for valid input parameters for creating a table
 @pytest.fixture
@@ -13,6 +15,7 @@ def valid_input_params_create_table():
         "i_prefix": "TST",
         "i_name": "valid_table_name"
     }
+
 
 # Fixture for valid input parameters for adding a column
 @pytest.fixture
@@ -26,6 +29,7 @@ def valid_input_params_add_column():
         "i_can_be_null": True
     }
 
+
 # Fixture to simulate thread context with access token
 @pytest.fixture
 def thread_context_extra_info(monkeypatch):
@@ -33,12 +37,14 @@ def thread_context_extra_info(monkeypatch):
     monkeypatch.setattr(ThreadContext, 'get_data', lambda key: extra_info)
     return extra_info
 
+
 # Fixture for the mock of requests.post
 @pytest.fixture
 def mock_requests_post(monkeypatch):
     mock_post = MagicMock()
     monkeypatch.setattr("requests.post", mock_post)
     return mock_post
+
 
 # Test for valid inputs in CREATE_TABLE mode
 @unit
@@ -56,6 +62,7 @@ def test_create_table_valid(valid_input_params_create_table, mock_requests_post,
     assert "error" not in result, "Should not return an error for valid inputs in CREATE_TABLE mode."
     assert result == {"result": "table_created"}
 
+
 # Test for valid inputs in ADD_COLUMN mode
 @unit
 def test_add_column_valid(valid_input_params_add_column, mock_requests_post, thread_context_extra_info):
@@ -72,6 +79,7 @@ def test_add_column_valid(valid_input_params_add_column, mock_requests_post, thr
     assert "error" not in result, "Should not return an error for valid inputs in ADD_COLUMN mode."
     assert result == {"result": "column_added"}
 
+
 # Test for handling missing token
 @unit
 def test_missing_token(valid_input_params_create_table, monkeypatch):
@@ -87,13 +95,14 @@ def test_missing_token(valid_input_params_create_table, monkeypatch):
                              " the Entity."
     assert response["error"] == expected_error_message
 
+
 # Parameterized test for different expected responses
 @unit
 @pytest.mark.parametrize(
     "input_params, expected_response",
     [
         ({"i_mode": "CREATE_TABLE", "i_prefix": "TST", "i_name": "valid_table_name"}, {"result": "table_created"}),
-        ({"i_mode": "ADD_COLUMN", "i_prefix": "TST", "i_name": "valid_table_name", "i_column": "valid_column_name", 
+        ({"i_mode": "ADD_COLUMN", "i_prefix": "TST", "i_name": "valid_table_name", "i_column": "valid_column_name",
           "i_column_type": "String", "i_can_be_null": True}, {"result": "column_added"})
     ],
 )
