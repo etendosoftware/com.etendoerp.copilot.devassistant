@@ -1,7 +1,7 @@
 import requests
 import json
 from typing import Dict, Type, Optional
-from pydantic import BaseModel, Field
+from langchain_core.pydantic_v1 import Field, BaseModel
 from langsmith import traceable
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
