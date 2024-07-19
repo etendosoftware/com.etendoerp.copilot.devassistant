@@ -7,7 +7,7 @@
 */
 
 group          = "com.etendoerp"
-version        = "1.0.0"
+version        = "1.1.0"
 description    = "Developer's assistant for Copilot"
 ext.artifact   = "copilot.devassistant"
 ext.repository = "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
@@ -37,15 +37,6 @@ repositories {
     maven {
         url "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
     }
-    maven {
-        url "https://repo.futit.cloud/repository/maven-releases"
-    }
-    maven {
-        url "https://repo.futit.cloud/repository/maven-public-releases"
-    }
-    maven {
-        url "https://repo.futit.cloud/repository/maven-public-jars"
-    }
 }
 
 /**
@@ -53,7 +44,7 @@ repositories {
 * Ex: implementation "com.sun.mail:javax.mail:1.6.2"
 */
 dependencies {
-    implementation('com.etendoerp:copilot:1.2.6')
-    implementation('com.etendoerp:webhookevents:1.8.0')
+    implementation('com.etendoerp:copilot:1.4.3')
+    implementation('com.etendoerp:webhookevents:1.9.1')
 
 }

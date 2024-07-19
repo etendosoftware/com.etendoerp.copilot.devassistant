@@ -1,8 +1,8 @@
-import string
 import random
-
+import string
 from typing import Dict, Type, Optional
 
+from langsmith import traceable
 from pydantic import BaseModel, Field
 
 from copilot.core import utils
@@ -120,7 +120,7 @@ class DDLToolInput(BaseModel):
         description="This field provides a more detailed and contextual explanation of the use and purpose of the "
                     "field in question. The description offers a broad overview of the meaning and importance of the "
                     "field. It may include details on why certain information is collected, how it will be used, and "
-                    "any relevant additional considerations. It is a short explanation of the content the field must"
+                    "any relevant additional considerations. It is a short explanation of the content the field must "
                     "have. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, "
                     "REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode.",
     )
@@ -189,11 +189,12 @@ class DDLToolInput(BaseModel):
     )
     i_key_word: Optional[str] = Field(
         title="Key Word",
-        description="This parameters indicates the element that is searched. Only used on GET_CONTEXT mode.",
+        description="This parameter indicates the element that is searched. Only used on GET_CONTEXT mode.",
         enum=['table', 'window', 'tab']
     )
 
 
+@traceable
 def _get_headers(access_token: Optional[str]) -> Dict:
     """
     This method generates headers for an HTTP request.
@@ -218,6 +219,7 @@ available_modes = ["CREATE_TABLE", "ADD_COLUMN", "REGISTER_TABLE", "REGISTER_COL
                    "ADD_FOREIGN", "GET_CONTEXT"]
 
 
+@traceable
 def register_table(url, access_token, prefix, name, classname, dalevel, description, help_comment):
     if dalevel is None:
         dalevel = "3"
@@ -235,6 +237,7 @@ def register_table(url, access_token, prefix, name, classname, dalevel, descript
     return post_result
 
 
+@traceable
 def get_const_name(prefix, name1: str, name2: str, suffix):
     # "name1" and "name2" are the names of the tables involved in the relationship of the constraint.
     if name1.startswith(prefix + "_") or (name1.upper()).startswith(prefix.upper() + "_"):
@@ -262,6 +265,7 @@ def get_const_name(prefix, name1: str, name2: str, suffix):
     return proposal
 
 
+@traceable
 def create_table(url, access_token, mode, prefix, name):
     const_isactive = get_const_name(prefix, name, 'isactive', 'chk')
     constr_pk = get_const_name(prefix, name, '', 'pk')
@@ -306,6 +310,7 @@ def create_table(url, access_token, mode, prefix, name):
     return post_result
 
 
+@traceable
 def add_column(etendo_host, access_token, mode, prefix, name, column, type_name, default_value, can_be_null):
     mapping = {
         "Absolute DateTime": TIMESTAMP_WITHOUT_TIMEZONE,
@@ -402,6 +407,7 @@ def add_column(etendo_host, access_token, mode, prefix, name, column, type_name,
     return post_result
 
 
+@traceable
 def call_webhook(access_token, body_params, url, webhook_name):
     import requests
     headers = _get_headers(access_token)
@@ -418,6 +424,7 @@ def call_webhook(access_token, body_params, url, webhook_name):
         return {"error": post_result.text}
 
 
+@traceable
 def register_columns(etendo_host, access_token, prefix, name):
     db_tablename: str = prefix.upper() + '_' + name
     webhook_name = "RegisterColumns"
@@ -428,6 +435,7 @@ def register_columns(etendo_host, access_token, prefix, name):
     return post_result
 
 
+@traceable
 def sync_terminoloy(etendo_host, access_token, clean_terminology):
     webhook_name = "SyncTerms"
 
@@ -440,6 +448,7 @@ def sync_terminoloy(etendo_host, access_token, clean_terminology):
     return post_result
 
 
+@traceable
 def register_fields(etendo_host, access_token, record_id, description, help_comment):
     webhook_name = "RegisterFields"
     body_params = {
@@ -451,6 +460,7 @@ def register_fields(etendo_host, access_token, record_id, description, help_comm
     return post_result
 
 
+@traceable
 def register_window(etendo_host, access_token, prefix, name, description, help_comment):
     fixed_name = name
     if "_" in name:
@@ -471,6 +481,7 @@ def register_window(etendo_host, access_token, prefix, name, description, help_c
     return post_result
 
 
+@traceable
 def read_elements(etendo_host, access_token, mode, record_id):
     webhook_name = "ElementsHandler"
     body_params = {
@@ -481,6 +492,7 @@ def read_elements(etendo_host, access_token, mode, record_id):
     return post_result
 
 
+@traceable
 def write_elements(etendo_host, access_token, mode, record_id, description, help_comment):
     webhook_name = "ElementsHandler"
     body_params = {
@@ -493,6 +505,7 @@ def write_elements(etendo_host, access_token, mode, record_id, description, help
     return post_result
 
 
+@traceable
 def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_table, external):
     if prefix is None or prefix == "None":
         prefix = parent_table.split("_")[0]
@@ -521,14 +534,13 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
             DECLARE
                 foreign_key_exists BOOLEAN;
             BEGIN
-                -- Verificar si la relación de clave foránea ya existe
                 SELECT EXISTS (
                     SELECT 1
                     FROM pg_constraint c
                     JOIN pg_class t ON c.conrelid = t.oid
                     JOIN pg_namespace n ON t.relnamespace = n.oid
                     JOIN pg_class r ON c.confrelid = r.oid
-                    WHERE c.contype = 'f' -- Restricciones de clave foránea
+                    WHERE c.contype = 'f' 
                     AND t.relname = '{prefix}_{child_table}'
                     AND r.relname = '{parent_table}'
                     AND c.conkey = ARRAY(SELECT attnum
@@ -541,14 +553,12 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
                                           AND attname = '{parent_table_id}')
                 ) INTO foreign_key_exists;
             
-                -- Si la clave foránea ya existe, ejecutar solo la actualización
                 IF foreign_key_exists THEN
                     UPDATE ad_column
                     SET isparent = 'Y'
                     WHERE name ILIKE '{parent_column}'
                     AND isupdateable = 'Y';
                 ELSE
-                    -- Si la clave foránea no existe, ejecutar la actualización y agregar la restricción
                     UPDATE ad_column
                     SET isparent = 'Y'
                     WHERE name ILIKE '{parent_column}'
@@ -575,6 +585,7 @@ def add_foreign(etendo_host, access_token, mode, prefix, parent_table, child_tab
     return post_result
 
 
+@traceable
 def register_tab(etendo_host, access_token, window_id, tab_level, description, help_comment, record_id,
                  sequence_number):
     webhook_name = "RegisterTab"
@@ -591,7 +602,11 @@ def register_tab(etendo_host, access_token, window_id, tab_level, description, h
     return post_result
 
 
+@traceable
 def get_context(etendo_host, access_token, mode, name, key_word):
+    allowed_keywords = ['table', 'window', 'tab']
+    if key_word not in allowed_keywords:
+        return {"error": f"Invalid key_word. Allowed values are {allowed_keywords}"}
 
     query = f"SELECT ad_{key_word}_id FROM ad_{key_word} WHERE name ilike '%{name}%'"
 
@@ -608,21 +623,32 @@ def get_context(etendo_host, access_token, mode, name, key_word):
     return post_result
 
 
+def validate_extra_info():
+    extra_info = ThreadContext.get_data('extra_info')
+    if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
+        return {"error": "No access token provided, to work with Etendo, an access token is required."
+                         "Make sure that the Webservices are enabled to the user role and the WS are configured for"
+                         " the Entity."}
+    return extra_info.get('auth').get('ETENDO_TOKEN')
+
+
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
-    description = ("This tool can register tables, windows and tabs in Etendo, create tables on the data base and add"
-                   "specifics columns to a new table or a created table, also can register columns and create window"
-                   "in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and management of"
-                   "tables, columns, and windows within a system. Its functionality is based on a series of operation"
-                   "modes, each intended to perform specific tasks within the database development process. These modes"
-                   "guide the user through key steps, from the initial registration of tables to terminology "
-                   "synchronization and detailed field and element management."
-                   "The available modes in the DDLTool range from table registration to terminology synchronization and"
-                   "the addition of foreign keys. For each mode, clear instructions and options are provided to define"
-                   "essential parameters, such as table names, column descriptions, and tab levels. Additionally, the"
-                   "tool offers the flexibility to automatically generate certain values if the user does not provide.")
+    description: str = ("This tool can register tables, windows, and tabs in Etendo, create tables in the database, and"
+                        "add specific columns to a new or existing table. It can also register columns and create "
+                        "windows in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and "
+                        "management of tables, columns, and windows within a system. Its functionality is based on a "
+                        "series of operation modes, each intended to perform specific tasks within the database "
+                        "development process. These modes guide the user through key steps, from the initial "
+                        "registration of tables to terminology synchronization and detailed field and element "
+                        "management. The available modes in the DDLTool range from table registration to terminology "
+                        "synchronization and the addition of foreign keys. For each mode, clear instructions and "
+                        "options are provided to define essential parameters, such as table names, column descriptions,"
+                        "and tab levels. Additionally, the tool offers the flexibility to automatically generate "
+                        "certain values if the user does not provide them.")
     args_schema: Type[BaseModel] = DDLToolInput
 
+    @traceable
     def run(self, input_params: dict, *args, **kwargs):
         # read the parameters
         mode = input_params.get('i_mode')
@@ -660,20 +686,15 @@ class DDLTool(ToolWrapper):
         child_table: str = input_params.get('i_child_table')
         external: bool = input_params.get('i_external')
 
-
         # WEBHOOK DATA
         record_id = input_params.get('i_record_id')
         clean_terminology = input_params.get('i_clean_terminology')
         key_word = input_params.get('i_key_word')
 
         # EXTRA INFO
-        extra_info = ThreadContext.get_data('extra_info')
-        if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
-            return {"error": "No access token provided, to work with Etendo, an access token is required."
-                             "Make sure that the Webservices are enabled to the user role and the WS are configured for"
-                             " the Entity."
-                    }
-        access_token = extra_info.get('auth').get('ETENDO_TOKEN')
+        access_token = validate_extra_info()
+        if ("error" in access_token):
+            return access_token
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 

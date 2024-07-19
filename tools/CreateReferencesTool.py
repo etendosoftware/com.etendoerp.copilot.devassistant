@@ -2,6 +2,7 @@ import requests
 import json
 from typing import Dict, Type, Optional
 from pydantic import BaseModel, Field
+from langsmith import traceable
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
 from copilot.core.tool_wrapper import ToolWrapper
@@ -23,12 +24,26 @@ class CreateReferencesInput(BaseModel):
         description="Comma-separated list of reference items."
     )
 
+    i_help: Optional[str] = Field(
+        title="Help",
+        description="Help text for the reference.",
+        default=None
+    )
+
+    i_description: Optional[str] = Field(
+        title="Description",
+        description="Description of the reference.",
+        default=None
+    )
+
+@traceable
 def _get_headers(access_token: Optional[str]) -> Dict[str, str]:
     headers = {}
     if access_token:
         headers["Authorization"] = f"Bearer {access_token}"
     return headers
 
+@traceable
 def call_webhook(access_token: Optional[str], body_params: Dict, url: str, webhook_name: str) -> Dict:
     headers = _get_headers(access_token)
     endpoint = f"/webhooks/?name={webhook_name}"
@@ -44,17 +59,20 @@ def call_webhook(access_token: Optional[str], body_params: Dict, url: str, webho
         copilot_debug(post_result.text)
         return {"error": post_result.text}
 
-class CreateReferences(ToolWrapper):
+class CreateReferencesTool(ToolWrapper):
     """This tool creates a list reference in the Etendo Application Dictionary."""
-    name = 'CreateReferences'
+    name = 'CreateReferencesTool'
     description = "Creates a list reference in the Etendo Application Dictionary."
     args_schema: Type[BaseModel] = CreateReferencesInput
 
+    @traceable
     def run(self, input_params: Dict, *args, **kwargs) -> Dict:
         """Runs the process to create a reference in the Etendo Application Dictionary."""
         prefix = input_params.get('i_prefix', "").upper()
         name = input_params.get('i_name', "").replace(" ", "_")
         reference_list = input_params.get('i_reference_list', "")
+        help_text = input_params.get('i_help', "")
+        description = input_params.get('i_description', "")
 
         extra_info = ThreadContext.get_data('extra_info')
         if not extra_info or not extra_info.get('auth') or not extra_info.get('auth').get('ETENDO_TOKEN'):
@@ -63,18 +81,16 @@ class CreateReferences(ToolWrapper):
                              " the Entity."}
 
         access_token = extra_info.get('auth').get('ETENDO_TOKEN')
-        etendo_host = utils.read_optional_env_var("ETENDO_HOST", "https://host.docker.internal:8080/etendo")
-
-        if not etendo_host.startswith("https://"):
-            raise ValueError("The ETENDO_HOST must use HTTPS protocol for secure communication.")
-
+        etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
 
         webhook_name = "CreateReference"
         body_params = {
-            "prefix": prefix,
-            "nameReference": name,
-            "referenceList": reference_list
+            "Prefix": prefix,
+            "NameReference": name,
+            "ReferenceList": reference_list,
+            "Help": help_text,
+            "Description": description
         }
 
         post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
