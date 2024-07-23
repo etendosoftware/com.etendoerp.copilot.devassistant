@@ -1,40 +1,44 @@
-import requests
 import json
 from typing import Dict, Type, Optional
-from langchain_core.pydantic_v1 import Field, BaseModel
+
+import requests
 from langsmith import traceable
+
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
+from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
 
-class CreateReferencesInput(BaseModel):
-    i_prefix: str = Field(
+
+class CreateReferencesInput(ToolInput):
+    i_prefix: str = ToolField(
         title="Prefix",
         description="This is the prefix of the module in the database."
     )
 
-    i_name: str = Field(
+    i_name: str = ToolField(
         title="Name",
         description="This is the name of the reference."
     )
 
-    i_reference_list: str = Field(
+    i_reference_list: str = ToolField(
         title="Reference List",
         description="Comma-separated list of reference items."
     )
 
-    i_help: Optional[str] = Field(
+    i_help: Optional[str] = ToolField(
         title="Help",
         description="Help text for the reference.",
         default=None
     )
 
-    i_description: Optional[str] = Field(
+    i_description: Optional[str] = ToolField(
         title="Description",
         description="Description of the reference.",
         default=None
     )
+
 
 @traceable
 def _get_headers(access_token: Optional[str]) -> Dict[str, str]:
@@ -42,6 +46,7 @@ def _get_headers(access_token: Optional[str]) -> Dict[str, str]:
     if access_token:
         headers["Authorization"] = f"Bearer {access_token}"
     return headers
+
 
 @traceable
 def call_webhook(access_token: Optional[str], body_params: Dict, url: str, webhook_name: str) -> Dict:
@@ -59,11 +64,12 @@ def call_webhook(access_token: Optional[str], body_params: Dict, url: str, webho
         copilot_debug(post_result.text)
         return {"error": post_result.text}
 
+
 class CreateReferencesTool(ToolWrapper):
     """This tool creates a list reference in the Etendo Application Dictionary."""
     name = 'CreateReferencesTool'
     description = "Creates a list reference in the Etendo Application Dictionary."
-    args_schema: Type[BaseModel] = CreateReferencesInput
+    args_schema: Type[ToolInput] = CreateReferencesInput
 
     @traceable
     def run(self, input_params: Dict, *args, **kwargs) -> Dict:
