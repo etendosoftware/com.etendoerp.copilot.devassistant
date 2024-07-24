@@ -3,10 +3,10 @@ import string
 from typing import Dict, Type, Optional
 
 from langsmith import traceable
-from pydantic import BaseModel, Field
 
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
+from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
 
@@ -21,8 +21,8 @@ TIMESTAMP_WITHOUT_TIMEZONE = "timestamp without time zone"
 MAX_LENGTH = 30
 
 
-class DDLToolInput(BaseModel):
-    i_mode: str = Field(
+class DDLToolInput(ToolInput):
+    i_mode: str = ToolField(
         title="Mode",
         description="This parameter indicates what want to do the user. The available modes are: "
                     "CREATE_TABLE: Create a table in the database with the provided prefix and name. It creates the "
@@ -54,12 +54,12 @@ class DDLToolInput(BaseModel):
               'GET_CONTEXT']
 
     )
-    i_prefix: Optional[str] = Field(
+    i_prefix: Optional[str] = ToolField(
         title="Prefix",
         description="This is the prefix of the module in database. Only used for CREATE_TABLE, REGISTER_TABLE and "
                     "REGISTER_COLUMNS"
     )
-    i_name: Optional[str] = Field(
+    i_name: Optional[str] = ToolField(
         title="Name",
         description="This is the name of the table, this construct the database name adding the prefix "
                     "before a '_'."
@@ -71,18 +71,18 @@ class DDLToolInput(BaseModel):
                     "Dictionary. For example, if the Table is PREFIX_Dog, the name for the window and tab will be "
                     "Dog."
     )
-    i_classname: Optional[str] = Field(
+    i_classname: Optional[str] = ToolField(
         None,
         title="ClassName",
         description="This is the java class name associated to the table, if this is not provided will be generated "
                     ""
                     "automatically. Only used for REGISTER_TABLE mode."
     )
-    i_column: Optional[str] = Field(
+    i_column: Optional[str] = ToolField(
         title="Column Name",
         description="This is the column name to be added to a created table. Only used for ADD_COLUMN mode."
     )
-    i_column_type: Optional[str] = Field(
+    i_column_type: Optional[str] = ToolField(
         title="Column Type",
         description="This is the type of column, it depends of what information the user wants to add to the column. "
                     "Only used for ADD_COLUMN mode.",
@@ -95,19 +95,19 @@ class DDLToolInput(BaseModel):
               "String", "Table", "TableDir", "Text", "Time", "Transactional Sequence", "Tree Reference",
               "Window Reference", "YesNo"]
     )
-    i_can_be_null: Optional[bool] = Field(
+    i_can_be_null: Optional[bool] = ToolField(
         title="Can Be Null",
         description="This is a column attribute that signalize if the column can be null or not. Only used for "
                     "ADD_COLUMN mode."
     )
-    i_default_value: Optional[str] = Field(
+    i_default_value: Optional[str] = ToolField(
         None,
         title="Column Default Value",
         description="This is a default value for the column, this stay None if the user does not specific a default "
                     "value. Only used for ADD_COLUMN mode.",
         enum=["'Y'::bpchar", "'N'::bpchar", "now()", "0"]
     )
-    i_description: str = Field(
+    i_description: str = ToolField(
         title="Description",
         description="It is an explanation, in a detailed and orderly manner. Description serves primarily to set the "
                     "scene and explain the meaning of the information contained in the field.This is a description of "
@@ -115,7 +115,7 @@ class DDLToolInput(BaseModel):
                     "This can not be None, infer a description to add. "
                     "Only used for REGISTER_TABLE, REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode."
     )
-    i_help: str = Field(
+    i_help: str = ToolField(
         title="Help",
         description="This field provides a more detailed and contextual explanation of the use and purpose of the "
                     "field in question. The description offers a broad overview of the meaning and importance of the "
@@ -124,14 +124,14 @@ class DDLToolInput(BaseModel):
                     "have. This cannot be None; infer a help comment to add. Only used for REGISTER_TABLE, "
                     "REGISTER_WINDOW, REGISTER_TAB and REGISTER_FIELDS mode.",
     )
-    i_data_access_level: str = Field(
+    i_data_access_level: str = ToolField(
         default="3",
         title="Data Access Level",
         description="This is the level for access to data, this is a number that represents the role can access to "
                     "data. Only used for REGISTER_TABLE mode.",
         enum=["1", "3", "4", "6", "7"]
     )
-    i_record_id: Optional[str] = Field(
+    i_record_id: Optional[str] = ToolField(
         title="Record ID",
         description="This is the record ID of the element to process in the Mode. "
                     "This ID is a string with 32 characters in Hexadecimal format. "
@@ -144,14 +144,14 @@ class DDLToolInput(BaseModel):
                     "will be added."
                     "In the mode REGISTER_TAB, this is the ID of the table will associated to the tab."
     )
-    i_clean_terminology: Optional[bool] = Field(
+    i_clean_terminology: Optional[bool] = ToolField(
         title="Clean Terminology",
         description="This parameter indicates if the terminology must be cleaned before the synchronization. This do a "
                     "default modification of the terminology to remove the _ and add spaces. "
                     "Only used for SYNC_TERMINOLOGY mode."
     )
 
-    i_tabLevel: Optional[str] = Field(
+    i_tabLevel: Optional[str] = ToolField(
         title="Tab Level",
         description="This parameter indicates the tab level in the structure, the main table has the tab level = 0. "
                     "The rest of the tabs has bigger     levels, if a tab must be 'inside' other has a next tab level "
@@ -160,34 +160,34 @@ class DDLToolInput(BaseModel):
                     "Only used on REGISTER_TAB mode.",
         enum=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
     )
-    i_parent_table: Optional[str] = Field(
+    i_parent_table: Optional[str] = ToolField(
         title="Parent Table",
         description="This parameter is the name in database (its own prefix and name) of the parent table of a foreign "
                     "key. When a foreign key is created point from a parent table to the id of a child table."
                     "Only used on ADD_FOREIGN mode."
     )
-    i_child_table: Optional[str] = Field(
+    i_child_table: Optional[str] = ToolField(
         title="Child Table",
         description="This parameter is the name in database (its own prefix and name) of the child table of a foreign "
                     "key. When a foreign key is created point from a parent table to the id of a child table."
                     "Only used on ADD_FOREIGN mode."
     )
-    i_parent_column: Optional[str] = Field(
+    i_parent_column: Optional[str] = ToolField(
         title="Parent Column",
         description="is defined as the name assigned to the column in the parent table that acts as a foreign key, "
                     "establishing a relationship with the primary key of the child table."
     )
-    i_window_id: Optional[str] = Field(
+    i_window_id: Optional[str] = ToolField(
         title="WindowID",
         description="This parameter is the id of the window previously created, is obtained in the REGISTER_WINDOW"
                     "mode. This is used when a tab is registered. Only used on REGISTER_TAB mode."
     )
-    i_sequence_number: Optional[str] = Field(
+    i_sequence_number: Optional[str] = ToolField(
         title="Sequence Number",
         description="This parameter indicates the tab sequence number, with a smaller number indicating that it is "
                     "displayed further to the left."
     )
-    i_key_word: Optional[str] = Field(
+    i_key_word: Optional[str] = ToolField(
         title="Key Word",
         description="This parameter indicates the element that is searched. Only used on GET_CONTEXT mode.",
         enum=['table', 'window', 'tab']
@@ -646,7 +646,7 @@ class DDLTool(ToolWrapper):
                         "options are provided to define essential parameters, such as table names, column descriptions,"
                         "and tab levels. Additionally, the tool offers the flexibility to automatically generate "
                         "certain values if the user does not provide them.")
-    args_schema: Type[BaseModel] = DDLToolInput
+    args_schema: Type[ToolInput] = DDLToolInput
 
     @traceable
     def run(self, input_params: dict, *args, **kwargs):
