@@ -635,7 +635,7 @@ def validate_extra_info():
 class DDLTool(ToolWrapper):
     name = 'DDLTool'
     description: str = ("This tool can register tables, windows, and tabs in Etendo, create tables in the database, and"
-                        " add specific columns to a new or existing table. It can also register columns and create "
+                        "add specific columns to a new or existing table. It can also register columns and create "
                         "windows in Etendo. The DDLTool is a versatile tool designed to facilitate the creation and "
                         "management of tables, columns, and windows within a system. Its functionality is based on a "
                         "series of operation modes, each intended to perform specific tasks within the database "
