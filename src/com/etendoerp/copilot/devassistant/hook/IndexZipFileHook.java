@@ -109,11 +109,11 @@ public class IndexZipFileHook implements CopilotFileHook {
       }
 
       PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
-      try  {
-        List<Path> matchingFiles = new ArrayList<>(); // Lista para archivos que coinciden
-        List<Path> nonMatchingFiles = new ArrayList<>(); // Lista para archivos que no coinciden
+      try (Stream<Path> paths = Files.walk(basePath)) {
+        List<Path> matchingFiles = new ArrayList<>();
+        List<Path> nonMatchingFiles = new ArrayList<>();
 
-        for (Path path : (Iterable<Path>) Files.walk(basePath)::iterator) {
+        for (Path path : (Iterable<Path>) paths::iterator) {
           if (matcher.matches(path.getFileName())) {
             matchingFiles.add(path);
           } else {

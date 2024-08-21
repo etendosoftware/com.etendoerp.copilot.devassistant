@@ -11,17 +11,16 @@ import org.openbravo.client.kernel.event.EntityDeleteEvent;
 import org.openbravo.client.kernel.event.EntityNewEvent;
 import org.openbravo.client.kernel.event.EntityPersistenceEventObserver;
 import org.openbravo.client.kernel.event.EntityUpdateEvent;
-import org.openbravo.dal.core.OBContext;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.system.Client;
 
-import com.etendoerp.copilot.data.CopilotApp;
 import com.etendoerp.copilot.data.CopilotAppSource;
-import com.etendoerp.copilot.data.CopilotAppTool;
 import com.etendoerp.copilot.util.CopilotConstants;
 
 
 public class PathFileHandler extends EntityPersistenceEventObserver {
+  /**
+   * Constant representing the file type for COPDEV_CI.
+   */
   public static final String FILE_TYPE_COPDEV_CI = "COPDEV_CI";
   private static Entity[] entities = {
       ModelProvider.getInstance().getEntity(CopilotAppSource.ENTITY_NAME) };
