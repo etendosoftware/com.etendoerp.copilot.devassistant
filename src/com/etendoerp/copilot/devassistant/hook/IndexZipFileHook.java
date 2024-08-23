@@ -1,10 +1,8 @@
 package com.etendoerp.copilot.devassistant.hook;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -114,12 +111,13 @@ public class IndexZipFileHook implements CopilotFileHook {
         List<Path> nonMatchingFiles = new ArrayList<>();
 
         for (Path path : (Iterable<Path>) paths::iterator) {
-          if (matcher.matches(path.getFileName())) {
+          if (matcher.matches(path.getFileName()) && checkIgnoredFiles(path)) {
             matchingFiles.add(path);
           } else {
             nonMatchingFiles.add(path);
           }
         }
+        log.debug("Found {} matching files in {}", matchingFiles.size(), basePath.toString());
 
         filesToZip.addAll(matchingFiles);
       } catch (IOException e) {
@@ -129,19 +127,30 @@ public class IndexZipFileHook implements CopilotFileHook {
 
     File zipFile = File.createTempFile("files", ".zip");
     try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
+      int i = 0;
+      int total = filesToZip.size();
       for (Path filePath : filesToZip) {
         ZipEntry zipEntry = new ZipEntry(filePath.toString());
         zos.putNextEntry(zipEntry);
         Files.copy(filePath, zos);
         zos.closeEntry();
+        log.debug("Added file {} to zip file. {} of {}", filePath.toString(), ++i, total);
       }
     }
 
     return zipFile;
   }
 
+private static boolean checkIgnoredFiles(Path path) {
+    //return false if the path is inside a .git directory or a node_modules directory or a .idea directory or a directory starting with a dot
+    return !path.toString().contains(".git")
+        && !path.toString().contains("node_modules")
+        && !path.toString().contains(".idea")
+        && !path.toString().contains("/.");
+}
 
-  private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
+
+private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
     Attachment attachment = getAttachment(hookObject);
     if (attachment != null) {
       aim.delete(attachment);
