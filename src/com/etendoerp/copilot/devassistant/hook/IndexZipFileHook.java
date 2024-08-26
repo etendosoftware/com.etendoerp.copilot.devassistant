@@ -143,12 +143,12 @@ public class IndexZipFileHook implements CopilotFileHook {
 
   private static boolean checkIgnoredFiles(Path path) {
     //return false if the path is inside a .git directory or a node_modules directory or a .idea directory or a directory starting with a dot
-    return !path.toString().contains(".git")
-        && !path.toString().contains("node_modules")
-        && !path.toString().contains(".idea")
-        && !path.toString().contains("/.")
-        && !path.toString().contains("/venv/")
-        && !path.toString().contains("/.venv/");
+    return !StringUtils.contains(path.toString(), ".git")
+        && !StringUtils.contains(path.toString(), "node_modules")
+        && !StringUtils.contains(path.toString(), ".idea")
+        && !StringUtils.contains(path.toString(), "/.")
+        && !StringUtils.contains(path.toString(), "/venv/")
+        && !StringUtils.contains(path.toString(), "/.venv/");
   }
 
 
