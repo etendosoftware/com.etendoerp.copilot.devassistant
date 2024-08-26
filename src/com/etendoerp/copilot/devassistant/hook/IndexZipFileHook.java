@@ -141,16 +141,18 @@ public class IndexZipFileHook implements CopilotFileHook {
     return zipFile;
   }
 
-private static boolean checkIgnoredFiles(Path path) {
+  private static boolean checkIgnoredFiles(Path path) {
     //return false if the path is inside a .git directory or a node_modules directory or a .idea directory or a directory starting with a dot
     return !path.toString().contains(".git")
         && !path.toString().contains("node_modules")
         && !path.toString().contains(".idea")
-        && !path.toString().contains("/.");
-}
+        && !path.toString().contains("/.")
+        && !path.toString().contains("/venv/")
+        && !path.toString().contains("/.venv/");
+  }
 
 
-private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
+  private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
     Attachment attachment = getAttachment(hookObject);
     if (attachment != null) {
       aim.delete(attachment);
@@ -167,7 +169,7 @@ private void removeAttachment(AttachImplementationManager aim, CopilotFile hookO
   }
 
 
- /**
+  /**
    * Checks if the hook is applicable for the given type.
    *
    * @param type
