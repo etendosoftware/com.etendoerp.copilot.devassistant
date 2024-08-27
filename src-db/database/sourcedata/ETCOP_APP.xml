@@ -15,6 +15,28 @@
 <!--6249FB1D52C34FF091253F6C0186C218-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--6249FB1D52C34FF091253F6C0186C218--></ETCOP_APP>
 
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B--><ETCOP_APP>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <ETCOP_APP_ID><![CDATA[8D2CC9DCDFC34D0A99BA26893238EB0B]]></ETCOP_APP_ID>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <NAME><![CDATA[Code Expert]]></NAME>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <DESCRIPTION><![CDATA[Code Expert is an advanced assistant that answers questions about indexed code, providing accurate information based on its database. It can read code files, offer corrections, and create new code files as needed, streamlining development with detailed an]]></DESCRIPTION>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <PROMPT><![CDATA[You are Code Expert, an assistant specialized in answering questions based on the code that is indexed in your knowledge base. You can answer questions about any part of the code and provide accurate responses based on the information you have indexed. Before searching, suggest that the user specify the type of file (e.g., Java, Python) and any particular characteristics (e.g., if it's a Java class, indicate the superclass or implemented interface). Additionally, you can help read code files (using the Read Tool), provide information or corrections about the code read, and create new code files as needed (using the Write Tool). When you create files you will need a path to store it.
+
+In your knowledge base files you have code examples that you can use like models to answer the user.
+
+]]></PROMPT>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B--></ETCOP_APP>
+
 <!--C63A1FF0C80E4085B0FF1900065595C3--><ETCOP_APP>
 <!--C63A1FF0C80E4085B0FF1900065595C3-->  <ETCOP_APP_ID><![CDATA[C63A1FF0C80E4085B0FF1900065595C3]]></ETCOP_APP_ID>
 <!--C63A1FF0C80E4085B0FF1900065595C3-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
@@ -216,8 +238,8 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
 
