@@ -1,5 +1,68 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <data>
+<!--4E825A8CF4834A4490E22D028EECBCCD--><ETCOP_TOOL>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <ETCOP_TOOL_ID><![CDATA[4E825A8CF4834A4490E22D028EECBCCD]]></ETCOP_TOOL_ID>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <CREATED><![CDATA[2024-08-22 15:21:13.702]]></CREATED>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <UPDATED><![CDATA[2024-08-23 12:12:37.658]]></UPDATED>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <VALUE><![CDATA[ProcessDefinitionJasperTool]]></VALUE>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <NAME><![CDATA[Jasper Tool]]></NAME>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <DESCRIPTION><![CDATA[Creates a process definition for Jasper reports in the Etendo Application Dictionary.]]></DESCRIPTION>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "ProcessDefinitionJasperTool",
+    "description": "Creates a process definition for Jasper reports in the Etendo Application Dictionary.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "i_prefix": {
+          "title": "Prefix",
+          "description": "This is the prefix of the module in the database.",
+          "type": "string"
+        },
+        "i_searchkey": {
+          "title": "Search Key",
+          "description": "This is the search key of the process definition.",
+          "type": "string"
+        },
+        "i_report_name": {
+          "title": "Report Name",
+          "description": "This is the user friendly name of the report.",
+          "type": "string"
+        },
+        "i_help_comment": {
+          "title": "Help Comment",
+          "description": "This is a help comment for the report.",
+          "type": "string"
+        },
+        "i_description": {
+          "title": "Description",
+          "description": "Description of the report.",
+          "type": "string"
+        },
+        "i_parameters": {
+          "title": "Parameters",
+          "description": "Semicolon-separated list of parameter definitions in the format BD_NAME-NAME-LENGTH-SEQNO-REFERENCENCE.",
+          "type": "string"
+        },
+        "i_report_path": {
+          "title": "Report Path",
+          "description": "Path where the report is stored.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--4E825A8CF4834A4490E22D028EECBCCD-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--4E825A8CF4834A4490E22D028EECBCCD--></ETCOP_TOOL>
+
 <!--69474550D5874F378D1B029B8989BAB3--><ETCOP_TOOL>
 <!--69474550D5874F378D1B029B8989BAB3-->  <ETCOP_TOOL_ID><![CDATA[69474550D5874F378D1B029B8989BAB3]]></ETCOP_TOOL_ID>
 <!--69474550D5874F378D1B029B8989BAB3-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
@@ -50,7 +113,7 @@
 <!--98D5929201084E2098A09C7A43530276-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATED><![CDATA[2024-05-02 16:46:35.549]]></CREATED>
 <!--98D5929201084E2098A09C7A43530276-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-07-05 16:28:35.027]]></UPDATED>
+<!--98D5929201084E2098A09C7A43530276-->  <UPDATED><![CDATA[2024-08-14 10:21:19.282]]></UPDATED>
 <!--98D5929201084E2098A09C7A43530276-->  <UPDATEDBY><![CDATA[0]]></UPDATEDBY>
 <!--98D5929201084E2098A09C7A43530276-->  <VALUE><![CDATA[DDLTool]]></VALUE>
 <!--98D5929201084E2098A09C7A43530276-->  <NAME><![CDATA[DDL Tool]]></NAME>
