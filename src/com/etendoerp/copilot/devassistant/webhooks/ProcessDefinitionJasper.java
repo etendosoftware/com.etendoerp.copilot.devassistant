@@ -6,21 +6,28 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.client.application.Process;
+import org.openbravo.client.application.Parameter;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.openbravo.base.provider.OBProvider;
+import org.openbravo.model.ad.domain.Reference;
+import org.openbravo.client.application.ReportDefinition;
+import org.openbravo.model.ad.ui.Menu;
 
 public class ProcessDefinitionJasper extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
+  private static final String REPORT_JAVA_CLASS_NAME = "org.openbravo.client.application.report.BaseReportActionHandler";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -28,13 +35,21 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
 
     try {
       validateParameters(parameter);
-      createProcessDefinition(
+      Process processDef = createProcessDefinition(
               parameter.get("Prefix"),
               parameter.get("SearchKey"),
               parameter.get("ReportName"),
               parameter.get("Description"),
               parameter.get("HelpComment")
       );
+
+      createReportDefinition(processDef, parameter.get("ReportPath"));
+
+      List<Map<String, String>> params = convertParameters(parameter.get("Parameters"));
+      createParametersForProcess(processDef, params, parameter.get("Prefix"));
+
+      createMenuEntry(processDef, parameter.get("ReportName"), parameter.get("Prefix"));
+
       responseVars.put("message", "The record was created successfully.");
     } catch (IllegalArgumentException e) {
       log.error("Validation error: ", e);
@@ -117,6 +132,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
       processDef.setHelpComment(helpComment);
       processDef.setUIPattern("OBUIAPP_Report");
       processDef.setDataAccessLevel("3");
+      processDef.setJavaClassName(REPORT_JAVA_CLASS_NAME);
 
       processDef.setActive(true);
 
@@ -136,4 +152,86 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
     ModuleDBPrefix moduleDBPrefix = (ModuleDBPrefix) moduleDBPrefixOBCriteria.uniqueResult();
     return moduleDBPrefix != null ? moduleDBPrefix.getModule() : null;
   }
+
+  private void createParametersForProcess(Process processDef, List<Map<String, String>> parameters, String prefix) {
+    OBContext.setAdminMode(true);
+    try {
+      for (Map<String, String> param : parameters) {
+        Parameter parameter = OBProvider.getInstance().get(Parameter.class);
+
+        // We assume default client and organization are set somehow
+        // Adjust these lines according to your context
+        parameter.setClient(OBContext.getOBContext().getCurrentClient());
+        parameter.setOrganization(OBContext.getOBContext().getCurrentOrganization());
+        parameter.setActive(true); // Assuming new parameters should be active
+
+        parameter.setObuiappProcess(processDef); // Correct method name for setting the process
+        parameter.setModule(getModuleByPrefix(prefix)); // Set the module using the prefix
+        parameter.setDBColumnName(param.get("BD_NAME"));
+        parameter.setName(param.get("NAME"));
+        parameter.setSequenceNumber(Long.parseLong(param.get("SEQNO")));
+        // Set reference and reference search key
+        Reference reference = getReference(param.get("REFERENCE"));
+        parameter.setReference(reference);
+
+        parameter.setLength(Long.parseLong(param.get("LENGTH")));
+
+        OBDal.getInstance().save(parameter);
+      }
+      OBDal.getInstance().flush();
+    } finally {
+      OBContext.restorePreviousMode();
+    }
+  }
+
+  private Reference getReference(String referenceName) {
+    if (StringUtils.isEmpty(referenceName)) {
+      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullReference"));
+    }
+    OBCriteria<Reference> refList = OBDal.getInstance().createCriteria(Reference.class);
+    refList.add(Restrictions.ilike(Reference.PROPERTY_NAME, referenceName));
+    refList.setMaxResults(1);
+
+    if (refList.list().isEmpty()) {
+      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullReference"));
+    }
+    return (Reference) refList.uniqueResult();
+  }
+
+  public void createReportDefinition(Process processDef, String reportPath) {
+    OBContext.setAdminMode(true);
+    try {
+      ReportDefinition reportDefinition = OBProvider.getInstance().get(ReportDefinition.class);
+
+      reportDefinition.setClient(OBContext.getOBContext().getCurrentClient());
+      reportDefinition.setOrganization(OBContext.getOBContext().getCurrentOrganization());
+      reportDefinition.setActive(true);
+      reportDefinition.setProcessDefintion(processDef);
+      reportDefinition.setPDFTemplate(reportPath);
+
+      OBDal.getInstance().save(reportDefinition);
+      OBDal.getInstance().flush();
+    } finally {
+      OBContext.restorePreviousMode();
+    }
+  }
+
+  private void createMenuEntry(Process processDef, String reportName, String prefix) {
+    OBContext.setAdminMode(true);
+    try {
+      Menu menu = OBProvider.getInstance().get(Menu.class);
+      menu.setName(reportName);
+      menu.setAction("OBUIAPP_Process"); // Process Definition
+      menu.setOBUIAPPProcessDefinition(processDef);
+      menu.setOrganization(OBContext.getOBContext().getCurrentOrganization());
+      menu.setClient(OBContext.getOBContext().getCurrentClient());
+      menu.setModule(getModuleByPrefix(prefix));
+
+      OBDal.getInstance().save(menu);
+      OBDal.getInstance().flush();
+    } finally {
+      OBContext.restorePreviousMode();
+    }
+  }
+
 }
