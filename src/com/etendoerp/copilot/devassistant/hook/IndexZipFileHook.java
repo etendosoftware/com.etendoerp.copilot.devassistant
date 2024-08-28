@@ -68,12 +68,12 @@ public class IndexZipFileHook implements CopilotFileHook {
       List<KnowledgePathFile> pathList = hookObject.getCOPDEVKnowledgePathFilesList();
 
       Properties properties = OBPropertiesProvider.getInstance().getOpenbravoProperties();
-      String etendoSource = "@ETENDO_SOURCE@";
-      String sourcePath = properties.getProperty("source.path");
+      String sourcePath = "@source.path@";
+      String sourcePathProp = properties.getProperty("source.path");
 
       String[] paths = pathList.stream()
           .map(KnowledgePathFile::getPathFile)
-          .map(path -> path.startsWith(etendoSource) ? path.replaceFirst(etendoSource, sourcePath) : path)
+          .map(path -> path.startsWith(sourcePath) ? path.replaceFirst(sourcePath, sourcePathProp) : path)
           .toArray(String[]::new);
 
       File file = getCodeIndexZipFile(paths);
