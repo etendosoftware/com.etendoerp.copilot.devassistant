@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.model.ad.domain.Reference;
+import org.openbravo.client.application.ReportDefinition;
+import org.openbravo.model.ad.ui.Menu;
 
 public class ProcessDefinitionJasper extends BaseWebhookService {
 
@@ -41,8 +43,12 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
               parameter.get("HelpComment")
       );
 
+      createReportDefinition(processDef, parameter.get("ReportPath"));
+
       List<Map<String, String>> params = convertParameters(parameter.get("Parameters"));
       createParametersForProcess(processDef, params, parameter.get("Prefix"));
+
+      createMenuEntry(processDef, parameter.get("ReportName"), parameter.get("Prefix"));
 
       responseVars.put("message", "The record was created successfully.");
     } catch (IllegalArgumentException e) {
@@ -191,4 +197,41 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
     }
     return (Reference) refList.uniqueResult();
   }
+
+  public void createReportDefinition(Process processDef, String reportPath) {
+    OBContext.setAdminMode(true);
+    try {
+      ReportDefinition reportDefinition = OBProvider.getInstance().get(ReportDefinition.class);
+
+      reportDefinition.setClient(OBContext.getOBContext().getCurrentClient());
+      reportDefinition.setOrganization(OBContext.getOBContext().getCurrentOrganization());
+      reportDefinition.setActive(true);
+      reportDefinition.setProcessDefintion(processDef);
+      reportDefinition.setPDFTemplate(reportPath);
+
+      OBDal.getInstance().save(reportDefinition);
+      OBDal.getInstance().flush();
+    } finally {
+      OBContext.restorePreviousMode();
+    }
+  }
+
+  private void createMenuEntry(Process processDef, String reportName, String prefix) {
+    OBContext.setAdminMode(true);
+    try {
+      Menu menu = OBProvider.getInstance().get(Menu.class);
+      menu.setName(reportName);
+      menu.setAction("OBUIAPP_Process"); // Process Definition
+      menu.setOBUIAPPProcessDefinition(processDef);
+      menu.setOrganization(OBContext.getOBContext().getCurrentOrganization());
+      menu.setClient(OBContext.getOBContext().getCurrentClient());
+      menu.setModule(getModuleByPrefix(prefix));
+
+      OBDal.getInstance().save(menu);
+      OBDal.getInstance().flush();
+    } finally {
+      OBContext.restorePreviousMode();
+    }
+  }
+
 }
