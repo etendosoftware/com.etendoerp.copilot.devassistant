@@ -9,6 +9,7 @@ from copilot.core.threadcontext import ThreadContext
 from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
+from copilot.core.etendo_utils import call_webhook, get_etendo_token, get_etendo_host
 
 
 class ProcessDefinitionJasperInput(ToolInput):
@@ -44,35 +45,12 @@ class ProcessDefinitionJasperInput(ToolInput):
         description="Semicolon-separated list of parameter definitions in the format BD_NAME-NAME-LENGTH-SEQNO-REFERENCENCE."
     )
 
-    i_path: str = ToolField(
+    i_report_path: str = ToolField(
         title="Report Path",
         description="Path where the report is stored."
     )
 
 
-@traceable
-def _get_headers(access_token: Optional[str]) -> Dict[str, str]:
-    headers = {}
-    if access_token:
-        headers["Authorization"] = f"Bearer {access_token}"
-    return headers
-
-
-@traceable
-def call_webhook(access_token: Optional[str], body_params: Dict, url: str, webhook_name: str) -> Dict:
-    headers = _get_headers(access_token)
-    endpoint = f"/webhooks/?name={webhook_name}"
-    json_data = json.dumps(body_params)
-    full_url = f"{url}{endpoint}"
-
-    copilot_debug(f"Calling Webhook(POST): {full_url}")
-    post_result = requests.post(url=full_url, data=json_data, headers=headers)
-
-    if post_result.ok:
-        return post_result.json()
-    else:
-        copilot_debug(post_result.text)
-        return {"error": post_result.text}
 
 
 def process_parameters(parameter_string: str) -> List[Dict[str, str]]:
@@ -109,20 +87,10 @@ class ProcessDefinitionJasperTool(ToolWrapper):
         description = input_params.get('i_description', "")
         parameters_string = input_params.get('i_parameters', "")
         parameters = process_parameters(parameters_string)
-        path = input_params.get('i_path', "")
-        path_parts = path.split('/')
+        report_path = input_params.get('i_report_path', "")
+        path_parts = report_path.split('/')
         web_index = path_parts.index('web')
-        truncated_path = "/".join(path_parts[web_index:web_index + 3])  #  "web/<MODULE_PACKAGE>/JasperReports/JasperFile.jrxml"
-
-        extra_info = ThreadContext.get_data('extra_info')
-        if not extra_info or not extra_info.get('auth') or not extra_info.get('auth').get('ETENDO_TOKEN'):
-            return {"error": "No access token provided. To work with Etendo, an access token is required."
-                             "Make sure that the Webservices are enabled for the user role and the WS are configured for"
-                             " the Entity."}
-
-        access_token = extra_info.get('auth').get('ETENDO_TOKEN')
-        etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
-        copilot_debug(f"ETENDO_HOST: {etendo_host}")
+        truncated_path = "/".join(path_parts[web_index:web_index + 4])
 
         webhook_name = "ProcessDefinitionJasper"
         body_params = {
@@ -132,8 +100,9 @@ class ProcessDefinitionJasperTool(ToolWrapper):
             "HelpComment": help_comment,
             "Description": description,
             "Parameters": parameters,
-            "Path": path
+            "ReportPath": truncated_path
         }
 
-        post_result = call_webhook(access_token, body_params, etendo_host, webhook_name)
+        post_result = call_webhook(get_etendo_token(), body_params, get_etendo_host(), webhook_name)
+
         return post_result
