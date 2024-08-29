@@ -33,7 +33,7 @@
         <default/>
         <onCreateDefault/>
       </column>
-      <column name="PATH_FILE" primaryKey="false" required="false" type="CLOB" size="4000" autoIncrement="false">
+      <column name="PATH_FILE" primaryKey="false" required="false" type="VARCHAR" size="500" autoIncrement="false">
         <default/>
         <onCreateDefault/>
       </column>
