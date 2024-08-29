@@ -28,6 +28,11 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   private static final Logger log = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
   private static final String REPORT_JAVA_CLASS_NAME = "org.openbravo.client.application.report.BaseReportActionHandler";
+  private static final String WEB_PATH_INDICATOR = "web/";
+  private static final String FILE_EXTENTION = ".jrxml";
+  private static final String OBUIAPP_REPORT = "OBUIAPP_Report";
+  private static final String PROCESS_ACTION = "OBUIAPP_Process";
+  private static final String DATA_ACCESS_LEVEL = "3";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -61,16 +66,16 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   }
 
   private void validateParameters(Map<String, String> parameter) {
-    if (StringUtils.isBlank(parameter.get("Prefix"))) {
+    if (isInvalidParameter(parameter.get("Prefix"))) {
       throw new IllegalArgumentException("The Prefix parameter is missing");
     }
-    if (StringUtils.isBlank(parameter.get("SearchKey"))) {
+    if (isInvalidParameter(parameter.get("SearchKey"))) {
       throw new IllegalArgumentException("The SearchKey parameter is missing");
     }
-    if (StringUtils.isBlank(parameter.get("ReportName"))) {
+    if (isInvalidParameter(parameter.get("ReportName"))) {
       throw new IllegalArgumentException("The ReportName parameter is missing");
     }
-    if (StringUtils.isBlank(parameter.get("ReportPath"))) {
+    if (isInvalidParameter(parameter.get("ReportPath"))) {
       throw new IllegalArgumentException("The ReportPath parameter is missing");
     }
 
@@ -82,6 +87,10 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
 
     String path = parameter.get("ReportPath");
     validatePathFormat(path);
+  }
+
+  private boolean isInvalidParameter(String parameter) {
+    return StringUtils.isBlank(parameter);
   }
 
   private void validatePrefixExists(String prefix) {
@@ -114,7 +123,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
 
   private void validatePathFormat(String path) {
     log.info("Validating path format: " + path);
-    if (!path.contains("/web/") || !path.endsWith(".jrxml")) {
+    if (!path.contains(WEB_PATH_INDICATOR) || !path.endsWith(FILE_EXTENTION)) {
       throw new IllegalArgumentException("The path format is incorrect. It should contain '/web/' and end with '.jrxml': " + path);
     }
   }
@@ -130,10 +139,9 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
       processDef.setName(reportName);
       processDef.setDescription(description);
       processDef.setHelpComment(helpComment);
-      processDef.setUIPattern("OBUIAPP_Report");
-      processDef.setDataAccessLevel("3");
+      processDef.setUIPattern(OBUIAPP_REPORT);
+      processDef.setDataAccessLevel(DATA_ACCESS_LEVEL);
       processDef.setJavaClassName(REPORT_JAVA_CLASS_NAME);
-
       processDef.setActive(true);
 
       OBDal.getInstance().save(processDef);
@@ -146,11 +154,11 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   }
 
   private Module getModuleByPrefix(String prefix) {
-    OBCriteria<ModuleDBPrefix> moduleDBPrefixOBCriteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    moduleDBPrefixOBCriteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
-    moduleDBPrefixOBCriteria.setMaxResults(1);
-    ModuleDBPrefix moduleDBPrefix = (ModuleDBPrefix) moduleDBPrefixOBCriteria.uniqueResult();
-    return moduleDBPrefix != null ? moduleDBPrefix.getModule() : null;
+    OBCriteria<ModuleDBPrefix> criteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
+    criteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
+    criteria.setMaxResults(1);
+    ModuleDBPrefix dbPrefix = (ModuleDBPrefix) criteria.uniqueResult();
+    return dbPrefix != null ? dbPrefix.getModule() : null;
   }
 
   private void createParametersForProcess(Process processDef, List<Map<String, String>> parameters, String prefix) {
@@ -170,11 +178,10 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
         parameter.setDBColumnName(param.get("BD_NAME"));
         parameter.setName(param.get("NAME"));
         parameter.setSequenceNumber(Long.parseLong(param.get("SEQNO")));
-        // Set reference and reference search key
+        parameter.setLength(Long.parseLong(param.get("LENGTH")));
+
         Reference reference = getReference(param.get("REFERENCE"));
         parameter.setReference(reference);
-
-        parameter.setLength(Long.parseLong(param.get("LENGTH")));
 
         OBDal.getInstance().save(parameter);
       }
@@ -188,14 +195,16 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
     if (StringUtils.isEmpty(referenceName)) {
       throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullReference"));
     }
-    OBCriteria<Reference> refList = OBDal.getInstance().createCriteria(Reference.class);
-    refList.add(Restrictions.ilike(Reference.PROPERTY_NAME, referenceName));
-    refList.setMaxResults(1);
 
-    if (refList.list().isEmpty()) {
+    OBCriteria<Reference> criteria = OBDal.getInstance().createCriteria(Reference.class);
+    criteria.add(Restrictions.ilike(Reference.PROPERTY_NAME, referenceName));
+    criteria.setMaxResults(1);
+
+    if (criteria.list().isEmpty()) {
       throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullReference"));
     }
-    return (Reference) refList.uniqueResult();
+
+    return (Reference) criteria.uniqueResult();
   }
 
   public void createReportDefinition(Process processDef, String reportPath) {
@@ -221,7 +230,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
     try {
       Menu menu = OBProvider.getInstance().get(Menu.class);
       menu.setName(reportName);
-      menu.setAction("OBUIAPP_Process"); // Process Definition
+      menu.setAction(PROCESS_ACTION); // Process Definition
       menu.setOBUIAPPProcessDefinition(processDef);
       menu.setOrganization(OBContext.getOBContext().getCurrentOrganization());
       menu.setClient(OBContext.getOBContext().getCurrentClient());
