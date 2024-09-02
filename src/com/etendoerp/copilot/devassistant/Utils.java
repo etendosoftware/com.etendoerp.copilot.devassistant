@@ -14,6 +14,13 @@ import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.scheduling.ProcessBundle;
 import org.openbravo.scheduling.ProcessRunner;
 import org.openbravo.service.db.DalConnectionProvider;
+import org.hibernate.criterion.Restrictions;
+import org.openbravo.dal.service.OBDal;
+import org.openbravo.dal.service.OBCriteria;
+import org.openbravo.base.exception.OBException;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
+import org.openbravo.model.ad.module.Module;
+import org.openbravo.model.ad.module.ModuleDBPrefix;
 
 public class Utils {
   private Utils() {
@@ -47,4 +54,22 @@ public class Utils {
       logIfDebug(logger, String.format("Parameter: %s = %s", entry.getKey(), entry.getValue()));
     }
   }
-}
+
+  /**
+   * Retrieves a Module object based on the given prefix.
+   *
+   * @param prefix the module prefix
+   * @return the Module object, or null if not found
+   */
+  public static Module getModuleByPrefix(String prefix) {
+    OBCriteria<ModuleDBPrefix> criteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
+    criteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
+    criteria.setMaxResults(1);
+
+    ModuleDBPrefix dbPrefix = (ModuleDBPrefix) criteria.uniqueResult();
+    if (dbPrefix == null) {
+      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullModule"));
+    }
+    return dbPrefix.getModule();
+    }
+  }

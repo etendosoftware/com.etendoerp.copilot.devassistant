@@ -1,27 +1,29 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
+import org.openbravo.base.provider.OBProvider;
+import org.openbravo.client.application.Parameter;
+import org.openbravo.client.application.Process;
+import org.openbravo.client.application.ReportDefinition;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.module.Module;
+import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
-import org.openbravo.client.application.Process;
-import org.openbravo.client.application.Parameter;
+import org.openbravo.model.ad.ui.Menu;
+
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.openbravo.base.provider.OBProvider;
-import org.openbravo.model.ad.domain.Reference;
-import org.openbravo.client.application.ReportDefinition;
-import org.openbravo.model.ad.ui.Menu;
 
 /**
  * This class handles the creation of Jasper report processes triggered by webhooks.
@@ -52,16 +54,16 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    log.info("Executing validation process");
+    log.debug("Executing validation process");
 
     try {
       validateParameters(parameter);
       Process processDef = createProcessDefinition(
-              parameter.get(PARAM_PREFIX),
-              parameter.get(PARAM_SEARCH_KEY),
-              parameter.get(PARAM_REPORT_NAME),
-              parameter.get(PARAM_DESCRIPTION),
-              parameter.get(PARAM_HELP_COMMENT)
+          parameter.get(PARAM_PREFIX),
+          parameter.get(PARAM_SEARCH_KEY),
+          parameter.get(PARAM_REPORT_NAME),
+          parameter.get(PARAM_DESCRIPTION),
+          parameter.get(PARAM_HELP_COMMENT)
       );
 
       createReportDefinition(processDef, parameter.get(PARAM_REPORT_PATH));
@@ -85,25 +87,29 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   /**
    * Validates the parameters required for creating a report process definition.
    *
-   * @param parameter the map of parameters
-   * @throws IllegalArgumentException if any required parameter is missing or invalid
+   * @param parameter
+   *     the map of parameters
+   * @throws IllegalArgumentException
+   *     if any required parameter is missing or invalid
    */
   private void validateParameters(Map<String, String> parameter) {
+    String missingParameterMessage = "COPDEV_MissingParameter";
     if (isInvalidParameter(parameter.get(PARAM_PREFIX))) {
-      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage("COPDEV_MissingParameter",
-              new String[]{ PARAM_PREFIX }));
+      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage(missingParameterMessage,
+          new String[]{ PARAM_PREFIX }));
     }
+
     if (isInvalidParameter(parameter.get(PARAM_SEARCH_KEY))) {
-      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage("COPDEV_MissingParameter",
-              new String[]{ PARAM_SEARCH_KEY }));
+      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage(missingParameterMessage,
+          new String[]{ PARAM_SEARCH_KEY }));
     }
     if (isInvalidParameter(parameter.get(PARAM_REPORT_NAME))) {
-      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage("COPDEV_MissingParameter",
-              new String[]{ PARAM_REPORT_NAME }));
+      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage(missingParameterMessage,
+          new String[]{ PARAM_REPORT_NAME }));
     }
     if (isInvalidParameter(parameter.get(PARAM_REPORT_PATH))) {
-      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage("COPDEV_MissingParameter",
-              new String[]{ PARAM_REPORT_PATH }));
+      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage(missingParameterMessage,
+          new String[]{ PARAM_REPORT_PATH }));
     }
 
     String prefix = parameter.get(PARAM_PREFIX);
@@ -119,7 +125,8 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   /**
    * Checks if a parameter is invalid (null or empty).
    *
-   * @param parameter the parameter value
+   * @param parameter
+   *     the parameter value
    * @return true if the parameter is invalid, false otherwise
    */
   private boolean isInvalidParameter(String parameter) {
@@ -129,16 +136,21 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   /**
    * Validates that the provided prefix exists in the database.
    *
-   * @param prefix the prefix to validate
-   * @throws IllegalArgumentException if the prefix does not exist
+   * @param prefix
+   *     the prefix to validate
+   * @throws IllegalArgumentException
+   *     if the prefix does not exist
    */
   private void validatePrefixExists(String prefix) {
-    log.info("Validating prefix: " + prefix);
+    log.debug("Validating prefix: {}", prefix);
     OBCriteria<ModuleDBPrefix> criteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
     criteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
     criteria.createAlias(ModuleDBPrefix.PROPERTY_MODULE, "module");
 
-    if (criteria.list().isEmpty()) {
+    criteria.setMaxResults(1);
+    ModuleDBPrefix result = (ModuleDBPrefix) criteria.uniqueResult();
+
+    if (result == null) {
       throw new IllegalArgumentException("The prefix does not exist in the database: " + prefix);
     }
   }
@@ -146,27 +158,31 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   /**
    * Converts a JSON string into a list of parameter maps.
    *
-   * @param parametersJson the JSON string representing the parameters
+   * @param parametersJson
+   *     the JSON string representing the parameters
    * @return the list of parameters
    */
   private List<Map<String, String>> convertParameters(String parametersJson) {
     Gson gson = new Gson();
-    return gson.fromJson(parametersJson, new TypeToken<List<Map<String, String>>>() {}.getType());
+    return gson.fromJson(parametersJson, new TypeToken<List<Map<String, String>>>() {
+    }.getType());
   }
 
   /**
    * Validates the format of the given parameters.
    *
-   * @param paramList the list of parameters
-   * @throws IllegalArgumentException if any parameter has an incorrect format
+   * @param paramList
+   *     the list of parameters
+   * @throws IllegalArgumentException
+   *     if any parameter has an incorrect format
    */
   private void validateParametersFormat(List<Map<String, String>> paramList) {
-    log.info("Validating parameters format");
+    log.debug("Validating parameters format");
 
     for (Map<String, String> param : paramList) {
       if (!param.containsKey("BD_NAME") || !param.containsKey("NAME") ||
-              !param.containsKey("LENGTH") || !param.containsKey("SEQNO") ||
-              !param.containsKey("REFERENCE")) {
+          !param.containsKey("LENGTH") || !param.containsKey("SEQNO") ||
+          !param.containsKey("REFERENCE")) {
         throw new IllegalArgumentException("Parameter format is incorrect: " + param);
       }
     }
@@ -175,34 +191,42 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   /**
    * Validates the format of the report path.
    *
-   * @param path the report path
-   * @throws IllegalArgumentException if the path format is incorrect
+   * @param path
+   *     the report path
+   * @throws IllegalArgumentException
+   *     if the path format is incorrect
    */
   private void validatePathFormat(String path) {
-    log.info("Validating path format: " + path);
+    log.debug("Validating path format: {}", path);
     if (!StringUtils.contains(path, WEB_PATH_INDICATOR) || !StringUtils.endsWith(path, FILE_EXTENTION)) {
       throw new IllegalArgumentException(OBMessageUtils.getI18NMessage("COPDEV_IncorrectFormat",
-              new String[]{path}));
+          new String[]{ path }));
     }
   }
 
   /**
    * Creates a process definition and saves it to the database.
    *
-   * @param prefix the module prefix
-   * @param searchKey the search key
-   * @param reportName the report name
-   * @param description the report description
-   * @param helpComment the help comment
+   * @param prefix
+   *     the module prefix
+   * @param searchKey
+   *     the search key
+   * @param reportName
+   *     the report name
+   * @param description
+   *     the report description
+   * @param helpComment
+   *     the help comment
    * @return the created Process object
    */
-  public Process createProcessDefinition(String prefix, String searchKey, String reportName, String description, String helpComment) {
+  public Process createProcessDefinition(String prefix, String searchKey, String reportName, String description,
+      String helpComment) {
     try {
       OBContext.setAdminMode(true);
       Process processDef = OBProvider.getInstance().get(Process.class);
 
       processDef.setNewOBObject(true);
-      processDef.setModule(getModuleByPrefix(prefix));
+      processDef.setModule(Utils.getModuleByPrefix(prefix));
       processDef.setSearchKey(searchKey);
       processDef.setName(reportName);
       processDef.setDescription(description);
@@ -222,25 +246,14 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   }
 
   /**
-   * Retrieves a Module object based on the given prefix.
-   *
-   * @param prefix the module prefix
-   * @return the Module object, or null if not found
-   */
-  private Module getModuleByPrefix(String prefix) {
-    OBCriteria<ModuleDBPrefix> criteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    criteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
-    criteria.setMaxResults(1);
-    ModuleDBPrefix dbPrefix = (ModuleDBPrefix) criteria.uniqueResult();
-    return dbPrefix != null ? dbPrefix.getModule() : null;
-  }
-
-  /**
    * Creates parameters for the given process definition.
    *
-   * @param processDef the Process object
-   * @param parameters the list of parameters
-   * @param prefix the module prefix
+   * @param processDef
+   *     the Process object
+   * @param parameters
+   *     the list of parameters
+   * @param prefix
+   *     the module prefix
    */
   private void createParametersForProcess(Process processDef, List<Map<String, String>> parameters, String prefix) {
     try {
@@ -255,7 +268,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
         parameter.setActive(true); // Assuming new parameters should be active
 
         parameter.setObuiappProcess(processDef); // Correct method name for setting the process
-        parameter.setModule(getModuleByPrefix(prefix)); // Set the module using the prefix
+        parameter.setModule(Utils.getModuleByPrefix(prefix)); // Set the module using the prefix
         parameter.setDBColumnName(param.get("BD_NAME"));
         parameter.setName(param.get("NAME"));
         parameter.setSequenceNumber(Long.parseLong(param.get("SEQNO")));
@@ -275,9 +288,11 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   /**
    * Retrieves a Reference object by name.
    *
-   * @param referenceName the name of the reference
+   * @param referenceName
+   *     the name of the reference
    * @return the Reference object
-   * @throws OBException if the reference is not found or the name is empty
+   * @throws OBException
+   *     if the reference is not found or the name is empty
    */
   private Reference getReference(String referenceName) {
     if (StringUtils.isEmpty(referenceName)) {
@@ -287,19 +302,20 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
     OBCriteria<Reference> criteria = OBDal.getInstance().createCriteria(Reference.class);
     criteria.add(Restrictions.ilike(Reference.PROPERTY_NAME, referenceName));
     criteria.setMaxResults(1);
-
-    if (criteria.list().isEmpty()) {
+    Reference result = (Reference) criteria.uniqueResult();
+    if (result == null) {
       throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullReference"));
     }
-
-    return (Reference) criteria.uniqueResult();
+    return result;
   }
 
   /**
    * Creates a report definition for the given process definition.
    *
-   * @param processDef the Process object
-   * @param reportPath the path to the report file
+   * @param processDef
+   *     the Process object
+   * @param reportPath
+   *     the path to the report file
    */
   public void createReportDefinition(Process processDef, String reportPath) {
     try {
@@ -322,9 +338,12 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
   /**
    * Creates a menu entry for the given process definition.
    *
-   * @param processDef the Process object
-   * @param reportName the name of the report
-   * @param prefix the module prefix
+   * @param processDef
+   *     the Process object
+   * @param reportName
+   *     the name of the report
+   * @param prefix
+   *     the module prefix
    */
   private void createMenuEntry(Process processDef, String reportName, String prefix) {
 
@@ -336,7 +355,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
       menu.setOBUIAPPProcessDefinition(processDef);
       menu.setOrganization(OBContext.getOBContext().getCurrentOrganization());
       menu.setClient(OBContext.getOBContext().getCurrentClient());
-      menu.setModule(getModuleByPrefix(prefix));
+      menu.setModule(Utils.getModuleByPrefix(prefix));
 
       OBDal.getInstance().save(menu);
       OBDal.getInstance().flush();
