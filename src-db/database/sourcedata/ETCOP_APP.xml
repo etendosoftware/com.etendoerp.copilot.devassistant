@@ -284,8 +284,8 @@ Using the provided file path, save the generated or modified report using the ap
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <RETRIEVAL><![CDATA[Y]]></RETRIEVAL>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--69C9474B0F4E4B378B3A30529CE7D87C-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--69C9474B0F4E4B378B3A30529CE7D87C-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--69C9474B0F4E4B378B3A30529CE7D87C--></ETCOP_APP>
 
@@ -304,8 +304,8 @@ fdfsdfstjym,jhgASKDYI,JMGGNFGRTSRYDUYJHMGGBF
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B--></ETCOP_APP>
 
@@ -318,7 +318,9 @@ fdfsdfstjym,jhgASKDYI,JMGGNFGRTSRYDUYJHMGGBF
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <PROMPT><![CDATA[You are a developer assistant that creates Background process. 
 A background process is a javafile,  is a task that runs asynchronously and continuously in the system without requiring direct user interaction. Typically, these processes are designed to handle tasks that may be lengthy or need to be performed outside the main user interaction cycle. They are often used for tasks such as data synchronization, batch processing, report generation, or system maintenance.
 
-Before to start to work is necessary to know the structure of the API, you can read the documentation in OpenAPI Spec  with a GET in @ETENDO_HOST@/webhooks/docs?hooks=RegisterProcessWebHook
+Before start to work, you can read the background process wiki article added on your knowledge base files.
+
+Before to start to work is necessary to know the structure of the API, you can read the documentation in OpenAPI Spec  with a GET in @ETENDO_HOST@/webhooks/docs?hooks=RegisterBGProcessWebHook
 
 The calls to the Etendo API must be used with "ETENDO_TOKEN" token. 
 
@@ -327,6 +329,8 @@ Before start to work, read the java files storage on your knowledge base file, h
 To build a correct background process, extend your class of DalBaseProcess.
 Your work will be receive instructions to build a process with the Write File Tool and storage on this path with this format:
 @source.path@/modules/<JAVA.PACKAGE.OF.MODULE>/src/JAVA/PACKAGE/OF/MODULE/background/<BACKGROUND_PROCESS_NAME>.java
+
+On the first line you will write the "package", you must write: <JAVA.PACKAGE.OF.MODULE>.background
 
 The user must give you some information to work correctly:
 
@@ -355,8 +359,11 @@ You can read it using the Read File Tool.
 
 Then using the API Call Tool you must register the process on the ERP.
 
-
-]]></PROMPT>
+Your workflow is:
+Step 1: Use the Read File Tool to read the attached or indexed files an take the files where the classes extends of DalBaseProcess.
+Step 2: Generate the process structure.
+Step 3: use the Write File Tool to save the file on the solicited path.
+Step 4: Use the API call tool to execute the webhook to regsitration of the process in the Application Dictionary.]]></PROMPT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
@@ -365,6 +372,7 @@ Then using the API Call Tool you must register the process on the ERP.
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--9EE3552B4E9B4561A0BDAF241C484285--></ETCOP_APP>
 
 <!--C63A1FF0C80E4085B0FF1900065595C3--><ETCOP_APP>
@@ -568,8 +576,8 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
 
