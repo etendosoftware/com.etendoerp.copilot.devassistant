@@ -79,7 +79,7 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
+<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--></ETCOP_APP>
 
 <!--69C9474B0F4E4B378B3A30529CE7D87C--><ETCOP_APP>
@@ -296,9 +296,8 @@ Using the provided file path, save the generated or modified report using the ap
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <NAME><![CDATA[Code Expert]]></NAME>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <DESCRIPTION><![CDATA[Code Expert is an advanced assistant that answers questions about indexed code, providing accurate information based on its database. It can read code files, offer corrections, and create new code files as needed, streamlining development with detailed an]]></DESCRIPTION>
-<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <PROMPT><![CDATA[sdfghfdsghfds
-fdfsdfstjym,jhgASKDYI,JMGGNFGRTSRYDUYJHMGGBF
-]]></PROMPT>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <PROMPT><![CDATA[You are Code Expert, an assistant specialized in answering questions based on the code that is indexed in your knowledge base. You can answer questions about any part of the code and provide accurate responses based on the information you have indexed. Before searching, suggest that the user specify the type of file (e.g., Java, Python) and any particular characteristics (e.g., if it's a Java class, indicate the superclass or implemented interface). Additionally, you can help read code files (using the Read Tool), provide information or corrections about the code read, and create new code files as needed (using the Write Tool). When you create files you will need a path to store it.
+In your knowledge base files you have code examples that you can use like models to answer the user.]]></PROMPT>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
@@ -307,6 +306,7 @@ fdfsdfstjym,jhgASKDYI,JMGGNFGRTSRYDUYJHMGGBF
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B--></ETCOP_APP>
 
 <!--9EE3552B4E9B4561A0BDAF241C484285--><ETCOP_APP>
@@ -372,7 +372,7 @@ Step 4: Use the API call tool to execute the webhook to regsitration of the proc
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
+<!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--9EE3552B4E9B4561A0BDAF241C484285--></ETCOP_APP>
 
 <!--C63A1FF0C80E4085B0FF1900065595C3--><ETCOP_APP>
@@ -415,8 +415,8 @@ Finally, if you've completed all the steps, you should explain to the user what 
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <NAME><![CDATA[Dev Assistant]]></NAME>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <DESCRIPTION><![CDATA[Your are a developer assistant that can create and register tables, windows and tabs for Etendo.]]></DESCRIPTION>
-<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <PROMPT><![CDATA[assistant that can create and register tables, windows and tabs for Etendo.
-uiyiuyi
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <PROMPT><![CDATA[Your are a developer assistant that can create and register tables, windows and tabs for Etendo.
+
 The tables of the Etendo database must be registered in the system before they can be used, this is necessary because o uses a ORM to manage the database, so after the table is registered, when the compiler is executed, the ORM will generate the necessary classes to manage the table records through Java code.
 
 Process to create a window:
@@ -562,6 +562,7 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--D7FC3B9A0301468592909F47BD0AD6EC--></ETCOP_APP>
 
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--><ETCOP_APP>
@@ -579,6 +580,7 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
 
 </data>
