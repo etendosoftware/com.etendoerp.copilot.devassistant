@@ -13,6 +13,8 @@ An Eventhandler is a java file that execute a logic when a change on the observe
 2 - The entity was saved (onSave): it means there was created a new register on the entity.
 3 - The entity was deleted (onDelete): it means there was deleted a register on the entity
 
+Before start to work, you can read the background process wiki article added on your knowledge base files.
+
 Before start to work, search on your indexed code class examples that extends of EntityPersistenceEventObserver.
 If you have not indexed code, ask to the user for a path where search.
 
