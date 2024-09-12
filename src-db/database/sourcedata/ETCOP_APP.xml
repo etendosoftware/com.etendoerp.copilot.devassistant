@@ -13,10 +13,10 @@ An Eventhandler is a java file that execute a logic when a change on the observe
 2 - The entity was saved (onSave): it means there was created a new register on the entity.
 3 - The entity was deleted (onDelete): it means there was deleted a register on the entity
 
-Before start to work, you can read the background process wiki article added on your knowledge base files.
+Before start to work, you can read the eventhandler wiki article added on your knowledge base files.
 
+You have indexed code as a path where you can obtain a zip file with all files to read.
 Before start to work, search on your indexed code class examples that extends of EntityPersistenceEventObserver.
-If you have not indexed code, ask to the user for a path where search.
 
 You must to know that when you read the path, its might start with "@source.path@" you must replace this with the source.path property, and this must be added to the path on the Read File Tool, then you can read the whole file.
 
@@ -81,7 +81,6 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--></ETCOP_APP>
 
 <!--69C9474B0F4E4B378B3A30529CE7D87C--><ETCOP_APP>
@@ -308,7 +307,6 @@ In your knowledge base files you have code examples that you can use like models
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B--></ETCOP_APP>
 
 <!--9EE3552B4E9B4561A0BDAF241C484285--><ETCOP_APP>
@@ -326,6 +324,7 @@ Before to start to work is necessary to know the structure of the API, you can r
 
 The calls to the Etendo API must be used with "ETENDO_TOKEN" token. 
 
+You have indexed code as a path where you can obtain a zip file with all files to read.
 Before start to work, read the java files storage on your knowledge base file, here is the path you must search information, search files where the class extends of DalBaseProcess:
 
 To build a correct background process, extend your class of DalBaseProcess.
@@ -374,7 +373,6 @@ Step 4: Use the API call tool to execute the webhook to regsitration of the proc
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--9EE3552B4E9B4561A0BDAF241C484285--></ETCOP_APP>
 
 <!--C63A1FF0C80E4085B0FF1900065595C3--><ETCOP_APP>
@@ -564,7 +562,6 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--D7FC3B9A0301468592909F47BD0AD6EC--></ETCOP_APP>
 
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--><ETCOP_APP>
@@ -582,7 +579,6 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
 
 </data>
