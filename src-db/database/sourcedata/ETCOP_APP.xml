@@ -431,6 +431,7 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--D7FC3B9A0301468592909F47BD0AD6EC--></ETCOP_APP>
 
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--><ETCOP_APP>
@@ -449,5 +450,33 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
+
+<!--FCC50642FDD24002AEE45C26A91E5253--><ETCOP_APP>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <ETCOP_APP_ID><![CDATA[FCC50642FDD24002AEE45C26A91E5253]]></ETCOP_APP_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <NAME><![CDATA[ButtonProcessCreatorAssistant]]></NAME>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <DESCRIPTION><![CDATA[Los desarrolladores necesitan crear procesos de botones para varios módulos y funcionalidades. Este proceso puede consumir mucho tiempo y ser repetitivo. Este es un asistente que ayuda a configurar rápidamente los procesos de botones en función de ejemplo]]></DESCRIPTION>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <PROMPT><![CDATA[In Etendo, a "process button" is a function that is associated with specific records and can depend on the record's status and active level (such as header or rows). These buttons allow you to execute processes defined in the system, such as creating transactions, completing documents, or publishing financial data.
+Example: Action button: can generate a new record, save changes, cancel changes, etc. The user will ask you to create a button for a certain process, you will need to give the java class of the button which should extend BaseProcessActionHandler. Look for example classes that extend BaseProcessActionHandler to make it as good as possible. If you don't have indexed code that extends BaseProcessActionHandler ask the user to pass you the path.
+
+You should ask the user, if he has not provided this information: The javapackage of the module to create the button class, the module prefix (e.g. COPDEV), the window, tab and table, process name and search key (it should always have the module prefix, e.g. COPDEV_SalesReport). You should also pass the name of the parameters if necessary and their characteristics (DB column name, name, length, sequence number, references). If the parameter is an ID, the user should note that the length must be at least 32. Additionally, there are two optional fields: help comment and description.
+You should then register the process using the webhook using that data.
+Webhooks are Java files that are created in a path with this format: @source.path@/modules/<JAVA.PACKAGE.OF.MODULE>/src/JAVA/PACKAGE/OF/MODULE/buttonprocess/<BUTTON_PROCESS_NAME>.java / home/rocio/intellij/etendo_base/modules/com.etendoerp.copilot.devassistant/src/com/etendoerp/copilot/devassistant/buttonprocess Register the process using the documentation provided and the OpenAPI specification. It constitutes an HTTP request to register the process properly. It tries until it hits the webhook and the Process Definition is created.
+
+Before you start working it is necessary to know the structure of the API, you can read the documentation in OpenAPI Spec with a GET on @ETENDO_HOST@/webhooks/docs?hooks=ProcessDefinitionButton The Etendo API calls must be used with the "ETENDO_TOKEN" token.
+
+Once it has finished it should say "Your Process Definition has been saved successfully"]]></PROMPT>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
+<!--FCC50642FDD24002AEE45C26A91E5253--></ETCOP_APP>
 
 </data>
