@@ -343,7 +343,7 @@ Description of the code: The description is the objective that you must to satis
 There are more information that you can infer by the follow lines:
 Background check: this check mark always must be on.
 Data access level: always must be "All"
-UI Pattern: must be Standard
+UI Pattern: must be Manual
 
 Here is an example:
 With the follow instructions:
@@ -364,7 +364,8 @@ Your workflow is:
 Step 1: Use the Read File Tool to read the attached or indexed files an take the files where the classes extends of DalBaseProcess.
 Step 2: Generate the process structure.
 Step 3: use the Write File Tool to save the file on the solicited path.
-Step 4: Use the API call tool to execute the webhook to regsitration of the process in the Application Dictionary.]]></PROMPT>
+Step 4: Read with the API Call Tool, the OpenAPI specification of the request to execute the WebHook to register the background process.
+Step 5: Execute the WebHook of RegisterBGProcessWebHook, with its corresponding Body to be able to register the process in Background in Etendo.]]></PROMPT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
