@@ -10,6 +10,7 @@ import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 
@@ -23,6 +24,7 @@ public class RegisterNewWebHook extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final String MESSAGE = "message";
+  private static final String ERROR = "error";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -35,9 +37,11 @@ public class RegisterNewWebHook extends BaseWebhookService {
     String searchkey = parameter.get("SearchKey");
     String webhookParams = parameter.get("Params");
     String prefix = parameter.get("Prefix");
+
     if (StringUtils.isBlank(javaclass) || StringUtils.isBlank(searchkey) || StringUtils.isBlank(
         webhookParams) || StringUtils.isBlank(prefix)) {
-      responseVars.put("error", "Missing required parameters"); //TODO: Ad_message
+      responseVars.put(ERROR,
+          String.format(OBMessageUtils.messageBD("COPDEV_MisisngParameters")));
       return;
     }
     //dividing the webhookParams by ;
@@ -71,7 +75,8 @@ public class RegisterNewWebHook extends BaseWebhookService {
     OBDal.getInstance().save(whRole);
 
     OBDal.getInstance().flush();
-    responseVars.put(MESSAGE, "Webhook created successfully");
+    responseVars.put(MESSAGE,
+        String.format(OBMessageUtils.messageBD("COPDEV_WebhookCreated"), webhookHeader.getName()));
 
 
   }
