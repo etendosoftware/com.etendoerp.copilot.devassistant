@@ -77,6 +77,7 @@ public class RegisterBGProcessWebHook extends BaseWebhookService {
     adProcess.setSearchKey(searchKey);
     adProcess.setJavaClassName(javaClassName);
     adProcess.setBackground(true);
+    adProcess.setUIPattern("M");
     adProcess.setPreventConcurrentExecutions(prevConcExec);
 
     adProcess.setDescription(description);
