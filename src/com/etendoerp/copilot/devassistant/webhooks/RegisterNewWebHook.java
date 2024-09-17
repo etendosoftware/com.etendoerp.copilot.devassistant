@@ -26,6 +26,14 @@ public class RegisterNewWebHook extends BaseWebhookService {
   private static final String MESSAGE = "message";
   private static final String ERROR = "error";
 
+  /**
+   * Handles the GET request for registering a new webhook.
+   *
+   * @param parameter
+   *     a map containing the parameters for the webhook registration
+   * @param responseVars
+   *     a map to store the response variables
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     LOG.info("Executing WebHook: RegisterNewWebHook");
@@ -81,12 +89,18 @@ public class RegisterNewWebHook extends BaseWebhookService {
 
   }
 
+  /**
+   * Retrieves a Module entity based on the provided Java package name.
+   *
+   * @param moduleJavaPackage
+   *     the Java package name of the module
+   * @return the Module entity that matches the given Java package name, or null if no match is found
+   */
   private Module getModuleByJavaPackage(String moduleJavaPackage) {
     OBCriteria<Module> moduleCrit = OBDal.getInstance().createCriteria(Module.class);
     moduleCrit.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, moduleJavaPackage));
     moduleCrit.setMaxResults(1);
-    Module mod = (Module) moduleCrit.uniqueResult();
-    return mod;
+    return (Module) moduleCrit.uniqueResult();
   }
 }
 
