@@ -38,7 +38,6 @@ public class ProcessDefinitionButton extends BaseWebhookService {
   private static final String PARAM_DESCRIPTION = "Description";
   private static final String PARAM_HELP_COMMENT = "HelpComment";
   private static final String PARAM_PARAMETERS = "Parameters";
-  private static final String REPORT_JAVA_CLASS_NAME = "org.openbravo.client.application.report.BaseReportActionHandler";
   private static final String PROCESS_ACTION = "OBUIAPP_PickAndExecute";
   private static final String DATA_ACCESS_LEVEL = "3";
 
