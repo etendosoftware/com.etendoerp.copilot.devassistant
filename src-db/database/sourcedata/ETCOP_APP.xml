@@ -460,19 +460,22 @@ public class Example extends BaseWebhookService {
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    LOG.info("Executing WebHook: Example");
+    LOG.debug("Executing WebHook: Example");
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
-      LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
+      LOG.debug("Parameter: {} = {}", entry.getKey(), entry.getValue());
+    }
+    
+    String[] paramNames = {"parameter1", "parameter2", "anotherparam"};
+    for (int i = 0; i < params.length; i++) {
+        if (StringUtils.isEmpty(params[i])) {
+            responseVars.put("error", String.format(OBMessageUtils.messageBD("smfwhe_missingParameter"), paramNames[i]);
+            return;
+        }
     }
 
     String parameter1 = parameter.get("parameter1");
     String parameter2 = parameter.get("parameter2");
     String anotherparam = parameter.get("anotherparam");
-
-    if ( StringUtils.isEmpty(parameter1) || StringUtils.isEmpty(parameter2) || StringUtils.isEmpty(anotherparam)) {
-      responseVars.put("error", "Missing required parameters"); 
-      return;
-    }
 
     //CODE 
     responseVars.put(MESSAGE, "RESPONSE MESSAGE");

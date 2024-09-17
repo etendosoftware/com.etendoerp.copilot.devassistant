@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
@@ -14,6 +15,7 @@ import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.data.DefinedWebHook;
 import com.etendoerp.webhookevents.data.DefinedWebhookParam;
 import com.etendoerp.webhookevents.data.DefinedwebhookRole;
@@ -36,9 +38,9 @@ public class RegisterNewWebHook extends BaseWebhookService {
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    LOG.info("Executing WebHook: RegisterNewWebHook");
+    LOG.debug("Executing WebHook: RegisterNewWebHook");
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
-      LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
+      LOG.debug("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
     String javaclass = parameter.get("Javaclass");
@@ -52,9 +54,13 @@ public class RegisterNewWebHook extends BaseWebhookService {
           String.format(OBMessageUtils.messageBD("COPDEV_MisisngParameters")));
       return;
     }
-    //dividing the webhookParams by ;
+    //dividing the webhookParams by semicolon
     String[] params = webhookParams.split(";");
-    Module module = getModuleByJavaPackage(moduleJavaPackage);
+    Module module = Utils.getModuleByJavaPackage(moduleJavaPackage);
+    String moduleNotFoundMessage = "";
+    if (module == null) {
+      moduleNotFoundMessage = OBMessageUtils.messageBD("COPDEV_SetModuleManually");
+    }
 
     DefinedWebHook webhookHeader = OBProvider.getInstance().get(DefinedWebHook.class);
     webhookHeader.setNewOBObject(true);
@@ -84,23 +90,9 @@ public class RegisterNewWebHook extends BaseWebhookService {
 
     OBDal.getInstance().flush();
     responseVars.put(MESSAGE,
-        String.format(OBMessageUtils.messageBD("COPDEV_WebhookCreated"), webhookHeader.getName()));
+        String.format(OBMessageUtils.messageBD("COPDEV_WebhookCreated"), webhookHeader.getName(), moduleNotFoundMessage));
 
 
-  }
-
-  /**
-   * Retrieves a Module entity based on the provided Java package name.
-   *
-   * @param moduleJavaPackage
-   *     the Java package name of the module
-   * @return the Module entity that matches the given Java package name, or null if no match is found
-   */
-  private Module getModuleByJavaPackage(String moduleJavaPackage) {
-    OBCriteria<Module> moduleCrit = OBDal.getInstance().createCriteria(Module.class);
-    moduleCrit.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, moduleJavaPackage));
-    moduleCrit.setMaxResults(1);
-    return (Module) moduleCrit.uniqueResult();
   }
 }
 
