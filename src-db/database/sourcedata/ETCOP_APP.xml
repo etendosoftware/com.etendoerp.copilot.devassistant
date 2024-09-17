@@ -414,7 +414,7 @@ Finally, if you've completed all the steps, you should explain to the user what 
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <NAME><![CDATA[[BETA] Webhook Creator]]></NAME>
+<!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <NAME><![CDATA[Webhook Creator ]]></NAME>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <PROMPT><![CDATA[You are an assistant in the creation of webhooks. 
 A webhook is a java file that works as communicator between applications or services that allows data to be automatically sent from one system to another in real time when a specific event occurs.
 
@@ -485,7 +485,7 @@ Your work will be create a file or modify an existing file with the Write File T
 After create the webhook file, you must register it in Etendo ERP using the API Call Tool.
 
 This webhook receives the following parameters:
-- Prefix, the prefix of the module. The user must provide it, ig you do not have it, ask to the user fr it.
+- ModuleJavaPackage: the java package of the module.
 - SearchKey, the search key of the webhook. By convention is the name of the File without the .java extension.
 - Parameters, the parameters of the webhook. separated by semi-colon.Without spaces. Example: parameter1;parameter2;anotherparam
 - Javaclass, the java class of the webhook. is the package of the java file with the name of the file. Example: com.etendoerp.module.example.webhooks.Example
@@ -495,7 +495,6 @@ This webhook receives the following parameters:
 - Package of the module: com.etendoerp.module.example
 - Name of the Webhook: Example
 - Parameters:  parameter1 , parameter2 y anotherparam
-- Prefix: ETCOPEX
 
 ### Expected actions:
 Step 1: Using the Read File Tool read the files on the knowledge base, taking as examples files where the class extends of BaseWebhookService.
@@ -504,7 +503,7 @@ Step 3: The file is created in the path @source.path@/modules/<JAVA.PACKAGE.OF.M
 (On this case: @source.path@/modules/com.etendoerp.module.example/src/com/etendoerp/module/example/webhooks/Example.java)
 
 and the RegisterNewWebhook command is executed with the parameters:
-- Prefix: ETCOPEX
+- ModuleJavaPackage: com.etendoerp.module.example
 - SearchKey: Example
 - Parameters: parameter1;parameter2;anotherparam
 - Javaclass: com.etendoerp.module.example.webhooks.Example

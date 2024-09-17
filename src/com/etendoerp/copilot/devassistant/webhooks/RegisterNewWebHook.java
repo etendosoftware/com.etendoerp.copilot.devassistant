@@ -36,17 +36,17 @@ public class RegisterNewWebHook extends BaseWebhookService {
     String javaclass = parameter.get("Javaclass");
     String searchkey = parameter.get("SearchKey");
     String webhookParams = parameter.get("Params");
-    String prefix = parameter.get("Prefix");
+    String moduleJavaPackage = parameter.get("ModuleJavaPackage");
 
     if (StringUtils.isBlank(javaclass) || StringUtils.isBlank(searchkey) || StringUtils.isBlank(
-        webhookParams) || StringUtils.isBlank(prefix)) {
+        webhookParams) || StringUtils.isBlank(moduleJavaPackage)) {
       responseVars.put(ERROR,
           String.format(OBMessageUtils.messageBD("COPDEV_MisisngParameters")));
       return;
     }
     //dividing the webhookParams by ;
     String[] params = webhookParams.split(";");
-    Module module = getModuleByPrefix(prefix);
+    Module module = getModuleByJavaPackage(moduleJavaPackage);
 
     DefinedWebHook webhookHeader = OBProvider.getInstance().get(DefinedWebHook.class);
     webhookHeader.setNewOBObject(true);
@@ -80,12 +80,13 @@ public class RegisterNewWebHook extends BaseWebhookService {
 
 
   }
-  private Module getModuleByPrefix(String prefix) {
-    OBCriteria<ModuleDBPrefix> moduleDBPrefixOBCriteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    moduleDBPrefixOBCriteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
-    moduleDBPrefixOBCriteria.setMaxResults(1);
-    ModuleDBPrefix moduleDBPrefix = (ModuleDBPrefix) moduleDBPrefixOBCriteria.uniqueResult();
-    return moduleDBPrefix != null ? moduleDBPrefix.getModule() : null;
+
+  private Module getModuleByJavaPackage(String moduleJavaPackage) {
+    OBCriteria<Module> moduleCrit = OBDal.getInstance().createCriteria(Module.class);
+    moduleCrit.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, moduleJavaPackage));
+    moduleCrit.setMaxResults(1);
+    Module mod = (Module) moduleCrit.uniqueResult();
+    return mod;
   }
 }
 
