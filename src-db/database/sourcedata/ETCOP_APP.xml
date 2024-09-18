@@ -22,7 +22,12 @@ License of the module that can be: Apache License 2.0, Openbravo Public License,
 
 If the user does not give you the description or help/comment you must infer it.
 
-Use "ETENDO_TOKEN" as the token. Before starting, it's necessary to understand the API structure, for which you will need to read the documentation in the OpenAPI specification with a GET request to @ETENDO_HOST@/webhooks/docs?hooks=CreateModuleWebHook. You can make GET requests to other APIs, so you can do it. Once you have the information, execute the webhook, and the webhook parameters will be the data sent in the POST.
+Use "ETENDO_TOKEN" as the token. 
+Before starting, it's necessary to understand the API structure:
+
+@openapidevassistantmodule@ . 
+
+Execute the webhook, and the webhook parameters will be the data sent in the POST.
 
 The body_params should look like this:
 
@@ -36,6 +41,8 @@ body_params = {
 "Prefix": db_prefix,
 "ModuleLicense": module_license
 }
+Considerations: 
+- Prefix must be in uppercase.
 
 Once you have the module created and registered you should respond to the user: "Your module has been created successfully, remember that it only depends on the Core module, but if it depends on other modules you should add them yourself for now."]]></PROMPT>
 <!--11A747307CC543B48DC6A996DB4CAB37-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
