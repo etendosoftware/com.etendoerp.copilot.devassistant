@@ -19,6 +19,27 @@ import org.openbravo.model.ad.module.ModuleDependency;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+/**
+ * The {@code CreateModuleWebHook} class is responsible for handling the creation of a new
+ * module in the system via a webhook event. It extends {@link BaseWebhookService} and provides
+ * functionality to register a module, define its dependencies, database prefix, and associated
+ * Java package.
+ *
+ * The webhook expects parameters like module name, Java package, description, help comments,
+ * version, license, and database prefix, and validates them before registering the module.
+ *
+ * The key steps in this webhook are:
+ * <ul>
+ *   <li>Validation of required parameters</li>
+ *   <li>Module registration in the system</li>
+ *   <li>Setting the module's dependencies</li>
+ *   <li>Setting the database prefix and Java package</li>
+ * </ul>
+ *
+ * If any errors occur during the registration process, the webhook catches and logs them,
+ * and returns an appropriate error message in the response.
+ */
+
 public class CreateModuleWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
@@ -33,6 +54,9 @@ public class CreateModuleWebHook extends BaseWebhookService {
   private static final String PARAM_LICENSE = "ModuleLicense";
   private static final String PARAM_DBPREFIX = "DBPrefix";
   private static final String CORE_DEPENDENCY = "0";
+  private static final String DEPENDENCY_ENFORCEMENT = "MAJOR";
+  private static final String DATA_PACKAGE_SUFFIX = " Data Package";
+
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -42,12 +66,8 @@ public class CreateModuleWebHook extends BaseWebhookService {
 
     try {
       validateParameters(parameter);
-
-
       createModuleDefinition(parameter);
-
       responseVars.put("message", OBMessageUtils.getI18NMessage("COPDEV_ModuleCreated"));
-
     } catch (IllegalArgumentException e) {
       log.error("Validation error: ", e);
       responseVars.put(ERROR_PROPERTY, e.getMessage());
@@ -102,14 +122,11 @@ public class CreateModuleWebHook extends BaseWebhookService {
 
     try {
       OBContext.setAdminMode(true);
-
       Module moduleDef = createModuleHeader(parameter);
-
       String dbPrefixValue = parameter.get(PARAM_DBPREFIX);
       createDependencyModule(CORE_DEPENDENCY, moduleDef);
       createDBPrefixModule(moduleDef, dbPrefixValue);
       createDataPackageModule(moduleDef, parameter.get(PARAM_JAVA_PACKAGE));
-
     } finally {
       OBContext.restorePreviousMode();
     }
@@ -123,9 +140,9 @@ public class CreateModuleWebHook extends BaseWebhookService {
     String description = parameter.get(PARAM_DESCRIPTION);
     String helpComment = parameter.get(PARAM_HELP_COMMENT);
     String version = parameter.get(PARAM_VERSION);
+
     Module moduleDef = OBProvider.getInstance().get(Module.class);
     moduleDef.setNewOBObject(true);
-
     moduleDef.setJavaPackage(javaPackage);
     moduleDef.setName(moduleName);
     moduleDef.setDescription(description);
@@ -149,15 +166,11 @@ public class CreateModuleWebHook extends BaseWebhookService {
     ModuleDependency moduleDependency = OBProvider.getInstance().get(ModuleDependency.class);
     moduleDependency.setModule(moduleDef);
     moduleDependency.setDependentModule(moduleDep);
-
     moduleDependency.setFirstVersion(moduleDep.getVersion());
-
-    moduleDependency.setDependencyEnforcement("MAJOR");
-
+    moduleDependency.setDependencyEnforcement(DEPENDENCY_ENFORCEMENT);
     OBDal.getInstance().save(moduleDependency);
     OBDal.getInstance().flush();
   }
-
 
   private Module getModuleById(String moduleId) {
     return OBDal.getInstance().get(Module.class, moduleId);
@@ -167,11 +180,8 @@ public class CreateModuleWebHook extends BaseWebhookService {
 
     ModuleDBPrefix moduleDBPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
     moduleDBPrefix.setModule(moduleDef);
-
     moduleDBPrefix.setName(dbprefix);
-
     OBDal.getInstance().save(moduleDBPrefix);
-
     OBDal.getInstance().flush();
 
   }
@@ -180,13 +190,9 @@ public class CreateModuleWebHook extends BaseWebhookService {
     DataPackage dataPackage = OBProvider.getInstance().get(DataPackage.class);
 
     dataPackage.setModule(moduleDef);
-
-    dataPackage.setName(moduleDef.getName() + " Data Package");
-
+    dataPackage.setName(moduleDef.getName() + DATA_PACKAGE_SUFFIX);
     dataPackage.setJavaPackage(javaPackage + ".data");
-
     OBDal.getInstance().save(dataPackage);
-
     OBDal.getInstance().flush();
 
   }
