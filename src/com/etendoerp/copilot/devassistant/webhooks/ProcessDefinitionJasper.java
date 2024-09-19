@@ -138,7 +138,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
    *
    * @param prefix
    *     the prefix to validate
-   * @throws OBException
+   * @throws IllegalArgumentException
    *     if the prefix does not exist
    */
   private void validatePrefixExists(String prefix) {
@@ -151,8 +151,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
     ModuleDBPrefix result = (ModuleDBPrefix) criteria.uniqueResult();
 
     if (result == null) {
-      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NonExistentPrefix",
-          new String[]{ prefix }));
+      throw new IllegalArgumentException("The prefix does not exist in the database: " + prefix);
     }
   }
 

@@ -1,6 +1,5 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
-
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
 import java.util.List;
@@ -26,10 +25,16 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * This class handles the registration of process definitions using the webhook system.
+ * It extends the BaseWebhookService class, providing the necessary methods for processing
+ * the parameters and creating the required process and its parameters.
+ */
 public class ProcessDefinitionButton extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
 
+  // Constants used in the parameter map and error handling
   private static final String ERROR_PROPERTY = "error";
   private static final String PARAM_PREFIX = "Prefix";
   private static final String PARAM_SEARCH_KEY = "SearchKey";
@@ -41,6 +46,13 @@ public class ProcessDefinitionButton extends BaseWebhookService {
   private static final String PROCESS_ACTION = "OBUIAPP_PickAndExecute";
   private static final String DATA_ACCESS_LEVEL = "3";
 
+  /**
+   * Main entry point for the webhook when triggered by a GET request.
+   * It validates the parameters, creates the process definition, and registers its parameters.
+   *
+   * @param parameter    The parameters passed through the webhook request.
+   * @param responseVars The response map to store messages or error information.
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, log);
@@ -69,6 +81,12 @@ public class ProcessDefinitionButton extends BaseWebhookService {
     }
   }
 
+  /**
+   * Validates the incoming parameters, checking for missing or invalid values.
+   *
+   * @param parameter The map of incoming parameters to validate.
+   * @throws IllegalArgumentException if any required parameter is missing or invalid.
+   */
   private void validateParameters(Map<String, String> parameter) {
     String missingParameterMessage = "COPDEV_MissingParameter";
 
@@ -91,31 +109,63 @@ public class ProcessDefinitionButton extends BaseWebhookService {
     validateParametersFormat(convertParameters(parameter.get(PARAM_PARAMETERS)));
   }
 
+  /**
+   * Checks if the given parameter is invalid (null or empty).
+   *
+   * @param parameter The parameter to check.
+   * @return true if the parameter is invalid, false otherwise.
+   */
   private boolean isInvalidParameter(String parameter) {
     return StringUtils.isBlank(parameter);
   }
 
+  /**
+   * Validates that the given prefix exists in the database.
+   *
+   * @param prefix The prefix to check.
+   * @throws IllegalArgumentException if the prefix does not exist.
+   */
   private void validatePrefixExists(String prefix) {
     OBCriteria<ModuleDBPrefix> criteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
     criteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
     criteria.setMaxResults(1);
 
     if (criteria.uniqueResult() == null) {
-      throw new IllegalArgumentException("The prefix does not exist in the database: " + prefix);
+      throw new IllegalArgumentException(OBMessageUtils.getI18NMessage("COPDEV_NonExistentPrefix",
+          new String[]{ prefix }));
     }
   }
 
+  /**
+   * Converts the parameter JSON string to a list of parameter maps.
+   *
+   * @param parametersJson The JSON string representing the parameters.
+   * @return A list of parameter maps.
+   */
   private List<Map<String, String>> convertParameters(String parametersJson) {
     Gson gson = new Gson();
     return gson.fromJson(parametersJson, new TypeToken<List<Map<String, String>>>() {
     }.getType());
   }
 
+  /**
+   * Builds the Java class name for the process handler based on the package and process name.
+   *
+   * @param javaPackage The package name.
+   * @param processName The process name.
+   * @return The fully qualified Java class name for the process handler.
+   */
   private String buildReportJavaClassName(String javaPackage, String processName) {
     String processClassName = processName.replaceAll(" ", "");
     return javaPackage + ".actionHandler." + processClassName + "ActionHandler";
   }
 
+  /**
+   * Validates the format of the parameters, ensuring all required fields are present.
+   *
+   * @param paramList The list of parameters to validate.
+   * @throws IllegalArgumentException if any parameter is missing required fields.
+   */
   private void validateParametersFormat(List<Map<String, String>> paramList) {
     for (Map<String, String> param : paramList) {
       if (!param.containsKey("BD_NAME") || !param.containsKey("NAME") || !param.containsKey("LENGTH")
@@ -125,6 +175,17 @@ public class ProcessDefinitionButton extends BaseWebhookService {
     }
   }
 
+  /**
+   * Creates a new process definition and registers it in the system.
+   *
+   * @param prefix      The module prefix.
+   * @param searchKey   The search key for the process.
+   * @param processName The name of the process.
+   * @param description The description of the process.
+   * @param helpComment A help comment for the process.
+   * @param javaPackage The Java package for the process handler class.
+   * @return The created Process object.
+   */
   public Process createProcessDefinition(String prefix, String searchKey, String processName, String description,
       String helpComment, String javaPackage) {
     try {
@@ -152,6 +213,13 @@ public class ProcessDefinitionButton extends BaseWebhookService {
     }
   }
 
+  /**
+   * Creates and registers parameters for the given process definition.
+   *
+   * @param processDef The process definition to which the parameters are linked.
+   * @param parameters The list of parameters to register.
+   * @param prefix     The module prefix.
+   */
   private void createParametersForProcess(Process processDef, List<Map<String, String>> parameters, String prefix) {
     try {
       OBContext.setAdminMode(true);
@@ -176,6 +244,14 @@ public class ProcessDefinitionButton extends BaseWebhookService {
     }
   }
 
+  /**
+   * Retrieves a `Reference` object from the database based on the given reference name.
+   * If the reference name is null or empty, or if no matching reference is found, an exception is thrown.
+   *
+   * @param referenceName The name of the reference to be searched in the database.
+   * @return The `Reference` object that matches the given name.
+   * @throws OBException if the reference name is empty or if no matching reference is found.
+   */
   private Reference getReference(String referenceName) {
     if (StringUtils.isEmpty(referenceName)) {
       throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullReference"));
@@ -189,6 +265,7 @@ public class ProcessDefinitionButton extends BaseWebhookService {
     if (result == null) {
       throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_NullReference"));
     }
+
     return result;
   }
 }
