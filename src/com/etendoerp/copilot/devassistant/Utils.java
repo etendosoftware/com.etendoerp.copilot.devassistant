@@ -72,4 +72,18 @@ public class Utils {
     }
     return dbPrefix.getModule();
     }
+
+  /**
+   * Retrieves a Module entity based on the provided Java package name.
+   *
+   * @param moduleJavaPackage
+   *     the Java package name of the module
+   * @return the Module entity that matches the given Java package name, or null if no match is found
+   */
+  public static Module getModuleByJavaPackage(String moduleJavaPackage) {
+    OBCriteria<Module> moduleCrit = OBDal.getInstance().createCriteria(Module.class);
+    moduleCrit.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, moduleJavaPackage));
+    moduleCrit.setMaxResults(1);
+    return (Module) moduleCrit.uniqueResult();
   }
+}

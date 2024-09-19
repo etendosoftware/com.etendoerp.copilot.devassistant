@@ -6,43 +6,61 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.data.DefinedWebHook;
 import com.etendoerp.webhookevents.data.DefinedWebhookParam;
 import com.etendoerp.webhookevents.data.DefinedwebhookRole;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class CreateWebhook extends BaseWebhookService {
+public class RegisterNewWebHook extends BaseWebhookService {
 
 
   private static final Logger LOG = LogManager.getLogger();
   private static final String MESSAGE = "message";
+  private static final String ERROR = "error";
 
+  /**
+   * Handles the GET request for registering a new webhook.
+   *
+   * @param parameter
+   *     a map containing the parameters for the webhook registration
+   * @param responseVars
+   *     a map to store the response variables
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    LOG.info("Executing WebHook: CreateWebhook");
+    LOG.debug("Executing WebHook: RegisterNewWebHook");
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
-      LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
+      LOG.debug("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
-    String javaclass = parameter.get("javaclass");
-    String searchkey = parameter.get("searchkey");
-    String webhookParams = parameter.get("params");
-    String prefix = parameter.get("prefix");
+    String javaclass = parameter.get("Javaclass");
+    String searchkey = parameter.get("SearchKey");
+    String webhookParams = parameter.get("Params");
+    String moduleJavaPackage = parameter.get("ModuleJavaPackage");
+
     if (StringUtils.isBlank(javaclass) || StringUtils.isBlank(searchkey) || StringUtils.isBlank(
-        webhookParams) || StringUtils.isBlank(prefix)) {
-      responseVars.put("error", "Missing required parameters"); //TODO: Ad_message
+        webhookParams) || StringUtils.isBlank(moduleJavaPackage)) {
+      responseVars.put(ERROR,
+          String.format(OBMessageUtils.messageBD("COPDEV_MisisngParameters")));
       return;
     }
-    //dividing the webhookParams by ;
+    //dividing the webhookParams by semicolon
     String[] params = webhookParams.split(";");
-    Module module = getModuleByPrefix(prefix);
+    Module module = Utils.getModuleByJavaPackage(moduleJavaPackage);
+    String moduleNotFoundMessage = "";
+    if (module == null) {
+      moduleNotFoundMessage = OBMessageUtils.messageBD("COPDEV_SetModuleManually");
+    }
 
     DefinedWebHook webhookHeader = OBProvider.getInstance().get(DefinedWebHook.class);
     webhookHeader.setNewOBObject(true);
@@ -71,16 +89,10 @@ public class CreateWebhook extends BaseWebhookService {
     OBDal.getInstance().save(whRole);
 
     OBDal.getInstance().flush();
-    responseVars.put(MESSAGE, "Webhook created successfully");
+    responseVars.put(MESSAGE,
+        String.format(OBMessageUtils.messageBD("COPDEV_WebhookCreated"), webhookHeader.getName(), moduleNotFoundMessage));
 
 
-  }
-  private Module getModuleByPrefix(String prefix) {
-    OBCriteria<ModuleDBPrefix> moduleDBPrefixOBCriteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    moduleDBPrefixOBCriteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
-    moduleDBPrefixOBCriteria.setMaxResults(1);
-    ModuleDBPrefix moduleDBPrefix = (ModuleDBPrefix) moduleDBPrefixOBCriteria.uniqueResult();
-    return moduleDBPrefix != null ? moduleDBPrefix.getModule() : null;
   }
 }
 
