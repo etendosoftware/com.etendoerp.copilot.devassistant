@@ -1,15 +1,10 @@
-import json
 from typing import Dict, Type, Optional, List
 
-import requests
 from langsmith import traceable
 
-from copilot.core import utils
-from copilot.core.threadcontext import ThreadContext
+from copilot.core.etendo_utils import call_webhook, get_etendo_token, get_etendo_host
 from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
-from copilot.core.utils import copilot_debug
-from copilot.core.etendo_utils import call_webhook, get_etendo_token, get_etendo_host
 
 
 class ProcessDefinitionJasperInput(ToolInput):
@@ -49,8 +44,6 @@ class ProcessDefinitionJasperInput(ToolInput):
         title="Report Path",
         description="Path where the report is stored."
     )
-
-
 
 
 def process_parameters(parameter_string: str) -> List[Dict[str, str]]:
