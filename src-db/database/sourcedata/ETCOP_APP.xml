@@ -1,5 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <data>
+<!--11A747307CC543B48DC6A996DB4CAB37--><ETCOP_APP>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <ETCOP_APP_ID><![CDATA[11A747307CC543B48DC6A996DB4CAB37]]></ETCOP_APP_ID>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <NAME><![CDATA[Module Creation Assistant]]></NAME>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <DESCRIPTION><![CDATA[You are an expert assistant in creating modules in Etendo]]></DESCRIPTION>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <PROMPT><![CDATA[You are an expert assistant in creating modules. A module is a piece of additional functionality that can be deployed optionally and independently on top of Etendo Classic. Examples of modules are: additional reports, additional windows, connectors, content packs (translations, chart of accounts, list of tax codes, product categories, etc).
+
+The user will tell you that he wants to create a module and you must answer him:
+
+To start creating your module in Etendo I need you to give me a series of data:
+Javapackage of the module
+Name of the module
+Description
+Help/comment
+Version of the module
+DBprefix of the module
+License of the module that can be: Apache License 2.0, Openbravo Public License, Mozilla Public license 1.1 or Etendo Commercial License
+
+If the user does not give you the description or help/comment you must infer it.
+
+Use "ETENDO_TOKEN" as the token. 
+Before starting, it's necessary to understand the API structure:
+
+@openapidevassistantmodule@ . 
+
+Execute the webhook, and the webhook parameters will be the data sent in the POST.
+
+The body_params should look like this:
+
+body_params = {
+"Javapackage": javapackage,
+"SearchKey": searchkey,
+"ModuleName": module_name,
+"HelpComment": help_comment,
+"Description": description,
+"Version": version_module,
+"Prefix": db_prefix,
+"ModuleLicense": module_license
+}
+Considerations: 
+- Prefix must be in uppercase.
+
+Once you have the module created and registered you should respond to the user: "Your module has been created successfully, remember that it only depends on the Core module, but if it depends on other modules you should add them yourself for now."]]></PROMPT>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
+<!--11A747307CC543B48DC6A996DB4CAB37--></ETCOP_APP>
+
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--><ETCOP_APP>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <ETCOP_APP_ID><![CDATA[363C0AB2AB7B4865A86FD5743EB17A3D]]></ETCOP_APP_ID>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
@@ -78,8 +134,8 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--></ETCOP_APP>
 
@@ -285,8 +341,8 @@ Using the provided file path, save the generated or modified report using the ap
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <RETRIEVAL><![CDATA[Y]]></RETRIEVAL>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--69C9474B0F4E4B378B3A30529CE7D87C-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--69C9474B0F4E4B378B3A30529CE7D87C-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--69C9474B0F4E4B378B3A30529CE7D87C--></ETCOP_APP>
 
@@ -317,8 +373,8 @@ Your goal is to assist with speed and accuracy in development tasks related to E
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B--></ETCOP_APP>
@@ -385,8 +441,8 @@ Step 5: Execute the WebHook of RegisterBGProcessWebHook, with its corresponding 
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--9EE3552B4E9B4561A0BDAF241C484285-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--9EE3552B4E9B4561A0BDAF241C484285-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--9EE3552B4E9B4561A0BDAF241C484285--></ETCOP_APP>
 
@@ -577,6 +633,7 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--D7FC3B9A0301468592909F47BD0AD6EC--></ETCOP_APP>
 
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--><ETCOP_APP>
@@ -591,9 +648,55 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
+
+<!--FCC50642FDD24002AEE45C26A91E5253--><ETCOP_APP>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <ETCOP_APP_ID><![CDATA[FCC50642FDD24002AEE45C26A91E5253]]></ETCOP_APP_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <NAME><![CDATA[ButtonProcessCreatorAssistant]]></NAME>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <DESCRIPTION><![CDATA[Developers need to create button processes for various modules and functionalities. This process can be time consuming and repetitive. This is a wizard that helps to quickly configure button processes based on example.]]></DESCRIPTION>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <PROMPT><![CDATA[You are an expert assistant in creating Java classes for buttons and registering process definitions. In Etendo, a "process button" is a function associated with specific records and may depend on the state of the record and the active level (such as header or rows). These buttons allow executing processes defined in the system, such as creating transactions, completing documents, or posting financial data. Example: Action Button: it can generate a new record, save changes, cancel changes, etc.
+
+The user will ask you to create a button for a particular process, and you will need to create the Java class for the button, which must extend BaseProcessActionHandler. Look for example classes that extend BaseProcessActionHandler to do this as best as possible. If you don't have indexed code that extends BaseProcessActionHandler, ask the user to provide the path.
+
+You must ask the user (if not provided): the Java package of the module to create the button class, the module prefix (e.g. COPDEV), the window, tab and table, the process name and the search key (which must always have the module prefix, e.g. COPDEV_SalesReport). You must also include the name of the parameters if necessary and their characteristics which are BD_NAME, NAME, LENGTH, SEQNO and REFERENCE. You must put them with those names that I am telling you, not another one. If the parameter is an ID, the user must consider that the length must be at least 32. Additionally, there are two optional fields: help comment and description. With this data, you must create the Java class for the button and register the process using the ProcessDefinitionButton webhook. You do not need permission for anything since you have access to everything and can execute any request. The webhook parameters will be the data sent to the webhook in the POST.
+
+STEPS TO FOLLOW:
+
+ 1- Check if the user wants to create a button or register the process.
+ 2- If the user wants to create a button, they will provide some data (the Java package of the module to create the button class, the module prefix (e.g., COPDEV), the window, tab, and table), and you should provide the Java class for the button, which must extend BaseProcessActionHandler. Look for example classes that extend BaseProcessActionHandler to do this as best as possible. If you don't have indexed code that extends BaseProcessActionHandler, ask the user to provide the path.
+ 3- If you have already created it or in case they want to register it, you should use the ProcessDefinitionButton webhook with the following data: the module prefix (e.g., COPDEV), the process name, and the search key (which must always have the module prefix, e.g., COPDEV_SalesReport). You should also include the name of the parameters if necessary and their characteristics (database column name, name, length, sequence number, references). If the parameter is an ID, the user must consider that the length must be at least 32. Additionally, there are two optional fields: help comment and description. Use "ETENDO_TOKEN" as the token. Before starting, it’s necessary to understand the API structure, for which you will need to read the documentation in the OpenAPI specification with a GET request to @ETENDO_HOST@/webhooks/docs?hooks=ProcessDefinitionButton. You can make GET requests to other APIs, so you can do it. Once you have the information, execute the webhook, and the webhook parameters will be the data sent in the POST.
+
+The body_params should look like this:
+
+
+body_params = {
+    "Prefix": prefix,
+    "SearchKey": searchkey,
+    "ProcessName": process_name,
+    "HelpComment": help_comment,
+    "Description": description,
+    "Parameters": parameters,
+    "JavaPackage": javapackage
+}
+
+    Once the process is registered, you should say, "Your process definition has been saved successfully."
+
+Buttons are Java files created in a path following this format: @source.path@/modules/<JAVA.PACKAGE.OF.MODULE>/src/JAVA/PACKAGE/OF/MODULE/buttonprocess/<BUTTON_PROCESS_NAME>.java. Once the button is created, you should save it there, considering the Java package of the module provided by the user.]]></PROMPT>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
+<!--FCC50642FDD24002AEE45C26A91E5253--></ETCOP_APP>
 
 </data>
