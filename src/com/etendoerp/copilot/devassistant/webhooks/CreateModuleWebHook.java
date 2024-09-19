@@ -24,10 +24,10 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
  * module in the system via a webhook event. It extends {@link BaseWebhookService} and provides
  * functionality to register a module, define its dependencies, database prefix, and associated
  * Java package.
- *
+ * <p>
  * The webhook expects parameters like module name, Java package, description, help comments,
  * version, license, and database prefix, and validates them before registering the module.
- *
+ * <p>
  * The key steps in this webhook are:
  * <ul>
  *   <li>Validation of required parameters</li>
@@ -35,11 +35,10 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
  *   <li>Setting the module's dependencies</li>
  *   <li>Setting the database prefix and Java package</li>
  * </ul>
- *
+ * <p>
  * If any errors occur during the registration process, the webhook catches and logs them,
  * and returns an appropriate error message in the response.
  */
-
 public class CreateModuleWebHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
@@ -57,10 +56,8 @@ public class CreateModuleWebHook extends BaseWebhookService {
   private static final String DEPENDENCY_ENFORCEMENT = "MAJOR";
   private static final String DATA_PACKAGE_SUFFIX = " Data Package";
 
-
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-
     logExecutionInit(parameter, log);
     log.debug("Starting Module registration");
 
@@ -78,13 +75,26 @@ public class CreateModuleWebHook extends BaseWebhookService {
 
   }
 
+  /**
+   * Validates the required parameters for creating a module. If any required parameter is
+   * missing or invalid, it throws an IllegalArgumentException.
+   *
+   * @param parameter
+   *     The map containing the input parameters.
+   * @throws IllegalArgumentException
+   *     if any required parameter is missing.
+   */
   private void validateParameters(Map<String, String> parameter) {
-
     String missingParameterMessage = "COPDEV_MissingParameter";
 
     if (isInvalidParameter(parameter.get(PARAM_JAVA_PACKAGE))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_JAVA_PACKAGE }));
+    }
+
+    if (isInvalidParameter(parameter.get(PARAM_DESCRIPTION))) {
+      throw new IllegalArgumentException(
+          OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_DESCRIPTION }));
     }
 
     if (isInvalidParameter(parameter.get(PARAM_MODULE_NAME))) {
@@ -99,10 +109,26 @@ public class CreateModuleWebHook extends BaseWebhookService {
 
   }
 
+  /**
+   * Checks if the provided parameter is invalid (null or empty).
+   *
+   * @param parameter
+   *     The parameter to be checked.
+   * @return true if the parameter is blank or null, false otherwise.
+   */
   private boolean isInvalidParameter(String parameter) {
     return StringUtils.isBlank(parameter);
   }
 
+  /**
+   * Maps the provided license type string to a system-defined license identifier.
+   *
+   * @param license
+   *     The string representing the license type.
+   * @return The mapped license identifier.
+   * @throws IllegalArgumentException
+   *     if the license type is invalid.
+   */
   private String mapLicenseType(String license) {
     switch (license) {
       case "Apache License 2.0":
@@ -114,12 +140,20 @@ public class CreateModuleWebHook extends BaseWebhookService {
       case "Etendo Commercial License":
         return "ETCL";
       default:
-        throw new IllegalArgumentException("Invalid license type: " + license);
+        throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_InvalidLicenseType",
+
+            new String[]{ license }));
     }
   }
 
+  /**
+   * Creates the module definition using the provided parameters. It also sets up dependencies
+   * and database prefix associated with the module.
+   *
+   * @param parameter
+   *     The map containing the input parameters.
+   */
   private void createModuleDefinition(Map<String, String> parameter) {
-
     try {
       OBContext.setAdminMode(true);
       Module moduleDef = createModuleHeader(parameter);
@@ -132,7 +166,14 @@ public class CreateModuleWebHook extends BaseWebhookService {
     }
   }
 
-
+  /**
+   * Creates the header of the module, filling in the module's metadata, including name,
+   * description, version, license, and Java package. It then saves the module to the database.
+   *
+   * @param parameter
+   *     The map containing the input parameters.
+   * @return The created module instance.
+   */
   private Module createModuleHeader(Map<String, String> parameter) {
     String license = mapLicenseType(parameter.get(PARAM_LICENSE));
     String javaPackage = parameter.get(PARAM_JAVA_PACKAGE);
@@ -156,6 +197,17 @@ public class CreateModuleWebHook extends BaseWebhookService {
     return moduleDef;
   }
 
+  /**
+   * Creates a module dependency for the provided module, linking it to the specified dependent
+   * module. The dependency enforcement is set to MAJOR.
+   *
+   * @param moduleId
+   *     The ID of the dependent module.
+   * @param moduleDef
+   *     The module for which the dependency is being created.
+   * @throws OBException
+   *     if the dependent module is not found.
+   */
   private void createDependencyModule(String moduleId, Module moduleDef) {
     Module moduleDep = getModuleById(moduleId);
 
@@ -172,12 +224,26 @@ public class CreateModuleWebHook extends BaseWebhookService {
     OBDal.getInstance().flush();
   }
 
+  /**
+   * Retrieves a module by its ID.
+   *
+   * @param moduleId
+   *     The ID of the module to retrieve.
+   * @return The module object, or null if not found.
+   */
   private Module getModuleById(String moduleId) {
     return OBDal.getInstance().get(Module.class, moduleId);
   }
 
+  /**
+   * Creates the database prefix entry for the module, linking it to the module definition.
+   *
+   * @param moduleDef
+   *     The module for which the database prefix is being created.
+   * @param dbprefix
+   *     The database prefix string.
+   */
   private void createDBPrefixModule(Module moduleDef, String dbprefix) {
-
     ModuleDBPrefix moduleDBPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
     moduleDBPrefix.setModule(moduleDef);
     moduleDBPrefix.setName(dbprefix);
@@ -186,6 +252,23 @@ public class CreateModuleWebHook extends BaseWebhookService {
 
   }
 
+  /**
+   * Creates a new Data Package associated with the provided module definition.
+   * <p>
+   * This method is responsible for creating a data package entry for the module being registered.
+   * The data package is linked to the module and contains the module's name along with a suffix
+   * for easy identification. The Java package for the data package is also specified by appending
+   * ".data" to the given Java package name.
+   * <p>
+   * After setting the required properties, the data package is saved to the database using
+   * Openbravo's Data Access Layer (DAL).
+   *
+   * @param moduleDef
+   *     the {@link Module} object representing the module being created.
+   * @param javaPackage
+   *     the base Java package name associated with the module, to which ".data"
+   *     will be appended for the data package.
+   */
   private void createDataPackageModule(Module moduleDef, String javaPackage) {
     DataPackage dataPackage = OBProvider.getInstance().get(DataPackage.class);
 
@@ -194,6 +277,6 @@ public class CreateModuleWebHook extends BaseWebhookService {
     dataPackage.setJavaPackage(javaPackage + ".data");
     OBDal.getInstance().save(dataPackage);
     OBDal.getInstance().flush();
-
   }
+
 }
