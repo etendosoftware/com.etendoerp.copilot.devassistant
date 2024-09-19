@@ -151,7 +151,7 @@ public class ProcessDefinitionJasper extends BaseWebhookService {
     ModuleDBPrefix result = (ModuleDBPrefix) criteria.uniqueResult();
 
     if (result == null) {
-      throw new IllegalArgumentException("The prefix does not exist in the database: " + prefix);
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_NonExistentPrefix"), prefix));
     }
   }
 
