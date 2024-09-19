@@ -48,6 +48,7 @@ public class IndexZipFileHook implements CopilotFileHook {
   // Tab ID for CopilotFile
   public static final String COPILOT_FILE_TAB_ID = "09F802E423924081BC2947A64DDB5AF5";
   public static final String COPILOT_FILE_AD_TABLE_ID = "6B246B1B3A6F4DE8AFC208E07DB29CE2";
+  public static final String[] IGNORE_STRINGS = { ".git", "node_modules", ".idea", "/.", "/venv/", "/.venv/" };
 
   /**
    * Executes the hook for a given CopilotFile.
@@ -111,7 +112,7 @@ public class IndexZipFileHook implements CopilotFileHook {
         List<Path> nonMatchingFiles = new ArrayList<>();
 
         for (Path path : (Iterable<Path>) paths::iterator) {
-          if (matcher.matches(path.getFileName()) && checkIgnoredFiles(path)) {
+          if (matcher.matches(path.getFileName()) && checkIgnoredFiles(path.toString())) {
             matchingFiles.add(path);
           } else {
             nonMatchingFiles.add(path);
@@ -141,16 +142,26 @@ public class IndexZipFileHook implements CopilotFileHook {
     return zipFile;
   }
 
-private static boolean checkIgnoredFiles(Path path) {
-    //return false if the path is inside a .git directory or a node_modules directory or a .idea directory or a directory starting with a dot
-    return !path.toString().contains(".git")
-        && !path.toString().contains("node_modules")
-        && !path.toString().contains(".idea")
-        && !path.toString().contains("/.");
-}
+  /**
+   * Checks if the given path string contains any of the ignored substrings.
+   * This method iterates over a predefined list of substrings and returns false
+   * if any of these substrings are found in the provided path string. Otherwise, it returns true.
+   *
+   * @param pathString
+   *     The path string to be checked against the ignored substrings.
+   * @return true if the path string does not contain any ignored substrings, false otherwise.
+   */
+  private static boolean checkIgnoredFiles(String pathString) {
+    for (String ignoreString : IGNORE_STRINGS) {
+      if (StringUtils.contains(pathString, ignoreString)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 
-private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
+  private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
     Attachment attachment = getAttachment(hookObject);
     if (attachment != null) {
       aim.delete(attachment);
@@ -167,7 +178,7 @@ private void removeAttachment(AttachImplementationManager aim, CopilotFile hookO
   }
 
 
- /**
+  /**
    * Checks if the hook is applicable for the given type.
    *
    * @param type

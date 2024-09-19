@@ -7,17 +7,15 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.provider.OBProvider;
-import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.domain.List;
 import org.openbravo.model.ad.domain.Reference;
-import org.openbravo.model.ad.module.Module;
-import org.openbravo.model.ad.module.ModuleDBPrefix;
 
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
+
 
 /**
  * Class to create references through webhook services.
@@ -81,7 +79,7 @@ public class CreateReference extends BaseWebhookService {
     Reference newReference = OBProvider.getInstance().get(Reference.class);
     newReference.setNewOBObject(true);
     newReference.setName(name);
-    newReference.setModule(getModuleByPrefix(prefix));
+    newReference.setModule(Utils.getModuleByPrefix(prefix));
     newReference.setParentReference(OBDal.getInstance().get(Reference.class, DEFAULT_PARENT_REFERENCE_ID));
     newReference.setHelpComment(help);
     newReference.setDescription(description);
@@ -125,11 +123,4 @@ public class CreateReference extends BaseWebhookService {
     OBDal.getInstance().save(newReferenceList);
   }
 
-  private Module getModuleByPrefix(String prefix) {
-    OBCriteria<ModuleDBPrefix> moduleDBPrefixOBCriteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    moduleDBPrefixOBCriteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, prefix));
-    moduleDBPrefixOBCriteria.setMaxResults(1);
-    ModuleDBPrefix moduleDBPrefix = (ModuleDBPrefix) moduleDBPrefixOBCriteria.uniqueResult();
-    return moduleDBPrefix != null ? moduleDBPrefix.getModule() : null;
-  }
 }
