@@ -156,7 +156,7 @@ public class ProcessDefinitionButton extends BaseWebhookService {
    * @return The fully qualified Java class name for the process handler.
    */
   private String buildReportJavaClassName(String javaPackage, String processName) {
-    String processClassName = processName.replaceAll(" ", "");
+    String processClassName = processName.replace(" ", "");
     return javaPackage + ".actionHandler." + processClassName + "ActionHandler";
   }
 
