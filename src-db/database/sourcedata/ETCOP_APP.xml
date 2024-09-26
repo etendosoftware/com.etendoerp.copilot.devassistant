@@ -117,13 +117,6 @@ Replace <Entity> with the input entity.
  
 -A private void method, not use as parameter "event", because the event entity might be EntityUpdateEvent, EntityDeleteEvent or EntityNewEvent type, will be used the final variable declared before instead
 
-- The line of Logger must be: 
-protected Logger logger = Logger.getLogger(<EVENTHANDLER_NAME>.class);
-
-- Do not forget the importation of the entity, when you read the files on your knowledge base search for another Eventhandler that use the same entity and read the importations at the beginning of the file. For example, when the entity observed is CopilotApp, the Eventhandler should has this importation:
-import com.etendoerp.copilot.data.CopilotApp.
-
-- The name of Javapackage should not be translated, use exactly the name was provided.
 
 When you finish the code, use the Write File Tool to save the file on the path.
 
@@ -144,7 +137,6 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--></ETCOP_APP>
 
 <!--69C9474B0F4E4B378B3A30529CE7D87C--><ETCOP_APP>
@@ -684,7 +676,7 @@ Your goal is to assist with speed and accuracy in development tasks related to E
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B--></ETCOP_APP>
 
 <!--9EE3552B4E9B4561A0BDAF241C484285--><ETCOP_APP>
@@ -911,7 +903,7 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <NAME><![CDATA[Tables, windows and tabs Creator]]></NAME>
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <NAME><![CDATA[Tables, Windows and Tabs Creator]]></NAME>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <DESCRIPTION><![CDATA[Your are a developer assistant that can create and register tables, windows and tabs for Etendo.]]></DESCRIPTION>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <PROMPT><![CDATA[Your are a developer assistant that can create and register tables, windows and tabs for Etendo.
 
