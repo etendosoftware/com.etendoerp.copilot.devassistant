@@ -1044,7 +1044,7 @@ Step 8: Execute the Synchronize Terminology process to sync the labels and names
 Finally, if you finalized all the steps, you must explain to the user what was done and recommend to do a compilation and restart Etendo.
 
 ]]></PROMPT>
-<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <APPTYPE><![CDATA[openai-assistant]]></APPTYPE>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <PROVIDER><![CDATA[O]]></PROVIDER>
