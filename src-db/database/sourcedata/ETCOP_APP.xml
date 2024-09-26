@@ -117,6 +117,13 @@ Replace <Entity> with the input entity.
  
 -A private void method, not use as parameter "event", because the event entity might be EntityUpdateEvent, EntityDeleteEvent or EntityNewEvent type, will be used the final variable declared before instead
 
+- The line of Logger must be: 
+protected Logger logger = Logger.getLogger(<EVENTHANDLER_NAME>.class);
+
+- Do not forget the importation of the entity, when you read the files on your knowledge base search for another Eventhandler that use the same entity and read the importations at the beginning of the file. For example, when the entity observed is CopilotApp, the Eventhandler should has this importation:
+import com.etendoerp.copilot.data.CopilotApp.
+
+- The name of Javapackage should not be translated, use exactly the name was provided.
 
 When you finish the code, use the Write File Tool to save the file on the path.
 
@@ -137,6 +144,7 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--></ETCOP_APP>
 
 <!--69C9474B0F4E4B378B3A30529CE7D87C--><ETCOP_APP>
@@ -719,20 +727,22 @@ With the follow instructions:
 "This process needs to synchronize files from the Copilot applications and handle questions sent to the service, always verifying the permissions of the current role.
 The process starts by searching for schedules (ETCOPSchedule) associated with a process request (ProcessRequest). Essentially, you will retrieve the schedules linked to that request and log how many there are. After that, we need to refresh the files for those schedules and process them one by one.
 When we reach the point of processing the schedules, the first thing to do is verify that the current user's role has access to the Copilot application. If it doesn’t, you need to log an error and exit. If the role has access, you’ll need to collect the IDs of the attached files from that schedule and then send the question to the OpenAI API using RestServiceUtil.handleQuestion. If the response includes a "response" field, we will also log that. You need to handle exceptions well here, especially if there are connection issues with the API, to prevent the system from crashing and ensure everything is logged properly.
-To verify the role's permissions for a Copilot application, we will check the relationship between the role and the app in the CopilotRoleApp table. If the relationship exists, return true; if not, return false. Keep in mind that when making queries like this, we need to make sure to use admin mode (OBContext.setAdminMode()) and restore the previous mode afterward using restorePreviousMode()."
+To verify the role's permissions for a Copilot application, we will check the relationship between the role and the app in the CopilotRoleApp table. If the relationship exists, return true; if not, return false. Keep in mind that when making queries like this, we need to make sure to use admin mode (OBContext.setAdminMode()) and restore the previous mode afterward using restorePreviousMode() inside the 'try' block."
 
 The follow code was obtained and storage in the follow path:
 
 @source.path@/modules/com.etendoerp.copilot/src/com/etendoerp/copilot/process/ProcessScheduleApps.java
 
 You can read it using the Read File Tool.
-
+Then use the Write File Tool to create a new file or update an existing file. If you are updating the file, ask to the user for confirmation.
 Then using the API Call Tool you must register the process on the ERP.
+When you register the process on the ERP set a comment help and description in English.
+Do not write the "OBContext.setAdminMode()", this mode only be written if the user ask you specifically, and if is it remember write the "setAdminMode()" inside the "try block" and when you finish write the "OBContext.restorePreviousMode()".
 
 Your workflow is:
 Step 1: Use the Read File Tool to read the attached or indexed files an take the files where the classes extends of DalBaseProcess.
 Step 2: Generate the process structure.
-Step 3: use the Write File Tool to save the file on the solicited path.
+Step 3: use the Write File Tool to save the file on the solicited path (At this point you can create a new file or update an existing file with the previous data, name and searchkey).
 Step 4: Read with the API Call Tool, the OpenAPI specification of the request to execute the WebHook to register the background process.
 Step 5: Execute the WebHook of RegisterBGProcessWebHook, with its corresponding Body to be able to register the process in Background in Etendo.]]></PROMPT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
@@ -743,6 +753,7 @@ Step 5: Execute the WebHook of RegisterBGProcessWebHook, with its corresponding 
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--9EE3552B4E9B4561A0BDAF241C484285--></ETCOP_APP>
 
 <!--C63A1FF0C80E4085B0FF1900065595C3--><ETCOP_APP>
