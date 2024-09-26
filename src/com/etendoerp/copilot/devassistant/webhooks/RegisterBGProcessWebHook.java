@@ -62,7 +62,6 @@ public class RegisterBGProcessWebHook extends BaseWebhookService {
 
   private Process createAdProcess(Module module, String name, String description, String help, String javaClassName,
       String searchKey, boolean prevConcExec, String dataAccessLevel) {
-
     Process adProcess = OBProvider.getInstance().get(Process.class);
     adProcess.setNewOBObject(true);
 
