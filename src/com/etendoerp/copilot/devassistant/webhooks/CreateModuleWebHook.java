@@ -246,8 +246,8 @@ public class CreateModuleWebHook extends BaseWebhookService {
    *     The database prefix string.
    */
   private void createDBPrefixModule(Module moduleDef, String dbprefix) {
-    if (existingDBPrefix(dbprefix)){
-      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_DBPREFIXInUse", new String[]{dbprefix}));
+    if (existingDBPrefix(dbprefix)) {
+      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_DBPREFIXInUse", new String[]{ dbprefix }));
     }
     ModuleDBPrefix moduleDBPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
     moduleDBPrefix.setModule(moduleDef);
@@ -255,6 +255,28 @@ public class CreateModuleWebHook extends BaseWebhookService {
     OBDal.getInstance().save(moduleDBPrefix);
     OBDal.getInstance().flush();
 
+  }
+
+  /**
+   * Checks whether a given database prefix exists in the system.
+   * <p>
+   * This method queries the database to determine if there is any record of the
+   * {@link ModuleDBPrefix} entity that matches the provided prefix. The query is restricted
+   * to return only one result. If a matching record is found, the method returns {@code true},
+   * otherwise it returns {@code false}.
+   *
+   * @param dbprefix
+   *     the database prefix to be checked.
+   * @return {@code true} if a record with the specified database prefix exists,
+   *     {@code false} otherwise.
+   */
+  private boolean existingDBPrefix(String dbprefix) {
+    OBCriteria<ModuleDBPrefix> dbPrefixCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
+    dbPrefixCrit.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, dbprefix));
+    dbPrefixCrit.setMaxResults(1);
+    ModuleDBPrefix dbPrefixRecord = (ModuleDBPrefix) dbPrefixCrit.uniqueResult();
+
+    return dbPrefixRecord != null;
   }
 
   /**
@@ -274,16 +296,6 @@ public class CreateModuleWebHook extends BaseWebhookService {
    *     the base Java package name associated with the module, to which ".data"
    *     will be appended for the data package.
    */
-
-  private boolean existingDBPrefix(String dbprefix) {
-    OBCriteria<ModuleDBPrefix> dbPrefixCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    dbPrefixCrit.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, dbprefix));
-    dbPrefixCrit.setMaxResults(1);
-    ModuleDBPrefix dbPrefixRecord = (ModuleDBPrefix) dbPrefixCrit.uniqueResult();
-
-    return dbPrefixRecord != null;
-  }
-
   private void createDataPackageModule(Module moduleDef, String javaPackage) {
     DataPackage dataPackage = OBProvider.getInstance().get(DataPackage.class);
 
