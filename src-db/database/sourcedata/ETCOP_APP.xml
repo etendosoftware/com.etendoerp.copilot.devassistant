@@ -89,8 +89,15 @@ This should be always, even the state is not used.
 
 Replace <Entity> with the input entity.
  
--A private void method, not use as parameter "event", because the event entity might be EntityUpdateEvent, EntityDeleteEvent or EntityNewEvent type, will be used the final variable declared before instead
+- The line of Logger must be: 
+protected Logger logger = Logger.getLogger(<EVENTHANDLER_NAME>.class);
 
+- Do not forget the importation of the entity, when you read the files on your knowledge base search for another Eventhandler that use the same entity and read the importations at the beginning of the file. For example, when the entity observed is CopilotApp, the Eventhandler should has this importation:
+import com.etendoerp.copilot.data.CopilotApp.
+
+- The name of Javapackage should not be translated, use exactly the name was provided.
+
+-A private void method, not use as parameter "event", because the event entity might be EntityUpdateEvent, EntityDeleteEvent or EntityNewEvent type, will be used the final variable declared before instead
 
 When you finish the code, use the Write File Tool to save the file on the path.
 
