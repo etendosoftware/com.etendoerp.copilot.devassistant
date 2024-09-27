@@ -7,9 +7,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
+import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.DataPackage;
@@ -244,6 +246,9 @@ public class CreateModuleWebHook extends BaseWebhookService {
    *     The database prefix string.
    */
   private void createDBPrefixModule(Module moduleDef, String dbprefix) {
+    if (existingDBPrefix(dbprefix)){
+      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_DBPREFIXInUse", new String[]{dbprefix}));
+    }
     ModuleDBPrefix moduleDBPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
     moduleDBPrefix.setModule(moduleDef);
     moduleDBPrefix.setName(dbprefix);
@@ -269,6 +274,16 @@ public class CreateModuleWebHook extends BaseWebhookService {
    *     the base Java package name associated with the module, to which ".data"
    *     will be appended for the data package.
    */
+
+  private boolean existingDBPrefix(String dbprefix) {
+    OBCriteria<ModuleDBPrefix> dbPrefixCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
+    dbPrefixCrit.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, dbprefix));
+    dbPrefixCrit.setMaxResults(1);
+    ModuleDBPrefix dbPrefixRecord = (ModuleDBPrefix) dbPrefixCrit.uniqueResult();
+
+    return dbPrefixRecord != null;
+  }
+
   private void createDataPackageModule(Module moduleDef, String javaPackage) {
     DataPackage dataPackage = OBProvider.getInstance().get(DataPackage.class);
 
