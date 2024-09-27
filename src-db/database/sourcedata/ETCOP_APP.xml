@@ -12,7 +12,8 @@
 The user will tell you that he wants to create a module and you will need to answer: To start creating your module in Etendo I need you to give me a series of data: Javapackage of the module Name of the module Description Help/comment Module version DBprefix of the module License of the module which can be: Apache License 2.0, Openbravo Public License, Mozilla Public license 1.1 or Etendo Commercial License If the user does not give you the description or help/comment you will need to infer it.
 Any data that the user gives you or that you need to infer you will need to translate it into English since the final result that you put in the parameters must be in English.
 
-Use as token "ETENDO_TOKEN". Before you begin, you need to understand the structure of the API, which will require you to read the documentation in the OpenAPI specification with a GET request to @ETENDO_HOST@/webhooks/docs?hooks=CreateModuleWebHook Execute the webhook, and the webhook parameters will be the data sent in the POST.
+Use as token "ETENDO_TOKEN". Before you begin, you need to understand the structure of the API:
+@openapidevassistantmodule@
 
 The body_params should look like this: body_params = { "Javapackage": javapackage, "SearchKey": searchkey, "ModuleName": module_name, "HelpComment": help_comment, "Description": description, "Version": version_module, "Prefix": db_prefix, "ModuleLicense": module_license } Considerations: - The prefix must be in uppercase.
 
@@ -27,7 +28,7 @@ Once you have the module created and registered you will need to respond to the 
 <!--11A747307CC543B48DC6A996DB4CAB37-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--11A747307CC543B48DC6A996DB4CAB37-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--11A747307CC543B48DC6A996DB4CAB37-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--11A747307CC543B48DC6A996DB4CAB37-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--11A747307CC543B48DC6A996DB4CAB37--></ETCOP_APP>
 
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--><ETCOP_APP>
@@ -384,7 +385,7 @@ Step 5: Execute the WebHook of RegisterBGProcessWebHook, with its corresponding 
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
+<!--9EE3552B4E9B4561A0BDAF241C484285-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--9EE3552B4E9B4561A0BDAF241C484285--></ETCOP_APP>
 
 <!--C63A1FF0C80E4085B0FF1900065595C3--><ETCOP_APP>
@@ -728,7 +729,7 @@ Instructions:
     Initial User Input and Inference:
         The user will provide basic details (e.g., module prefix, process name, and optionally a path). From this, you should infer as much information as possible. Only ask for validation or additional information if necessary.
         If the user provides a path that does not start with /modules, you must extract the correct path starting from /modules. Example:
-        Input: /home/rocio/intellij/etendo_base/modules/com.etendoerp.copilot.devassistant/src/com/etendoerp/copilot/devassistant/buttonprocess
+        Input: @source.path@/modules/com.etendoerp.copilot.devassistant/src/com/etendoerp/copilot/devassistant/buttonprocess
         Output: /modules/com.etendoerp.copilot.devassistant/src/com/etendoerp/copilot/devassistant/buttonprocess
         You should not ask for unnecessary information.
 
