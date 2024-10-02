@@ -37,8 +37,6 @@ public class RegisterBGProcessWebHook extends BaseWebhookService {
     boolean preventConcurrentExec= StringUtils.isNotEmpty(preventConcurrentStr) && StringUtils.equalsIgnoreCase(preventConcurrentStr,"true");
 
     try {
-      alreadyExistADProcess(name);
-
       Module module = getModule(javaPackage);
       String javaClassName = javaPackage + ".background." + name;
 
@@ -64,7 +62,7 @@ public class RegisterBGProcessWebHook extends BaseWebhookService {
 
   private Process createAdProcess(Module module, String name, String description, String help, String javaClassName,
       String searchKey, boolean prevConcExec, String dataAccessLevel) {
-
+    
     Process adProcess = OBProvider.getInstance().get(Process.class);
     adProcess.setNewOBObject(true);
 
@@ -87,18 +85,5 @@ public class RegisterBGProcessWebHook extends BaseWebhookService {
     OBDal.getInstance().flush();
 
     return adProcess;
-  }
-
-
-  private boolean alreadyExistADProcess(String name) {
-    OBCriteria<Process> processNameCrit = OBDal.getInstance().createCriteria(Process.class);
-    processNameCrit.add(Restrictions.ilike(Process.PROPERTY_NAME, name));
-    processNameCrit.setMaxResults(1);
-    Process processExist = (Process) processNameCrit.uniqueResult();
-
-    if (processExist != null) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ProcessNameAlreadyUse"), name));
-    }
-    return true;
   }
 }

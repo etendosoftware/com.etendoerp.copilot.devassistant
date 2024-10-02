@@ -7,9 +7,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
+import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.DataPackage;
@@ -244,12 +246,37 @@ public class CreateModuleWebHook extends BaseWebhookService {
    *     The database prefix string.
    */
   private void createDBPrefixModule(Module moduleDef, String dbprefix) {
+    if (existingDBPrefix(dbprefix)) {
+      throw new OBException(OBMessageUtils.getI18NMessage("COPDEV_DBPREFIXInUse", new String[]{ dbprefix }));
+    }
     ModuleDBPrefix moduleDBPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
     moduleDBPrefix.setModule(moduleDef);
     moduleDBPrefix.setName(dbprefix);
     OBDal.getInstance().save(moduleDBPrefix);
     OBDal.getInstance().flush();
 
+  }
+
+  /**
+   * Checks whether a given database prefix exists in the system.
+   * <p>
+   * This method queries the database to determine if there is any record of the
+   * {@link ModuleDBPrefix} entity that matches the provided prefix. The query is restricted
+   * to return only one result. If a matching record is found, the method returns {@code true},
+   * otherwise it returns {@code false}.
+   *
+   * @param dbprefix
+   *     the database prefix to be checked.
+   * @return {@code true} if a record with the specified database prefix exists,
+   *     {@code false} otherwise.
+   */
+  private boolean existingDBPrefix(String dbprefix) {
+    OBCriteria<ModuleDBPrefix> dbPrefixCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
+    dbPrefixCrit.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_NAME, dbprefix));
+    dbPrefixCrit.setMaxResults(1);
+    ModuleDBPrefix dbPrefixRecord = (ModuleDBPrefix) dbPrefixCrit.uniqueResult();
+
+    return dbPrefixRecord != null;
   }
 
   /**
