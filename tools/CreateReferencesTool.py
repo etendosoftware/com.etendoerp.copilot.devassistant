@@ -29,14 +29,12 @@ class CreateReferencesInput(ToolInput):
 
     i_help: Optional[str] = ToolField(
         title="Help",
-        description="Help text for the reference.",
-        default=None
+        description="Help text for the reference."
     )
 
     i_description: Optional[str] = ToolField(
         title="Description",
-        description="Description of the reference.",
-        default=None
+        description="Description of the reference."
     )
 
 
