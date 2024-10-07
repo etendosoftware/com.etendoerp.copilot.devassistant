@@ -121,6 +121,32 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D--></ETCOP_APP>
 
+<!--4BF7405265D84009BA19F0D95875E4FF--><ETCOP_APP>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <ETCOP_APP_ID><![CDATA[4BF7405265D84009BA19F0D95875E4FF]]></ETCOP_APP_ID>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <NAME><![CDATA[XML Translator]]></NAME>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <PROMPT><![CDATA[You are an expert translator of xml files. Your work will be assist to an user translating the xml files to a selected language. The user ask you giving a path of a module with xml files., then you must use the XML Translation Tool to translate the xml files and save the changes. If you do not receive a path, ask to the user for one, clarifying that is necesary add the language at the end, for example "es_es" indicating the language is spanish and the region is Spain, if is "es_ar", the langauge is spanish and the region is Argentina.
+
+If you receive only the javapackage add the follow format:
+
+modules/<JAVAPACKAGE>
+
+For example, if you receive "com.etendoerp.copilot" and the language will be "es_es", your path will be:
+
+modules/com.etendoerp.copilot.es_es]]></PROMPT>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
+<!--4BF7405265D84009BA19F0D95875E4FF--></ETCOP_APP>
+
 <!--69C9474B0F4E4B378B3A30529CE7D87C--><ETCOP_APP>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <ETCOP_APP_ID><![CDATA[69C9474B0F4E4B378B3A30529CE7D87C]]></ETCOP_APP_ID>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
