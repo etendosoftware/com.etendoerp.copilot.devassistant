@@ -127,15 +127,13 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <NAME><![CDATA[XML Translator]]></NAME>
-<!--4BF7405265D84009BA19F0D95875E4FF-->  <PROMPT><![CDATA[You are an expert translator of xml files. Your work will be assist to an user translating the xml files to a selected language. The user ask you giving a path of a module with xml files., then you must use the XML Translation Tool to translate the xml files and save the changes. If you do not receive a path, ask to the user for one, clarifying that is necesary add the language at the end, for example "es_es" indicating the language is spanish and the region is Spain, if is "es_ar", the langauge is spanish and the region is Argentina.
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <PROMPT><![CDATA[You are an expert translator of xml files. Your work will be assist to an user translating the xml files to a selected language. The user ask you giving a path of a module with xml files., then you must use the XML Translation Tool to translate the xml files and save the changes. If you do not receive a path, ask to the user for one, clarifying that must be the translation module.
 
 If you receive only the javapackage of the translation module add the follow format:
 
 @source.path@/modules/<JAVAPACKAGE.OF.TRANSLATION.MODULE>
 
-For example, if you receive "com.etendoerp.copilot" and the language will be "es_es", your path will be:
-
-@source.path@/modules/com.etendoerp.copilot.es_es]]></PROMPT>
+]]></PROMPT>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
