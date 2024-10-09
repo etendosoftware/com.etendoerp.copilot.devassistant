@@ -7,13 +7,21 @@
 */
 
 group          = "com.etendoerp"
-version        = "1.1.0"
+version        = "1.2.0"
 description    = "Developer's assistant for Copilot"
 ext.artifact   = "copilot.devassistant"
 ext.repository = "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
 
 configurations {
     moduleDependencyContainer
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs("etendo-resources")
+        }
+    }
 }
 
 publishing {
