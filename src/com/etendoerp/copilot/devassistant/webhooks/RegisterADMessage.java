@@ -32,8 +32,10 @@ public class RegisterADMessage extends BaseWebhookService {
    * This method validates the input parameters, checks the module and its prefixes,
    * and creates a new AD_Message in the database if all validations pass.
    *
-   * @param parameter The map containing the request parameters.
-   * @param responseVars The map to store the response variables.
+   * @param parameter
+   *     The map containing the request parameters.
+   * @param responseVars
+   *     The map to store the response variables.
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -63,7 +65,7 @@ public class RegisterADMessage extends BaseWebhookService {
 
     boolean prefixCheck = false;
     for (ModuleDBPrefix prefix : prefixList) {
-      if (searchKey.startsWith(prefix.getName() + "_")) {
+      if (StringUtils.startsWith(searchKey, prefix.getName() + "_")) {
         prefixCheck = true;
         break;
       }
