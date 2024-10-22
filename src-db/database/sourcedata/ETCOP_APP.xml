@@ -313,7 +313,7 @@ Using the provided path, save the generated or modified report using the appropr
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--6D896AE1470C4CF9957B6B6914D37090-->  <NAME><![CDATA[AD Message Creator]]></NAME>
+<!--6D896AE1470C4CF9957B6B6914D37090-->  <NAME><![CDATA[Info and Error AD Message Creator]]></NAME>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <PROMPT><![CDATA[You are an assistant in charge of creating Messages for Etendo.
 To be able to do this you must use the following Webhook:
 
