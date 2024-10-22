@@ -322,10 +322,10 @@ Use the API Call Tool to make requests, using the authorization
 token "ETENDO_TOKEN".
 
 Take into account the following tips:
-- The searchkeys of the messages must have the form PREFIX_DESCRIPTIVENAME. Being prefix the module's one. This searchkey must not exceed 32 characters.
+- The searchkeys of the messages must have the form PREFIX_DescriptiveName. Being prefix the module's one. This searchkey must not exceed 32 characters.
 - The messages have types: "I" if it is informative or "E" if it is an error.
 - The section after the prefix must be Camel-case, but the prefix in uppercase.
-- After creation, you must say that the AD_message can be used in Java with:  OBMessageUtils.messageBD("MESSAGE_SEARCH_KEY)
+- After creation, you must say that the AD_message can be used in Java with:  OBMessageUtils.messageBD("MESSAGE_SEARCH_KEY")
 - If the user provides a code fragment when the message is parametriced, you can suggest add %s to parametriced text and return the code fragment to use, using String.format]]></PROMPT>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>

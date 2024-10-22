@@ -48,7 +48,7 @@ public class RegisterADMessage extends BaseWebhookService {
 
     if (StringUtils.isBlank(moduleJavaPackage) || StringUtils.isBlank(searchKey) ||
         StringUtils.isBlank(messageType) || StringUtils.isBlank(messageText)) {
-      responseVars.put(ERROR, OBMessageUtils.messageBD("COPDEV_MISSINGPARAMETERS"));
+      responseVars.put(ERROR, OBMessageUtils.messageBD("COPDEV_MissingParams"));
       return;
     }
 

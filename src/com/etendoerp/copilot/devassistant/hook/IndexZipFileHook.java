@@ -98,7 +98,7 @@ public class IndexZipFileHook implements CopilotFileHook {
     Path path = Paths.get(searchPath).normalize();
 
     if (!Files.exists(path)) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PATHEXISTENCEERROR"), path.toString()));
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PathNotExists"), path.toString()));
     }
 
     if (Files.isRegularFile(path)) {
@@ -109,7 +109,7 @@ public class IndexZipFileHook implements CopilotFileHook {
       // Add all files in directory recursively
       Files.walkFileTree(path, getSimpleFileVisitor(filesToZip));
     } else {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_INVALIDPATH"), path.toString()));
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidPath"), path.toString()));
     }
   }
 
@@ -140,7 +140,7 @@ public class IndexZipFileHook implements CopilotFileHook {
 
     // Validate base path
     if (!Files.exists(basePath) || !Files.isDirectory(basePath)) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_BASEPATHINVALID"), basePath.toString()));
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_BasePathInvalid"), basePath.toString()));
     }
 
     // Glob pattern is the rest of the path after the base path
