@@ -232,14 +232,13 @@ public class IndexZipFileHook implements CopilotFileHook {
    *     If an I/O error occurs during the creation of the ZIP file.
    */
   private static File getZipFile(Set<Path> filesToZip) throws IOException {
-    // Create the ZIP file
-    File zipFile = File.createTempFile("files", ".zip");
+    Path tempDirPath = Files.createTempDirectory("copilotZipGeneration");
+    File zipFile = File.createTempFile("files", ".zip", tempDirPath.toFile());
     try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
-      int i = 0;
       int total = filesToZip.size();
+      int i = 0;
       for (Path filePath : filesToZip) {
-        ZipEntry zipEntry = new ZipEntry(filePath.toString());
-        zos.putNextEntry(zipEntry);
+        zos.putNextEntry(new ZipEntry(filePath.toString()));
         Files.copy(filePath, zos);
         zos.closeEntry();
         logIfDebug(log, String.format("Added file %s to zip file. %d of %d%n", filePath.toString(), ++i, total));
