@@ -53,6 +53,5 @@ repositories {
 */
 dependencies {
     implementation('com.etendoerp:copilot:1.7.2')
-    implementation('com.etendoerp:copilot.openapi:1.5.2')
 }
 
