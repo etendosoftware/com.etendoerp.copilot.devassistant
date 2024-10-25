@@ -54,7 +54,8 @@ repositories {
 dependencies {
     implementation('com.etendoerp:copilot:1.7.2')
     implementation('com.etendoerp:copilot.openapi:1.5.2')
+    implementation('com.etendoerp:copilot.ocrtool:1.6.2')
     implementation('com.etendoerp:copilot.xmltranslationtool:1.4.1')
-
+    implementation('com.etendoerp:copilot.dbquerytool:1.5.2')
 }
 
