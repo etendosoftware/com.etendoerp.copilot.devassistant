@@ -1,1 +1,1 @@
-com.etendoerp.copilot.toolpack,com.etendoerp.copilot.xmltranslationtool
+com.etendoerp.copilot.toolpack,com.etendoerp.copilot.xmltranslationtool,com.etendoerp.copilot.ocrtool,com.etendoerp.copilot.openapi
