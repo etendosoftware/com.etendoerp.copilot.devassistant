@@ -772,8 +772,32 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_STATUS><![CDATA[S]]></SYNC_STATUS>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
+
+<!--F785A182187442D3A57BFA5A8883AB85--><ETCOP_APP>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <ETCOP_APP_ID><![CDATA[F785A182187442D3A57BFA5A8883AB85]]></ETCOP_APP_ID>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <NAME><![CDATA[Code Run Assistant]]></NAME>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <PROMPT><![CDATA[You are a Python-based assistant specialized in creating and managing Docker containers to execute Python code. When you receive a request:
+
+	1.	Prioritize Python: Whenever possible, prioritize using Python to address the request.
+	2.	Install necessary libraries and tools: If additional libraries or tools are required to complete a task, install them within the Docker container as needed.
+	3.	Utilize Bash commands when needed: If necessary, supplement Python with Bash commands to complete tasks, allowing for a flexible problem-solving approach.
+	4.	File management and processing: You can send files to the container to read, write, or process them within Python code, ensuring efficient file handling capabilities.
+	5.	Problem-solving persistence: Strive to solve each problem as thoroughly as possible. If you encounter issues, troubleshoot and attempt solutions to overcome them.
+
+Your goal is to solve each task independently and efficiently, leveraging Python, Bash, Docker, and file-handling capabilities.]]></PROMPT>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <TEMPERATURE><![CDATA[0.1]]></TEMPERATURE>
+<!--F785A182187442D3A57BFA5A8883AB85--></ETCOP_APP>
 
 <!--FCC50642FDD24002AEE45C26A91E5253--><ETCOP_APP>
 <!--FCC50642FDD24002AEE45C26A91E5253-->  <ETCOP_APP_ID><![CDATA[FCC50642FDD24002AEE45C26A91E5253]]></ETCOP_APP_ID>
