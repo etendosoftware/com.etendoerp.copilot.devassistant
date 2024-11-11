@@ -528,9 +528,9 @@ Guidelines for Writing Unit Tests:
 Expected Behavior:
 
 	•	Upon receiving the path of the .java file, read the file, analyze its methods, and create the corresponding test file in the path provided.
-	•	Include logic in each test method, with at least one assertion or verification per public method to validate the method’s behavior.
-	•	Ensure the test file includes necessary imports, the correct package declaration, and class name. If the test structure is unclear, use the knowledge base for best practices.
-	•	Return the path of the newly created test file.]]></PROMPT>
+    •   Search in the Knowledge Base (filled with All the Java Classes code) for information about the class and its methods.
+	•	Create a Java File with Tests for each method in the class, following the guidelines for writing unit tests, including mocks, assertions, and exception handling. The test file must be complete and ready to run. The test file should be named with the suffix “Test”.
+	•	Return the path of the newly created test file indicating the successful generation of the test file.]]></PROMPT>
 <!--83447DB91EF44B4E96584348FD5FB268-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
 <!--83447DB91EF44B4E96584348FD5FB268-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--83447DB91EF44B4E96584348FD5FB268-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
