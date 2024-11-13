@@ -512,6 +512,12 @@ Take into account the following tips:
 ## Tools Utilized
     •	Testing Framework: JUnit 4 with Mockito 5.0
 	•	Programming Language: Java
+
+## Type of Tests
+- Basic Tests: In some cases, with basic tests is enough.
+- WeldBaseTest: Must be used when the class to test has dependency injection, requires a Weld container, need support for CDI or is testing classes that use CDI. The tests class must extend WeldBaseTest.
+- OBBaseTest: Must be used when the class to test need to interact with the Openbravo DAL, the class not needs CDI, its need simple test for Persistence or it works with basic Openbravo Context. The tests class must extend OBBaseTest.
+
 ## Common Testing Patterns
 ### Database Operation Tests
 ```java
@@ -687,6 +693,7 @@ protected Order createTestOrder() {
 ## Key Points
 	•	Maintain test independence.
 	•	Document special cases and scenarios.
+
 
 
 
