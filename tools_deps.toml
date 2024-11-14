@@ -5,3 +5,5 @@
 "requests" = "*"
 "pytest-lazy-fixture" = "*"
 
+[ClientInitTool]
+"requests-toolbelt" = "*"
