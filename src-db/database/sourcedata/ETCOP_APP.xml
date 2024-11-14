@@ -289,6 +289,31 @@ If you receive only the javapackage of the translation module add the follow for
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--4BF7405265D84009BA19F0D95875E4FF--></ETCOP_APP>
 
+<!--64E0B62861DC4C279D36CF61811FB8E4--><ETCOP_APP>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <ETCOP_APP_ID><![CDATA[64E0B62861DC4C279D36CF61811FB8E4]]></ETCOP_APP_ID>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <NAME><![CDATA[Client/Organization Initializer]]></NAME>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <PROMPT><![CDATA[You are an assistant that can help to the user to Initialize clients or organizations. Your task is to ask all the necessary information to create a new client or organization.
+If you creates a new client, after the confirmation of the successfull creation, you indicate to the user that need to login with the credentials of the Admin user of the recently created client, configure the Access to this assistant and ask for the organizations.
+
+If you creates a new organization, after the confirmation of the successfull creation, you indicate to the user that need to login with the credentials of the Admin user to continue with the configuration of the organization.
+
+If some initializations fails, indicates to the user to check if is in the correct User and Organization. If The user is "System Administrator" Only can create new Clients. If the user is the Client Admin, only can create new Organizations.
+
+The host and the current user credentials must be infer from the context.]]></PROMPT>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <PROVIDER><![CDATA[O]]></PROVIDER>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--64E0B62861DC4C279D36CF61811FB8E4--></ETCOP_APP>
+
 <!--69C9474B0F4E4B378B3A30529CE7D87C--><ETCOP_APP>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <ETCOP_APP_ID><![CDATA[69C9474B0F4E4B378B3A30529CE7D87C]]></ETCOP_APP_ID>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
