@@ -28,15 +28,14 @@ class OrgInitInput(ToolInput):
         title="Confirm Password",
         description="The password of the organization admin user to be created.",
     )
-    current_user: Optional[str] = ToolField(
-        title="Current User",
-        description="The current user that wants to create the organization. If not "
-        "provided, it will be inferred from"
-        " the context.",
+    client_admin_user: Optional[str] = ToolField(
+        title="Client Admin User",
+        description="The client admin user that wants to create the organization. If "
+        "not provided, it will be inferred from the context.",
     )
-    current_password: Optional[str] = ToolField(
-        title="Current Password",
-        description="The password of the current user that wants to create the "
+    client_admin_password: Optional[str] = ToolField(
+        title="Client Admin Password",
+        description="The password of the client admin user that wants to create the "
         "organization. If not provided, it will"
         " be inferred from the context.",
     )
@@ -99,10 +98,17 @@ class OrgInitTool(ToolWrapper):
         org_user = input_params.get("org_username")
         password = input_params.get("password")
         confirm_password = input_params.get("confirm_password")
-        token = etendo_utils.get_etendo_token()
+        client_admin_user = input_params.get("client_admin_user")
+        client_admin_password = input_params.get("client_admin_password")
         server_url = input_params.get("remote_host")
         if server_url is None:
             server_url = etendo_utils.get_etendo_host()
+        if client_admin_user is None:
+            token = etendo_utils.get_etendo_token()
+        else:
+            token = etendo_utils.login_etendo(
+                server_url, client_admin_user, client_admin_password
+            )
         if password != confirm_password:
             return ToolOutputError(error="Passwords do not match.")
         try:

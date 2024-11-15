@@ -135,21 +135,21 @@
           "title": "Confirm Password",
           "type": "string"
         },
-        "current_user": {
+        "client_admin_user": {
           "anyOf": [
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "The current user that wants to create the organization. If not provided, it will be inferred from the context.",
-          "title": "Current User"
+          "description": "The client admin user that wants to create the organization. If not provided, it will be inferred from the context.",
+          "title": "Client Admin User"
         },
-        "current_password": {
+        "client_admin_password": {
           "anyOf": [
             {"type": "string"},
             {"type": "null"}
           ],
-          "description": "The password of the current user that wants to create the organization. If not provided, it will be inferred from the context.",
-          "title": "Current Password"
+          "description": "The password of the client admin user that wants to create the organization. If not provided, it will be inferred from the context.",
+          "title": "Client Admin Password"
         },
         "remote_host": {
           "anyOf": [
@@ -481,21 +481,21 @@
           "title": "Currency",
           "type": "string"
         },
-        "current_user": {
+        "sysadmin_user": {
           "anyOf": [
             {"type": "string"},
             {"type": "null"}
           ],
           "description": "The current user that wants to create the organization. If not provided, it will be inferred from the context.",
-          "title": "Current User"
+          "title": "SysAdmin User"
         },
-        "current_password": {
+        "sysadmin_password": {
           "anyOf": [
             {"type": "string"},
             {"type": "null"}
           ],
           "description": "The password of the current user that wants to create the organization. If not provided, it will be inferred from the context.",
-          "title": "Current Password"
+          "title": "SysAdmin Password"
         },
         "remote_host": {
           "anyOf": [

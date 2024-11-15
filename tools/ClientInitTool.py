@@ -92,13 +92,13 @@ class ClientInitInput(ToolInput):
         title="Currency",
         description="The currency of the client.",
     )
-    current_user: Optional[str] = ToolField(
-        title="Current User",
+    sysadmin_user: Optional[str] = ToolField(
+        title="SysAdmin User",
         description="The current user that wants to create the organization. If not "
         "provided, it will be inferred from the context.",
     )
-    current_password: Optional[str] = ToolField(
-        title="Current Password",
+    sysadmin_password: Optional[str] = ToolField(
+        title="SysAdmin Password",
         description="The password of the current user that wants to create the "
         "organization. If not provided, it will be inferred from "
         "the context.",
@@ -121,10 +121,17 @@ class ClientInitTool(ToolWrapper):
         password = input_params.get("password")
         confirm_password = input_params.get("confirm_password")
         currency = input_params.get("currency")
-        token = etendo_utils.get_etendo_token()
         server_url = input_params.get("remote_host")
+        sysadmin_user = input_params.get("sysadmin_user")
+        sysadmin_password = input_params.get("sysadmin_password")
         if server_url is None:
             server_url = etendo_utils.get_etendo_host()
+        if sysadmin_user is None:
+            token = etendo_utils.get_etendo_token()
+        else:
+            token = etendo_utils.login_etendo(
+                server_url, sysadmin_password, sysadmin_password
+            )
         if password != confirm_password:
             return ToolOutputError(error="Passwords do not match.")
         try:
