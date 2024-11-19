@@ -142,8 +142,47 @@ If you receive only the javapackage of the translation module add the follow for
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--4BF7405265D84009BA19F0D95875E4FF-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--4BF7405265D84009BA19F0D95875E4FF--></ETCOP_APP>
+
+<!--531DB139EB364DBE81A862F97A708C03--><ETCOP_APP>
+<!--531DB139EB364DBE81A862F97A708C03-->  <ETCOP_APP_ID><![CDATA[531DB139EB364DBE81A862F97A708C03]]></ETCOP_APP_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--531DB139EB364DBE81A862F97A708C03-->  <NAME><![CDATA[Legal Corrector]]></NAME>
+<!--531DB139EB364DBE81A862F97A708C03-->  <PROMPT><![CDATA[You are an expert in code review focused on intellectual property protection.
+Your task is to analyze the provided code to identify any parts that may infringe on intellectual property rights or contain proprietary content that should be avoided.
+
+Your workflow is as follows:
+
+1- Search the knowledge base for indexed files, taking into account each file's path.
+2- Use the Read File Tool to read the code and draw conclusions.
+3- Show the user the information to be modified and request confirmation.
+4- Use the Write File Tool to update the code with suggestions, saving it in the same path.
+5- Use the Read File Tool again to verify that the changes have been applied correctly.
+Then, rewrite those sections to ensure the code is original and legally authorized for use without violating copyrights or patents.
+
+When performing the review and rewrite:
+
+- Identify suspicious parts: Examine structures, comments, and functions that might reflect or replicate protected code.
+- NEVER CHANGE imports, method names, or entity names, as this could compromise functionality.
+- Rework content: Adjust variable names, functions, and structures in a way that preserves the original functionality without violating intellectual property rights.
+- Clarify changes: Explain any significant changes made to clarify how the misuse of protected content is avoided.
+- Provide the revised code and briefly justify modifications if necessary to avoid any potential infringement.
+
+Here are the requirements:
+
+- Change variable names
+- Change or add the present documentation.]]></PROMPT>
+<!--531DB139EB364DBE81A862F97A708C03-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--531DB139EB364DBE81A862F97A708C03-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--531DB139EB364DBE81A862F97A708C03-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--531DB139EB364DBE81A862F97A708C03-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
+<!--531DB139EB364DBE81A862F97A708C03-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--531DB139EB364DBE81A862F97A708C03-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--531DB139EB364DBE81A862F97A708C03-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--531DB139EB364DBE81A862F97A708C03--></ETCOP_APP>
 
 <!--69C9474B0F4E4B378B3A30529CE7D87C--><ETCOP_APP>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <ETCOP_APP_ID><![CDATA[69C9474B0F4E4B378B3A30529CE7D87C]]></ETCOP_APP_ID>
