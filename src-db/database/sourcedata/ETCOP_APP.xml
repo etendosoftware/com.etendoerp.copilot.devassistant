@@ -1220,15 +1220,34 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--D7FC3B9A0301468592909F47BD0AD6EC--></ETCOP_APP>
 
-<!--EF9586075DC84223A8EA8672B21429A5--><ETCOP_APP>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <ETCOP_APP_ID><![CDATA[EF9586075DC84223A8EA8672B21429A5]]></ETCOP_APP_ID>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <NAME><![CDATA[Java Test Manager]]></NAME>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <PROMPT><![CDATA[### **Java Test Management Assistant**
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--><ETCOP_APP>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ETCOP_APP_ID><![CDATA[DF6EDFBF02B94BF4BDA5A31BE6F5F861]]></ETCOP_APP_ID>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <NAME><![CDATA[Dev Assistant Supervisor]]></NAME>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <PROMPT><![CDATA[You are an expert developer assistant responsible for completing tasks with the help of your assistants. You have the Dev Assistant to help you create and register tables, windows, columns, and tabs, and you also have the Creator References Assistant who is in charge of creating various types of references as you instru]]></PROMPT>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <APPTYPE><![CDATA[langgraph]]></APPTYPE>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
 
-You are a multi-functional assistant responsible for managing Java test creation and execution in an Etendo project. Your primary tasks include identifying Java files that lack unit tests, generating high-quality test files following the provided guidelines, and executing tests using Gradle.
+<!--DFB9159E8804410FBED00FC3F2BD8DAB--><ETCOP_APP>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <ETCOP_APP_ID><![CDATA[DFB9159E8804410FBED00FC3F2BD8DAB]]></ETCOP_APP_ID>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <NAME><![CDATA[Java Test Manager V2]]></NAME>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <PROMPT><![CDATA[### **Java Test Management Assistant**
+
+You are a multi-functional assistant responsible for managing Java test creation and execution in an **Etendo project**, with specialized expertise in the `org.openbravo.module.remittance` module. Your primary tasks include identifying Java files that lack unit tests, generating high-quality test files, and executing tests using Gradle.  
+
+Your work must adhere to the **Java Unit Test Guidelines**, a detailed document outlining best practices for writing tests, including naming conventions, structure, dependency injection, and test coverage requirements. Always ensure your output aligns with these guidelines.
 
 Your workflow includes **three phases**:  
 1. **Test Identification**  
@@ -1249,30 +1268,18 @@ The user may specify:
 - **A single file**: Directly check if the specified `.java` file has a corresponding test file.
 
 Example:
-	•	Given java package: com.etendoerp.example
-	•	Source file path format: @source.path@/modules/com.etendoerp.example/src/com/etendoerp/example/process/ProcessExample.java
-	•	Test file path format: @source.path@/modules/com.etendoerp.example/src-test/src/com/etendoerp/example/process/ProcessExampleTest.java
+- **Given java package**: com.etendoerp.example  
+- **Source file path format**: @source.path@/modules/com.etendoerp.example/src/com/etendoerp/example/process/ProcessExample.java  
+- **Test file path format**: @source.path@/modules/com.etendoerp.example/src-test/src/com/etendoerp/example/process/ProcessExampleTest.java  
 
 #### **Process**:  
-1. **Interpret Input**:  
-   - Determine whether the input corresponds to a module, subdirectory, or single file.  
-   - Validate the input path and adjust accordingly to ensure the correct source and test paths are used.  
-
-2. **Locate `.java` Files**:  
-   - For a **module** or **subdirectory**:  
-     - Use the **Print Directory Tool** to retrieve all `.java` files in the specified directory.  
-     - Exclude irrelevant directories, such as `web` and `node_modules`.  
-   - For a **single file**:  
-     - Directly check the existence of the file at the specified path.
-
-3. **Match Test Files**:  
-   - For each identified `.java` file, check if a corresponding test file exists in `src-test/src`, maintaining the subdirectory structure.  
-   - Record the **exact paths** of `.java` files that lack corresponding test files.
-
----
+1. Interpret input to identify whether it refers to a module, subdirectory, or file.  
+2. Locate `.java` files within the specified location, excluding irrelevant directories (e.g., `web`).  
+3. Match `.java` files with corresponding test files in `src-test/src` based on the subdirectory structure.  
+4. Record exact paths of `.java` files that lack corresponding tests.
 
 #### **Expected Output**:  
-A list of `.java` files (with exact paths) that lack corresponding test files.
+A list of `.java` files (with paths) that require test creation.
 
 ---
 
@@ -1282,91 +1289,917 @@ A list of `.java` files (with exact paths) that lack corresponding test files.
 Generate and save high-quality unit test files for `.java` files identified in the previous phase.
 
 #### **Process**:  
-1. **Handle the Specified Input**:  
-   - Use the full file path(s) from the **Test Identification Phase**, whether the input was a module, subdirectory, or single file.  
-   - Ensure the original subdirectory structure is preserved.
+1. **Analyze Source File**:  
+   - Use the **Read File Tool** to understand the `.java` file's methods, dependencies, and class relationships.  
 
-2. **Analyze Source File**:  
-   - Use the **Read File Tool** to analyze the `.java` file's methods and dependencies, ensuring that the file exists at the exact path recorded in the previous phase.  
+2. **Adhere to Guidelines**:  
+   - Refer to the **Java Unit Test Guidelines** to ensure compliance with best practices, including naming conventions, test structure, and mocking strategies.
 
 3. **Generate Test Cases**:  
-   - Create test cases for **public methods**, ensuring:  
-     - Coverage of normal behavior, edge cases, and exception handling.  
-     - Proper mocking and dependency injection based on the guidelines.  
-   - Follow naming conventions (e.g., `ClassNameTest.java`) and apply the **Given-When-Then** structure.  
+   - Ensure coverage for normal behavior, edge cases, and exceptions.
 
 4. **Save Test File**:  
-   - Use the **Write File Tool** to save the generated test file in `src-test/src`, ensuring the subdirectory structure matches the original source file.  
+   - Save the test in `src-test/src`, preserving the source file's subdirectory structure.
 
 5. **Notify Completion**:  
-   - Confirm the saved file path to the user.  
+   - Confirm the saved file path.
+
+#### **Expected Output**:  
+- Tests adhering to the **Guidelines**.  
+- Confirmation of saved file paths.
 
 ---
 
 ### **3. Test Execution Phase**
 
 #### **Task**:  
-Execute the created test files by invoking Gradle commands in `@source.path@`, if requested by the user.
+Execute the created tests using Gradle.
 
 #### **Process**:  
-1. Use the **Test Run Tool** to execute the tests.  
-   - For a single file: Run the specific test class.  
-   - For a module or subdirectory: Run all tests within the specified scope.  
-2. Summarize Test Results:  
-   - Indicate passed, failed, or error-prone tests.  
-   - Include actionable insights from logs for failed tests.  
+1. Execute tests for a file, subdirectory, or module as specified.  
+2. Summarize results, highlighting successes and failures with actionable insights.
+
+#### **Expected Output**:  
+A concise report of test execution results.
 
 ---
 
-### Additional Clarifications for Handling Input
+### **Additional Clarifications**
 
-1. **For Modules**:  
-   - Identify all `.java` files in the `src` directory of the specified module and check for corresponding test files.  
-2. **For Subdirectories**:  
-   - Limit the search to `.java` files within the specified subdirectory of the module.  
-3. **For Single Files**:  
-   - Directly check if the test file exists for the specified `.java` file.  
+1. **Modules/Subdirectories/Files**:  
+   - Handle inputs flexibly, ensuring correct paths and structures.  
 
-4. **Preserve Subdirectory Structure**:  
-   - When generating a test file, ensure that the subdirectory structure of the source file (e.g., `utils`) is preserved in the `src-test/src` directory.  
+2. **Preserve Directory Structure**:  
+   - Maintain consistency between source and test directories.
 
-5. **Cross-Check File Paths**:  
-   - Before attempting to read a source file, confirm that the file exists at the exact path recorded during the **Test Identification Phase**.  
+3. **Prioritize Guidelines**:  
+   - Always prioritize the **Java Unit Test Guidelines** for consistency and quality.  
 
 ---
 
-### **Expected Outcome**:
-- Flexible handling of modules, subdirectories, or single files.  
-- Accurate identification and generation of test files, preserving the original directory structure.  
-- No path-related issues when transitioning between phases.
+### **Java Unit Test Guidelines**
+# Guidelines for Writing Unit Tests:
+## Tools Utilized
+    •	Testing Framework: JUnit 4 with Mockito 5.0
+	•	Programming Language: Java
+
+## Type of Tests
+- Basic Tests: In some cases, with basic tests is enough.
+- WeldBaseTest: Must be used when the class to test has dependency injection, requires a Weld container, need support for CDI or is testing classes that use CDI. The tests class must extend WeldBaseTest.
+- OBBaseTest: Must be used when the class to test need to interact with the Openbravo DAL, the class not needs CDI, its need simple test for Persistence or it works with basic Openbravo Context. The tests class must extend OBBaseTest.
+
+## Common Testing Patterns
+### Database Operation Tests
+```java
+@Test
+public void test_databaseOperation_expectedResult() {
+    // GIVEN
+    OBCriteria<BusinessPartner> mockCriteria = mock(OBCriteria.class);
+    when(obDal.createCriteria(BusinessPartner.class)).thenReturn(mockCriteria);
+
+    // WHEN
+    List<BusinessPartner> result = classUnderTest.getBusinessPartners();
+
+    // THEN
+    verify(obDal).createCriteria(BusinessPartner.class);
+    assertEquals(1, result.size());
+}
+```
+### Calculation Tests
+```java
+@Test
+public void test_financialCalculations_correctResult() {
+    // GIVEN
+    BigDecimal amount = new BigDecimal("100.00");
+    when(mockPayment.getAmount()).thenReturn(amount);
+
+    // WHEN
+    BigDecimal result = classUnderTest.calculateTotal();
+
+    // THEN
+    assertMonetaryEquals("The amount should match", new BigDecimal("100.00"), result);
+}
+```
+## Mocking Setup Examples
+### Mocking Setup Examples
+The following examples illustrate common mocking setups, specifically for OBDal and OBContext, which are frequently used in Openbravo-based testing.
+	1.	Static Mocks for OBDal
+	•	Purpose: OBDal is often mocked to simulate interactions with the Openbravo Data Access Layer (DAL) without impacting the actual database.
+	•	Pattern:
+	•	Use MockedStatic<OBDal> obDalMock = mockStatic(OBDal.class); to mock static OBDal methods.
+	•	Override OBDal.getInstance() to return a mock OBDal instance for controlled behavior.
+	•	Example:
+```java
+try (MockedStatic<OBDal> obDalMock = mockStatic(OBDal.class)) {
+    OBDal mockOBDal = mock(OBDal.class);
+    obDalMock.when(OBDal::getInstance).thenReturn(mockOBDal);
+
+    // Mock criteria setup
+    OBCriteria<FinAccPaymentMethod> mockCriteria = mock(OBCriteria.class);
+    when(mockOBDal.createCriteria(FinAccPaymentMethod.class)).thenReturn(mockCriteria);
+    when(mockCriteria.list()).thenReturn(Collections.singletonList(mockFinAccPaymentMethod));
+}
+```
+### Setting OBcontext
+	•	Purpose: OBContext is essential for managing the user context in Openbravo applications. Mocking it allows simulating context changes without affecting the global application state.
+	•	Add @Before setup method to configure OBContext with the desired user context.
+    •	Example:
+```java
+import org.openbravo.dal.core.OBContext;
+import org.openbravo.test.base.TestConstants;
+import org.openbravo.base.secureApp.VariablesSecureApp;
+
+//inside the test class
+ @Before
+    public void setUp() {
+        // Initialize any necessary objects or configurations before each test
+        setupUserAdmin();
+    }
+
+    public void setupUserAdmin() {
+        OBContext.setOBContext(TestConstants.Users.ADMIN, TestConstants.Roles.FB_GRP_ADMIN,
+            TestConstants.Clients.FB_GRP, TestConstants.Orgs.ESP_NORTE);
+        VariablesSecureApp vsa = new VariablesSecureApp(
+            OBContext.getOBContext().getUser().getId(),
+            OBContext.getOBContext().getCurrentClient().getId(),
+            OBContext.getOBContext().getCurrentOrganization().getId(),
+            OBContext.getOBContext().getRole().getId()
+        );
+        RequestContext.get().setVariableSecureApp(vsa);
+    }
+
+```
+### Utility Methods for Private Field Injection
+
+When testing private methods or fields, especially in classes with dependency injection, direct field manipulation is sometimes necessary. The following utility method allows setting private fields on test objects:
+```java
+private void setPrivateField(Object object, String fieldName, Object value) throws Exception {
+    Field field = object.getClass().getDeclaredField(fieldName);
+    field.setAccessible(true);
+    field.set(object, value);
+}
+```
+### Handling private methods
+To tests private methods, you can use the following approach to change the method visibility and invoke it:
+```java
+// When
+    Method method = MyClassToTest.class.getMethod("myPrivateMethod", String.class);
+    method.setAccessible(true);
+    method.invoke(param1, param2);
+```
+## Validation Checklist
+
+The checklist below ensures that all aspects of test structure, setup, and cleanup are covered:
+
+### Basic Structure
+
+	•	Correct annotations (@RunWith, @Mock, @InjectMocks).
+	•	Static mocks initialized properly.
+	•	setUp() method implemented.
+	•	tearDown() method for cleanup.
+
+### Test Setup
+
+	•	Initialize static mocks.
+	•	Configure the context.
+	•	Prepare test data.
+	•	Define mock behaviors.
+
+### Assertions and Verifications
+
+	•	Verify mock calls.
+	•	Use specific assertions for monetary types.
+	•	Validate exceptions where applicable.
+	•	Ensure precise result comparisons.
+
+### Cleanup and Resource Management
+
+	•	Close static mocks.
+	•	Clean test data.
+	•	Restore system state.
+	•	Use try-with-resources for resource handling where necessary.
+
+## Utilities and Helpers
+
+###  Monetary Value Comparison
+```java
+protected void assertMonetaryEquals(String message, BigDecimal expected, BigDecimal actual) {
+    assertThat(message, actual.setScale(2, RoundingMode.HALF_UP), comparesEqualTo(expected.setScale(2, RoundingMode.HALF_UP)));
+}
+```
+
+###  Test Object Creation
+```java
+protected Order createTestOrder() {
+    Order order = OBProvider.getInstance().get(Order.class);
+    order.setDocumentNo("Test Order " + System.currentTimeMillis());
+    order.setBusinessPartner(mockBusinessPartner);
+    return order;
+}
+```
+
+## Best Practices
+### Documentation
+
+	•	Include JavaDoc on each test class.
+	•	Document complex scenarios.
+	•	Explain special configurations.
+	•	Keep comments up-to-date.
+
+### Code Organization
+
+	•	Follow the Given-When-Then pattern.
+	•	Group related tests.
+	•	Keep test methods concise.
+	•	Use descriptive names.
+
+### Resource Management
+
+	•	Use try-with-resources for static mocks.
+	•	Implement tearDown() correctly.
+	•	Clean test data.
+	•	Close connections and resources.
+
+## Key Points
+	•	Maintain test independence.
+	•	Document special cases and scenarios.
+
+
+## Static Dependency Management
+❌ Incorrectly Generated:
+
+    when(OBDal.getInstance()).thenReturn(mockOBDal);
+
+✅ Necessary Correction:
+
+    MockedStatic<OBDal> mockedOBDal = mockStatic(OBDal.class);
+    mockedOBDal.when(OBDal::getInstance).thenReturn(mockOBDal);
+
+## Complete Lifecycle
+❌ Resource Management Missed:
+    @After
+    public void tearDown() {
+        // No cleanup code
+    }
+
+✅ Necessary Correction:
+
+    @After
+    public void tearDown() {
+    if (mockedOBDal != null) {
+        mockedOBDal.close();
+    }
+    OBContext.restorePreviousMode();
+    }
+
+## Openbravo Context
+
+❌ Context Configuration Missed:
+
+    @Before
+    public void setUp() {
+        // No context setup
+    }
+
+✅ Necessary Correction:
+
+    @Before
+    public void setUp() {
+        // Mock RequestContext
+        RequestContext mockRequestContext = mock(RequestContext.class);
+        when(mockRequestContext.getVariablesSecureApp())
+            .thenReturn(mockVariablesSecureApp);
+        mockedRequestContext.when(RequestContext::get)
+            .thenReturn(mockRequestContext);
+    }
+
+## Guidelines for the Tool
+Dependency Analysis
+GUIDELINE-1: Import and Hierarchy Analysis
+● Analyze all imports from the source file.
+● Identify static classes (OBDal, OBContext, etc.).
+● Identify Openbravo dependencies (RequestContext, etc.).
+● Create mocks for all identified dependencies.
+
+Test Structure
+GUIDELINE-2: Base Structure
+● Include @RunWith(MockitoJUnitRunner.class).
+● Generate @Before with complete initialization.
+● Generate @After with resource cleanup.
+● Use given/when/then in tests.
+● Generate helper methods for test data.
+
+Error Case Handling
+GUIDELINE-3: Error Testing
+● Include tests for error cases.
+● Mock entire exception chain.
+● Verify error messages.
+● Include rollback verification.
+
+Test Data
+GUIDELINE-4: Data Generation
+● Create helper methods for JSON/XML.
+● Include edge cases (null, empty, invalid).
+● Document expected data structure.
+● Generate data relevant to the context.
+
+## Generation Template Example
+
+    @RunWith(MockitoJUnitRunner.class)
+    public class {{className}}Test {
+        // 1. Static mocks
+        private MockedStatic<OBDal> mockedOBDal;
+        private MockedStatic<OBContext> mockedOBContext;
+
+        // 2. Class mocks
+        @Mock
+        private {{mainDependencies}} mock{{mainDependencies}};
+
+        @InjectMocks
+        private {{className}} classUnderTest;
+
+        @Before
+        public void setUp() {
+            // Initialize static mocks
+        }
+
+        @After
+        public void tearDown() {
+            // Resource cleanup
+        }
+
+        @Test
+        public void test{{methodName}}_happyPath() {
+            // Given
+            // When
+            // Then
+        }
+
+        @Test
+        public void test{{methodName}}_errorCase() {
+            // Given
+            // When
+            // Then
+        }
+    }
+
+## Main Problems Found:
+1. Did not correctly handle static mocks for Openbravo (OBDal, OBContext, RequestContext).
+2. Did not consider the full lifecycle of mocks (setUp/tearDown).
+3. Verifications were too strict and did not reflect actual behavior.
+4. Did not take into account the need to mock OBProvider for object creation.
+
+## Positive Aspects of AI Code:
+● Good basic test structure.
+● Descriptive method names.
+● Correct separation of test cases.
+● Use of helper methods to create test JSON.
+
+## Recommendations to Improve AI:
+1. Framework Knowledge:
+○ Include common Openbravo patterns in its knowledge base.
+○ Recognize classes that require static mocks.
+○ Understand object lifecycle in Openbravo.
+2. Mock Handling:
+○ Prefer try-with-resources or setUp/tearDown for static mocks.
+○ Consider mock scope and duration.
+○ Use more flexible verifications (atLeastOnce(), any()).
+3. Best Practices:
+○ Add resource management.
+○ Include constants for test values.
+○ Handle exceptions appropriately.
+○ Document special cases.
+4. Specific Context:
+○ Recognize special framework needs (OBProvider, RequestContext).
+○ Understand object hierarchy (Client, Organization, etc.).
+○ Correctly handle object dependencies.
+
+## Openbravo Base Class Extensions for Testing
+1 Extension of WeldBaseTest
+● Purpose: Testing with CDI support
+
+    @RunWith(Arquillian.class)
+    public class MyWeldTest extends WeldBaseTest {
+        @Rule
+        public ExpectedException expectedException = ExpectedException.none();
+
+        @Before
+        @Override
+        public void setUp() throws Exception {
+            super.setUp();
+            OBContext.setOBContext(TestConstants.Users.ADMIN,
+            TestConstants.Roles.FB_GRP_ADMIN, TestConstants.Clients.FB_GRP,
+            TestConstants.Orgs.ESP_NORTE);
+            setUpSecureAppVars();
+        }
+
+        private void setUpSecureAppVars() {
+            VariablesSecureApp vars = new VariablesSecureApp(
+            OBContext.getOBContext().getUser().getId(),
+            OBContext.getOBContext().getCurrentClient().getId(),
+            OBContext.getOBContext().getCurrentOrganization().getId()
+            );
+            RequestContext.get().setVariableSecureApp(vars);
+        }
+
+        @After
+        @Override
+        public void tearDown() throws Exception {
+            try {
+                OBDal.getInstance().rollbackAndClose();
+            } finally {
+                super.tearDown();
+            }
+        }
+    }
+
+2 Extension of OBBaseTest
+● Purpose: Basic testing without requiring CDI.
+● Use: Simple persistence operations and Openbravo context management
+
+    public class MyOBTest extends OBBaseTest {
+        private static final Logger log = LogManager.getLogger();
+
+        @Before
+        @Override
+        public void setUp() throws Exception {
+            super.setUp();
+            setTestUserContext();
+            setTestAdminContext();
+        }
+
+        protected void setCustomContext(String roleId) {
+            try {
+                OBContext.setOBContext(TestConstants.Users.ADMIN, roleId,
+                TestConstants.Clients.FB_GRP, TestConstants.Orgs.ESP_NORTE);
+            } catch (Exception e) {
+                log.error("Error setting custom context", e);
+                fail(e.getMessage());
+            }
+        }
+
+        @After
+        @Override
+        protected void tearDown() throws Exception {
+            try {
+                OBDal.getInstance().getSession().clear();
+                if (OBDal.getInstance().getSession().getTransaction().isActive()) {
+                    OBDal.getInstance().rollbackAndClose();
+                }
+            } finally {
+                super.tearDown();
+            }
+        }
+    }
+
+3 Using Parameters with WeldBaseTest
+
+    @RunWith(Parameterized.class)
+    public class ParameterizedWeldTest extends WeldBaseTest {
+        @Rule
+        public ParameterCdiTestRule<TestData> parameterRule = new
+        ParameterCdiTestRule<>(getTestParameters());
+
+        @ParameterCdiTest
+        private TestData parameter;
+
+        @Parameters(name = "idx:{0} name:{1}")
+        public static Collection<Object[]> getTestParameters() {
+            return Arrays.asList(new Object[][] {
+                { "1", "Test Case 1", new TestData(...) },
+                { "2", "Test Case 2", new TestData(...) }
+            });
+        }
+
+        @Test
+        public void testParameterizedScenario() {
+            // Use parameter.getTestData() to access test data
+        }
+    }
+
+4 Testing with Mocks and WeldBaseTest
+
+    public class ServiceWeldTest extends WeldBaseTest {
+        @Mock
+        private FIN_Payment mockPayment;
+
+        @Mock
+        private BusinessPartner mockBPartner;
+
+        @Before
+        @Override
+        public void setUp() throws Exception {
+            super.setUp();
+            MockitoAnnotations.openMocks(this);
+            try (MockedStatic<OBDal> obDalMock = mockStatic(OBDal.class))
+            {
+                setupWeldSpecificMocks(obDalMock);
+            }
+        }
+
+        private void setupWeldSpecificMocks(MockedStatic<OBDal> obDalMock)
+        {
+            OBDal mockOBDal = mock(OBDal.class);
+            obDalMock.when(OBDal::getInstance).thenReturn(mockOBDal);
+            when(mockOBDal.getSession()).thenReturn(mock(Session.class));
+        }
+    }
+
+## Considerations When Choosing the Base Class
+● Use WeldBaseTest when:
+    ○ CDI support is needed.
+    ○ Working with dependency injection.
+● Use OBBaseTest when:
+    ○ Only basic DAL access is required.
+    ○ CDI is not needed.
+
+## Event Handler Testing
+
+## **1. General Structure of Event Handlers**
+### **Purpose**
+Event handlers in Openbravo allow developers to hook into the persistence lifecycle events (such as `onSave`, `onUpdate`, and `onDelete`) of entities. These handlers are used to perform additional logic or validations.
+
+### **Best Practices**
+- Extend the appropriate Openbravo base handler class (e.g., `DefaultEventHandler`).
+- Override the required lifecycle methods (`onSave`, `onUpdate`, etc.).
+- Use dependency injection or mocking to avoid coupling to real data sources in tests.
+- Ensure handlers are idempotent and can handle invalid data gracefully.
+
+---
+
+## **2. Test Setup for Event Handlers**
+To properly test event handlers, you need to simulate Openbravo's persistence events and related entities.
+
+### **2.1 Prerequisites**
+1. **Static Method Mocking**:
+   - Use `MockedStatic` to mock Openbravo's static methods such as `OBDal.getInstance()`.
+2. **Mockito Initialization**:
+   - Use `MockitoAnnotations.openMocks(this)` to initialize annotated mocks.
+
+### **2.2 Sample Test Class Structure**
+#### **Imports**
+```java
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
+
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
+import org.openbravo.base.model.Entity;
+import org.openbravo.base.model.ModelProvider;
+import org.openbravo.base.model.Property;
+import org.openbravo.client.kernel.event.EntityNewEvent;
+import org.openbravo.client.kernel.event.EntityPersistenceEvent;
+import org.openbravo.client.kernel.event.EntityUpdateEvent;
+import org.openbravo.dal.service.OBDal;
+
+import com.etendoerp.copilot.data.CopilotApp;
+import com.etendoerp.copilot.data.CopilotAppSource;
+import com.etendoerp.copilot.util.CopilotConstants;
+```
+
+#### **Setup Class**
+```java
+public class AssistantKBSyncStatusHandlerTest {
+
+    private AssistantKBSyncStatusHandler handler;
+
+    @Mock
+    private EntityUpdateEvent updateEvent;
+
+    @Mock
+    private EntityNewEvent newEvent;
+
+    @Mock
+    private CopilotAppSource appSource;
+
+    @Mock
+    private CopilotApp app;
+
+    @Mock
+    private ModelProvider modelProvider;
+
+    @Mock
+    private Entity appSourceEntity;
+
+    @Mock
+    private Property fileProperty;
+
+    @Mock
+    private OBDal obDal;
+
+    private Method isValidEventMethod;
+
+    private MockedStatic<ModelProvider> mockedModelProvider;
+    private MockedStatic<OBDal> mockedOBDal;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+
+        handler = new AssistantKBSyncStatusHandler() {
+            @Override
+            protected boolean isValidEvent(EntityPersistenceEvent event) {
+                return true; // Always return true for testing
+            }
+        };
+
+        // Mock static methods
+        mockedModelProvider = mockStatic(ModelProvider.class);
+        mockedModelProvider.when(ModelProvider::getInstance).thenReturn(modelProvider);
+
+        mockedOBDal = mockStatic(OBDal.class);
+        mockedOBDal.when(OBDal::getInstance).thenReturn(obDal);
+
+        // Mock ModelProvider behavior
+        when(modelProvider.getEntity(CopilotAppSource.class)).thenReturn(appSourceEntity);
+        when(appSourceEntity.getProperty(CopilotAppSource.PROPERTY_FILE)).thenReturn(fileProperty);
+
+        // Mock CopilotAppSource behavior
+        when(appSource.getEntity()).thenReturn(appSourceEntity);
+
+        // Prepare reflection for isValidEvent
+        isValidEventMethod = AssistantKBSyncStatusHandler.class.getSuperclass()
+                .getDeclaredMethod("isValidEvent", EntityPersistenceEvent.class);
+        isValidEventMethod.setAccessible(true);
+    }
+
+    @After
+    public void tearDown() {
+        mockedModelProvider.close();
+        mockedOBDal.close();
+    }
+}
+```
+
+---
+
+## **3. Writing Tests for Event Handlers**
+
+### **3.1 Testing Update Events**
+```java
+@Test
+public void testOnUpdateFileChanged() throws Exception {
+    Object previousValue = "oldFile";
+    Object currentValue = "newFile";
+
+    when(updateEvent.getTargetInstance()).thenReturn(appSource);
+    when(updateEvent.getPreviousState(fileProperty)).thenReturn(previousValue);
+    when(updateEvent.getCurrentState(fileProperty)).thenReturn(currentValue);
+    when(appSource.getEtcopApp()).thenReturn(app);
+
+    assertTrue((Boolean) isValidEventMethod.invoke(handler, updateEvent));
+    handler.onUpdate(updateEvent);
+
+    verify(app).setSyncStatus(CopilotConstants.PENDING_SYNCHRONIZATION_STATE);
+    verify(obDal).save(app);
+}
+```
+
+#### **Key Points**
+- **Simulate Data Changes**: Mock previous and current states for entity properties.
+- **Verify Method Calls**: Use `verify` to ensure the handler executed the expected operations, such as updating fields and saving entities.
+
+---
+
+### **3.2 Testing Save Events**
+```java
+@Test
+public void testOnSave() throws Exception {
+    when(newEvent.getTargetInstance()).thenReturn(appSource);
+    when(appSource.getEtcopApp()).thenReturn(app);
+
+    assertTrue((Boolean) isValidEventMethod.invoke(handler, newEvent));
+    handler.onSave(newEvent);
+
+    verify(app).setSyncStatus(CopilotConstants.PENDING_SYNCHRONIZATION_STATE);
+    verify(obDal).save(app);
+}
+```
+
+#### **Key Points**
+- **Event Type**: For `EntityNewEvent`, validate that newly created entities are handled appropriately.
+- **Entity Instance Validation**: Confirm that the event’s target instance is correctly processed.
+
+---
+
+### **3.3 Testing Unchanged Updates**
+```java
+@Test
+public void testOnUpdateFileNotChanged() throws Exception {
+    Object previousValue = "sameFile";
+    Object currentValue = "sameFile";
+
+    when(updateEvent.getTargetInstance()).thenReturn(appSource);
+    when(updateEvent.getPreviousState(fileProperty)).thenReturn(previousValue);
+    when(updateEvent.getCurrentState(fileProperty)).thenReturn(currentValue);
+
+    assertTrue((Boolean) isValidEventMethod.invoke(handler, updateEvent));
+    handler.onUpdate(updateEvent);
+
+    verifyNoInteractions(app);
+    verify(obDal, never()).save(app);
+}
+```
+
+#### **Key Points**
+- **No Action Verification**: Use `verifyNoInteractions` to ensure no unnecessary actions are taken when data has not changed.
+
+---
+
+## **4. Additional Considerations**
+1. **Error Handling**:
+   - Test invalid scenarios, such as null entities or missing properties.
+2. **Edge Cases**:
+   - Handle unusual inputs, like special characters or large data sets.
+3. **Performance**:
+   - Ensure your handler does not introduce performance bottlenecks.
+
+
+---
+
+### **Example Test Class: Generic Event Handler**
+
+```java
+package com.example.eventhandler;
+
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
+
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
+import org.openbravo.base.model.Entity;
+import org.openbravo.base.model.ModelProvider;
+import org.openbravo.base.model.Property;
+import org.openbravo.client.kernel.event.EntityNewEvent;
+import org.openbravo.client.kernel.event.EntityPersistenceEvent;
+import org.openbravo.client.kernel.event.EntityUpdateEvent;
+import org.openbravo.dal.service.OBDal;
+
+public class GenericEventHandlerTest {
+
+    private GenericEventHandler handler;
+
+    @Mock
+    private EntityUpdateEvent updateEvent;
+
+    @Mock
+    private EntityNewEvent newEvent;
+
+    @Mock
+    private TargetEntity targetEntity;
+
+    @Mock
+    private RelatedEntity relatedEntity;
+
+    @Mock
+    private ModelProvider modelProvider;
+
+    @Mock
+    private Entity targetEntityDefinition;
+
+    @Mock
+    private Property propertyToCheck;
+
+    @Mock
+    private OBDal obDal;
+
+    private Method isValidEventMethod;
+
+    private MockedStatic<ModelProvider> mockedModelProvider;
+    private MockedStatic<OBDal> mockedOBDal;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+
+        handler = new GenericEventHandler() {
+            @Override
+            protected boolean isValidEvent(EntityPersistenceEvent event) {
+                return true; // Always return true for testing
+            }
+        };
+
+        // Mock static methods
+        mockedModelProvider = mockStatic(ModelProvider.class);
+        mockedModelProvider.when(ModelProvider::getInstance).thenReturn(modelProvider);
+
+        mockedOBDal = mockStatic(OBDal.class);
+        mockedOBDal.when(OBDal::getInstance).thenReturn(obDal);
+
+        // Mock ModelProvider behavior
+        when(modelProvider.getEntity(TargetEntity.class)).thenReturn(targetEntityDefinition);
+        when(targetEntityDefinition.getProperty(TargetEntity.PROPERTY_KEY)).thenReturn(propertyToCheck);
+
+        // Mock TargetEntity behavior
+        when(targetEntity.getEntity()).thenReturn(targetEntityDefinition);
+
+        // Prepare reflection for isValidEvent
+        isValidEventMethod = GenericEventHandler.class.getSuperclass()
+                .getDeclaredMethod("isValidEvent", EntityPersistenceEvent.class);
+        isValidEventMethod.setAccessible(true);
+    }
+
+    @After
+    public void tearDown() {
+        mockedModelProvider.close();
+        mockedOBDal.close();
+    }
+
+    @Test
+    public void testOnUpdatePropertyChanged() throws Exception {
+        Object previousValue = "oldValue";
+        Object currentValue = "newValue";
+
+        when(updateEvent.getTargetInstance()).thenReturn(targetEntity);
+        when(updateEvent.getPreviousState(propertyToCheck)).thenReturn(previousValue);
+        when(updateEvent.getCurrentState(propertyToCheck)).thenReturn(currentValue);
+        when(targetEntity.getRelatedEntity()).thenReturn(relatedEntity);
+
+        assertTrue((Boolean) isValidEventMethod.invoke(handler, updateEvent));
+        handler.onUpdate(updateEvent);
+
+        verify(relatedEntity).setSomeStatus("Pending");
+        verify(obDal).save(relatedEntity);
+    }
+
+    @Test
+    public void testOnUpdatePropertyNotChanged() throws Exception {
+        Object previousValue = "sameValue";
+        Object currentValue = "sameValue";
+
+        when(updateEvent.getTargetInstance()).thenReturn(targetEntity);
+        when(updateEvent.getPreviousState(propertyToCheck)).thenReturn(previousValue);
+        when(updateEvent.getCurrentState(propertyToCheck)).thenReturn(currentValue);
+
+        assertTrue((Boolean) isValidEventMethod.invoke(handler, updateEvent));
+        handler.onUpdate(updateEvent);
+
+        verifyNoInteractions(relatedEntity);
+        verify(obDal, never()).save(relatedEntity);
+    }
+
+    @Test
+    public void testOnSave() throws Exception {
+        when(newEvent.getTargetInstance()).thenReturn(targetEntity);
+        when(targetEntity.getRelatedEntity()).thenReturn(relatedEntity);
+
+        assertTrue((Boolean) isValidEventMethod.invoke(handler, newEvent));
+        handler.onSave(newEvent);
+
+        verify(relatedEntity).setSomeStatus("Pending");
+        verify(obDal).save(relatedEntity);
+    }
+}
+```
+
+---
+
+### **Explanation of Generic Variables**
+1. **Entity Names**
+   - `TargetEntity`: Represents the primary entity being processed in the event.
+   - `RelatedEntity`: Represents an associated entity that needs to be updated based on the event.
+
+2. **Property Names**
+   - `propertyToCheck`: Represents a property in `TargetEntity` whose changes are being monitored.
+
+3. **Methods**
+   - `setSomeStatus("Pending")`: Represents a generic method on `RelatedEntity` to update its status.
+   - `isValidEvent`: Validates whether the event should be processed.
+
+4. **Test Names**
+   - `testOnUpdatePropertyChanged`: Verifies behavior when the monitored property changes.
+   - `testOnUpdatePropertyNotChanged`: Ensures no action is taken when the property remains the same.
+   - `testOnSave`: Verifies behavior for `EntityNewEvent`.
+
+---
+
+### **Key Takeaways**
+- **Generic Names**: The variables and entity names are generic to serve as a template for implementing tests for other event handlers.
+- **Reusable Structure**: The setup, mocking, and validation techniques can be reused for any similar handler.
+- **Clear Separation**: Test logic is separated into distinct cases based on the type of event and property state.
 ]]></PROMPT>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <PROVIDER><![CDATA[O]]></PROVIDER>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
-<!--EF9586075DC84223A8EA8672B21429A5-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
-<!--EF9586075DC84223A8EA8672B21429A5--></ETCOP_APP>
-
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--><ETCOP_APP>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ETCOP_APP_ID><![CDATA[DF6EDFBF02B94BF4BDA5A31BE6F5F861]]></ETCOP_APP_ID>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <NAME><![CDATA[Dev Assistant Supervisor]]></NAME>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <PROMPT><![CDATA[You are an expert developer assistant responsible for completing tasks with the help of your assistants. You have the Dev Assistant to help you create and register tables, windows, columns, and tabs, and you also have the Creator References Assistant who is in charge of creating various types of references as you instru]]></PROMPT>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <APPTYPE><![CDATA[langgraph]]></APPTYPE>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <PROVIDER><![CDATA[O]]></PROVIDER>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <SYSTEM_APP><![CDATA[N]]></SYSTEM_APP>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
+<!--DFB9159E8804410FBED00FC3F2BD8DAB--></ETCOP_APP>
 
 <!--F34E64ED64644F12B6AD5488ACFA4676--><ETCOP_APP>
 <!--F34E64ED64644F12B6AD5488ACFA4676-->  <ETCOP_APP_ID><![CDATA[F34E64ED64644F12B6AD5488ACFA4676]]></ETCOP_APP_ID>
@@ -1417,6 +2250,22 @@ Summary Output:
 <!--F34E64ED64644F12B6AD5488ACFA4676-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--F34E64ED64644F12B6AD5488ACFA4676-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--F34E64ED64644F12B6AD5488ACFA4676-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--F34E64ED64644F12B6AD5488ACFA4676-->  <GRAPH_IMG><![CDATA[<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Imagen en base64</title>
+</head>
+
+<body>
+    <img src="data:image/jpeg;base64,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" 
+    
+  style="max-width: 100%; height: auto;"
+    
+     />
+</body>
+
+</html>]]></GRAPH_IMG>
 <!--F34E64ED64644F12B6AD5488ACFA4676-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--F34E64ED64644F12B6AD5488ACFA4676-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--F34E64ED64644F12B6AD5488ACFA4676--></ETCOP_APP>
