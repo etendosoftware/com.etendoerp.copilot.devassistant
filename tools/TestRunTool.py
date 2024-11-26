@@ -23,10 +23,15 @@ class TestRunToolInput(ToolInput):
 
 
 class TestRunTool(ToolWrapper):
-    name = 'TestRunTool'
-    description = ('A tool to execute Java tests using Gradle. '
-                   'Example input: { "test_targets": ["com.etendoerp.webhookevents.WebhookSetupTest"], '
-                   '"working_directory": "/path/to/erp" }')
+    name: str = "TestRunTool"
+    description: str = """
+        A tool to execute Java tests using Gradle.
+        Example input:
+        {
+            "test_targets": ["com.etendoerp.webhookevents.WebhookSetupTest"],
+            "working_directory": "/path/to/erp"
+        }
+        """
     args_schema: Type[ToolInput] = TestRunToolInput
 
     def run(self, input_params: Dict, *args, **kwargs):
