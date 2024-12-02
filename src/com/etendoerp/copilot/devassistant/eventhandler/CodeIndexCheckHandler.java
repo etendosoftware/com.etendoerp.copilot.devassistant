@@ -17,6 +17,7 @@ import org.openbravo.erpCommon.utility.OBMessageUtils;
 
 import com.etendoerp.copilot.data.CopilotApp;
 import com.etendoerp.copilot.data.CopilotAppSource;
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.copilot.util.CopilotConstants;
 
 
@@ -74,7 +75,7 @@ public class CodeIndexCheckHandler extends EntityPersistenceEventObserver {
    * Checks if the application source contains a code index and throws an exception if modifying
    * an assistant with an associated code index is not allowed.
    * <p>
-   * If the file type is equal to {@link CopilotConstants#FILE_TYPE_COPDEV_CI},
+   * If the file type is equal to {@link Utils#FILE_TYPE_COPDEV_CI},
    * an {@link OBException} is thrown with an appropriate message.
    *
    * @param currentAppSourceList The list of application sources to check for a code index.
@@ -82,7 +83,7 @@ public class CodeIndexCheckHandler extends EntityPersistenceEventObserver {
   private static void checkCodeIndexInAssistant(List<CopilotAppSource> currentAppSourceList) {
     for (CopilotAppSource currentAppSource : currentAppSourceList) {
       String type = currentAppSource.getFile().getType();
-      if (StringUtils.equals(type, CopilotConstants.FILE_TYPE_COPDEV_CI)) {
+      if (StringUtils.equals(type, Utils.FILE_TYPE_COPDEV_CI)) {
         throw new OBException(OBMessageUtils.messageBD("COPDEV_NotChangeAvailableWithCodeIndex"));
       }
     }

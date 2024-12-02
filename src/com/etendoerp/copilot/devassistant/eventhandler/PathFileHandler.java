@@ -14,6 +14,7 @@ import org.openbravo.client.kernel.event.EntityUpdateEvent;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
 import com.etendoerp.copilot.data.CopilotAppSource;
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.copilot.util.CopilotConstants;
 
 
@@ -56,7 +57,7 @@ public class PathFileHandler extends EntityPersistenceEventObserver {
 
     if (!(StringUtils.equals(copilotAppType, CopilotConstants.APP_TYPE_LANGCHAIN) ||
         StringUtils.equals(copilotAppType, CopilotConstants.APP_TYPE_MULTIMODEL))
-        && StringUtils.equals(fileType, CopilotConstants.FILE_TYPE_COPDEV_CI)) {
+        && StringUtils.equals(fileType, Utils.FILE_TYPE_COPDEV_CI)) {
         throw new OBException(OBMessageUtils.messageBD("COPDEV_FileType&AssistantTypeIncompatibility"));
     }
   }

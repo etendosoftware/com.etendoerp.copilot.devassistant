@@ -26,6 +26,7 @@ public class Utils {
   private Utils() {
     throw new IllegalStateException("Utility class");
   }
+  public static final String FILE_TYPE_COPDEV_CI = "COPDEV_CI";
 
   public static OBError execPInstanceProcess(String registerColumnsProcess, String recordId) throws ServletException {
     DalConnectionProvider conn = new DalConnectionProvider(false);
