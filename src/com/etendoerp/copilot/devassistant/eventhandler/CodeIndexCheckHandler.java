@@ -50,12 +50,11 @@ public class CodeIndexCheckHandler extends EntityPersistenceEventObserver {
       return;
     }
     final CopilotApp currentApp = (CopilotApp) event.getTargetInstance();
-    final List<CopilotAppSource> currentAppSourceList = currentApp.getETCOPAppSourceList();
-    Object previousType = event.getPreviousState(currentApp.getEntity().getProperty(CopilotApp.PROPERTY_APPTYPE));
-    Object currentType = event.getCurrentState(currentApp.getEntity().getProperty(CopilotApp.PROPERTY_APPTYPE));
-    List<String> controlTypes = List.of(CopilotConstants.APP_TYPE_LANGCHAIN, CopilotConstants.APP_TYPE_MULTIMODEL);
-    if (controlTypes.contains(previousType) != controlTypes.contains(currentType)) {
-      checkCodeIndexInAssistant(currentAppSourceList);
+    String previousType = (String) event.getPreviousState(currentApp.getEntity().getProperty(CopilotApp.PROPERTY_APPTYPE));
+    String currentType = (String) event.getCurrentState(currentApp.getEntity().getProperty(CopilotApp.PROPERTY_APPTYPE));
+
+    if (Utils.isControlType(previousType) != Utils.isControlType(currentType)) {
+      checkCodeIndexInAssistant(currentApp);
     }
   }
 
@@ -71,19 +70,11 @@ public class CodeIndexCheckHandler extends EntityPersistenceEventObserver {
     }
   }
 
-  /**
-   * Checks if the application source contains a code index and throws an exception if modifying
-   * an assistant with an associated code index is not allowed.
-   * <p>
-   * If the file type is equal to {@link Utils#FILE_TYPE_COPDEV_CI},
-   * an {@link OBException} is thrown with an appropriate message.
-   *
-   * @param currentAppSourceList The list of application sources to check for a code index.
-   */
-  private static void checkCodeIndexInAssistant(List<CopilotAppSource> currentAppSourceList) {
+  private static void checkCodeIndexInAssistant(CopilotApp currentApp) {
+    List<CopilotAppSource> currentAppSourceList = currentApp.getETCOPAppSourceList();
     for (CopilotAppSource currentAppSource : currentAppSourceList) {
       String type = currentAppSource.getFile().getType();
-      if (StringUtils.equals(type, Utils.FILE_TYPE_COPDEV_CI)) {
+      if (Utils.isCodeIndexFile(type)) {
         throw new OBException(OBMessageUtils.messageBD("COPDEV_NotChangeAvailableWithCodeIndex"));
       }
     }

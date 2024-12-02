@@ -55,10 +55,6 @@ public class PathFileHandler extends EntityPersistenceEventObserver {
     String fileType = currentAppSource.getFile().getType();
     String copilotAppType = currentAppSource.getEtcopApp().getAppType();
 
-    if (!(StringUtils.equals(copilotAppType, CopilotConstants.APP_TYPE_LANGCHAIN) ||
-        StringUtils.equals(copilotAppType, CopilotConstants.APP_TYPE_MULTIMODEL))
-        && StringUtils.equals(fileType, Utils.FILE_TYPE_COPDEV_CI)) {
-        throw new OBException(OBMessageUtils.messageBD("COPDEV_FileType&AssistantTypeIncompatibility"));
-    }
+    Utils.validateAppAndFileType(copilotAppType, fileType);
   }
 }
