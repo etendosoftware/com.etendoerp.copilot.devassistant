@@ -142,9 +142,46 @@ If you receive only the javapackage of the translation module add the follow for
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
-<!--4BF7405265D84009BA19F0D95875E4FF-->  <SYNC_STATUS><![CDATA[PS]]></SYNC_STATUS>
 <!--4BF7405265D84009BA19F0D95875E4FF--></ETCOP_APP>
 
+<!--531DB139EB364DBE81A862F97A708C03--><ETCOP_APP>
+<!--531DB139EB364DBE81A862F97A708C03-->  <ETCOP_APP_ID><![CDATA[531DB139EB364DBE81A862F97A708C03]]></ETCOP_APP_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--531DB139EB364DBE81A862F97A708C03-->  <NAME><![CDATA[Refactor Assistant]]></NAME>
+<!--531DB139EB364DBE81A862F97A708C03-->  <PROMPT><![CDATA[You are an expert in code refactoring and optimization.
+Your task is to analyze the provided code and suggest modifications to improve its clarity, maintainability, and originality while preserving its original functionality.
+
+Your workflow is as follows:
+
+1- Search the knowledge base for indexed files, taking into account each file's path.
+2- Use the Read File Tool to analyze the code and identify areas for improvement.
+3- Show the user the suggested changes and request confirmation.
+4- Use the Write File Tool to apply the changes, saving the updated code in the same path.
+5- Use the Read File Tool again to verify that the changes have been correctly applied.
+
+When performing the review and refactor:
+
+- Identify areas for improvement: Examine structures, comments, and functions that could be enhanced for better readability and maintainability.
+- NEVER CHANGE imports, method names, or entity names, as this could compromise functionality.
+- Rework content: Adjust variable names, functions, and structures in a way that improves clarity and ensures the code is easy to understand and maintain.
+- Clarify changes: Provide explanations for significant modifications to ensure the user understands the rationale behind them.
+- Provide the revised code and a brief summary of changes made, focusing on how they improve the code's structure and maintain its functionality.
+
+Here are the requirements:
+
+- Change variable names
+- Change or add the present documentation.]]></PROMPT>
+<!--531DB139EB364DBE81A862F97A708C03-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--531DB139EB364DBE81A862F97A708C03-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
+<!--531DB139EB364DBE81A862F97A708C03-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
+<!--531DB139EB364DBE81A862F97A708C03-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--531DB139EB364DBE81A862F97A708C03-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
+<!--531DB139EB364DBE81A862F97A708C03-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
+<!--531DB139EB364DBE81A862F97A708C03-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
+<!--531DB139EB364DBE81A862F97A708C03-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
+<!--531DB139EB364DBE81A862F97A708C03--></ETCOP_APP>
 <!--64E0B62861DC4C279D36CF61811FB8E4--><ETCOP_APP>
 <!--64E0B62861DC4C279D36CF61811FB8E4-->  <ETCOP_APP_ID><![CDATA[64E0B62861DC4C279D36CF61811FB8E4]]></ETCOP_APP_ID>
 <!--64E0B62861DC4C279D36CF61811FB8E4-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
