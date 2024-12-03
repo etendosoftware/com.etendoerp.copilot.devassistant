@@ -2,6 +2,7 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -54,9 +55,14 @@ public class CreateModuleWebHook extends BaseWebhookService {
   private static final String PARAM_VERSION = "Version";
   private static final String PARAM_LICENSE = "ModuleLicense";
   private static final String PARAM_DBPREFIX = "DBPrefix";
+  private static final String PARAM_TYPE = "Type";
   private static final String CORE_DEPENDENCY = "0";
   private static final String DEPENDENCY_ENFORCEMENT = "MAJOR";
   private static final String DATA_PACKAGE_SUFFIX = " Data Package";
+  private static final String MODULE = "M";
+  private static final String TEMPLATE = "T";
+  private static final String PACKAGE = "P";
+
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -87,6 +93,7 @@ public class CreateModuleWebHook extends BaseWebhookService {
    *     if any required parameter is missing.
    */
   private void validateParameters(Map<String, String> parameter) {
+    List<String> allowedTypes = List.of(MODULE, TEMPLATE, PACKAGE);
     String missingParameterMessage = "COPDEV_MissingParameter";
 
     if (isInvalidParameter(parameter.get(PARAM_JAVA_PACKAGE))) {
@@ -107,6 +114,16 @@ public class CreateModuleWebHook extends BaseWebhookService {
     if (isInvalidParameter(parameter.get(PARAM_VERSION))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_VERSION }));
+    }
+    String type = parameter.get(PARAM_TYPE);
+    if (!isInvalidParameter(type)) {
+      if (!allowedTypes.contains(type)) {
+        throw new IllegalArgumentException(
+            OBMessageUtils.getI18NMessage("COPDEV_InvalidType", new String[]{ type }));
+      }
+    } else {
+      throw new IllegalArgumentException(
+          OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_TYPE }));
     }
 
   }
@@ -159,10 +176,12 @@ public class CreateModuleWebHook extends BaseWebhookService {
     try {
       OBContext.setAdminMode(true);
       Module moduleDef = createModuleHeader(parameter);
-      String dbPrefixValue = parameter.get(PARAM_DBPREFIX);
       createDependencyModule(CORE_DEPENDENCY, moduleDef);
-      createDBPrefixModule(moduleDef, dbPrefixValue);
-      createDataPackageModule(moduleDef, parameter.get(PARAM_JAVA_PACKAGE));
+      if (StringUtils.equals(PARAM_TYPE, MODULE)) {
+        String dbPrefixValue = parameter.get(PARAM_DBPREFIX);
+        createDBPrefixModule(moduleDef, dbPrefixValue);
+        createDataPackageModule(moduleDef, parameter.get(PARAM_JAVA_PACKAGE));
+      }
     } finally {
       OBContext.restorePreviousMode();
     }
@@ -183,16 +202,23 @@ public class CreateModuleWebHook extends BaseWebhookService {
     String description = parameter.get(PARAM_DESCRIPTION);
     String helpComment = parameter.get(PARAM_HELP_COMMENT);
     String version = parameter.get(PARAM_VERSION);
+    String type = parameter.get(PARAM_TYPE);
 
     Module moduleDef = OBProvider.getInstance().get(Module.class);
     moduleDef.setNewOBObject(true);
-    moduleDef.setJavaPackage(javaPackage);
-    moduleDef.setName(moduleName);
     moduleDef.setDescription(description);
     moduleDef.setHelpComment(helpComment);
     moduleDef.setVersion(version);
     moduleDef.setLicenseType(license);
     moduleDef.setActive(true);
+    moduleDef.setType(type);
+    if (StringUtils.equals(type, MODULE)) {
+      moduleDef.setJavaPackage(javaPackage);
+      moduleDef.setName(moduleName);
+    } else if (StringUtils.equals(type, TEMPLATE)) {
+      moduleDef.setJavaPackage(javaPackage + ".template");
+      moduleDef.setName(moduleName + " Template");
+    }
 
     OBDal.getInstance().save(moduleDef);
     OBDal.getInstance().flush();
@@ -305,5 +331,4 @@ public class CreateModuleWebHook extends BaseWebhookService {
     OBDal.getInstance().save(dataPackage);
     OBDal.getInstance().flush();
   }
-
 }

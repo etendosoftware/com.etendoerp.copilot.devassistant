@@ -86,4 +86,20 @@ public class Utils {
     moduleCrit.setMaxResults(1);
     return (Module) moduleCrit.uniqueResult();
   }
+
+  public static Module getModuleByName(String name) {
+    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
+    criteria.add(Restrictions.eq(Module.PROPERTY_NAME, name));
+    criteria.setMaxResults(1);
+
+    return (Module) criteria.uniqueResult();
+  }
+
+  public static Module getModuleByID(String id) {
+    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
+    criteria.add(Restrictions.eq(Module.PROPERTY_ID, id));
+    criteria.setMaxResults(1);
+
+    return (Module) criteria.uniqueResult();
+  }
 }
