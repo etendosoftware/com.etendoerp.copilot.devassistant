@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
@@ -102,4 +103,16 @@ public class Utils {
 
     return (Module) criteria.uniqueResult();
   }
+
+  /**
+   * Checks if the provided parameter is invalid (null or empty).
+   *
+   * @param parameter
+   *     The parameter to be checked.
+   * @return true if the parameter is blank or null, false otherwise.
+   */
+  public static boolean isInvalidParameter(String parameter) {
+    return StringUtils.isBlank(parameter);
+  }
+
 }

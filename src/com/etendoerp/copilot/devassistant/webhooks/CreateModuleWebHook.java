@@ -21,6 +21,7 @@ import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.model.ad.module.ModuleDependency;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
+import com.etendoerp.copilot.devassistant.Utils;
 
 /**
  * The {@code CreateModuleWebHook} class is responsible for handling the creation of a new
@@ -96,27 +97,27 @@ public class CreateModuleWebHook extends BaseWebhookService {
     List<String> allowedTypes = List.of(MODULE, TEMPLATE, PACKAGE);
     String missingParameterMessage = "COPDEV_MissingParameter";
 
-    if (isInvalidParameter(parameter.get(PARAM_JAVA_PACKAGE))) {
+    if (Utils.isInvalidParameter(parameter.get(PARAM_JAVA_PACKAGE))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_JAVA_PACKAGE }));
     }
 
-    if (isInvalidParameter(parameter.get(PARAM_DESCRIPTION))) {
+    if (Utils.isInvalidParameter(parameter.get(PARAM_DESCRIPTION))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_DESCRIPTION }));
     }
 
-    if (isInvalidParameter(parameter.get(PARAM_MODULE_NAME))) {
+    if (Utils.isInvalidParameter(parameter.get(PARAM_MODULE_NAME))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_MODULE_NAME }));
     }
 
-    if (isInvalidParameter(parameter.get(PARAM_VERSION))) {
+    if (Utils.isInvalidParameter(parameter.get(PARAM_VERSION))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_VERSION }));
     }
     String type = parameter.get(PARAM_TYPE);
-    if (!isInvalidParameter(type)) {
+    if (!Utils.isInvalidParameter(type)) {
       if (!allowedTypes.contains(type)) {
         throw new IllegalArgumentException(
             OBMessageUtils.getI18NMessage("COPDEV_InvalidType", new String[]{ type }));
@@ -126,17 +127,6 @@ public class CreateModuleWebHook extends BaseWebhookService {
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_TYPE }));
     }
 
-  }
-
-  /**
-   * Checks if the provided parameter is invalid (null or empty).
-   *
-   * @param parameter
-   *     The parameter to be checked.
-   * @return true if the parameter is blank or null, false otherwise.
-   */
-  private boolean isInvalidParameter(String parameter) {
-    return StringUtils.isBlank(parameter);
   }
 
   /**
