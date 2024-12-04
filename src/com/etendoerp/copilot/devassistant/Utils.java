@@ -1,5 +1,6 @@
 package com.etendoerp.copilot.devassistant;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -23,10 +24,13 @@ import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 
+import com.etendoerp.copilot.util.CopilotConstants;
+
 public class Utils {
   private Utils() {
     throw new IllegalStateException("Utility class");
   }
+  public static final String FILE_TYPE_COPDEV_CI = "COPDEV_CI";
 
   public static OBError execPInstanceProcess(String registerColumnsProcess, String recordId) throws ServletException {
     DalConnectionProvider conn = new DalConnectionProvider(false);
@@ -115,4 +119,22 @@ public class Utils {
     return StringUtils.isBlank(parameter);
   }
 
+  public static final List<String> CONTROL_TYPES = List.of(
+      CopilotConstants.APP_TYPE_LANGCHAIN,
+      CopilotConstants.APP_TYPE_MULTIMODEL
+  );
+
+  public static boolean isControlType(String appType) {
+    return CONTROL_TYPES.contains(appType);
+  }
+
+  public static boolean isCodeIndexFile(String fileType) {
+    return StringUtils.equals(fileType, FILE_TYPE_COPDEV_CI);
+  }
+
+  public static void validateAppAndFileType(String appType, String fileType) {
+    if (!isControlType(appType) && isCodeIndexFile(fileType)) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_FileType&AssistantTypeIncompatibility"));
+    }
+  }
 }
