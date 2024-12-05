@@ -12,6 +12,11 @@ import org.openbravo.model.ad.module.Module;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+/**
+ * A service for retrieving the Java package names of modules in the EtendoERP system based on a keyword.
+ * This class extends {@link BaseWebhookService} and processes webhook calls to search for modules
+ * whose names match the given keyword.
+ */
 public class JavaPackageRetriever extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -34,6 +39,9 @@ public class JavaPackageRetriever extends BaseWebhookService {
     StringBuilder javapackageList = new StringBuilder();
     for (Module m : resultList) {
       javapackageList.append(m.getJavaPackage()).append(", ");
+    }
+    if (javapackageList.length() > 0) {
+      javapackageList.setLength(javapackageList.length() - 2);
     }
 
     responseVars.put("info", javapackageList.toString());
