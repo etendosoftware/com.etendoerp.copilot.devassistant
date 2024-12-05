@@ -978,7 +978,6 @@ If you receive only the javapackage of the translation module add the follow for
 <!--531DB139EB364DBE81A862F97A708C03-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--531DB139EB364DBE81A862F97A708C03-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--531DB139EB364DBE81A862F97A708C03-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-
 <!--531DB139EB364DBE81A862F97A708C03-->  <NAME><![CDATA[Refactor Assistant]]></NAME>
 <!--531DB139EB364DBE81A862F97A708C03-->  <PROMPT><![CDATA[You are an expert in code refactoring and optimization.
 Your task is to analyze the provided code and suggest modifications to improve its clarity, maintainability, and originality while preserving its original functionality.
