@@ -10,8 +10,10 @@ repos:
       - id: check-case-conflict      # Check for case conflicts on filesystems
       - id: check-json
       - id: check-yaml
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
+      - id: end-of-file-fixer # Exclude .xml files
+        exclude: '\.xml$'
+      - id: trailing-whitespace #exclude .xml files
+        exclude: '\.xml$'
       - id: mixed-line-ending
       - id: debug-statements
       - id: check-added-large-files
