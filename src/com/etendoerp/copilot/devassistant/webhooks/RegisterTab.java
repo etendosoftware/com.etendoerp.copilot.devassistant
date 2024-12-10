@@ -19,7 +19,7 @@ import org.openbravo.model.ad.ui.Window;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class RegisterTabWebHook extends BaseWebhookService {
+public class RegisterTab extends BaseWebhookService {
 
   private static final String WINDOW_ID = "WindowID";
   private static final String TAB_LEVEL = "TabLevel";

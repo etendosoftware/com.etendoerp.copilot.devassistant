@@ -2,7 +2,6 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.execPInstanceProcess;
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
-import static com.etendoerp.copilot.devassistant.Utils.logIfDebug;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ import org.openbravo.model.ad.ui.Element;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class SyncTermsWebHook extends BaseWebhookService {
+public class SyncTerms extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   private static final String PROCESS_SYNC_TERM = "172";

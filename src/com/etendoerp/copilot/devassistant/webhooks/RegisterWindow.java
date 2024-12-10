@@ -2,8 +2,10 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -20,9 +22,11 @@ import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.model.ad.ui.Menu;
 import org.openbravo.model.ad.ui.Window;
+
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class RegisterWindowWebHook extends BaseWebhookService {
+public class RegisterWindow extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String ERROR_PROPERTY = "error";
@@ -37,17 +41,20 @@ public class RegisterWindowWebHook extends BaseWebhookService {
       String name = parameter.get("Name");
       String description = parameter.get("Description");
       String helpComment = parameter.get("HelpComment");
+      String tableId = parameter.get("TableID");
+
+      if (tableId.isEmpty() && dbPrefix.isEmpty()) {
+        throw new OBException("Missing parameter, table id and prefix cannot be null.");
+      }
+
+      if (dbPrefix.isEmpty()) {
+        dbPrefix = Utils.getTableByID(tableId).getDBTableName().split("_")[0];
+      }
 
       DataPackage dataPackage = getDataPackage(dbPrefix);
 
-      if (name.startsWith(dbPrefix)) {
-        name = StringUtils.removeStart(name, dbPrefix);
-      }
+      name = fixName(name, dbPrefix);
 
-      //check that the name has the first letter in uppercase
-      if (!Character.isUpperCase(name.charAt(0))) {
-        name = Character.toUpperCase(name.charAt(0)) + StringUtils.substring(name, 1);
-      }
       OBContext context = OBContext.getOBContext();
 
       Window window = createWindow(name, dataPackage, context, description, helpComment);
@@ -119,4 +126,20 @@ public class RegisterWindowWebHook extends BaseWebhookService {
     }
     return dataPackList.get(0);
   }
+
+  public static String fixName(String name, String dbPrefix) {
+    if (name.startsWith(dbPrefix)) {
+      name = StringUtils.removeStart(name, dbPrefix).substring(1);
+    }
+    if (!Character.isUpperCase(name.charAt(0))) {
+      name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+    }
+    if (name.contains("_")) {
+      return Arrays.stream(name.replace("_", " ").split(" "))
+          .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+          .collect(Collectors.joining(" "));
+    }
+    return name;
+  }
+
 }

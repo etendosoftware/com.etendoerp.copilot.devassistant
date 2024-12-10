@@ -18,7 +18,7 @@ import org.openbravo.model.ad.ui.Tab;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class RegisterFieldsWebHook extends BaseWebhookService {
+public class RegisterFields extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   private static final String REGISTER_FIELDS_PROCESS = "174";

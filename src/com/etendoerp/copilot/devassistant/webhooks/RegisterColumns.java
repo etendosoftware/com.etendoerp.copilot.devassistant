@@ -17,7 +17,7 @@ import org.openbravo.model.ad.datamodel.Table;
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class RegisterColumnsWebHook extends BaseWebhookService {
+public class RegisterColumns extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   public static final String REGISTER_COLUMNS_PROCESS = "173";
