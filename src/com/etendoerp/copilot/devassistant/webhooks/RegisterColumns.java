@@ -4,6 +4,8 @@ import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
 import java.util.Map;
 
+import javax.servlet.ServletException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,28 +29,23 @@ public class RegisterColumns extends BaseWebhookService {
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, log);
     try {
-
       String tableName = parameter.get("TableName");
-      OBCriteria<Table> tableCriteria = OBDal.getInstance().createCriteria(Table.class);
-      tableCriteria.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
-      Table table = (Table) tableCriteria.setMaxResults(1).uniqueResult();
-      if (table == null) {
-        responseVars.put(ERROR_PROPERTY, String.format(OBMessageUtils.messageBD("COPDEV_TableNotFound"), tableName));
-        return;
-      }
-      String recordId = table.getId();
-      OBError myMessage = Utils.execPInstanceProcess(REGISTER_COLUMNS_PROCESS, recordId);
-      String textResponse = myMessage.getTitle() + " - " + myMessage.getMessage();
-      if (StringUtils.equalsIgnoreCase(myMessage.getType(), "Success")) {
-        responseVars.put("message", textResponse);
-      } else {
-        responseVars.put(ERROR_PROPERTY, textResponse);
-
-      }
+      responseVars.put("message", registerColumns(tableName));
     } catch (Exception e) {
       log.error("Error executing process", e);
       responseVars.put(ERROR_PROPERTY, e.getMessage());
     }
   }
 
+  static String registerColumns(String tableName) throws ServletException {
+    OBCriteria<Table> tableCriteria = OBDal.getInstance().createCriteria(Table.class);
+    tableCriteria.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
+    Table table = (Table) tableCriteria.setMaxResults(1).uniqueResult();
+    if (table == null) {
+      return String.format(OBMessageUtils.messageBD("COPDEV_TableNotFound"), tableName);
+    }
+    String recordId = table.getId();
+    OBError myMessage = Utils.execPInstanceProcess(REGISTER_COLUMNS_PROCESS, recordId);
+    return myMessage.getTitle() + " - " + myMessage.getMessage();
+  }
 }

@@ -115,24 +115,4 @@ public class Utils {
     }
   }
 
-  public static Table getTableByID(String tableId) {
-    OBCriteria<Table> tableCrit = OBDal.getInstance().createCriteria(Table.class);
-    tableCrit.add(Restrictions.eq(Table.PROPERTY_ID, tableId));
-    tableCrit.setMaxResults(1);
-    return (Table) tableCrit.uniqueResult();
-  }
-
-  public static Tab getTabByID(String tabId) {
-    OBCriteria<Tab> tabCrit = OBDal.getInstance().createCriteria(Tab.class);
-    tabCrit.add(Restrictions.eq(Tab.PROPERTY_ID, tabId));
-    tabCrit.setMaxResults(1);
-    return (Tab) tabCrit.uniqueResult();
-  }
-
-  public static Window getWindowByID(String windowId) {
-    OBCriteria<Window> windowCrit = OBDal.getInstance().createCriteria(Window.class);
-    windowCrit.add(Restrictions.eq(Window.PROPERTY_ID, windowId));
-    windowCrit.setMaxResults(1);
-    return (Window) windowCrit.uniqueResult();
-  }
 }

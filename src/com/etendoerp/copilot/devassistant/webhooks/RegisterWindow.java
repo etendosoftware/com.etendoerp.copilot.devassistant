@@ -17,6 +17,7 @@ import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
+import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
@@ -48,7 +49,7 @@ public class RegisterWindow extends BaseWebhookService {
       }
 
       if (dbPrefix.isEmpty()) {
-        dbPrefix = Utils.getTableByID(tableId).getDBTableName().split("_")[0];
+        dbPrefix = OBDal.getInstance().get(Table.class, tableId).getDBTableName().split("_")[0];
       }
 
       DataPackage dataPackage = getDataPackage(dbPrefix);

@@ -4,6 +4,7 @@ import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -36,84 +37,76 @@ public class AddColumn extends BaseWebhookService {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
-    //String tableName = parameter.get("TableName");
-    //String prefix = parameter.get("Prefix");
-
     String tableId = parameter.get("TableID");
     String columnName = parameter.get("ColumnName");
     String columnType = parameter.get("ColumnType");
     String defaultParam = parameter.get("DefaultValue");
     String canBeNull = parameter.get("CanBeNull");
 
-    Table table = Utils.getTableByID(tableId);
+    Table table = OBDal.getInstance().get(Table.class, tableId);
 
     String dbTableName = table.getDBTableName();
     String prefix = dbTableName.split("_")[0];
-    String tableName = dbTableName.substring(dbTableName.indexOf("_") + 1);
-
-
-    Connection conn = OBDal.getInstance().getConnection();
+    String name = dbTableName.substring(dbTableName.indexOf("_") + 1);
 
     try {
-      columnName = getDefaultName(columnName);
-
-      if (tableName.startsWith(prefix)) {
-        tableName = tableName.substring(prefix.length() + 1);
-      }
-
-      String dbType = getDbType(columnType);
-
-      columnName = columnName.trim().replaceAll(" +", "_");
-
-      String queryCollate = "COLLATE pg_catalog.\"default\"";
-      String queryNull = " ";
-      String defaultState = "";
-      String queryConstraint = " ";
-      boolean canBeNullBool = StringUtils.equalsIgnoreCase(canBeNull, "true");
-
-      if (StringUtils.equals(dbType, TIMESTAMP_WITHOUT_TIMEZONE) || StringUtils.equals(dbType, NUMERIC)) {
-        queryCollate = "";
-        canBeNullBool = false;
-      }
-
-      if (!canBeNullBool) {
-        queryNull = " NOT NULL";
-      }
-
-      if (!defaultParam.isEmpty()) {
-        defaultState = " DEFAULT " + defaultParam;
-      }
-
-      if (StringUtils.equals(dbType, CHAR1)) {
-        String proposal = prefix + "_" + tableName + "_" + columnName + "_chk";
-        String columnOff = columnName;
-        int offset = 1;
-        while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
-          String nameOff = tableName.length() > offset ? tableName.substring(offset) : tableName;
-          columnOff = columnName.length() > offset ? columnName.substring(offset) : columnName;
-          proposal = prefix + "_" + nameOff + "_" + columnOff + "_chk";
-          offset++;
-        }
-        queryConstraint = String.format(
-            ", ADD CONSTRAINT %s CHECK (%s = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))",
-            proposal,
-            columnOff
-        );
-      }
-
-      String query = String.format(
-          "ALTER TABLE IF EXISTS public.%s_%s " +
-              "ADD COLUMN IF NOT EXISTS %s %s %s %s %s %s;",
-          prefix, tableName, columnName, dbType, queryNull, queryCollate, defaultState, queryConstraint
-      );
-
-      PreparedStatement statement = conn.prepareStatement(query);
-      boolean resultBool = statement.execute();
-      logIfDebug("Query executed and return:" + resultBool);
-
+      addColumn(prefix, name, columnName, columnType, defaultParam, StringUtils.equalsIgnoreCase(canBeNull, "true"));
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
+  }
+
+  public static void addColumn(
+      String prefix,
+      String tableName,
+      String column,
+      String columnType,
+      String defaultValue,
+      boolean canBeNull  ) throws SQLException {
+
+    Connection conn = OBDal.getInstance().getConnection();
+
+    column = getDefaultName(column).trim().replaceAll(" +", "_");
+
+    String dbType = getDbType(columnType);
+
+    String queryCollate = "COLLATE pg_catalog.\"default\"";
+    String defaultState = defaultValue.isEmpty() ? "" : " DEFAULT " + defaultValue;
+    String queryConstraint = " ";
+
+    if (StringUtils.equals(dbType, TIMESTAMP_WITHOUT_TIMEZONE) || StringUtils.equals(dbType, NUMERIC)) {
+      queryCollate = "";
+      canBeNull = false;
+    }
+
+    String queryNull = canBeNull ? " " : " NOT NULL";
+
+    if (StringUtils.equals(dbType, CHAR1)) {
+      String proposal = prefix + "_" + tableName + "_" + column + "_chk";
+      String columnOff = column;
+      int offset = 1;
+      while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
+        String nameOff = tableName.length() > offset ? tableName.substring(offset) : tableName;
+        columnOff = column.length() > offset ? column.substring(offset) : column;
+        proposal = prefix + "_" + nameOff + "_" + columnOff + "_chk";
+        offset++;
+      }
+      queryConstraint = String.format(
+          ", ADD CONSTRAINT %s CHECK (%s = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))",
+          proposal,
+          columnOff
+      );
+    }
+
+    String query = String.format(
+        "ALTER TABLE IF EXISTS public.%s_%s " +
+            "ADD COLUMN IF NOT EXISTS %s %s %s %s %s %s;",
+        prefix, tableName, column, dbType, queryNull, queryCollate, defaultState, queryConstraint
+    );
+
+    PreparedStatement statement = conn.prepareStatement(query);
+    boolean resultBool = statement.execute();
+    logIfDebug("Query executed and return:" + resultBool);
   }
 
   private static String getDbType(String columnType) {
@@ -165,11 +158,10 @@ public class AddColumn extends BaseWebhookService {
     mapping.put("Window Reference", VARCHAR60);
     mapping.put("YesNo", CHAR1);
 
-    String type = mapping.get(columnType);
-    return type;
+    return mapping.get(columnType);
   }
 
-  private String getDefaultName(String name) {
+  private static String getDefaultName(String name) {
     if (StringUtils.isBlank(name)) {
         return String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
     }

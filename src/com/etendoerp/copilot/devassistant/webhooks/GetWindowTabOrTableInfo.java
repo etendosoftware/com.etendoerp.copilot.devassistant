@@ -3,21 +3,15 @@ package com.etendoerp.copilot.devassistant.webhooks;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
-import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
-import org.openbravo.model.ad.datamodel.Table;
 
-import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 import kong.unirest.json.JSONArray;
@@ -31,7 +25,7 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    LOG.info("Executing process");
+    LOG.info("Getting Information.");
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
@@ -40,7 +34,9 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
     String name = parameter.get("Name");
     String keyWord = parameter.get("KeyWord");
 
-    String query = "SELECT ad_" + keyWord + "_id FROM ad_" + keyWord + " WHERE name ilike '%" + name + "%'";
+    String query = "SELECT ad_" + keyWord + "_id, name FROM ad_" + keyWord + " WHERE name ilike '%" + name + "%'" +
+        "OR tablename ILIKE '%" + name + "%'" +
+        "OR ad_" + keyWord + "_id = '" + name + "'";
 
     Connection conn = OBDal.getInstance().getConnection();
 
