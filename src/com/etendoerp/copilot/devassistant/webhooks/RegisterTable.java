@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class RegisterTableWebHook extends BaseWebhookService {
+public class RegisterTable extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
 
@@ -40,8 +40,10 @@ public class RegisterTableWebHook extends BaseWebhookService {
     String description = parameter.get("Description");
     String helpTable = parameter.get("Help");
 
-    String tableName = dbPrefix + "_" + name;
-
+    String tableName = name;
+    if (!name.startsWith(dbPrefix)) {
+      tableName = dbPrefix + "_" + name;
+    }
     if (javaClass == null || Objects.equals(javaClass, "null")) {
       javaClass = StringUtils.replaceChars(name, "_", " ");
       String[] words = javaClass.split(" ");
