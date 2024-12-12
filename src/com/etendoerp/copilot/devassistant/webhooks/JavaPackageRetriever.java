@@ -2,6 +2,7 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,6 @@ public class JavaPackageRetriever extends BaseWebhookService {
     LOG.debug("Executing WebHook: JavaPackageRetriever");
     String keyWord = parameter.get(KEY_WORD);
 
-
     if (keyWord == null) {
       responseVars.put("error", "Missing parameters.");
       return;
@@ -36,14 +36,11 @@ public class JavaPackageRetriever extends BaseWebhookService {
     OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
     criteria.add(Restrictions.ilike(Module.PROPERTY_NAME, "%" + keyWord + "%"));
     List<Module> resultList = criteria.list();
-    StringBuilder javapackageList = new StringBuilder();
-    for (Module m : resultList) {
-      javapackageList.append(m.getJavaPackage()).append(", ");
-    }
-    if (javapackageList.length() > 0) {
-      javapackageList.setLength(javapackageList.length() - 2);
-    }
 
-    responseVars.put("info", javapackageList.toString());
+    String javapackageList = resultList.stream()
+        .map(Module::getJavaPackage)
+        .collect(Collectors.joining(", "));
+
+    responseVars.put("info", javapackageList);
   }
 }

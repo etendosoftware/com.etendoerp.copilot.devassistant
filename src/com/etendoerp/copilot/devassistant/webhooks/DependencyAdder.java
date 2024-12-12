@@ -48,12 +48,10 @@ public class DependencyAdder extends BaseWebhookService {
     String dependencyModuleJavaPackage = parameter.get(DEPENDENCY_MODULE_JAVAPACKAGE);
 
     if (Utils.isInvalidParameter(parameter.get(DEPENDENT_MODULE_JAVAPACKAGE))) {
-      throw new IllegalArgumentException(
-          OBMessageUtils.getI18NMessage(MISSING_PARAMETER, new String[]{ DEPENDENT_MODULE_JAVAPACKAGE }));
+      throw new OBException(String.format(OBMessageUtils.messageBD(MISSING_PARAMETER), DEPENDENT_MODULE_JAVAPACKAGE));
     }
     if (Utils.isInvalidParameter(parameter.get(DEPENDENCY_MODULE_JAVAPACKAGE))) {
-      throw new IllegalArgumentException(
-          OBMessageUtils.getI18NMessage(MISSING_PARAMETER, new String[]{ DEPENDENCY_MODULE_JAVAPACKAGE }));
+      throw new OBException(String.format(OBMessageUtils.messageBD(MISSING_PARAMETER), DEPENDENCY_MODULE_JAVAPACKAGE));
     }
 
     Module dependentModule = Utils.getModuleByJavaPackage(dependentModuleJavaPackage);
@@ -79,7 +77,7 @@ public class DependencyAdder extends BaseWebhookService {
       OBDal.getInstance().save(moduleDependency);
       OBDal.getInstance().flush();
 
-      responseVars.put("message", (String.format("The dependency of the %s was added to the %s.", dependencyModule.getName(), dependentModule.getName())));
+      responseVars.put("message", (String.format(OBMessageUtils.messageBD("COPDEV_DependencyAdded"), dependencyModule.getName(), dependentModule.getName())));
     } catch (IllegalArgumentException e) {
       log.error("Validation error: ", e);
       responseVars.put(ERROR_PROPERTY, e.getMessage());

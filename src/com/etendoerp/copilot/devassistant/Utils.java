@@ -87,7 +87,7 @@ public class Utils {
    */
   public static Module getModuleByJavaPackage(String moduleJavaPackage) {
     if (moduleJavaPackage == null) {
-      throw new IllegalArgumentException("JavaPackage cannot be null");
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_JavaPackageCannotBeNull"));
     }
     OBCriteria<Module> moduleCrit = OBDal.getInstance().createCriteria(Module.class);
     moduleCrit.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, moduleJavaPackage));
@@ -97,7 +97,7 @@ public class Utils {
 
   public static Module getModuleByName(String name) {
     if (name == null) {
-      throw new IllegalArgumentException("Name cannot be null");
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_NameCannotBeNull"));
     }
     OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
     criteria.add(Restrictions.eq(Module.PROPERTY_NAME, name));
@@ -108,7 +108,7 @@ public class Utils {
 
   public static Module getModuleByID(String id) {
     if (id == null) {
-      throw new IllegalArgumentException("ID cannot be null");
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_IDCannotBeNull"));
     }
     OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
     criteria.add(Restrictions.eq(Module.PROPERTY_ID, id));
