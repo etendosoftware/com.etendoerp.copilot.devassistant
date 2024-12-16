@@ -29,12 +29,9 @@ public class CreateView extends BaseWebhookService {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
-
     String name = parameter.get("Name");
     String prefix = parameter.get("Prefix");
     String querySelect = parameter.get("QuerySelect");
-
-    //List<String> mandatoryColumns = Arrays.asList("ad_client_id", "ad_org_id", "isactive", "created", "createdby", "updated", "updatedby", prefix + "_" + name + "_id");
 
     Connection conn = OBDal.getInstance().getConnection();
 
