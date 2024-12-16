@@ -49,6 +49,8 @@ public class RegisterTable extends BaseWebhookService {
     String dalevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
     String helpTable = parameter.get("Help");
+    String isView = parameter.get("IsView");
+    boolean isViewB = StringUtils.equalsIgnoreCase(isView, "true");
 
     String tableName = name;
     if (!StringUtils.startsWith(name, dbPrefix)) {
@@ -70,7 +72,7 @@ public class RegisterTable extends BaseWebhookService {
     try {
       alreadyExistTable(tableName);
       DataPackage dataPackage = getDataPackage(dbPrefix);
-      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, helpTable);
+      Table adTable = createAdTable(dataPackage, javaClass, tableName, dalevel, description, helpTable, isViewB);
       responseVars.put("message",
           String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
@@ -90,7 +92,8 @@ public class RegisterTable extends BaseWebhookService {
    * @return The newly created table object.
    */
   private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String
-      description, String helpTable) {
+      description, String helpTable, Boolean isViewB) {
+    String name = tableName;
     Table adTable = OBProvider.getInstance().get(Table.class);
     adTable.setNewOBObject(true);
     Client client = OBDal.getInstance().get(Client.class, "0");
@@ -103,11 +106,15 @@ public class RegisterTable extends BaseWebhookService {
     adTable.setUpdatedBy(OBContext.getOBContext().getUser());
     adTable.setDataAccessLevel(dalevel);
     adTable.setDataPackage(dataPackage);
-    adTable.setName(tableName);
+    if (isViewB) {
+      tableName = tableName + "_v";
+      name = name + "V";
+    }
+    adTable.setName(name);
+    adTable.setDBTableName(tableName);
     adTable.setJavaClassName(javaclass);
     adTable.setDescription(description);
     adTable.setHelpComment(helpTable);
-    adTable.setDBTableName(tableName);
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
 
