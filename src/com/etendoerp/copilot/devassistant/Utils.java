@@ -8,11 +8,15 @@ import javax.servlet.ServletException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openbravo.base.secureApp.VariablesSecureApp;
+import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.erpCommon.reference.PInstanceProcessData;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.SequenceIdData;
 import org.openbravo.erpCommon.utility.Utility;
+import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.ui.Tab;
+import org.openbravo.model.ad.ui.Window;
 import org.openbravo.scheduling.ProcessBundle;
 import org.openbravo.scheduling.ProcessRunner;
 import org.openbravo.service.db.DalConnectionProvider;
@@ -110,4 +114,5 @@ public class Utils {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_FileType&AssistantTypeIncompatibility"));
     }
   }
+
 }
