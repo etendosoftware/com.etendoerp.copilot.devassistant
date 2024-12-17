@@ -24,7 +24,6 @@ import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.model.ad.ui.Menu;
 import org.openbravo.model.ad.ui.Window;
 
-import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 public class RegisterWindow extends BaseWebhookService {

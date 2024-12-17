@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -92,8 +91,6 @@ public class AddColumn extends BaseWebhookService {
       String defaultValue,
       boolean canBeNull  ) throws SQLException {
 
-    Connection conn = OBDal.getInstance().getConnection();
-
     if (StringUtils.isBlank(column)) {
       column = String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
     } else {
@@ -114,20 +111,7 @@ public class AddColumn extends BaseWebhookService {
     String queryNull = canBeNull ? " " : " NOT NULL";
 
     if (StringUtils.equals(dbType, CHAR1)) {
-      String proposal = prefix + "_" + tableName + "_" + column + "_chk";
-      String columnOff = column;
-      int offset = 1;
-      while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
-        String nameOff = (tableName != null && tableName.length() > offset) ? tableName.substring(offset) : tableName;
-        columnOff = column.length() > offset ? column.substring(offset) : column;
-        proposal = prefix + "_" + nameOff + "_" + columnOff + "_chk";
-        offset++;
-      }
-      queryConstraint = String.format(
-          ", ADD CONSTRAINT %s CHECK (%s = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))",
-          proposal,
-          columnOff
-      );
+      queryConstraint = generateCheckConstraint(prefix, tableName, column);
     }
 
     String query = String.format(
@@ -135,15 +119,28 @@ public class AddColumn extends BaseWebhookService {
             "ADD COLUMN IF NOT EXISTS %s %s %s %s %s %s;",
         prefix, tableName, column, dbType, queryNull, queryCollate, defaultState, queryConstraint
     );
-
-    try (PreparedStatement statement = conn.prepareStatement(query)) {
-      boolean resultBool = statement.execute();
-      logIfDebug("Query executed and return:" + resultBool);
-    } catch (SQLException e) {
-      logIfDebug("Error executing query: " + e.getMessage());
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_WrongAddColumnQuery"));
-    }
+    Utils.executeQuery(query);
   }
+
+  private static String generateCheckConstraint(String prefix, String tableName, String column) {
+    String queryConstraint;
+    String proposal = prefix + "_" + tableName + "_" + column + "_chk";
+    String columnOff = column;
+    int offset = 1;
+    while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
+      String nameOff = (tableName != null && tableName.length() > offset) ? tableName.substring(offset) : tableName;
+      columnOff = column.length() > offset ? column.substring(offset) : column;
+      proposal = prefix + "_" + nameOff + "_" + columnOff + "_chk";
+      offset++;
+    }
+    queryConstraint = String.format(
+        ", ADD CONSTRAINT %s CHECK (%s = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))",
+        proposal,
+        columnOff
+    );
+    return queryConstraint;
+  }
+
 
   /**
    * Retrieves the corresponding database type for the given column type.
@@ -201,18 +198,5 @@ public class AddColumn extends BaseWebhookService {
     mapping.put("YesNo", CHAR1);
 
     return mapping.get(columnType);
-  }
-
-  /**
-   * Returns a default column name if the given name is blank.
-   *
-   * @param name The column name.
-   * @return The default column name if the given name is blank, otherwise the given name.
-   */
-  private static String getDefaultName(String name) {
-    if (StringUtils.isBlank(name)) {
-      return String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
-    }
-    return name;
   }
 }

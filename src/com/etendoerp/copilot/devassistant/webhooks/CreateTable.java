@@ -18,7 +18,6 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
 public class CreateTable extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final String MESSAGE = "message";
   private static final int MAX_LENGTH = 30;
 
   @Override
@@ -31,7 +30,6 @@ public class CreateTable extends BaseWebhookService {
     String name = parameter.get("Name");
     String prefix = parameter.get("Prefix");
 
-    Connection conn = OBDal.getInstance().getConnection();
 
     try {
       name = getDefaultName(name);
@@ -76,19 +74,8 @@ public class CreateTable extends BaseWebhookService {
           constraintFkOrg,
           constraintIsactive
       );
-      // Replace to public.{prefix}_{name}
-      // Replace to {prefix}_{name}_id
-      // Replace to {constr_pk}
-      // Replace to {prefix}_{name}_id
-      // Replace to {constr_fk_client}
-      // Replace to {constr_fk_org}
-      // Replace to {const_isactive}
 
-      try (PreparedStatement statement = conn.prepareStatement(query)) {
-        boolean resultBool = statement.execute();
-        logIfDebug("Query executed and return:" + resultBool);
-        responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_TableCreationSucc"), name));
-      }
+      Utils.executeQuery(query);
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());

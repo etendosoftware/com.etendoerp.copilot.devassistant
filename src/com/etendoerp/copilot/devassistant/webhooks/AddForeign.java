@@ -23,8 +23,6 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
 public class AddForeign extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final String MESSAGE = "message";
-  private static final int MAX_LENGTH = 30;
 
   /**
    * This method handles the webhook request to add a foreign key constraint
@@ -50,9 +48,6 @@ public class AddForeign extends BaseWebhookService {
     String parentTable = parameter.get("ParentTable");
     String childTable = parameter.get("ChildTable");
     String external = parameter.get("External");
-
-    // Get the database connection
-    Connection conn = OBDal.getInstance().getConnection();
 
     try {
       // Handle the prefix parameter
@@ -171,12 +166,7 @@ public class AddForeign extends BaseWebhookService {
           "    END IF;\n" +
           "END $$;\n";
 
-      // Execute the query
-      try (PreparedStatement statement = conn.prepareStatement(query)) {
-        boolean resultBool = statement.execute();
-        logIfDebug("Query executed and return:" + resultBool);
-        responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_ForeignAddedSucc"), childTable));
-      }
+      Utils.executeQuery(query);
 
     } catch (Exception e) {
       // Handle errors and add error message to response
