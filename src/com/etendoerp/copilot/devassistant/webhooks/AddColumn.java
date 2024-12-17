@@ -57,7 +57,7 @@ public class AddColumn extends BaseWebhookService {
     String dbTableName = table.getDBTableName();
     if (dbTableName != null) {
       prefix = dbTableName.split("_")[0];
-      name = dbTableName.substring(dbTableName.indexOf("_") + 1);
+      name = StringUtils.substringAfter(dbTableName, "_");
     } else {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_dbTableNameNotFound"));
     }
@@ -90,7 +90,7 @@ public class AddColumn extends BaseWebhookService {
     if (StringUtils.isBlank(column)) {
       column = String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
     } else {
-      column = column.trim().replaceAll(" +", "_");
+      column = StringUtils.replace(StringUtils.trimToEmpty(column), " +", "_");
     }
 
     String dbType = getDbType(columnType);
@@ -125,10 +125,10 @@ public class AddColumn extends BaseWebhookService {
     int offset = 1;
     while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
       String nameOff = StringUtils.isNotEmpty(tableName) && tableName.length() > offset
-          ? tableName.substring(offset)
+          ? StringUtils.substring(tableName, offset)
           : tableName;
       columnOff = StringUtils.isNotEmpty(column) && column.length() > offset
-          ? column.substring(offset)
+          ? StringUtils.substring(column, offset)
           : column;
       proposal = prefix + "_" + nameOff + "_" + columnOff + "_chk";
       offset++;

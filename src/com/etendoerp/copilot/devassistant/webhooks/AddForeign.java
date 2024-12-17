@@ -51,11 +51,11 @@ public class AddForeign extends BaseWebhookService {
 
     try {
       // Handle the prefix parameter
-      if (StringUtils.isNotBlank(prefix) && prefix.equalsIgnoreCase("None")) {
+      if (StringUtils.isNotBlank(prefix) && StringUtils.equalsIgnoreCase(prefix, "None")) {
         prefix = childTable.split("_")[0];
       }
       if (StringUtils.isNotEmpty(prefix)) {
-        prefix = prefix.toLowerCase();
+        prefix = StringUtils.lowerCase(prefix);
       }
 
       // Handle the parent table and child table parameters
@@ -68,8 +68,8 @@ public class AddForeign extends BaseWebhookService {
       boolean externalBool = StringUtils.equalsIgnoreCase(external, "true");
 
       // Adjust the child table name based on prefix
-      if (StringUtils.isNotEmpty(childTable) && childTable.startsWith(prefix + "_")) {
-        childTable = childTable.substring(childTable.indexOf("_") + 1);
+      if (StringUtils.isNotEmpty(childTable) && StringUtils.startsWith(childTable, prefix + "_")) {
+        childTable = StringUtils.substring(childTable, StringUtils.indexOf(childTable, "_") + 1);
       }
 
       // Adjust the parent column based on external flag

@@ -19,24 +19,45 @@ import org.openbravo.model.ad.ui.Window;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+/**
+ * This class handles the registration of a new tab for a specified window in the Etendo ERP system.
+ * It checks if a tab already exists for the specified table and window, creates a new tab if none exists,
+ * and returns appropriate success or error messages.
+ */
 public class RegisterTab extends BaseWebhookService {
 
+  /** Constant for the window ID parameter */
   private static final String WINDOW_ID = "WindowID";
+  /** Constant for the tab level parameter */
   private static final String TAB_LEVEL = "TabLevel";
+  /** Constant for the description parameter */
   private static final String DESCRIPTION = "Description";
+  /** Constant for the help comment parameter */
   private static final String HELP_COMMENT = "HelpComment";
+  /** Constant for the table ID parameter */
   private static final String TABLE_ID = "TableID";
+  /** Constant for the sequence number parameter */
   private static final String SEQUENCE_NUMBER = "SequenceNumber";
+  /** Logger instance for logging execution details */
   private static final Logger LOG = LogManager.getLogger();
+  /** Constant for the error property key in the response map */
   public static final String ERROR_PROPERTY = "error";
+  /** Constant for the default UI pattern */
   public static final String STD = "STD";
 
+  /**
+   * Handles the registration of a new tab for the specified window.
+   *
+   * @param parameter a map containing the parameters for the tab registration
+   * @param responseVars a map for storing response variables such as error messages or success messages
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
 
     logExecutionInit(parameter, LOG);
     try {
 
+      // Extracting parameters from the input map
       String windowId = parameter.get(WINDOW_ID);
       String tabLevel = parameter.get(TAB_LEVEL);
       String description = parameter.get(DESCRIPTION);
@@ -44,15 +65,19 @@ public class RegisterTab extends BaseWebhookService {
       String tableId = parameter.get(TABLE_ID);
       String sequenceNumber = parameter.get(SEQUENCE_NUMBER);
 
+      // Fetching the table based on the provided TableID
       Table table = OBDal.getInstance().get(Table.class, tableId);
 
+      // Formatting the table name by replacing underscores with spaces
       String name = table.getName().replace("_", " ");
 
+      // Checking if a tab already exists for the table
       OBCriteria<Tab> tabCrit = OBDal.getInstance().createCriteria(Tab.class);
       tabCrit.add(Restrictions.eq(Tab.PROPERTY_TABLE + ".id", tableId));
       Tab tab = (Tab) tabCrit.setMaxResults(1).uniqueResult();
       Window window;
 
+      // If the tab exists, return an error message
       if (tab != null) {
         window = tab.getWindow();
         String copdevTabAlreadyExists = OBMessageUtils.messageBD("COPDEV_TabAlreadyExists");
@@ -61,19 +86,24 @@ public class RegisterTab extends BaseWebhookService {
         return;
       }
 
-      //check that the name has the first letter in uppercase
+      // Ensuring the tab name starts with an uppercase letter
       if (!Character.isUpperCase(name.charAt(0))) {
         name = Character.toUpperCase(name.charAt(0)) + StringUtils.substring(name, 1);
       }
+
       OBContext context = OBContext.getOBContext();
 
+      // Fetching the window and setting the table for the window
       window = OBDal.getInstance().get(Window.class, windowId);
       table.setWindow(window);
       OBDal.getInstance().save(table);
+
+      // Creating and saving the new tab
       tab = createTab(window, name, table, context, description, helpComment, tabLevel, sequenceNumber);
 
       OBDal.getInstance().flush();
 
+      // Returning a success message
       String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");
       responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), tab.getTabLevel(), tab.getTable().getName(), window.getName()));
 
@@ -83,10 +113,26 @@ public class RegisterTab extends BaseWebhookService {
     }
   }
 
+  /**
+   * Creates a new tab for the specified window and table with the provided details.
+   *
+   * @param window the window to associate with the new tab
+   * @param name the name of the tab
+   * @param table the table to associate with the new tab
+   * @param context the OBContext of the current user
+   * @param description a description for the tab
+   * @param helpComment a help comment for the tab
+   * @param tabLevel the level of the tab (e.g., header or line tab)
+   * @param sequenceNumber the sequence number for ordering the tab
+   * @return the newly created Tab object
+   */
   private Tab createTab(Window window, String name, Table table, OBContext context, String description,
       String helpComment, String tabLevel, String sequenceNumber) {
     Tab tab;
+    // Saving the window instance
     OBDal.getInstance().save(window);
+
+    // Creating a new Tab instance
     tab = OBProvider.getInstance().get(Tab.class);
     tab.setNewOBObject(true);
     tab.setClient(context.getCurrentClient());
@@ -100,11 +146,14 @@ public class RegisterTab extends BaseWebhookService {
     tab.setHelpComment(helpComment);
     tab.setTabLevel(Long.parseLong(tabLevel));
 
+    // Setting the tab name based on the level
     if (Long.parseLong(tabLevel) == 0) {
       tab.setName(name + " Header");
-    } else{
+    } else {
       tab.setName(name);
     }
+
+    // Saving the new Tab instance to the database
     OBDal.getInstance().save(tab);
     return tab;
   }

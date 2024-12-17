@@ -48,7 +48,7 @@ public class CreateTable extends BaseWebhookService {
       if (StringUtils.startsWith(name, prefix)) {
         name = StringUtils.removeStart(name, prefix);
         if (StringUtils.isNotEmpty(name)) {
-          name = name.substring(1);
+          name = StringUtils.substring(name, 1);
         }
       }
 
@@ -125,18 +125,18 @@ public class CreateTable extends BaseWebhookService {
   public static String getConstName(String prefix, String name1, String name2, String suffix) {
     // Verify and adjust name1 if it starts with the prefix
     if (StringUtils.startsWith(name1, prefix + "_") || StringUtils.startsWithIgnoreCase(name1, prefix + "_")) {
-      name1 = name1.substring(prefix.length() + 1);
+      name1 = StringUtils.substring(name1, prefix.length() + 1);
     }
 
     // Verify and adjust name2 if it starts with the prefix
     if (StringUtils.startsWith(name2, prefix + "_") || StringUtils.startsWithIgnoreCase(name2, prefix + "_")) {
-      name2 = name2.substring(prefix.length() + 1);
+      name2 = StringUtils.substring(name2, prefix.length() + 1);
     }
 
     String proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
 
     // Reduce length if necessary and contains underscores
-    if (proposal.length() > MAX_LENGTH && (name1.contains("_") || name2.contains("_"))) {
+    if (proposal.length() > MAX_LENGTH && (StringUtils.contains(name1, "_") || StringUtils.contains(name2, "_"))) {
       name1 = name1.replace("_", "");
       name2 = name2.replace("_", "");
       proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
@@ -145,8 +145,8 @@ public class CreateTable extends BaseWebhookService {
     // Adjust names by trimming initial characters
     int offset = 1;
     while (proposal.length() > MAX_LENGTH && offset < 15) {
-      String name1Offsetted = name1.length() > offset ? name1.substring(offset) : name1;
-      String name2Offsetted = name2.length() > offset ? name2.substring(offset) : name2;
+      String name1Offsetted = name1.length() > offset ? StringUtils.substring(name1, offset) : name1;
+      String name2Offsetted = name2.length() > offset ? StringUtils.substring(name2, offset) : name2;
       proposal = prefix + "_" + name1Offsetted + "_" + name2Offsetted + "_" + suffix;
       offset++;
     }

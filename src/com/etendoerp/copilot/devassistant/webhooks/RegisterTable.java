@@ -3,7 +3,6 @@ package com.etendoerp.copilot.devassistant.webhooks;
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,10 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Service class responsible for registering a table in the system.
+ * This class processes webhook requests for table registration, including validation and creation of the table.
+ */
 public class RegisterTable extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
 
+  /**
+   * Handles the incoming webhook request to register a table.
+   * It processes the parameters provided in the request, validates the table, and creates the table in the system.
+   *
+   * @param parameter    A map containing the parameters from the incoming request.
+   * @param responseVars A map where the response message or error will be stored.
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, log);
@@ -41,7 +51,7 @@ public class RegisterTable extends BaseWebhookService {
     String helpTable = parameter.get("Help");
 
     String tableName = name;
-    if (!name.startsWith(dbPrefix)) {
+    if (!StringUtils.startsWith(name, dbPrefix)) {
       tableName = dbPrefix + "_" + name;
     }
     if (javaClass == null || Objects.equals(javaClass, "null")) {
@@ -68,8 +78,17 @@ public class RegisterTable extends BaseWebhookService {
     }
   }
 
-
-
+  /**
+   * Creates a new table in the system with the provided attributes.
+   *
+   * @param dataPackage   The data package associated with the table.
+   * @param javaclass     The Java class name for the table.
+   * @param tableName     The name of the table.
+   * @param dalevel       The data access level for the table.
+   * @param description   The description of the table.
+   * @param helpTable     Help comment or description for the table.
+   * @return The newly created table object.
+   */
   private Table createAdTable(DataPackage dataPackage, String javaclass, String tableName, String dalevel, String
       description, String helpTable) {
     Table adTable = OBProvider.getInstance().get(Table.class);
@@ -95,7 +114,14 @@ public class RegisterTable extends BaseWebhookService {
     return adTable;
   }
 
-
+  /**
+   * Checks if a table with the specified name already exists in the system.
+   * If the table exists, an exception is thrown.
+   *
+   * @param tableName The name of the table to check.
+   * @return true if the table does not exist; false if the table exists.
+   * @throws OBException if a table with the specified name already exists.
+   */
   private boolean alreadyExistTable(String tableName) {
     OBCriteria<Table> tableNameCrit = OBDal.getInstance().createCriteria(Table.class);
     tableNameCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
@@ -108,9 +134,14 @@ public class RegisterTable extends BaseWebhookService {
     return true;
   }
 
-
+  /**
+   * Retrieves the data package associated with the given database prefix.
+   *
+   * @param dbPrefix The database prefix to look for.
+   * @return The data package associated with the prefix.
+   * @throws OBException if no matching data package is found or if the module is not in development.
+   */
   private DataPackage getDataPackage(String dbPrefix) {
-
     OBCriteria<ModuleDBPrefix> modPrefCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
     modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbPrefix));
     modPrefCrit.setMaxResults(1);
@@ -129,4 +160,3 @@ public class RegisterTable extends BaseWebhookService {
     return dataPackList.get(0);
   }
 }
-
