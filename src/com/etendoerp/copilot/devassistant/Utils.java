@@ -157,32 +157,6 @@ public class Utils {
     return StringUtils.isBlank(parameter);
   }
 
-  public static Module getModuleByName(String name) {
-    if (name == null) {
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_NameCannotBeNull"));
-    }
-    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
-    criteria.add(Restrictions.eq(Module.PROPERTY_NAME, name));
-    criteria.setMaxResults(1);
-
-    return (Module) criteria.uniqueResult();
-  }
-
-  public static Module getModuleByID(String id) {
-    if (id == null) {
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_IDCannotBeNull"));
-    }
-    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
-    criteria.add(Restrictions.eq(Module.PROPERTY_ID, id));
-    criteria.setMaxResults(1);
-
-    return (Module) criteria.uniqueResult();
-  }
-
-  public static boolean isInvalidParameter(String parameter) {
-    return StringUtils.isBlank(parameter);
-  }
-
   // List of control types
   public static final List<String> CONTROL_TYPES = List.of(
       CopilotConstants.APP_TYPE_LANGCHAIN,

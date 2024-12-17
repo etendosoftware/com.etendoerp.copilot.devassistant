@@ -1,9 +1,5 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
-import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,7 +96,7 @@ public class AddColumn extends BaseWebhookService {
     String dbType = getDbType(columnType);
 
     String queryCollate = "COLLATE pg_catalog.\"default\"";
-    String defaultState = (defaultValue != null && !defaultValue.isEmpty()) ? " DEFAULT " + defaultValue : "";
+    String defaultState = StringUtils.isNotEmpty(defaultValue) ? " DEFAULT " + defaultValue : "";
     String queryConstraint = " ";
 
     if (StringUtils.equals(dbType, TIMESTAMP_WITHOUT_TIMEZONE) || StringUtils.equals(dbType, NUMERIC)) {
@@ -128,8 +124,12 @@ public class AddColumn extends BaseWebhookService {
     String columnOff = column;
     int offset = 1;
     while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
-      String nameOff = (tableName != null && tableName.length() > offset) ? tableName.substring(offset) : tableName;
-      columnOff = column.length() > offset ? column.substring(offset) : column;
+      String nameOff = StringUtils.isNotEmpty(tableName) && tableName.length() > offset
+          ? tableName.substring(offset)
+          : tableName;
+      columnOff = StringUtils.isNotEmpty(column) && column.length() > offset
+          ? column.substring(offset)
+          : column;
       proposal = prefix + "_" + nameOff + "_" + columnOff + "_chk";
       offset++;
     }

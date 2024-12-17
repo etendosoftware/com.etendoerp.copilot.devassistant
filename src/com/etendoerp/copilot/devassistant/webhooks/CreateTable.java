@@ -1,25 +1,37 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
-import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+/**
+ * The {@code CreateTable} class extends {@link BaseWebhookService} and provides functionality to create a table
+ * in a PostgreSQL database. The table name is derived from the provided parameters, and constraints such as
+ * primary key, foreign keys, and check constraints are added to the table.
+
+ * This class is part of the webhook service, and the {@code get} method is responsible for executing the
+ * table creation process based on the parameters received.
+ */
 public class CreateTable extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final int MAX_LENGTH = 30;
 
+  /**
+   * {@inheritDoc}
+   *
+   * This method is called to process the incoming parameters and create the table in the database. It retrieves
+   * the necessary parameters, generates table constraints, and constructs a {@code CREATE TABLE} SQL query.
+   *
+   * @param parameter a map containing parameters such as table name, prefix, etc.
+   * @param responseVars a map to store the response, including error messages if any exception occurs
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     LOG.info("Executing process");
@@ -30,12 +42,14 @@ public class CreateTable extends BaseWebhookService {
     String name = parameter.get("Name");
     String prefix = parameter.get("Prefix");
 
-
     try {
       name = getDefaultName(name);
 
-      if (name.startsWith(prefix)) {
-        name = StringUtils.removeStart(name, prefix).substring(1);
+      if (StringUtils.startsWith(name, prefix)) {
+        name = StringUtils.removeStart(name, prefix);
+        if (StringUtils.isNotEmpty(name)) {
+          name = name.substring(1);
+        }
       }
 
       String constraintIsactive = getConstName(prefix, name, "isactive", "chk");
@@ -82,21 +96,40 @@ public class CreateTable extends BaseWebhookService {
     }
   }
 
+  /**
+   * Returns the default table name if the provided name is blank.
+   *
+   * @param name the name of the table
+   * @return the provided table name or a default name if the provided name is blank
+   */
   private String getDefaultName(String name) {
     if (StringUtils.isBlank(name)) {
-        return String.format(OBMessageUtils.messageBD("COPDEV_DefaultTableName"));
+      return String.format(OBMessageUtils.messageBD("COPDEV_DefaultTableName"));
     }
     return name;
   }
 
+  /**
+   * Generates a constraint name based on the provided parameters. The generated name ensures that the length
+   * does not exceed the maximum allowed length and makes adjustments to fit the constraint naming conventions.
+
+   * If the name exceeds the maximum length, the name will be shortened by removing underscores or trimming
+   * parts of the name until the length constraint is met.
+
+   * @param prefix the prefix to be used for the constraint name
+   * @param name1 the first part of the constraint name
+   * @param name2 the second part of the constraint name
+   * @param suffix the suffix to be used for the constraint name
+   * @return the generated constraint name
+   */
   public static String getConstName(String prefix, String name1, String name2, String suffix) {
     // Verify and adjust name1 if it starts with the prefix
-    if (name1.startsWith(prefix + "_") || name1.toUpperCase().startsWith((prefix + "_").toUpperCase())) {
+    if (StringUtils.startsWith(name1, prefix + "_") || StringUtils.startsWithIgnoreCase(name1, prefix + "_")) {
       name1 = name1.substring(prefix.length() + 1);
     }
 
     // Verify and adjust name2 if it starts with the prefix
-    if (name2.startsWith(prefix + "_") || name2.toUpperCase().startsWith((prefix + "_").toUpperCase())) {
+    if (StringUtils.startsWith(name2, prefix + "_") || StringUtils.startsWithIgnoreCase(name2, prefix + "_")) {
       name2 = name2.substring(prefix.length() + 1);
     }
 
