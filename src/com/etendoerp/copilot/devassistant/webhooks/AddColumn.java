@@ -12,6 +12,7 @@ import java.util.Random;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Table;
@@ -19,6 +20,10 @@ import org.openbravo.model.ad.datamodel.Table;
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+/**
+ * This class handles adding columns to a database table. It is part of the webhook service and processes
+ * requests to modify the schema of tables by adding new columns.
+ */
 public class AddColumn extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -30,6 +35,13 @@ public class AddColumn extends BaseWebhookService {
   private static final String CHAR1 = "character(1)";
   public static final String NUMERIC = "numeric";
 
+  /**
+   * This method is invoked by the webhook to add a column to a table in the database.
+   *
+   * @param parameter A map containing parameters for the column addition, including the table ID, column name,
+   *                  column type, default value, and whether the column can be null.
+   * @param responseVars A map that will hold the response values, including success or error messages.
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     LOG.info("Executing process");
@@ -45,10 +57,15 @@ public class AddColumn extends BaseWebhookService {
 
     Table table = OBDal.getInstance().get(Table.class, tableId);
 
+    String name;
+    String prefix;
     String dbTableName = table.getDBTableName();
-    String prefix = dbTableName.split("_")[0];
-    String name = dbTableName.substring(dbTableName.indexOf("_") + 1);
-
+    if (dbTableName != null) {
+      prefix = dbTableName.split("_")[0];
+      name = dbTableName.substring(dbTableName.indexOf("_") + 1);
+    } else {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_dbTableNameNotFound"));
+    }
     try {
       addColumn(prefix, name, columnName, columnType, defaultParam, StringUtils.equalsIgnoreCase(canBeNull, "true"));
     } catch (Exception e) {
@@ -56,6 +73,17 @@ public class AddColumn extends BaseWebhookService {
     }
   }
 
+  /**
+   * Adds a new column to the specified table in the database.
+   *
+   * @param prefix The prefix of the table.
+   * @param tableName The name of the table to which the column will be added.
+   * @param column The name of the column to be added.
+   * @param columnType The type of the column (e.g., VARCHAR, NUMERIC).
+   * @param defaultValue The default value for the column.
+   * @param canBeNull A boolean indicating whether the column can have null values.
+   * @throws SQLException If there is an error during the database operation.
+   */
   public static void addColumn(
       String prefix,
       String tableName,
@@ -66,12 +94,16 @@ public class AddColumn extends BaseWebhookService {
 
     Connection conn = OBDal.getInstance().getConnection();
 
-    column = getDefaultName(column).trim().replaceAll(" +", "_");
+    if (StringUtils.isBlank(column)) {
+      column = String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
+    } else {
+      column = column.trim().replaceAll(" +", "_");
+    }
 
     String dbType = getDbType(columnType);
 
     String queryCollate = "COLLATE pg_catalog.\"default\"";
-    String defaultState = defaultValue.isEmpty() ? "" : " DEFAULT " + defaultValue;
+    String defaultState = (defaultValue != null && !defaultValue.isEmpty()) ? " DEFAULT " + defaultValue : "";
     String queryConstraint = " ";
 
     if (StringUtils.equals(dbType, TIMESTAMP_WITHOUT_TIMEZONE) || StringUtils.equals(dbType, NUMERIC)) {
@@ -86,7 +118,7 @@ public class AddColumn extends BaseWebhookService {
       String columnOff = column;
       int offset = 1;
       while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
-        String nameOff = tableName.length() > offset ? tableName.substring(offset) : tableName;
+        String nameOff = (tableName != null && tableName.length() > offset) ? tableName.substring(offset) : tableName;
         columnOff = column.length() > offset ? column.substring(offset) : column;
         proposal = prefix + "_" + nameOff + "_" + columnOff + "_chk";
         offset++;
@@ -104,11 +136,21 @@ public class AddColumn extends BaseWebhookService {
         prefix, tableName, column, dbType, queryNull, queryCollate, defaultState, queryConstraint
     );
 
-    PreparedStatement statement = conn.prepareStatement(query);
-    boolean resultBool = statement.execute();
-    logIfDebug("Query executed and return:" + resultBool);
+    try (PreparedStatement statement = conn.prepareStatement(query)) {
+      boolean resultBool = statement.execute();
+      logIfDebug("Query executed and return:" + resultBool);
+    } catch (SQLException e) {
+      logIfDebug("Error executing query: " + e.getMessage());
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_WrongAddColumnQuery"));
+    }
   }
 
+  /**
+   * Retrieves the corresponding database type for the given column type.
+   *
+   * @param columnType The column type as a string.
+   * @return The corresponding database type as a string.
+   */
   private static String getDbType(String columnType) {
     Map<String, String> mapping = new HashMap<>();
     mapping.put("Absolute DateTime", TIMESTAMP_WITHOUT_TIMEZONE);
@@ -161,11 +203,16 @@ public class AddColumn extends BaseWebhookService {
     return mapping.get(columnType);
   }
 
+  /**
+   * Returns a default column name if the given name is blank.
+   *
+   * @param name The column name.
+   * @return The default column name if the given name is blank, otherwise the given name.
+   */
   private static String getDefaultName(String name) {
     if (StringUtils.isBlank(name)) {
-        return String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
+      return String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
     }
     return name;
   }
-
 }

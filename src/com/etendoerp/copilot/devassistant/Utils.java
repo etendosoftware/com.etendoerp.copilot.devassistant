@@ -2,6 +2,7 @@ package com.etendoerp.copilot.devassistant;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 
@@ -35,6 +36,8 @@ public class Utils {
     throw new IllegalStateException("Utility class");
   }
   public static final String FILE_TYPE_COPDEV_CI = "COPDEV_CI";
+  private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  private static final Random RANDOM = new Random();
 
   public static OBError execPInstanceProcess(String registerColumnsProcess, String recordId) throws ServletException {
     DalConnectionProvider conn = new DalConnectionProvider(false);
@@ -113,6 +116,14 @@ public class Utils {
     if (!isControlType(appType) && isCodeIndexFile(fileType)) {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_FileType&AssistantTypeIncompatibility"));
     }
+  }
+
+  public static String generateRandomString(int length) {
+    StringBuilder sb = new StringBuilder(length);
+    for (int i = 0; i < length; i++) {
+      sb.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+    }
+    return sb.toString();
   }
 
 }

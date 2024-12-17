@@ -5,7 +5,6 @@ import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Map;
-import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -13,159 +12,175 @@ import org.apache.logging.log4j.Logger;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+/**
+ * This class handles the process of adding a foreign key constraint to a specified child table
+ * by checking if the foreign key already exists. If not, it creates the constraint and updates
+ * the corresponding column in the ad_column table.
+ */
 public class AddForeign extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final String MESSAGE = "message";
   private static final int MAX_LENGTH = 30;
-  private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
+  /**
+   * This method handles the webhook request to add a foreign key constraint
+   * to a child table, checking if the constraint already exists, and updating the column if necessary.
+   *
+   * @param parameter a Map containing the parameters for the webhook request.
+   *                  Expected keys: "Prefix", "ParentTable", "ChildTable", "External".
+   * @param responseVars a Map that will hold the response variables.
+   *                     In case of success, a message will be added under the key "message".
+   *                     In case of an error, an error message will be added under the key "error".
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     LOG.info("Executing process");
+
+    // Log the incoming parameters
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
+    // Extract parameters from the input map
     String prefix = parameter.get("Prefix");
     String parentTable = parameter.get("ParentTable");
     String childTable = parameter.get("ChildTable");
     String external = parameter.get("External");
 
+    // Get the database connection
     Connection conn = OBDal.getInstance().getConnection();
 
     try {
-      if (prefix == null || prefix.equalsIgnoreCase("None")) {
-        prefix = childTable.split("_")[0];
+      // Handle the prefix parameter
+      if (prefix != null) {
+        if (prefix.equalsIgnoreCase("None")) {
+          prefix = childTable.split("_")[0];
+        }
+        prefix = prefix.toLowerCase();
+      } else {
+        prefix = "";
       }
-      prefix = prefix.toLowerCase();
-      parentTable = parentTable.toLowerCase();
-      childTable = childTable.toLowerCase();
 
+      // Handle the parent table and child table parameters
+      if (parentTable != null) {
+        parentTable = parentTable.toLowerCase();
+      } else {
+        parentTable = "";
+      }
+
+      if (childTable != null) {
+        childTable = childTable.toLowerCase();
+      } else {
+        childTable = "";
+      }
+
+      // Define column names and set the external boolean flag
       String parentTableId = parentTable + "_id";
       String parentColumn = parentTableId;
       boolean externalBool = StringUtils.equalsIgnoreCase(external, "true");
 
+      // Adjust the child table name based on prefix
       if (childTable.startsWith(prefix + "_")) {
         childTable = childTable.substring(childTable.indexOf("_") + 1);
       }
 
+      // Adjust the parent column based on external flag
       if (externalBool || !(parentTable.startsWith(prefix + "_"))) {
         parentColumn = "em_" + parentColumn;
       }
 
+      // Add the new column to the child table
       AddColumn.addColumn(prefix, childTable, parentColumn, "ID", "", false);
 
+      // Generate the foreign key constraint name
       String constraintFk = CreateTable.getConstName(prefix, childTable, parentTable, "fk");
+
+      // Register the columns for the child table
       RegisterColumns.registerColumns(childTable);
 
-      String query = String.format(
-            "DO $$\n"
-          + "DECLARE\n"
-          + "    foreign_key_exists BOOLEAN;\n"
-          + "BEGIN\n"
-          + "    SELECT EXISTS (\n"
-          + "        SELECT 1\n"
-          + "        FROM pg_constraint c\n"
-          + "        JOIN pg_class t ON c.conrelid = t.oid\n"
-          + "        JOIN pg_namespace n ON t.relnamespace = n.oid\n"
-          + "        JOIN pg_class r ON c.confrelid = r.oid\n"
-          + "        WHERE c.contype = 'f'\n"
-          + "        AND t.relname = '%s_%s'\n"
-          + "        AND r.relname = '%s'\n"
-          + "        AND c.conkey = ARRAY(SELECT attnum\n"
-          + "                             FROM pg_attribute\n"
-          + "                             WHERE attrelid = t.oid\n"
-          + "                             AND attname = '%s')\n"
-          + "        AND c.confkey = ARRAY(SELECT attnum\n"
-          + "                              FROM pg_attribute\n"
-          + "                              WHERE attrelid = r.oid\n"
-          + "                              AND attname = '%s')\n"
-          + "    ) INTO foreign_key_exists;\n"
-          + "\n"
-          + "    IF foreign_key_exists THEN\n"
-          + "        UPDATE ad_column\n"
-          + "        SET isparent = 'Y'\n"
-          + "        WHERE name ILIKE '%s'\n"
-          + "        AND isupdateable = 'Y';\n"
-          + "    ELSE\n"
-          + "        UPDATE ad_column\n"
-          + "        SET isparent = 'Y'\n"
-          + "        WHERE name ILIKE '%s'\n"
-          + "        AND isupdateable = 'Y';\n"
-          + "\n"
-          + "        ALTER TABLE IF EXISTS public.%s_%s\n"
-          + "        ADD CONSTRAINT %s FOREIGN KEY (%s)\n"
-          + "        REFERENCES public.%s (%s) MATCH SIMPLE\n"
-          + "        ON UPDATE NO ACTION\n"
-          + "        ON DELETE NO ACTION;\n"
-          + "    END IF;\n"
-          + "END $$;\n",
-          prefix, childTable, parentTable, parentColumn, parentTableId,
-          parentColumn, parentColumn, prefix, childTable, constraintFk,
-          parentColumn, parentTable, parentTableId);
+      // Construct the SQL query to check if the foreign key exists and add it if not
+      String query = "DO $$\n" +
+          "DECLARE\n" +
+          "    foreign_key_exists BOOLEAN;\n" +
+          "BEGIN\n" +
+          "    SELECT EXISTS (\n" +
+          "        SELECT 1\n" +
+          "        FROM pg_constraint c\n" +
+          "        JOIN pg_class t ON c.conrelid = t.oid\n" +
+          "        JOIN pg_namespace n ON t.relnamespace = n.oid\n" +
+          "        JOIN pg_class r ON c.confrelid = r.oid\n" +
+          "        WHERE c.contype = 'f'\n" +
+          "        AND t.relname = '" +
+          prefix +
+          "_" +
+          childTable +
+          "'\n" +
+          "        AND r.relname = '" +
+          parentTable +
+          "'\n" +
+          "        AND c.conkey = ARRAY(SELECT attnum\n" +
+          "                             FROM pg_attribute\n" +
+          "                             WHERE attrelid = t.oid\n" +
+          "                             AND attname = '" +
+          parentColumn +
+          "')\n" +
+          "        AND c.confkey = ARRAY(SELECT attnum\n" +
+          "                              FROM pg_attribute\n" +
+          "                              WHERE attrelid = r.oid\n" +
+          "                              AND attname = '" +
+          parentTableId +
+          "')\n" +
+          "    ) INTO foreign_key_exists;\n" +
+          "\n" +
+          "    IF foreign_key_exists THEN\n" +
+          "        UPDATE ad_column\n" +
+          "        SET isparent = 'Y'\n" +
+          "        WHERE name ILIKE '" +
+          parentColumn +
+          "'\n" +
+          "        AND isupdateable = 'Y';\n" +
+          "    ELSE\n" +
+          "        UPDATE ad_column\n" +
+          "        SET isparent = 'Y'\n" +
+          "        WHERE name ILIKE '" +
+          parentColumn +
+          "'\n" +
+          "        AND isupdateable = 'Y';\n" +
+          "\n" +
+          "        ALTER TABLE IF EXISTS public." +
+          prefix +
+          "_" +
+          childTable +
+          "\n" +
+          "        ADD CONSTRAINT " +
+          constraintFk +
+          " FOREIGN KEY (" +
+          parentColumn +
+          ")\n" +
+          "        REFERENCES public." +
+          parentTable +
+          " (" +
+          parentTableId +
+          ") MATCH SIMPLE\n" +
+          "        ON UPDATE NO ACTION\n" +
+          "        ON DELETE NO ACTION;\n" +
+          "    END IF;\n" +
+          "END $$;\n";
 
-      PreparedStatement statement = conn.prepareStatement(query);
-      boolean resultBool = statement.execute();
-      logIfDebug("Query executed and return:" + resultBool);
-      responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_ForeignAddedSucc"), childTable));
+      // Execute the query
+      try (PreparedStatement statement = conn.prepareStatement(query)) {
+        boolean resultBool = statement.execute();
+        logIfDebug("Query executed and return:" + resultBool);
+        responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_ForeignAddedSucc"), childTable));
+      }
 
     } catch (Exception e) {
+      // Handle errors and add error message to response
       responseVars.put("error", e.getMessage());
     }
   }
-
-  public static String getConstName(String prefix, String name1, String name2, String suffix) {
-    // Verify and adjust name1 if it starts with the prefix
-    if (name1.startsWith(prefix + "_") || name1.toUpperCase().startsWith((prefix + "_").toUpperCase())) {
-      name1 = name1.substring(prefix.length() + 1);
-    }
-
-    // Verify and adjust name2 if it starts with the prefix
-    if (name2.startsWith(prefix + "_") || name2.toUpperCase().startsWith((prefix + "_").toUpperCase())) {
-      name2 = name2.substring(prefix.length() + 1);
-    }
-
-    String proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
-
-    // Reduce length if necessary and contains underscores
-    if (proposal.length() > MAX_LENGTH && (name1.contains("_") || name2.contains("_"))) {
-      name1 = name1.replace("_", "");
-      name2 = name2.replace("_", "");
-      proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
-    }
-
-    // Adjust names by trimming initial characters
-    int offset = 1;
-    while (proposal.length() > MAX_LENGTH && offset < 15) {
-      String name1Offsetted = name1.length() > offset ? name1.substring(offset) : name1;
-      String name2Offsetted = name2.length() > offset ? name2.substring(offset) : name2;
-      proposal = prefix + "_" + name1Offsetted + "_" + name2Offsetted + "_" + suffix;
-      offset++;
-    }
-
-    // Generate a random name if it is still too long
-    if (proposal.length() > MAX_LENGTH) {
-      int length = MAX_LENGTH - prefix.length() - suffix.length() - 2;
-      String randomString = generateRandomString(length);
-      proposal = prefix + "_" + randomString + "_" + suffix;
-    }
-
-    proposal = proposal.replace("__", "_");
-
-    return proposal;
-  }
-
-  private static String generateRandomString(int length) {
-    Random random = new Random();
-    StringBuilder sb = new StringBuilder(length);
-    for (int i = 0; i < length; i++) {
-      sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
-    }
-    return sb.toString();
-  }
-
-
 }

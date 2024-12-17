@@ -5,7 +5,6 @@ import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Map;
-import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 public class CreateTable extends BaseWebhookService {
@@ -20,7 +20,6 @@ public class CreateTable extends BaseWebhookService {
   private static final Logger LOG = LogManager.getLogger();
   private static final String MESSAGE = "message";
   private static final int MAX_LENGTH = 30;
-  private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -85,10 +84,11 @@ public class CreateTable extends BaseWebhookService {
       // Replace to {constr_fk_org}
       // Replace to {const_isactive}
 
-      PreparedStatement statement = conn.prepareStatement(query);
-      boolean resultBool = statement.execute();
-      logIfDebug("Query executed and return:" + resultBool);
-      responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_TableCreationSucc"), name));
+      try (PreparedStatement statement = conn.prepareStatement(query)) {
+        boolean resultBool = statement.execute();
+        logIfDebug("Query executed and return:" + resultBool);
+        responseVars.put(MESSAGE, String.format(OBMessageUtils.messageBD("COPDEV_TableCreationSucc"), name));
+      }
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
@@ -134,7 +134,7 @@ public class CreateTable extends BaseWebhookService {
     // Generate a random name if it is still too long
     if (proposal.length() > MAX_LENGTH) {
       int length = MAX_LENGTH - prefix.length() - suffix.length() - 2;
-      String randomString = generateRandomString(length);
+      String randomString = Utils.generateRandomString(length);
       proposal = prefix + "_" + randomString + "_" + suffix;
     }
 
@@ -142,15 +142,5 @@ public class CreateTable extends BaseWebhookService {
 
     return proposal;
   }
-
-  private static String generateRandomString(int length) {
-    Random random = new Random();
-    StringBuilder sb = new StringBuilder(length);
-    for (int i = 0; i < length; i++) {
-      sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
-    }
-    return sb.toString();
-  }
-
 
 }
