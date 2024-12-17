@@ -183,11 +183,11 @@ public class RegisterWindow extends BaseWebhookService {
       name = StringUtils.removeStart(name, dbPrefix).substring(1);
     }
     if (!Character.isUpperCase(name.charAt(0))) {
-      name = Character.toUpperCase(name.charAt(0)) + (StringUtils.isNotBlank(name) ? name.substring(1) : name);
+      name = StringUtils.capitalize(name);
     }
     if (StringUtils.contains(name, "_")) {
       return Arrays.stream(name.replace("_", " ").split(" "))
-          .map(word -> (StringUtils.isNotBlank(word) ? word.substring(0, 1).toUpperCase() : "") + (StringUtils.isNotBlank(word) ? word.substring(1).toLowerCase() : ""))
+          .map(word -> (StringUtils.isNotBlank(word) ? StringUtils.capitalize(word) : ""))
           .collect(Collectors.joining(" "));
     }
     return name;
