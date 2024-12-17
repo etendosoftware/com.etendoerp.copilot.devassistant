@@ -122,10 +122,65 @@ public class Utils {
    * @return the Module entity matching the provided package name, or null if no match is found
    */
   public static Module getModuleByJavaPackage(String moduleJavaPackage) {
+    if (moduleJavaPackage == null) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_JavaPackageCannotBeNull"));
+    }
     OBCriteria<Module> moduleCrit = OBDal.getInstance().createCriteria(Module.class);
     moduleCrit.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, moduleJavaPackage));
     moduleCrit.setMaxResults(1);
     return (Module) moduleCrit.uniqueResult();
+  }
+
+  public static Module getModuleByName(String name) {
+    if (name == null) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_NameCannotBeNull"));
+    }
+    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
+    criteria.add(Restrictions.eq(Module.PROPERTY_NAME, name));
+    criteria.setMaxResults(1);
+
+    return (Module) criteria.uniqueResult();
+  }
+
+  public static Module getModuleByID(String id) {
+    if (id == null) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_IDCannotBeNull"));
+    }
+    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
+    criteria.add(Restrictions.eq(Module.PROPERTY_ID, id));
+    criteria.setMaxResults(1);
+
+    return (Module) criteria.uniqueResult();
+  }
+
+  public static boolean isInvalidParameter(String parameter) {
+    return StringUtils.isBlank(parameter);
+  }
+
+  public static Module getModuleByName(String name) {
+    if (name == null) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_NameCannotBeNull"));
+    }
+    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
+    criteria.add(Restrictions.eq(Module.PROPERTY_NAME, name));
+    criteria.setMaxResults(1);
+
+    return (Module) criteria.uniqueResult();
+  }
+
+  public static Module getModuleByID(String id) {
+    if (id == null) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_IDCannotBeNull"));
+    }
+    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
+    criteria.add(Restrictions.eq(Module.PROPERTY_ID, id));
+    criteria.setMaxResults(1);
+
+    return (Module) criteria.uniqueResult();
+  }
+
+  public static boolean isInvalidParameter(String parameter) {
+    return StringUtils.isBlank(parameter);
   }
 
   // List of control types
