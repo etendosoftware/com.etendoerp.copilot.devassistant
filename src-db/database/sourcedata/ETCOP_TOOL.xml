@@ -98,6 +98,74 @@
 <!--69474550D5874F378D1B029B8989BAB3-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
 <!--69474550D5874F378D1B029B8989BAB3--></ETCOP_TOOL>
 
+<!--7F71068245F640DD931E1F1BC15E75D2--><ETCOP_TOOL>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <ETCOP_TOOL_ID><![CDATA[7F71068245F640DD931E1F1BC15E75D2]]></ETCOP_TOOL_ID>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <VALUE><![CDATA[OrgInitTool]]></VALUE>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <NAME><![CDATA[Organization Initial Setup Tool]]></NAME>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <DESCRIPTION><![CDATA[A tool that initializes/creates a new organization in Etendo.]]></DESCRIPTION>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "OrgInitTool",
+    "description": "A tool that initializes\/creates a new organization in Etendo.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "org_name": {
+          "description": "The name of the organization to be created.",
+          "title": "Organization Name",
+          "type": "string"
+        },
+        "org_username": {
+          "description": "The username of the organization admin user to be created.",
+          "title": "Organization User",
+          "type": "string"
+        },
+        "password": {
+          "description": "The password of the organization admin user to be created.",
+          "title": "Password",
+          "type": "string"
+        },
+        "confirm_password": {
+          "description": "The password of the organization admin user to be created.",
+          "title": "Confirm Password",
+          "type": "string"
+        },
+        "client_admin_user": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "The client admin user that wants to create the organization. If not provided, it will be inferred from the context.",
+          "title": "Client Admin User"
+        },
+        "client_admin_password": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "The password of the client admin user that wants to create the organization. If not provided, it will be inferred from the context.",
+          "title": "Client Admin Password"
+        },
+        "remote_host": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "The remote host where the organization will be created. If not provided, it will the local host.",
+          "title": "Remote Host"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--7F71068245F640DD931E1F1BC15E75D2-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--7F71068245F640DD931E1F1BC15E75D2--></ETCOP_TOOL>
+
 <!--98D5929201084E2098A09C7A43530276--><ETCOP_TOOL>
 <!--98D5929201084E2098A09C7A43530276-->  <ETCOP_TOOL_ID><![CDATA[98D5929201084E2098A09C7A43530276]]></ETCOP_TOOL_ID>
 <!--98D5929201084E2098A09C7A43530276-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
@@ -370,5 +438,123 @@
 }]]></JSON_STRUCTURE>
 <!--98D5929201084E2098A09C7A43530276-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
 <!--98D5929201084E2098A09C7A43530276--></ETCOP_TOOL>
+
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB--><ETCOP_TOOL>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <ETCOP_TOOL_ID><![CDATA[B1C7F4EFAA3D40A38C23F0CDAB8FA3BB]]></ETCOP_TOOL_ID>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <VALUE><![CDATA[ClientInitTool]]></VALUE>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <NAME><![CDATA[Client Initial Setup]]></NAME>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <DESCRIPTION><![CDATA[A tool to initialize a client in the Etendo system.]]></DESCRIPTION>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "ClientInitTool",
+    "description": "A tool to initialize a client in the Etendo system.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "client_name": {
+          "description": "The name of the client to be created.",
+          "title": "Client Name",
+          "type": "string"
+        },
+        "client_username": {
+          "description": "The username of the client admin user.",
+          "title": "Client User",
+          "type": "string"
+        },
+        "password": {
+          "description": "The password of the client admin user.",
+          "title": "Password",
+          "type": "string"
+        },
+        "confirm_password": {
+          "description": "The password of the client admin user.",
+          "title": "Confirm Password",
+          "type": "string"
+        },
+        "currency": {
+          "description": "The currency of the client.",
+          "title": "Currency",
+          "type": "string"
+        },
+        "sysadmin_user": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "The current user that wants to create the organization. If not provided, it will be inferred from the context.",
+          "title": "SysAdmin User"
+        },
+        "sysadmin_password": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "The password of the current user that wants to create the organization. If not provided, it will be inferred from the context.",
+          "title": "SysAdmin Password"
+        },
+        "remote_host": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "The remote host where the organization will be created. If not provided, it will the local host.",
+          "title": "Remote Host"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--B1C7F4EFAA3D40A38C23F0CDAB8FA3BB--></ETCOP_TOOL>
+
+<!--C7D466544E214EF8A112B9C1FD1B39B7--><ETCOP_TOOL>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <ETCOP_TOOL_ID><![CDATA[C7D466544E214EF8A112B9C1FD1B39B7]]></ETCOP_TOOL_ID>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <VALUE><![CDATA[TestRunTool]]></VALUE>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <NAME><![CDATA[Test Run Tool]]></NAME>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <DESCRIPTION><![CDATA[A tool to execute Java tests using Gradle.
+        Example input:
+        {
+            "test_targets": ["com.etendoerp.webhookevents.WebhookSetupTest"],
+            "working_directory": "/path/to/erp"
+        }]]></DESCRIPTION>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "TestRunTool",
+    "description": "A tool to execute Java tests using Gradle.\n        Example input:\n        {\n            \"test_targets\": [\"com.etendoerp.webhookevents.WebhookSetupTest\"],\n            \"working_directory\": \"\/path\/to\/erp\"\n        }",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "test_targets": {
+          "anyOf": [
+            {"type": "string"},
+            {
+              "items": {"type": "string"},
+              "type": "array"
+            }
+          ],
+          "description": "Specify one or more tests or packages to execute. For example:\n- A specific test: 'com.etendoerp.webhookevents.WebhookSetupTest'\n- Multiple specific tests: ['com.etendoerp.webhookevents.WebhookSetupTest', 'com.etendoerp.copilot.rest.CopilotJwtServletTest']\n- A package: 'com.etendoerp.copilot.*'\n- Multiple packages: ['com.etendoerp.webhookevents.*', 'com.etendoerp.copilot.*']\n- All tests: leave empty.",
+          "title": "Test Targets"
+        },
+        "working_directory": {
+          "description": "The path to the directory where the `gradlew` script is located.",
+          "title": "Working Directory",
+          "type": "string"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--C7D466544E214EF8A112B9C1FD1B39B7-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--C7D466544E214EF8A112B9C1FD1B39B7--></ETCOP_TOOL>
 
 </data>
