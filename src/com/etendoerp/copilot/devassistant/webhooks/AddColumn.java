@@ -33,9 +33,11 @@ public class AddColumn extends BaseWebhookService {
   /**
    * This method is invoked by the webhook to add a column to a table in the database.
    *
-   * @param parameter A map containing parameters for the column addition, including the table ID, column name,
-   *                  column type, default value, and whether the column can be null.
-   * @param responseVars A map that will hold the response values, including success or error messages.
+   * @param parameter
+   *     A map containing parameters for the column addition, including the table ID, column name,
+   *     column type, default value, and whether the column can be null.
+   * @param responseVars
+   *     A map that will hold the response values, including success or error messages.
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -49,35 +51,56 @@ public class AddColumn extends BaseWebhookService {
     String columnType = parameter.get("ColumnType");
     String defaultParam = parameter.get("DefaultValue");
     String canBeNull = parameter.get("CanBeNull");
+    String isExternalStr = parameter.get("IsExternal");
+    boolean isExternal = StringUtils.isNotEmpty(isExternalStr) && StringUtils.equalsIgnoreCase(isExternalStr, "true");
+    String modulePrefix = parameter.get("ExternalModulePrefix");
 
     Table table = OBDal.getInstance().get(Table.class, tableId);
+    if (table == null) {
+      table = Utils.getTableByDBName(tableId);
+    }
+    validateIfExternalNeeded(isExternal, table);
 
     String name;
     String prefix;
     String dbTableName = table.getDBTableName();
-    if (dbTableName != null) {
-      prefix = dbTableName.split("_")[0];
-      name = StringUtils.substringAfter(dbTableName, "_");
-    } else {
+    if (dbTableName == null) {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_dbTableNameNotFound"));
     }
+    prefix = isExternal ? modulePrefix : dbTableName.split("_")[0];
+    name = isExternal ? dbTableName :StringUtils.substringAfter(dbTableName, "_");
+
     try {
-      addColumn(prefix, name, columnName, columnType, defaultParam, StringUtils.equalsIgnoreCase(canBeNull, "true"));
+      addColumn(prefix, name, columnName, columnType, defaultParam, StringUtils.equalsIgnoreCase(canBeNull, "true"),
+          isExternal);
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
+    }
+  }
+
+  public static void validateIfExternalNeeded(boolean isExternal, Table table) {
+    if (!isExternal && !table.getDataPackage().getModule().isInDevelopment()) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_NeededExternalColumn"));
     }
   }
 
   /**
    * Adds a new column to the specified table in the database.
    *
-   * @param prefix The prefix of the table.
-   * @param tableName The name of the table to which the column will be added.
-   * @param column The name of the column to be added.
-   * @param columnType The type of the column (e.g., VARCHAR, NUMERIC).
-   * @param defaultValue The default value for the column.
-   * @param canBeNull A boolean indicating whether the column can have null values.
-   * @throws SQLException If there is an error during the database operation.
+   * @param prefix
+   *     The prefix of the table.
+   * @param tableName
+   *     The name of the table to which the column will be added.
+   * @param column
+   *     The name of the column to be added.
+   * @param columnType
+   *     The type of the column (e.g., VARCHAR, NUMERIC).
+   * @param defaultValue
+   *     The default value for the column.
+   * @param canBeNull
+   *     A boolean indicating whether the column can have null values.
+   * @throws SQLException
+   *     If there is an error during the database operation.
    */
   public static void addColumn(
       String prefix,
@@ -85,18 +108,24 @@ public class AddColumn extends BaseWebhookService {
       String column,
       String columnType,
       String defaultValue,
-      boolean canBeNull  ) throws SQLException {
+      boolean canBeNull,
+      boolean isExternal
+  ) throws SQLException {
 
     if (StringUtils.isBlank(column)) {
       column = String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
     } else {
       column = StringUtils.replace(StringUtils.trimToEmpty(column), " +", "_");
     }
+    if (isExternal) {
+      column = "em_" + prefix + "_" + column;
+    }
 
     String dbType = getDbType(columnType);
 
     String queryCollate = "COLLATE pg_catalog.\"default\"";
-    String defaultState = StringUtils.isNotEmpty(defaultValue) ? " DEFAULT " + defaultValue : "";
+    String defaultState = StringUtils.isNotEmpty(defaultValue) ? " DEFAULT " + prepareDefaultValue(defaultValue,
+        dbType) : "";
     String queryConstraint = " ";
 
     if (StringUtils.equals(dbType, TIMESTAMP_WITHOUT_TIMEZONE) || StringUtils.equals(dbType, NUMERIC)) {
@@ -111,16 +140,24 @@ public class AddColumn extends BaseWebhookService {
     }
 
     String query = String.format(
-        "ALTER TABLE IF EXISTS public.%s_%s " +
+        "ALTER TABLE IF EXISTS public.%s " +
             "ADD COLUMN IF NOT EXISTS %s %s %s %s %s %s;",
-        prefix, tableName, column, dbType, queryNull, queryCollate, defaultState, queryConstraint
+         tableName, column, dbType, queryNull, queryCollate, defaultState, queryConstraint
     );
     Utils.executeQuery(query);
   }
 
+  private static String prepareDefaultValue(String defaultValue, String dbType) {
+    //if the column is a char / varchar type and the default value is not enclosed in single quotes, add them
+    if (StringUtils.startsWithIgnoreCase(dbType, "character") && !StringUtils.startsWith(defaultValue, "'")) {
+      return "'" + defaultValue + "'";
+    }
+    return defaultValue;
+  }
+
   private static String generateCheckConstraint(String prefix, String tableName, String column) {
     String queryConstraint;
-    String proposal = prefix + "_" + tableName + "_" + column + "_chk";
+    String proposal = prefix  + "_" + column + "_chk";
     String columnOff = column;
     int offset = 1;
     while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
@@ -145,7 +182,8 @@ public class AddColumn extends BaseWebhookService {
   /**
    * Retrieves the corresponding database type for the given column type.
    *
-   * @param columnType The column type as a string.
+   * @param columnType
+   *     The column type as a string.
    * @return The corresponding database type as a string.
    */
   private static String getDbType(String columnType) {

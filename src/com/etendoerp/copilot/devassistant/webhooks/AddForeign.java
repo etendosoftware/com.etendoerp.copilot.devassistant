@@ -1,5 +1,6 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.webhooks.AddColumn.validateIfExternalNeeded;
 import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
 
 import java.sql.Connection;
@@ -9,8 +10,10 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
+import org.openbravo.model.ad.datamodel.Table;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
@@ -28,11 +31,13 @@ public class AddForeign extends BaseWebhookService {
    * This method handles the webhook request to add a foreign key constraint
    * to a child table, checking if the constraint already exists, and updating the column if necessary.
    *
-   * @param parameter a Map containing the parameters for the webhook request.
-   *                  Expected keys: "Prefix", "ParentTable", "ChildTable", "External".
-   * @param responseVars a Map that will hold the response variables.
-   *                     In case of success, a message will be added under the key "message".
-   *                     In case of an error, an error message will be added under the key "error".
+   * @param parameter
+   *     a Map containing the parameters for the webhook request.
+   *     Expected keys: "Prefix", "ParentTable", "ChildTable", "External".
+   * @param responseVars
+   *     a Map that will hold the response variables.
+   *     In case of success, a message will be added under the key "message".
+   *     In case of an error, an error message will be added under the key "error".
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -44,10 +49,14 @@ public class AddForeign extends BaseWebhookService {
     }
 
     // Extract parameters from the input map
-    String prefix = parameter.get("Prefix");
-    String parentTable = parameter.get("ParentTable");
-    String childTable = parameter.get("ChildTable");
-    String external = parameter.get("External");
+    String prefix = parameter.get("ExternalModulePrefix");
+    String childTable = parameter.get("FromTable");
+    String parentTable = parameter.get("ToTable");
+    String externalStr = parameter.get("IsExternal");
+    boolean externalBool = StringUtils.isNotEmpty(externalStr) && StringUtils.equalsIgnoreCase(externalStr, "true");
+    String canBeNullStr = parameter.get("CanBeNull");
+    boolean canBeNull = StringUtils.isNotEmpty(canBeNullStr) && StringUtils.equalsIgnoreCase(canBeNullStr, "true");
+    String customName = parameter.get("CustomName");
 
     try {
       // Handle the prefix parameter
@@ -62,23 +71,28 @@ public class AddForeign extends BaseWebhookService {
       parentTable = StringUtils.defaultString(parentTable).toLowerCase();
       childTable = StringUtils.defaultString(childTable).toLowerCase();
 
-      // Define column names and set the external boolean flag
-      String parentTableId = parentTable + "_id";
-      String parentColumn = parentTableId;
-      boolean externalBool = StringUtils.equalsIgnoreCase(external, "true");
-
-      // Adjust the child table name based on prefix
-      if (StringUtils.isNotEmpty(childTable) && StringUtils.startsWith(childTable, prefix + "_")) {
-        childTable = StringUtils.substring(childTable, StringUtils.indexOf(childTable, "_") + 1);
+      // Check if the parent table exists
+      Table childTableObj = Utils.getTableByDBName(childTable);
+      validateIfExternalNeeded(externalBool, childTableObj);
+      if (externalBool && StringUtils.isEmpty(customName)) {
+        throw new OBException(OBMessageUtils.messageBD(
+            "COPDEV_customNameRequiredFroExt"));// The custom name is required for columns from external modules
       }
 
-      // Adjust the parent column based on external flag
-      if (externalBool || !(StringUtils.startsWith(parentTable, prefix + "_"))) {
-        parentColumn = "em_" + parentColumn;
+      String columnName;
+      if (StringUtils.isNotEmpty(customName)) {
+        columnName = customName;
+      } else {
+        columnName = parentTable + "_id";
+        boolean alreadyExists = Utils.columnExists(childTableObj, columnName);
+        if (alreadyExists) {
+          throw new OBException(OBMessageUtils.messageBD("COPDEV_ColumnExists"));
+        }
       }
+
 
       // Add the new column to the child table
-      AddColumn.addColumn(prefix, childTable, parentColumn, "ID", "", false);
+      AddColumn.addColumn(prefix, childTable, columnName, "ID", "", canBeNull, externalBool);
 
       // Generate the foreign key constraint name
       String constraintFk = CreateTable.getConstName(prefix, childTable, parentTable, "fk");
@@ -86,76 +100,6 @@ public class AddForeign extends BaseWebhookService {
       // Register the columns for the child table
       RegisterColumns.registerColumns(childTable);
 
-      // Construct the SQL query to check if the foreign key exists and add it if not
-      String query = "DO $$\n" +
-          "DECLARE\n" +
-          "    foreign_key_exists BOOLEAN;\n" +
-          "BEGIN\n" +
-          "    SELECT EXISTS (\n" +
-          "        SELECT 1\n" +
-          "        FROM pg_constraint c\n" +
-          "        JOIN pg_class t ON c.conrelid = t.oid\n" +
-          "        JOIN pg_namespace n ON t.relnamespace = n.oid\n" +
-          "        JOIN pg_class r ON c.confrelid = r.oid\n" +
-          "        WHERE c.contype = 'f'\n" +
-          "        AND t.relname = '" +
-          prefix +
-          "_" +
-          childTable +
-          "'\n" +
-          "        AND r.relname = '" +
-          parentTable +
-          "'\n" +
-          "        AND c.conkey = ARRAY(SELECT attnum\n" +
-          "                             FROM pg_attribute\n" +
-          "                             WHERE attrelid = t.oid\n" +
-          "                             AND attname = '" +
-          parentColumn +
-          "')\n" +
-          "        AND c.confkey = ARRAY(SELECT attnum\n" +
-          "                              FROM pg_attribute\n" +
-          "                              WHERE attrelid = r.oid\n" +
-          "                              AND attname = '" +
-          parentTableId +
-          "')\n" +
-          "    ) INTO foreign_key_exists;\n" +
-          "\n" +
-          "    IF foreign_key_exists THEN\n" +
-          "        UPDATE ad_column\n" +
-          "        SET isparent = 'Y'\n" +
-          "        WHERE name ILIKE '" +
-          parentColumn +
-          "'\n" +
-          "        AND isupdateable = 'Y';\n" +
-          "    ELSE\n" +
-          "        UPDATE ad_column\n" +
-          "        SET isparent = 'Y'\n" +
-          "        WHERE name ILIKE '" +
-          parentColumn +
-          "'\n" +
-          "        AND isupdateable = 'Y';\n" +
-          "\n" +
-          "        ALTER TABLE IF EXISTS public." +
-          prefix +
-          "_" +
-          childTable +
-          "\n" +
-          "        ADD CONSTRAINT " +
-          constraintFk +
-          " FOREIGN KEY (" +
-          parentColumn +
-          ")\n" +
-          "        REFERENCES public." +
-          parentTable +
-          " (" +
-          parentTableId +
-          ") MATCH SIMPLE\n" +
-          "        ON UPDATE NO ACTION\n" +
-          "        ON DELETE NO ACTION;\n" +
-          "    END IF;\n" +
-          "END $$;\n";
-
-      Utils.executeQuery(query);
 
     } catch (Exception e) {
       // Handle errors and add error message to response

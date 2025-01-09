@@ -827,11 +827,9 @@ public void testUpdate_Success() {
 <!--441C8592AFC34BF8837E87ACFA96A872-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--441C8592AFC34BF8837E87ACFA96A872-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--441C8592AFC34BF8837E87ACFA96A872-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
-<!--441C8592AFC34BF8837E87ACFA96A872-->  <PROVIDER><![CDATA[O]]></PROVIDER>
 <!--441C8592AFC34BF8837E87ACFA96A872-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--441C8592AFC34BF8837E87ACFA96A872-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--441C8592AFC34BF8837E87ACFA96A872-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--441C8592AFC34BF8837E87ACFA96A872-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--441C8592AFC34BF8837E87ACFA96A872-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
 <!--441C8592AFC34BF8837E87ACFA96A872--></ETCOP_APP>
 
@@ -870,11 +868,9 @@ Expected Behavior:
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
-<!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <PROVIDER><![CDATA[O]]></PROVIDER>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <TEMPERATURE><![CDATA[0.1]]></TEMPERATURE>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C--></ETCOP_APP>
 
@@ -897,7 +893,6 @@ If you receive only the javapackage of the translation module add the follow for
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--4BF7405265D84009BA19F0D95875E4FF-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--4BF7405265D84009BA19F0D95875E4FF--></ETCOP_APP>
 
@@ -935,7 +930,6 @@ Here are the requirements:
 <!--531DB139EB364DBE81A862F97A708C03-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--531DB139EB364DBE81A862F97A708C03-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--531DB139EB364DBE81A862F97A708C03-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
-<!--531DB139EB364DBE81A862F97A708C03-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--531DB139EB364DBE81A862F97A708C03-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
 <!--531DB139EB364DBE81A862F97A708C03-->  <TEMPERATURE><![CDATA[1]]></TEMPERATURE>
 <!--531DB139EB364DBE81A862F97A708C03--></ETCOP_APP>
@@ -1199,7 +1193,6 @@ Summary Output:
 <!--8A0BEDCF336343C494B97CE5F4EA2556-->  <APPTYPE><![CDATA[langgraph]]></APPTYPE>
 <!--8A0BEDCF336343C494B97CE5F4EA2556-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--8A0BEDCF336343C494B97CE5F4EA2556-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
-<!--8A0BEDCF336343C494B97CE5F4EA2556-->  <PROVIDER><![CDATA[O]]></PROVIDER>
 <!--8A0BEDCF336343C494B97CE5F4EA2556-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--8A0BEDCF336343C494B97CE5F4EA2556-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--8A0BEDCF336343C494B97CE5F4EA2556-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
@@ -1219,7 +1212,6 @@ Summary Output:
 </body>
 
 </html>]]></GRAPH_IMG>
-<!--8A0BEDCF336343C494B97CE5F4EA2556-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--8A0BEDCF336343C494B97CE5F4EA2556-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
 <!--8A0BEDCF336343C494B97CE5F4EA2556--></ETCOP_APP>
 
@@ -1282,11 +1274,9 @@ Run the tests using Gradle, if requested by the user.
 <!--8FFF3F19400349098BA9288EF287529B-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--8FFF3F19400349098BA9288EF287529B-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--8FFF3F19400349098BA9288EF287529B-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
-<!--8FFF3F19400349098BA9288EF287529B-->  <PROVIDER><![CDATA[O]]></PROVIDER>
 <!--8FFF3F19400349098BA9288EF287529B-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--8FFF3F19400349098BA9288EF287529B-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--8FFF3F19400349098BA9288EF287529B-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--8FFF3F19400349098BA9288EF287529B-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--8FFF3F19400349098BA9288EF287529B-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
 <!--8FFF3F19400349098BA9288EF287529B--></ETCOP_APP>
 
@@ -1540,7 +1530,8 @@ Add Columns (endpoint AddColumn): This process is useful when the user wants to 
 
 ["Absolute DateTime", "Absolute Time", "Amount", "Assignment", "Binary", "Button", "Button List", "Color", "Date", "DateTime", "DateTime_From (Date)", "DateTime_To (Date)", "General Quantity", "ID", "Image", "Image BLOB", "Integer", "Link", "List", "Masked String", "Memo", "Non Transactional Sequence", "Number", "OBKMO_Widget in Form Reference", "OBUISEL_Multi Selector Reference", "OBUISEL_SelectorAsLink Reference", "OBUISEL_Selector Reference", "Password (decryptable)", "Password (not decryptable)", "PAttribute", "Price", "Product Characteristics", "Quantity", "Rich Text Area", "RowID", "Search", "Search Vector", "String", "Table", "TableDir", "Text", "Time", "Transactional Sequence", "Tree Reference", "Window Reference", "YesNo"]
 There is no necessary add the "id" column because is automatically added in the table creation. At least the user specifically ask you add an "id" column. 
-Always you add a column is necessary register it on the AD.
+Always you add a column is necessary register it on the AD. For the case of YesNo columns, must be ever "not nullable", and the Default value must be 'Y' or 'N', if not indicated, set 'N' as default value.
+
 
 Register Columns (endpoint RegisterColumns): This mode is used to register the columns of a table in the AD, each column must has a description and a help comment.
 
@@ -1561,7 +1552,8 @@ Read Elements (endpoint ElementsHandler): This mode is used to read the elements
 
 Write Elements (endpoint ElementsHandler): This mode is used to set the description and help comment in the columns that do not have it. This mode use as parameter a Mode, in this case will be 'WRITE_ELEMENTS', a ColumnID, and a Help Comment and Description that will be added.
 
-Add Foreign Key (enpoint AddForeign): This mode is used to add a foreign key between two tables, a parent table that contains the foreign key and a child table where the foreign key point to it ID. When you use this mode you need a "Prefix", this is the same prefix that the parent table. In a window, when you have more than one tabs inside, each tab has a ChildTable with a foreign key pointing to the Parent Table. This mode use as parameter the prefix (it is the same that you are working), the ParentTable (is the table where is the id that the foreign key is pointing), Child Table (is the table where is the foreign key) and external (is a bool parameter that set if the parent table belongs to an external module). The name of the table mus be their names that have in the database, so you can use the get info process to obtain the database names (tablename).
+Add Foreign Key (endpoint AddForeign): This mode is used to add a foreign key between two tables, a child table where the column will be created and a parent table to which it points.
+The table name must be the name it has in the database, so you can use the get info process to get the database names (tablename).
 
 Workflow to create a table:
 1- Register Table
@@ -1631,7 +1623,6 @@ Step 11: Use Get Info to obtain the ids for all the tables you've added, and the
 Finally, if you finalized all the steps, you must explain to the user what was done and recommend to do a compilation and restart Etendo.
 ]]></PROMPT>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
-<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <PROVIDER><![CDATA[O]]></PROVIDER>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -2312,11 +2303,9 @@ Below is an example of how the assistant should proceed through each step, inclu
 <!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
-<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <PROVIDER><![CDATA[O]]></PROVIDER>
 <!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <REFRESH_GRAPH_IMG><![CDATA[N]]></REFRESH_GRAPH_IMG>
 <!--DFB9159E8804410FBED00FC3F2BD8DAB-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
 <!--DFB9159E8804410FBED00FC3F2BD8DAB--></ETCOP_APP>
 

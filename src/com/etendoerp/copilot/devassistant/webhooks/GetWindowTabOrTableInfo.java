@@ -37,10 +37,12 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
    * or tab based on the specified parameters. It constructs an SQL query based on the
    * provided name and key word, executes the query, and returns the results in JSON format.
    *
-   * @param parameter A map containing the input parameters for the request, including
-   *                  "Name" and "KeyWord".
-   * @param responseVars A map that will hold the response variables, including the
-   *                     query executed, column names, and data retrieved.
+   * @param parameter
+   *     A map containing the input parameters for the request, including
+   *     "Name" and "KeyWord".
+   * @param responseVars
+   *     A map that will hold the response variables, including the
+   *     query executed, column names, and data retrieved.
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -55,8 +57,13 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
     String keyWord = parameter.get("KeyWord");
 
     // Construct SQL query to fetch data based on the name and keyWord
-    String query = "SELECT ad_" + keyWord + "_id, name FROM ad_" + keyWord + " WHERE name ilike '%" + name + "%'" +
-        "OR tablename ILIKE '%" + name + "%'" +
+    String query = "SELECT " +
+        "ad_" + keyWord + "_id, " +
+        ifIsTable(keyWord, "tablename,") +
+        "name " +
+        "FROM ad_" + keyWord + " " +
+        "WHERE name ilike '%" + name + "%'" +
+        ifIsTable(keyWord, "OR tablename ILIKE '%" + name + "%' ") +
         "OR ad_" + keyWord + "_id = '" + name + "'";
 
     Connection conn = OBDal.getInstance().getConnection();
@@ -97,6 +104,25 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
       // Handle exceptions and store the error message
       responseVars.put("error", e.getMessage());
     }
+  }
+
+  /**
+   * Returns the provided text if the keyWord is "table", otherwise returns an empty string.
+   * <p>
+   * This method checks if the given keyWord is equal to "table" (case-insensitive).
+   * If it is, the method returns the provided text. Otherwise, it returns an empty string.
+   *
+   * @param keyWord
+   *     the keyword to check
+   * @param text
+   *     the text to return if the keyword is "table"
+   * @return the text if the keyword is "table", otherwise an empty string
+   */
+  private String ifIsTable(String keyWord, String text) {
+    if (StringUtils.equalsIgnoreCase(keyWord, "table")) {
+      return text;
+    }
+    return "";
   }
 
 }

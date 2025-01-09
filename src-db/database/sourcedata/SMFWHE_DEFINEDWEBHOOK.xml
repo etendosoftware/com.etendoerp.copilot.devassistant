@@ -31,6 +31,7 @@
 <!--22DAF593A637490AA20BB57AEA76F78D-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--22DAF593A637490AA20BB57AEA76F78D-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--22DAF593A637490AA20BB57AEA76F78D-->  <NAME><![CDATA[AddForeign]]></NAME>
+<!--22DAF593A637490AA20BB57AEA76F78D-->  <DESCRIPTION><![CDATA[This Webhook allows you to create a column in a table that is a foreign key to another table. If you indicate that this column is “external”, you must indicate the prefix of the module to which this column belongs. The name of the column is automatic, but it can have a custom name if necessary (for example, if the column already exists with the default name).]]></DESCRIPTION>
 <!--22DAF593A637490AA20BB57AEA76F78D-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--22DAF593A637490AA20BB57AEA76F78D-->  <EVENT_CLASS><![CDATA[JAVA]]></EVENT_CLASS>
 <!--22DAF593A637490AA20BB57AEA76F78D-->  <JAVA_CLASS><![CDATA[com.etendoerp.copilot.devassistant.webhooks.AddForeign]]></JAVA_CLASS>
