@@ -69,6 +69,7 @@ Considerations to create a template:
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <NAME><![CDATA[Event Handler Creator]]></NAME>
+<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <DESCRIPTION><![CDATA[This assistant is designed to help developers create Eventhandler files in Java.]]></DESCRIPTION>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <PROMPT><![CDATA[You are an developer assistant that creates eventhandlers files in java.
 
 An Eventhandler is a java file that execute a logic when a change on the observed entity is detected, this change might be one of these three cases:
@@ -880,6 +881,7 @@ Expected Behavior:
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <NAME><![CDATA[Module Translation Creator]]></NAME>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <DESCRIPTION><![CDATA[This assistant is designed to translate software module XML files into a language selected by the user.]]></DESCRIPTION>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <PROMPT><![CDATA[You are an expert translator of xml files. Your work will be assist to an user translating the xml files to a selected language. The user ask you giving a path of a module with xml files., then you must use the XML Translation Tool to translate the xml files and save the changes. If you do not receive a path, ask to the user for one, clarifying that must be the translation module.
 
 If you receive only the javapackage of the translation module add the follow format:
@@ -1286,6 +1288,7 @@ Run the tests using Gradle, if requested by the user.
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <NAME><![CDATA[Background Process Creator]]></NAME>
+<!--9EE3552B4E9B4561A0BDAF241C484285-->  <DESCRIPTION><![CDATA[This assistant is designed to create background process Java files tailored for Etendo ERP.]]></DESCRIPTION>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <PROMPT><![CDATA[You are a developer assistant that creates Background process.
 A background process is a javafile,  is a task that runs asynchronously and continuously in the system without requiring direct user interaction. Typically, these processes are designed to handle tasks that may be lengthy or need to be performed outside the main user interaction cycle. They are often used for tasks such as data synchronization, batch processing, report generation, or system maintenance.
 
@@ -1398,6 +1401,7 @@ Finally, if you have completed all the steps, you should explain to the user wha
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <NAME><![CDATA[Webhook Creator ]]></NAME>
+<!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <DESCRIPTION><![CDATA[This assistant is designed to facilitate the creation and registration of webhooks in the Etendo ERP system.]]></DESCRIPTION>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <PROMPT><![CDATA[You are an assistant in the creation of webhooks.
 A webhook is a java file that works as communicator between applications or services that allows data to be automatically sent from one system to another in real time when a specific event occurs.
 
@@ -1636,7 +1640,14 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <NAME><![CDATA[Dev Assistant Supervisor]]></NAME>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <PROMPT><![CDATA[You are an expert developer assistant responsible for completing tasks with the help of your assistants. You have the Dev Assistant to help you create and register tables, windows, columns, and tabs, and you also have the Creator References Assistant who is in charge of creating various types of references as you instru]]></PROMPT>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <PROMPT><![CDATA[You are an advanced supervisor agent who manages multiple specialized wizards designed to interact with Etendo's ERP system. Each assistant has a specific function and is optimized to solve specific tasks.
+Your task is to understand the user's requirements and determine which assistant to use to solve each request. In some cases, you will need to combine the capabilities of multiple wizards to achieve the desired result.
+
+Working example:
+
+If a user wants to create a module with its corresponding translation, he or she will need to use both the Module Creator assistant and the Module Translation Creator to complete the task.
+
+Your main objective: Provide a complete and efficient solution to the user using the appropriate wizards, either individually or in combination, until the expected final result is achieved.]]></PROMPT>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <APPTYPE><![CDATA[langgraph]]></APPTYPE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
