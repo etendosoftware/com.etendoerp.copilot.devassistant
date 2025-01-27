@@ -35,11 +35,15 @@ public class DependencyAdder extends BaseWebhookService {
    * Retrieves the dependent and dependency modules by their Java package names, validates
    * the input, and creates a new dependency relationship if one does not already exist.
    *
-   * @param parameter     the input parameters for the webhook, containing the Java package names
-   *                      of the dependent and dependency modules.
-   * @param responseVars  the output variables for the webhook, used to return success or error messages.
-   * @throws IllegalArgumentException if required parameters are missing or invalid.
-   * @throws OBException if a module is not found or the dependency already exists.
+   * @param parameter
+   *     the input parameters for the webhook, containing the Java package names
+   *     of the dependent and dependency modules.
+   * @param responseVars
+   *     the output variables for the webhook, used to return success or error messages.
+   * @throws IllegalArgumentException
+   *     if required parameters are missing or invalid.
+   * @throws OBException
+   *     if a module is not found or the dependency already exists.
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -47,10 +51,10 @@ public class DependencyAdder extends BaseWebhookService {
     String dependentModuleJavaPackage = parameter.get(DEPENDENT_MODULE_JAVAPACKAGE);
     String dependencyModuleJavaPackage = parameter.get(DEPENDENCY_MODULE_JAVAPACKAGE);
 
-    if (Utils.isInvalidParameter(parameter.get(DEPENDENT_MODULE_JAVAPACKAGE))) {
+    if (StringUtils.isBlank(parameter.get(DEPENDENT_MODULE_JAVAPACKAGE))) {
       throw new OBException(String.format(OBMessageUtils.messageBD(MISSING_PARAMETER), DEPENDENT_MODULE_JAVAPACKAGE));
     }
-    if (Utils.isInvalidParameter(parameter.get(DEPENDENCY_MODULE_JAVAPACKAGE))) {
+    if (StringUtils.isBlank(parameter.get(DEPENDENCY_MODULE_JAVAPACKAGE))) {
       throw new OBException(String.format(OBMessageUtils.messageBD(MISSING_PARAMETER), DEPENDENCY_MODULE_JAVAPACKAGE));
     }
 
@@ -77,7 +81,9 @@ public class DependencyAdder extends BaseWebhookService {
       OBDal.getInstance().save(moduleDependency);
       OBDal.getInstance().flush();
 
-      responseVars.put("message", (String.format(OBMessageUtils.messageBD("COPDEV_DependencyAdded"), dependencyModule.getName(), dependentModule.getName())));
+      responseVars.put("message",
+          (String.format(OBMessageUtils.messageBD("COPDEV_DependencyAdded"), dependencyModule.getName(),
+              dependentModule.getName())));
     } catch (IllegalArgumentException e) {
       log.error("Validation error: ", e);
       responseVars.put(ERROR_PROPERTY, e.getMessage());
@@ -91,8 +97,10 @@ public class DependencyAdder extends BaseWebhookService {
    * Checks if a dependency between the given module and its dependent module
    * already exists.
    *
-   * @param moduleDependency  the {@link ModuleDependency} object containing the dependent module.
-   * @param dependencyModule  the module to check as a dependency.
+   * @param moduleDependency
+   *     the {@link ModuleDependency} object containing the dependent module.
+   * @param dependencyModule
+   *     the module to check as a dependency.
    * @return true if the dependency already exists, false otherwise.
    */
   private boolean isDependencyAlreadyAdded(ModuleDependency moduleDependency, Module dependencyModule) {

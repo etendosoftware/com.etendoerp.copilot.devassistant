@@ -19,7 +19,7 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
  * Class that handles elements names on the Application Dictionary
  */
 
-public class ElementsHandlerWebHook extends BaseWebhookService {
+public class ElementsHandler extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
 
@@ -28,9 +28,9 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
     logExecutionInit(parameter, log);
     String mode = parameter.get("Mode");
 
-    if (StringUtils.equals(mode, DDLToolMode.READ_ELEMENTS)) {    // Method to read the elements of a table
+    if (StringUtils.equals(mode, "READ_ELEMENTS")) {    // Method to read the elements of a table
       readMode(parameter, responseVars);
-    } else if (StringUtils.equals(mode, DDLToolMode.WRITE_ELEMENTS)) {    // Method to set the Description and HelpComment
+    } else if (StringUtils.equals(mode, "WRITE_ELEMENTS")) {    // Method to set the Description and HelpComment
       writeMode(parameter, responseVars);
     } else {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_WrongMode")));
@@ -39,7 +39,7 @@ public class ElementsHandlerWebHook extends BaseWebhookService {
 
   private static void writeMode(Map<String, String> parameter, Map<String, String> responseVars) {
     try {
-      String columnId = parameter.get("ColumnId");
+      String columnId = parameter.get("ColumnID");
       if (columnId == null) {
         throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidElementID")));
       }

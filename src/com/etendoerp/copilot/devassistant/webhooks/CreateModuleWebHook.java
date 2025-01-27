@@ -66,13 +66,13 @@ public class CreateModuleWebHook extends BaseWebhookService {
 
 
   @Override
-  public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    logExecutionInit(parameter, log);
+  public void get(Map<String, String> parameters, Map<String, String> responseVars) {
+    logExecutionInit(parameters, log);
     log.debug("Starting Module registration");
 
     try {
-      validateParameters(parameter);
-      createModuleDefinition(parameter);
+      validateParameters(parameters);
+      createModuleDefinition(parameters);
       responseVars.put("message", OBMessageUtils.getI18NMessage("COPDEV_ModuleCreated"));
     } catch (IllegalArgumentException e) {
       log.error("Validation error: ", e);
@@ -97,36 +97,34 @@ public class CreateModuleWebHook extends BaseWebhookService {
     List<String> allowedTypes = List.of(MODULE, TEMPLATE, PACKAGE);
     String missingParameterMessage = "COPDEV_MissingParameter";
 
-    if (Utils.isInvalidParameter(parameter.get(PARAM_JAVA_PACKAGE))) {
+    if (StringUtils.isBlank(parameter.get(PARAM_JAVA_PACKAGE))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_JAVA_PACKAGE }));
     }
 
-    if (Utils.isInvalidParameter(parameter.get(PARAM_DESCRIPTION))) {
+    if (StringUtils.isBlank(parameter.get(PARAM_DESCRIPTION))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_DESCRIPTION }));
     }
 
-    if (Utils.isInvalidParameter(parameter.get(PARAM_MODULE_NAME))) {
+    if (StringUtils.isBlank(parameter.get(PARAM_MODULE_NAME))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_MODULE_NAME }));
     }
 
-    if (Utils.isInvalidParameter(parameter.get(PARAM_VERSION))) {
+    if (StringUtils.isBlank(parameter.get(PARAM_VERSION))) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_VERSION }));
     }
     String type = parameter.get(PARAM_TYPE);
-    if (!Utils.isInvalidParameter(type)) {
-      if (!allowedTypes.contains(type)) {
-        throw new IllegalArgumentException(
-            OBMessageUtils.getI18NMessage("COPDEV_InvalidType", new String[]{ type }));
-      }
-    } else {
+    if (StringUtils.isBlank(type)) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_TYPE }));
     }
-
+    if (!allowedTypes.contains(type)) {
+      throw new IllegalArgumentException(
+          OBMessageUtils.getI18NMessage("COPDEV_InvalidType", new String[]{ type }));
+    }
   }
 
   /**
@@ -167,7 +165,7 @@ public class CreateModuleWebHook extends BaseWebhookService {
       OBContext.setAdminMode(true);
       Module moduleDef = createModuleHeader(parameter);
       createDependencyModule(CORE_DEPENDENCY, moduleDef);
-      if (StringUtils.equals(PARAM_TYPE, MODULE)) {
+      if (StringUtils.equals(parameter.get(PARAM_TYPE), MODULE)) {
         String dbPrefixValue = parameter.get(PARAM_DBPREFIX);
         createDBPrefixModule(moduleDef, dbPrefixValue);
         createDataPackageModule(moduleDef, parameter.get(PARAM_JAVA_PACKAGE));
