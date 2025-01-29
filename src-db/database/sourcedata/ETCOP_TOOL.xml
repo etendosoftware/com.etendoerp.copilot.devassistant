@@ -59,45 +59,6 @@
 <!--4E825A8CF4834A4490E22D028EECBCCD-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
 <!--4E825A8CF4834A4490E22D028EECBCCD--></ETCOP_TOOL>
 
-<!--69474550D5874F378D1B029B8989BAB3--><ETCOP_TOOL>
-<!--69474550D5874F378D1B029B8989BAB3-->  <ETCOP_TOOL_ID><![CDATA[69474550D5874F378D1B029B8989BAB3]]></ETCOP_TOOL_ID>
-<!--69474550D5874F378D1B029B8989BAB3-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
-<!--69474550D5874F378D1B029B8989BAB3-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--69474550D5874F378D1B029B8989BAB3-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--69474550D5874F378D1B029B8989BAB3-->  <VALUE><![CDATA[CreateReferencesTool]]></VALUE>
-<!--69474550D5874F378D1B029B8989BAB3-->  <NAME><![CDATA[Create References Tool]]></NAME>
-<!--69474550D5874F378D1B029B8989BAB3-->  <DESCRIPTION><![CDATA[This tool creates a list reference in the Etendo Application Dictionary.]]></DESCRIPTION>
-<!--69474550D5874F378D1B029B8989BAB3-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
-<!--69474550D5874F378D1B029B8989BAB3-->  <JSON_STRUCTURE><![CDATA[{
-  "type": "function",
-  "function": {
-    "name": "CreateReferencesTool",
-    "description": "This tool creates a list reference in the Etendo Application Dictionary.",
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "i_prefix": {
-          "description": "This is the prefix of the module in the database.",
-          "title": "Prefix",
-          "type": "string"
-        },
-        "i_name": {
-          "description": "This is the name of the reference.",
-          "title": "Name",
-          "type": "string"
-        },
-        "i_reference_list": {
-          "description": "Comma-separated list of reference items.",
-          "title": "Reference List",
-          "type": "string"
-        }
-      }
-    }
-  }
-}]]></JSON_STRUCTURE>
-<!--69474550D5874F378D1B029B8989BAB3-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
-<!--69474550D5874F378D1B029B8989BAB3--></ETCOP_TOOL>
-
 <!--7F71068245F640DD931E1F1BC15E75D2--><ETCOP_TOOL>
 <!--7F71068245F640DD931E1F1BC15E75D2-->  <ETCOP_TOOL_ID><![CDATA[7F71068245F640DD931E1F1BC15E75D2]]></ETCOP_TOOL_ID>
 <!--7F71068245F640DD931E1F1BC15E75D2-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
