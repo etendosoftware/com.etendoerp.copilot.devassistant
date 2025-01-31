@@ -55,4 +55,3 @@ dependencies {
     implementation('com.etendoerp:copilot:1.11.0')
     implementation('com.etendoerp:copilot.toolpack:1.6.0')
 }
-
