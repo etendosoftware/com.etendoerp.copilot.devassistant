@@ -2,7 +2,6 @@ package com.etendoerp.copilot.devassistant;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ import javax.servlet.ServletException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.erpCommon.reference.PInstanceProcessData;
@@ -32,6 +32,7 @@ import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 
 import com.etendoerp.copilot.util.CopilotConstants;
+
 
 /**
  * Utility class that provides common helper methods for various operations in the Copilot module.
@@ -234,16 +235,17 @@ public class Utils {
    * @throws OBException
    *     if an error occurs during query execution
    */
-  public static void executeQuery(String query) {
+  public static JSONObject executeQuery(String query) throws SQLException {
     Connection conn = OBDal.getInstance().getConnection();
     try (PreparedStatement statement = conn.prepareStatement(query)) {
       logIfDebug(LOG, "Executing query: " + query);
-       boolean execution = statement.execute();
+      boolean execution = statement.execute();
       logIfDebug(LOG, "Query executed and result: " + execution);
-
+      return new JSONObject().put("warnings", statement.getWarnings());
     } catch (Exception e) {
       logIfDebug(LOG, "Error executing query: " + e.getMessage());
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_NotValidQuery") + e.getMessage());
+      throw new OBException(
+          String.format(OBMessageUtils.messageBD("COPDEV_NotValidQuery"), query, e.getMessage()));
     }
   }
 

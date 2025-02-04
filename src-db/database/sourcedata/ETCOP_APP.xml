@@ -1618,7 +1618,7 @@ Step 11: Use Get Info to obtain the ids for all the tables you've added, and the
 
 Finally, if you finalized all the steps, you must explain to the user what was done and recommend to do a compilation and restart Etendo.
 ]]></PROMPT>
-<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>

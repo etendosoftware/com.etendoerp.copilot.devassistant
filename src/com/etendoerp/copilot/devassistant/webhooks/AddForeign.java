@@ -18,6 +18,8 @@ import org.openbravo.model.ad.datamodel.Table;
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
+import kong.unirest.json.JSONObject;
+
 /**
  * This class handles the process of adding a foreign key constraint to a specified child table
  * by checking if the foreign key already exists. If not, it creates the constraint and updates
@@ -92,7 +94,8 @@ public class AddForeign extends BaseWebhookService {
 
 
       // Add the new column to the child table
-      AddColumn.addColumn(prefix, childTable, columnName, "ID", "", canBeNull, externalBool);
+      JSONObject resp = AddColumn.addColumn(prefix, childTable, columnName, "ID", "", canBeNull,
+          externalBool);
 
       // Generate the foreign key constraint name
       String constraintFk = CreateTable.getConstName(prefix, childTable, parentTable, "fk");
@@ -100,7 +103,7 @@ public class AddForeign extends BaseWebhookService {
       // Register the columns for the child table
       RegisterColumns.registerColumns(childTable);
 
-
+    responseVars.put("response", resp.toString());
     } catch (Exception e) {
       // Handle errors and add error message to response
       responseVars.put("error", e.getMessage());

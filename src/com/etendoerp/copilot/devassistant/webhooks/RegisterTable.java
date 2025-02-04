@@ -46,15 +46,15 @@ public class RegisterTable extends BaseWebhookService {
     String dbPrefix = parameter.get("DBPrefix");
     String javaClass = parameter.get("JavaClass");
     String name = parameter.get("Name");
+    String tableName= parameter.get("DBTableName");
     String dalevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
     String helpTable = parameter.get("Help");
     String isView = parameter.get("IsView");
     boolean isViewB = StringUtils.equalsIgnoreCase(isView, "true");
 
-    String tableName = name;
-    if (!StringUtils.startsWith(name, dbPrefix)) {
-      tableName = dbPrefix + "_" + name;
+    if (!StringUtils.startsWithIgnoreCase(tableName, dbPrefix)) {
+      tableName = dbPrefix + "_" + tableName;
     }
     if (javaClass == null || Objects.equals(javaClass, "null")) {
       javaClass = StringUtils.replaceChars(name, "_", " ");

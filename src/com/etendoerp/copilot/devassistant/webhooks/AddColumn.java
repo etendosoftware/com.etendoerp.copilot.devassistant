@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
@@ -24,7 +25,7 @@ public class AddColumn extends BaseWebhookService {
   private static final Logger LOG = LogManager.getLogger();
   private static final int MAX_LENGTH = 30;
 
-  private static final String TIMESTAMP_WITHOUT_TIMEZONE = "timestamp without timezone";
+  private static final String TIMESTAMP_WITHOUT_TIMEZONE = "timestamp without time zone";
   private static final String VARCHAR32 = "character varying(32)";
   private static final String VARCHAR60 = "character varying(60)";
   private static final String CHAR1 = "character(1)";
@@ -46,7 +47,7 @@ public class AddColumn extends BaseWebhookService {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
-    String tableId = parameter.get("TableID");
+    String tableId = parameter.get("TableName");
     String columnName = parameter.get("ColumnName");
     String columnType = parameter.get("ColumnType");
     String defaultParam = parameter.get("DefaultValue");
@@ -68,11 +69,13 @@ public class AddColumn extends BaseWebhookService {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_dbTableNameNotFound"));
     }
     prefix = isExternal ? modulePrefix : dbTableName.split("_")[0];
-    name = isExternal ? dbTableName :StringUtils.substringAfter(dbTableName, "_");
+    name = isExternal ? dbTableName : StringUtils.substringAfter(dbTableName, "_");
 
     try {
-      addColumn(prefix, name, columnName, columnType, defaultParam, StringUtils.equalsIgnoreCase(canBeNull, "true"),
+      JSONObject response = addColumn(prefix, dbTableName, columnName, columnType, defaultParam,
+          StringUtils.equalsIgnoreCase(canBeNull, "true"),
           isExternal);
+      responseVars.put("response", response.toString());
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
@@ -102,7 +105,7 @@ public class AddColumn extends BaseWebhookService {
    * @throws SQLException
    *     If there is an error during the database operation.
    */
-  public static void addColumn(
+  public static org.codehaus.jettison.json.JSONObject addColumn(
       String prefix,
       String tableName,
       String column,
@@ -123,15 +126,11 @@ public class AddColumn extends BaseWebhookService {
 
     String dbType = getDbType(columnType);
 
-    String queryCollate = "COLLATE pg_catalog.\"default\"";
+    String queryCollate = "";
     String defaultState = StringUtils.isNotEmpty(defaultValue) ? " DEFAULT " + prepareDefaultValue(defaultValue,
         dbType) : "";
     String queryConstraint = " ";
 
-    if (StringUtils.equals(dbType, TIMESTAMP_WITHOUT_TIMEZONE) || StringUtils.equals(dbType, NUMERIC)) {
-      queryCollate = "";
-      canBeNull = false;
-    }
 
     String queryNull = canBeNull ? " " : " NOT NULL";
 
@@ -142,9 +141,9 @@ public class AddColumn extends BaseWebhookService {
     String query = String.format(
         "ALTER TABLE IF EXISTS public.%s " +
             "ADD COLUMN IF NOT EXISTS %s %s %s %s %s %s;",
-         tableName, column, dbType, queryNull, queryCollate, defaultState, queryConstraint
+        tableName, column, dbType, queryNull, queryCollate, defaultState, queryConstraint
     );
-    Utils.executeQuery(query);
+    return Utils.executeQuery(query);
   }
 
   private static String prepareDefaultValue(String defaultValue, String dbType) {
@@ -152,12 +151,17 @@ public class AddColumn extends BaseWebhookService {
     if (StringUtils.startsWithIgnoreCase(dbType, "character") && !StringUtils.startsWith(defaultValue, "'")) {
       return "'" + defaultValue + "'";
     }
+    if (StringUtils.startsWithIgnoreCase(dbType, "timestamp") &&
+        (StringUtils.isEmpty(defaultValue) || StringUtils.equalsIgnoreCase(defaultValue, "null"))) {
+      return " now() ";
+    }
+
     return defaultValue;
   }
 
   private static String generateCheckConstraint(String prefix, String tableName, String column) {
     String queryConstraint;
-    String proposal = prefix  + "_" + column + "_chk";
+    String proposal = prefix + "_" + column + "_chk";
     String columnOff = column;
     int offset = 1;
     while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {

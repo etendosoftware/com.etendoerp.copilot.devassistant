@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
 import com.etendoerp.copilot.devassistant.Utils;
@@ -14,7 +15,7 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
  * The {@code CreateTable} class extends {@link BaseWebhookService} and provides functionality to create a table
  * in a PostgreSQL database. The table name is derived from the provided parameters, and constraints such as
  * primary key, foreign keys, and check constraints are added to the table.
-
+ * <p>
  * This class is part of the webhook service, and the {@code get} method is responsible for executing the
  * table creation process based on the parameters received.
  */
@@ -25,12 +26,14 @@ public class CreateTable extends BaseWebhookService {
 
   /**
    * {@inheritDoc}
-   *
+   * <p>
    * This method is called to process the incoming parameters and create the table in the database. It retrieves
    * the necessary parameters, generates table constraints, and constructs a {@code CREATE TABLE} SQL query.
    *
-   * @param parameter a map containing parameters such as table name, prefix, etc.
-   * @param responseVars a map to store the response, including error messages if any exception occurs
+   * @param parameter
+   *     a map containing parameters such as table name, prefix, etc.
+   * @param responseVars
+   *     a map to store the response, including error messages if any exception occurs
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -89,7 +92,9 @@ public class CreateTable extends BaseWebhookService {
           constraintIsactive
       );
 
-      Utils.executeQuery(query);
+      JSONObject response = Utils.executeQuery(query);
+
+      responseVars.put("response", response.toString());
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
@@ -99,7 +104,8 @@ public class CreateTable extends BaseWebhookService {
   /**
    * Returns the default table name if the provided name is blank.
    *
-   * @param name the name of the table
+   * @param name
+   *     the name of the table
    * @return the provided table name or a default name if the provided name is blank
    */
   private String getDefaultName(String name) {
@@ -112,14 +118,18 @@ public class CreateTable extends BaseWebhookService {
   /**
    * Generates a constraint name based on the provided parameters. The generated name ensures that the length
    * does not exceed the maximum allowed length and makes adjustments to fit the constraint naming conventions.
-
+   * <p>
    * If the name exceeds the maximum length, the name will be shortened by removing underscores or trimming
    * parts of the name until the length constraint is met.
-
-   * @param prefix the prefix to be used for the constraint name
-   * @param name1 the first part of the constraint name
-   * @param name2 the second part of the constraint name
-   * @param suffix the suffix to be used for the constraint name
+   *
+   * @param prefix
+   *     the prefix to be used for the constraint name
+   * @param name1
+   *     the first part of the constraint name
+   * @param name2
+   *     the second part of the constraint name
+   * @param suffix
+   *     the suffix to be used for the constraint name
    * @return the generated constraint name
    */
   public static String getConstName(String prefix, String name1, String name2, String suffix) {
