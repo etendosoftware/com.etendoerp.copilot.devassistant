@@ -74,12 +74,19 @@ public class AddForeign extends BaseWebhookService {
 
       // Check if the parent table exists
       Table childTableObj = Utils.getTableByDBName(childTable);
+      if (childTableObj == null) {
+        throw new OBException("Table " + childTable + " does not exist. Check if the table name is correct.");
+      }
       validateIfExternalNeeded(externalBool, childTableObj);
       if (externalBool && StringUtils.isEmpty(customName)) {
         throw new OBException(OBMessageUtils.messageBD(
             "COPDEV_customNameRequiredFroExt"));// The custom name is required for columns from external modules
       }
 
+      Table parentTableObj = Utils.getTableByDBName(parentTable);
+      if (parentTableObj == null) {
+        throw new OBException("Table " + parentTable + " does not exist. Check if the table name is correct.");
+      }
       String columnName;
       if (StringUtils.isNotEmpty(customName)) {
         columnName = customName;

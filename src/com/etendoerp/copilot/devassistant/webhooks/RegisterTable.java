@@ -76,7 +76,9 @@ public class RegisterTable extends BaseWebhookService {
       responseVars.put("message",
           String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
+
       responseVars.put("error", e.getMessage());
+      OBDal.getInstance().getSession().clear();
     }
   }
 

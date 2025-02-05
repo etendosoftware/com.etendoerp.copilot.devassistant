@@ -46,6 +46,8 @@ public class CreateTable extends BaseWebhookService {
     String prefix = parameter.get("Prefix");
 
     try {
+      name = StringUtils.lowerCase(name);
+      prefix = StringUtils.lowerCase(prefix);
       name = getDefaultName(name);
 
       if (StringUtils.startsWith(name, prefix)) {

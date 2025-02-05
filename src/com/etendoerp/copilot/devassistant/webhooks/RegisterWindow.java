@@ -55,17 +55,13 @@ public class RegisterWindow extends BaseWebhookService {
       String name = parameter.get("Name");
       String description = parameter.get("Description");
       String helpComment = parameter.get("HelpComment");
-      String tableId = parameter.get("TableID");
 
       // Validating required parameters
-      if (StringUtils.isEmpty(tableId) && StringUtils.isEmpty(dbPrefix)) {
-        throw new OBException("Missing parameter, table id and prefix cannot be null.");
+      if ( StringUtils.isEmpty(dbPrefix)) {
+        throw new OBException("Missing parameter, prefix cannot be null.");
       }
 
-      // Assign DB prefix if not provided
-      if (StringUtils.isEmpty(dbPrefix)) {
-        dbPrefix = OBDal.getInstance().get(Table.class, tableId).getDBTableName().split("_")[0];
-      }
+
 
       // Retrieve the associated DataPackage
       DataPackage dataPackage = getDataPackage(dbPrefix);

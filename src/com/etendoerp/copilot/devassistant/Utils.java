@@ -3,6 +3,7 @@ package com.etendoerp.copilot.devassistant;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,6 +20,7 @@ import org.openbravo.erpCommon.reference.PInstanceProcessData;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.SequenceIdData;
 import org.openbravo.erpCommon.utility.Utility;
+import org.openbravo.exception.NoConnectionAvailableException;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.scheduling.ProcessBundle;
 import org.openbravo.scheduling.ProcessRunner;
@@ -235,18 +237,28 @@ public class Utils {
    * @throws OBException
    *     if an error occurs during query execution
    */
-  public static JSONObject executeQuery(String query) throws SQLException {
-    Connection conn = OBDal.getInstance().getConnection();
-    try (PreparedStatement statement = conn.prepareStatement(query)) {
+  public static JSONObject executeQuery(String query) throws SQLException, NoConnectionAvailableException {
+    var connProv = new DalConnectionProvider();
+
+    PreparedStatement st = null;
+    String errmsg = OBMessageUtils.messageBD("COPDEV_NotValidQuery");
+    try {
+      st = connProv.getPreparedStatement(query);
       logIfDebug(LOG, "Executing query: " + query);
-      boolean execution = statement.execute();
+      boolean execution = st.execute();
       logIfDebug(LOG, "Query executed and result: " + execution);
-      return new JSONObject().put("warnings", statement.getWarnings());
+      SQLWarning warnings = st.getWarnings();
+      st.close();
+      return new JSONObject().put("warnings", warnings);
     } catch (Exception e) {
+
       logIfDebug(LOG, "Error executing query: " + e.getMessage());
       throw new OBException(
-          String.format(OBMessageUtils.messageBD("COPDEV_NotValidQuery"), query, e.getMessage()));
+          String.format(errmsg, query, e.getMessage()));
+    } finally {
+      connProv.releasePreparedStatement(st);
     }
+
   }
 
   public static Table getTableByDBName(String name) {

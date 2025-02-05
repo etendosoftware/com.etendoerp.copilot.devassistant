@@ -11,6 +11,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
+import org.openbravo.exception.NoConnectionAvailableException;
 import org.openbravo.model.ad.datamodel.Table;
 
 import com.etendoerp.copilot.devassistant.Utils;
@@ -105,7 +106,7 @@ public class AddColumn extends BaseWebhookService {
    * @throws SQLException
    *     If there is an error during the database operation.
    */
-  public static org.codehaus.jettison.json.JSONObject addColumn(
+  public static JSONObject addColumn(
       String prefix,
       String tableName,
       String column,
@@ -113,7 +114,7 @@ public class AddColumn extends BaseWebhookService {
       String defaultValue,
       boolean canBeNull,
       boolean isExternal
-  ) throws SQLException {
+  ) throws SQLException, NoConnectionAvailableException {
 
     if (StringUtils.isBlank(column)) {
       column = String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
@@ -155,7 +156,6 @@ public class AddColumn extends BaseWebhookService {
         (StringUtils.isEmpty(defaultValue) || StringUtils.equalsIgnoreCase(defaultValue, "null"))) {
       return " now() ";
     }
-
     return defaultValue;
   }
 
