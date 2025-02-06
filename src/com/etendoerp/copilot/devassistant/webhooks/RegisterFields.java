@@ -18,12 +18,29 @@ import org.openbravo.model.ad.ui.Tab;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
-public class RegisterFieldsWebHook extends BaseWebhookService {
+/**
+ * This class handles the registration of fields for a specified window tab.
+ * It retrieves the tab from the database, executes the field registration process,
+ * and updates the fields with the provided description and help comments.
+ * <p>
+ * It extends {@link BaseWebhookService} and overrides the {@link #get(Map, Map)}
+ * method to process the webhook request for registering fields.
+ */
+public class RegisterFields extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   private static final String REGISTER_FIELDS_PROCESS = "174";
   public static final String ERROR_PROPERTY = "error";
 
+  /**
+   * Processes the incoming webhook request to register fields for the specified window tab.
+   * It retrieves the tab ID, help comment, and description from the parameters,
+   * calls the {@link #registerFields(String, String, String)} method to execute the registration process,
+   * and updates the fields with the specified help comment and description.
+   *
+   * @param parameter A map containing the input parameters for the request, including the window tab ID, help comment, and description.
+   * @param responseVars A map that will hold the response variables, including the success or error message.
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, log);
@@ -41,14 +58,16 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
       String recordId = tab.getId();
       OBError myMessage = execPInstanceProcess(REGISTER_FIELDS_PROCESS, recordId);
       String textResponse = myMessage.getTitle() + " - " + myMessage.getMessage();
-      //Refresh tab and mark the fields created to show them in Grid view
+
+      // Refresh tab and update fields to show them in Grid view
       OBDal.getInstance().refresh(tab);
       List<Field> fields = tab.getADFieldList();
       fields.stream()
-          .filter(field -> !field.getColumn().isKeyColumn())
+          .filter(field -> !field.getColumn().isKeyColumn())  // Ignore key columns
           .forEach(field -> {
 
-            Element element =  field.getColumn().getApplicationElement();
+            // Update element names and print text for fields
+            Element element = field.getColumn().getApplicationElement();
             String elementName = element.getName();
             String elementPrinTxt = element.getPrintText();
             if (StringUtils.isBlank(elementName)) {
@@ -61,6 +80,7 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
             element.setPrintText(StringUtils.replace(elementPrinTxt, "_", " "));
             OBDal.getInstance().save(element);
 
+            // Set help comment, description, and show field in grid view
             field.setHelpComment(helpComment);
             field.setDescription(description);
             field.setShowInGridView(true);
@@ -70,6 +90,7 @@ public class RegisterFieldsWebHook extends BaseWebhookService {
             OBDal.getInstance().save(field);
           });
       OBDal.getInstance().flush();
+
       if (StringUtils.equalsIgnoreCase(myMessage.getType(), "Success")) {
         responseVars.put("message", textResponse);
       } else {
