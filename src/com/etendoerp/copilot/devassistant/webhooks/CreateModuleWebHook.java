@@ -19,9 +19,9 @@ import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.model.ad.module.ModuleDependency;
+import org.openbravo.model.ad.system.Language;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
-import com.etendoerp.copilot.devassistant.Utils;
 
 /**
  * The {@code CreateModuleWebHook} class is responsible for handling the creation of a new
@@ -211,10 +211,24 @@ public class CreateModuleWebHook extends BaseWebhookService {
       moduleDef.setJavaPackage(javaPackage + ".template");
       moduleDef.setName(moduleName + " Template");
     }
+    moduleDef.setLanguage(getLangEnUs());
 
     OBDal.getInstance().save(moduleDef);
     OBDal.getInstance().flush();
     return moduleDef;
+  }
+
+  /**
+   * Retrieves the English (US) language object from the database.
+   * <p>
+   * This method queries the database to find the language entry with the code "en_US".
+   * It returns the first matching result, or null if no match is found.
+   *
+   * @return The Language object representing English (US), or null if not found.
+   */
+  private static Language getLangEnUs() {
+    return (Language) OBDal.getInstance().createCriteria(Language.class).add(
+        Restrictions.eq(Language.PROPERTY_LANGUAGE, "en_US")).setMaxResults(1).uniqueResult();
   }
 
   /**
