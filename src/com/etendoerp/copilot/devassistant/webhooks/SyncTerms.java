@@ -55,10 +55,7 @@ public class SyncTerms extends BaseWebhookService {
         responseVars.put("error", textResponse);
       }
 
-      // If CleanTerms parameter is true, perform clean-up
-      if (!(parameter.get("CleanTerms") != null && StringUtils.equalsIgnoreCase(parameter.get("CleanTerms"), "true"))) {
-        return;
-      }
+
 
       // Clean-up process for elements
       OBCriteria<Module> modCrit = OBDal.getInstance().createCriteria(Module.class);

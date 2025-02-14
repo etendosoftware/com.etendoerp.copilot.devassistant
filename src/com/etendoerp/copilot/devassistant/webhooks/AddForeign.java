@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
@@ -73,12 +74,19 @@ public class AddForeign extends BaseWebhookService {
 
       // Check if the parent table exists
       Table childTableObj = Utils.getTableByDBName(childTable);
+      if (childTableObj == null) {
+        throw new OBException("Table " + childTable + " does not exist. Check if the table name is correct.");
+      }
       validateIfExternalNeeded(externalBool, childTableObj);
       if (externalBool && StringUtils.isEmpty(customName)) {
         throw new OBException(OBMessageUtils.messageBD(
             "COPDEV_customNameRequiredFroExt"));// The custom name is required for columns from external modules
       }
 
+      Table parentTableObj = Utils.getTableByDBName(parentTable);
+      if (parentTableObj == null) {
+        throw new OBException("Table " + parentTable + " does not exist. Check if the table name is correct.");
+      }
       String columnName;
       if (StringUtils.isNotEmpty(customName)) {
         columnName = customName;
@@ -92,7 +100,8 @@ public class AddForeign extends BaseWebhookService {
 
 
       // Add the new column to the child table
-      AddColumn.addColumn(prefix, childTable, columnName, "ID", "", canBeNull, externalBool);
+      JSONObject resp = AddColumn.addColumn(prefix, childTable, columnName, "ID", "", canBeNull,
+          externalBool);
 
       // Generate the foreign key constraint name
       String constraintFk = CreateTable.getConstName(prefix, childTable, parentTable, "fk");
@@ -100,7 +109,7 @@ public class AddForeign extends BaseWebhookService {
       // Register the columns for the child table
       RegisterColumns.registerColumns(childTable);
 
-
+    responseVars.put("response", resp.toString());
     } catch (Exception e) {
       // Handle errors and add error message to response
       responseVars.put("error", e.getMessage());

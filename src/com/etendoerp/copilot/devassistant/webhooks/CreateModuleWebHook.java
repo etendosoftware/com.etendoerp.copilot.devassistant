@@ -121,6 +121,10 @@ public class CreateModuleWebHook extends BaseWebhookService {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_TYPE }));
     }
+    if (StringUtils.equals(type, MODULE) && StringUtils.isBlank(parameter.get(PARAM_DBPREFIX))) {
+      throw new IllegalArgumentException(
+          OBMessageUtils.getI18NMessage(missingParameterMessage, new String[]{ PARAM_DBPREFIX }));
+    }
     if (!allowedTypes.contains(type)) {
       throw new IllegalArgumentException(
           OBMessageUtils.getI18NMessage("COPDEV_InvalidType", new String[]{ type }));

@@ -46,15 +46,15 @@ public class RegisterTable extends BaseWebhookService {
     String dbPrefix = parameter.get("DBPrefix");
     String javaClass = parameter.get("JavaClass");
     String name = parameter.get("Name");
+    String tableName= parameter.get("DBTableName");
     String dalevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
     String helpTable = parameter.get("Help");
     String isView = parameter.get("IsView");
     boolean isViewB = StringUtils.equalsIgnoreCase(isView, "true");
 
-    String tableName = name;
-    if (!StringUtils.startsWith(name, dbPrefix)) {
-      tableName = dbPrefix + "_" + name;
+    if (!StringUtils.startsWithIgnoreCase(tableName, dbPrefix)) {
+      tableName = dbPrefix + "_" + tableName;
     }
     if (javaClass == null || Objects.equals(javaClass, "null")) {
       javaClass = StringUtils.replaceChars(name, "_", " ");
@@ -76,7 +76,9 @@ public class RegisterTable extends BaseWebhookService {
       responseVars.put("message",
           String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
     } catch (Exception e) {
+
       responseVars.put("error", e.getMessage());
+      OBDal.getInstance().getSession().clear();
     }
   }
 

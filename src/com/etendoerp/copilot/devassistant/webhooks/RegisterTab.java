@@ -2,6 +2,7 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +18,7 @@ import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.ui.Tab;
 import org.openbravo.model.ad.ui.Window;
 
+import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 /**
@@ -26,30 +28,50 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
  */
 public class RegisterTab extends BaseWebhookService {
 
-  /** Constant for the window ID parameter */
+  /**
+   * Constant for the window ID parameter
+   */
   private static final String WINDOW_ID = "WindowID";
-  /** Constant for the tab level parameter */
+  /**
+   * Constant for the tab level parameter
+   */
   private static final String TAB_LEVEL = "TabLevel";
-  /** Constant for the description parameter */
+  /**
+   * Constant for the description parameter
+   */
   private static final String DESCRIPTION = "Description";
-  /** Constant for the help comment parameter */
+  /**
+   * Constant for the help comment parameter
+   */
   private static final String HELP_COMMENT = "HelpComment";
-  /** Constant for the table ID parameter */
-  private static final String TABLE_ID = "TableID";
-  /** Constant for the sequence number parameter */
+  /**
+   * Constant for the table ID parameter
+   */
+  private static final String TABLE_NAME = "TableName";
+  /**
+   * Constant for the sequence number parameter
+   */
   private static final String SEQUENCE_NUMBER = "SequenceNumber";
-  /** Logger instance for logging execution details */
+  /**
+   * Logger instance for logging execution details
+   */
   private static final Logger LOG = LogManager.getLogger();
-  /** Constant for the error property key in the response map */
+  /**
+   * Constant for the error property key in the response map
+   */
   public static final String ERROR_PROPERTY = "error";
-  /** Constant for the default UI pattern */
+  /**
+   * Constant for the default UI pattern
+   */
   public static final String STD = "STD";
 
   /**
    * Handles the registration of a new tab for the specified window.
    *
-   * @param parameter a map containing the parameters for the tab registration
-   * @param responseVars a map for storing response variables such as error messages or success messages
+   * @param parameter
+   *     a map containing the parameters for the tab registration
+   * @param responseVars
+   *     a map for storing response variables such as error messages or success messages
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
@@ -62,20 +84,23 @@ public class RegisterTab extends BaseWebhookService {
       String tabLevel = parameter.get(TAB_LEVEL);
       String description = parameter.get(DESCRIPTION);
       String helpComment = parameter.get(HELP_COMMENT);
-      String tableId = parameter.get(TABLE_ID);
+      String tableNae = parameter.get(TABLE_NAME);
       String sequenceNumber = parameter.get(SEQUENCE_NUMBER);
 
       // Fetching the table based on the provided TableID
-      Table table = OBDal.getInstance().get(Table.class, tableId);
+      Table table = Utils.getTableByDBName(tableNae);
 
       // Formatting the table name by replacing underscores with spaces
       String name = table.getName().replace("_", " ");
 
-      // Checking if a tab already exists for the table
-      OBCriteria<Tab> tabCrit = OBDal.getInstance().createCriteria(Tab.class);
-      tabCrit.add(Restrictions.eq(Tab.PROPERTY_TABLE + ".id", tableId));
-      Tab tab = (Tab) tabCrit.setMaxResults(1).uniqueResult();
-      Window window;
+
+      Window window = OBDal.getInstance().get(Window.class, windowId);
+
+      List<Tab> tabs = window.getADTabList();
+      Tab tab = tabs.stream()
+          .filter(t -> t.getTable().getId().equals(table.getId()))
+          .findFirst()
+          .orElse(null);
 
       // If the tab exists, return an error message
       if (tab != null) {
@@ -94,7 +119,6 @@ public class RegisterTab extends BaseWebhookService {
       OBContext context = OBContext.getOBContext();
 
       // Fetching the window and setting the table for the window
-      window = OBDal.getInstance().get(Window.class, windowId);
       table.setWindow(window);
       OBDal.getInstance().save(table);
 
@@ -105,7 +129,9 @@ public class RegisterTab extends BaseWebhookService {
 
       // Returning a success message
       String copdevTabCreated = OBMessageUtils.messageBD("COPDEV_TabCreated");
-      responseVars.put("message", String.format(copdevTabCreated, tab.getName(), tab.getId(), tab.getTabLevel(), tab.getTable().getName(), window.getName()));
+      responseVars.put("message",
+          String.format(copdevTabCreated, tab.getName(), tab.getId(), tab.getTabLevel(), tab.getTable().getName(),
+              window.getName()));
 
     } catch (Exception e) {
       OBDal.getInstance().rollbackAndClose();
@@ -116,14 +142,22 @@ public class RegisterTab extends BaseWebhookService {
   /**
    * Creates a new tab for the specified window and table with the provided details.
    *
-   * @param window the window to associate with the new tab
-   * @param name the name of the tab
-   * @param table the table to associate with the new tab
-   * @param context the OBContext of the current user
-   * @param description a description for the tab
-   * @param helpComment a help comment for the tab
-   * @param tabLevel the level of the tab (e.g., header or line tab)
-   * @param sequenceNumber the sequence number for ordering the tab
+   * @param window
+   *     the window to associate with the new tab
+   * @param name
+   *     the name of the tab
+   * @param table
+   *     the table to associate with the new tab
+   * @param context
+   *     the OBContext of the current user
+   * @param description
+   *     a description for the tab
+   * @param helpComment
+   *     a help comment for the tab
+   * @param tabLevel
+   *     the level of the tab (e.g., header or line tab)
+   * @param sequenceNumber
+   *     the sequence number for ordering the tab
    * @return the newly created Tab object
    */
   private Tab createTab(Window window, String name, Table table, OBContext context, String description,

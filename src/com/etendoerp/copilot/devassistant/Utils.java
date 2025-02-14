@@ -2,8 +2,8 @@ package com.etendoerp.copilot.devassistant;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -13,12 +13,14 @@ import javax.servlet.ServletException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.erpCommon.reference.PInstanceProcessData;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.SequenceIdData;
 import org.openbravo.erpCommon.utility.Utility;
+import org.openbravo.exception.NoConnectionAvailableException;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.scheduling.ProcessBundle;
 import org.openbravo.scheduling.ProcessRunner;
@@ -32,6 +34,7 @@ import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 
 import com.etendoerp.copilot.util.CopilotConstants;
+
 
 /**
  * Utility class that provides common helper methods for various operations in the Copilot module.
@@ -234,17 +237,28 @@ public class Utils {
    * @throws OBException
    *     if an error occurs during query execution
    */
-  public static void executeQuery(String query) {
-    Connection conn = OBDal.getInstance().getConnection();
-    try (PreparedStatement statement = conn.prepareStatement(query)) {
-      logIfDebug(LOG, "Executing query: " + query);
-       boolean execution = statement.execute();
-      logIfDebug(LOG, "Query executed and result: " + execution);
+  public static JSONObject executeQuery(String query) throws SQLException, NoConnectionAvailableException {
+    var connProv = new DalConnectionProvider();
 
+    PreparedStatement st = null;
+    String errmsg = OBMessageUtils.messageBD("COPDEV_NotValidQuery");
+    try {
+      st = connProv.getPreparedStatement(query);
+      logIfDebug(LOG, "Executing query: " + query);
+      boolean execution = st.execute();
+      logIfDebug(LOG, "Query executed and result: " + execution);
+      SQLWarning warnings = st.getWarnings();
+      st.close();
+      return new JSONObject().put("warnings", warnings);
     } catch (Exception e) {
+
       logIfDebug(LOG, "Error executing query: " + e.getMessage());
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_NotValidQuery") + e.getMessage());
+      throw new OBException(
+          String.format(errmsg, query, e.getMessage()));
+    } finally {
+      connProv.releasePreparedStatement(st);
     }
+
   }
 
   public static Table getTableByDBName(String name) {
