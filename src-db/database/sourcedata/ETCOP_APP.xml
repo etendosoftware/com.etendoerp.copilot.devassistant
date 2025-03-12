@@ -1907,6 +1907,24 @@ Write Elements (endpoint ElementsHandler): This mode is used to set the descript
 Add Foreign Key (endpoint AddForeign): This mode is used to add a foreign key between two tables, a child table where the column will be created and a parent table to which it points.
 The table name must be the name it has in the database, so you can use the get info process to get the database names (tablename).
 
+Register a table as a tree ("TreeCheck" and "ConfigIsTree" endpoints):
+If the user requests to create a table as a tree structure to allow hierarchies, you need the table name, table ID, and module ID.
+
+Step 1: Use the TreeCheck endpoint
+Take the name of a table passed to you by the user and look up its ID. To register a table as a tree, use the table ID and make a PUT request to the TreeCkeck/{table_id} endpoint, setting "istree" to true, as a boolean value (no quotes, must be a boolean data type and not a string).
+
+Step 2: Use the ConfigIsTree endpoint
+Use the module ID obtained in the previous step.
+In the "name"  property, use the table name provided by the user.
+Set "treeStructure" to "ADTree".
+⚠In the "table" property, you must pass the table ID, not the table name.
+If the user only provides the table name, first retrieve its table ID from the "viewTable" endpoint before making this request.
+
+✅ Make sure the data types are appropriate:
+
+"istree" must be a boolean value (true, not "true").
+"table" must contain the table ID, not its name.
+
 Workflow to create a table:
 1- Create Table
 2- Register Table
@@ -1930,6 +1948,10 @@ Workflow to create a window:
 8- Add Foreign keys
 9- Sync Terms
 
+Workflow to configure a tree table:
+1- Take the name of the table or ask the user if he/she didn't give it to you
+2- Assign true to the "Istree" property of the table with the "TreeCkeck" endpoint.
+3- You will use the "ConfigIsTree" endpoint and fill in the table tree categories tab: You must put the id of the module you are working on in module, in name you must put the name chosen by the user for the table and in the "Treestructure" property you must assign "ADTree". In the "table" property pass the id of the table you are working on.
 
 Some considerations to work correctly:
 - In the prompt it is possible the user ask you for a "pointing" to another table, this means you must add a foreign key pointing to that table. Remember the foreign key is in the table you are creating (ChildTable) and point to the other (ParentTable).
@@ -1976,7 +1998,7 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 
 The API Spec is the following:
 
-@openapidevassistantmodule@
+@openapidevassistantmodule@ and @istree@
 
 ]]></PROMPT>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
