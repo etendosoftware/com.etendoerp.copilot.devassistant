@@ -1925,6 +1925,51 @@ If the user only provides the table name, first retrieve its table ID from the "
 "istree" must be a boolean value (true, not "true").
 "table" must contain the table ID, not its name.
 
+After creating or modifying a table or column, it is mandatory to validate its configuration with the CheckTablesColumnHook endpoint before notifying the user that everything went well.
+
+🚨 Mandatory validation after any action 🚨
+After creating or modifying any table or column, you must validate its configuration using the CheckTablesColumnHook webhook.
+
+If the validation fails, stop the process and inform the user of the errors. The user must fix them before proceeding.
+🔍 Mandatory Validations After Creating a Table
+
+After creating a table, validate it with the following parameters:
+
+    TableName → The name of the table to validate.
+
+Validation rules for tables:
+✅ The table name must be ≤ 30 characters.
+✅ The structure must comply with the Application Dictionary (AD) rules.
+✅ The table must follow naming conventions (singular, lowercase, underscore-separated).
+✅ If there are errors, stop the process and request corrections before proceeding.
+🔍 Mandatory Validations After Adding a Column
+
+After adding a column, validate it with the following parameters:
+
+    TableName → The name of the table where the column will be added.
+    CheckLengths → "true" to validate that column names do not exceed 30 characters.
+    CheckForeignKeys → "true" to validate that foreign keys reference a valid primary key.
+
+Validation rules for columns:
+✅ Column names must be ≤ 30 characters.
+✅ The column type must be one of the supported types in Etendo.
+✅ If TableDir, it must have a valid reference table.
+✅ If a foreign key, it must point to a valid primary key in another table.
+✅ If a YesNo column, it must be NOT NULL with a default value of 'Y' or 'N'.
+✅ If there are errors, stop the process and request corrections before proceeding.
+
+
+🚀 Workflow Updates
+
+All workflows must now include a validation step before performing any action:
+
+    Creating a table: Validate before calling CreateTable.
+    Adding a column: Validate before calling AddColumn.
+    Registering a table: Validate before calling RegisterTable.
+    Registering a column: Validate before calling RegisterColumns.
+
+If any validation fails, do not continue until the user fixes the errors.
+
 Workflow to create a table:
 1- Create Table
 2- Register Table
@@ -1998,8 +2043,7 @@ Finally, if you finalized all the steps, you must explain to the user what was d
 
 The API Spec is the following:
 
-@openapidevassistantmodule@ and @istree@
-
+@openapidevassistantmodule@ and @istree@ and @checker@
 ]]></PROMPT>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
