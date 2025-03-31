@@ -235,6 +235,30 @@ If the user only provides the name of the table, first use the “ViewTable” e
 <!--B642096A05EA44969452FBC29D432207-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--B642096A05EA44969452FBC29D432207--></ETAPI_OPENAPI_REQ>
 
+<!--CC764636C21C4310B5A5616F51C00004--><ETAPI_OPENAPI_REQ>
+<!--CC764636C21C4310B5A5616F51C00004-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[CC764636C21C4310B5A5616F51C00004]]></ETAPI_OPENAPI_REQ_ID>
+<!--CC764636C21C4310B5A5616F51C00004-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--CC764636C21C4310B5A5616F51C00004-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--CC764636C21C4310B5A5616F51C00004-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--CC764636C21C4310B5A5616F51C00004-->  <NAME><![CDATA[ChangeColumn]]></NAME>
+<!--CC764636C21C4310B5A5616F51C00004-->  <DESCRIPTION><![CDATA[You must take the ID of the column that the user wants to be of type list and you must modify the "reference" parameter to "17" and in the "referenceSearchKey" parameter you must put the ID of the reference that the user passed you.
+Example of the call:
+{'url': 'http://tomcat:8080/etendo', 'endpoint': '/sws/com.etendoerp.etendorx.datasource/ChangeColumn/"ID of the column type list"', 'method': 'PUT', 'body_params': '{"reference":"17","referenceSearchKey":"REFERENCE ID"}', 'query_params': None, 'token': 'ETENDO_TOKEN'}]]></DESCRIPTION>
+<!--CC764636C21C4310B5A5616F51C00004-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
+<!--CC764636C21C4310B5A5616F51C00004-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--CC764636C21C4310B5A5616F51C00004--></ETAPI_OPENAPI_REQ>
+
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD--><ETAPI_OPENAPI_REQ>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[CCB9A32732B14FAE9CA0B9F98A0444BD]]></ETAPI_OPENAPI_REQ_ID>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <NAME><![CDATA[ViewReferences]]></NAME>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <DESCRIPTION><![CDATA[They will give you a reference ID and you must bring the data of the same, the type parameter and the name]]></DESCRIPTION>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD--></ETAPI_OPENAPI_REQ>
+
 <!--DEA3574E04C44EA78925DD5D8FC9A887--><ETAPI_OPENAPI_REQ>
 <!--DEA3574E04C44EA78925DD5D8FC9A887-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[DEA3574E04C44EA78925DD5D8FC9A887]]></ETAPI_OPENAPI_REQ_ID>
 <!--DEA3574E04C44EA78925DD5D8FC9A887-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
@@ -245,6 +269,151 @@ If the user only provides the name of the table, first use the “ViewTable” e
 <!--DEA3574E04C44EA78925DD5D8FC9A887-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--DEA3574E04C44EA78925DD5D8FC9A887-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--DEA3574E04C44EA78925DD5D8FC9A887--></ETAPI_OPENAPI_REQ>
+
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53--><ETAPI_OPENAPI_REQ>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[E0DB36E7BEED4DB3AACA4E03EB5C1D53]]></ETAPI_OPENAPI_REQ_ID>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <NAME><![CDATA[AddColumnFlow]]></NAME>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <DESCRIPTION><![CDATA[Your task is to add columns to a table in Etendo, ensuring that they are correctly registered both in the database and in the Application Dictionary (AD).
+
+Each column must have the correct data type, validate its values, and, if necessary, create references in the AD.
+
+🔹 Input Parameters
+
+When a user requests to add a column, the following parameters are required:
+Parameter	Description
+TableName	Name of the table where the column will be added.
+ColumnName	Name of the column to be added.
+ColumnType	Data type of the column. Possible values:
+"Absolute DateTime", "Absolute Time", "Amount", "Assignment", "Binary", "Button", "Button List", "Color", "Date", "DateTime", "DateTime_From (Date)", "DateTime_To (Date)", "General Quantity", "ID", "Image", "Image BLOB", "Integer", "Link", "List", "Masked String", "Memo", "Non Transactional Sequence", "Number", "OBKMO_Widget in Form Reference", "OBUISEL_Multi Selector Reference", "OBUISEL_SelectorAsLink Reference", "OBUISEL_Selector Reference", "Password (decryptable)", "Password (not decryptable)", "PAttribute", "Price", "Product Characteristics", "Quantity", "Rich Text Area", "RowID", "Search", "Search Vector", "String", "Table", "TableDir", "Text", "Time", "Transactional Sequence", "Tree Reference", "Window Reference", "YesNo"
+CanBeNull	"true" or "false". Indicates whether the column can be NULL.
+IsExternal	"true" or "false". Indicates whether the column belongs to an external module.
+ExternalModulePrefix	Prefix of the external module if IsExternal = true.
+ReferenceId (optional, only for "List" type columns)	ID of the list reference in the AD.
+
+🔹 Steps to Add a Column
+
+1️⃣ Check if the table exists in the database using viewTable
+▪️ If it doesn’t exist, stop the process and notify the user.
+
+2️⃣ Validate the column type (ColumnType) and assign the correct data type in the database:
+
+    "String" → character varying(200)
+
+    "Integer" → numeric
+
+    "DateTime" → timestamp without time zone
+
+    "YesNo" → character(1) NOT NULL DEFAULT 'N' CHECK (column IN ('Y', 'N'))
+
+    "List" → A reference must be assigned in the AD, not just character varying(60)
+
+3️⃣ If the column is of type "List":
+
+    Validate whether ReferenceId is provided.
+
+    If not, ask the user for the reference ID if it already exists, otherwise inform them they need to create it using the create reference assistant.
+
+    If it is provided, assign the reference in the Application Dictionary instead of using a fixed data type.
+
+4️⃣ Create the necessary columns
+▪️ If the column is of type YesNo, add:
+CHECK (column_name IN ('Y', 'N'))
+
+🔹 Special Cases
+
+🟢 Case 1: Add a column of type "List"
+
+    If the user requests a "List" type column, a ReferenceId must be provided.
+
+    If ReferenceId is empty or not provided, stop the process and return an error.
+
+    The column must be linked to the AD reference, not just defined as character varying(60).
+
+✅ Example of a successful request:
+
+{
+  "TableName": "employee_record",
+  "ColumnName": "employment_type",
+  "ColumnType": "List",
+  "DefaultValue": "Full-time",
+  "CanBeNull": "false",
+  "IsExternal": "false",
+  "ExternalModulePrefix": "HR",
+  "ReferenceId": "1000100"
+}
+
+✅ Expected result:
+
+    The column employment_type is added to the employee_record table.
+
+    The reference with ID "1000100" is assigned in the AD.
+
+🟢 Case 2: Add a column of type "YesNo"
+
+    If the user requests a column of type "YesNo", it must:
+
+        Always be NOT NULL
+
+        Have a default value ('N' if none is specified)
+
+        Include a CHECK constraint that allows only 'Y' or 'N'
+
+✅ Example of a successful request:
+
+{
+  "TableName": "employee_record",
+  "ColumnName": "is_active",
+  "ColumnType": "YesNo",
+  "DefaultValue": "Y",
+  "CanBeNull": "false",
+  "IsExternal": "false",
+  "ExternalModulePrefix": "HR"
+}
+
+✅ Expected result:
+
+The column is_active is added as:
+character(1) NOT NULL DEFAULT 'Y' CHECK (is_active IN ('Y', 'N'))
+
+🟢 Case 3: Add a column of type "String", "Integer", or "DateTime"
+
+For these data types, make sure that:
+
+    The data type is valid in the database.
+
+    If CanBeNull = false, include NOT NULL.
+
+    If a DefaultValue is provided, include it in the SQL statement.
+
+✅ Example of a successful request:
+
+{
+  "TableName": "employee_record",
+  "ColumnName": "employee_name",
+  "ColumnType": "String",
+  "DefaultValue": "John Doe",
+  "CanBeNull": "true",
+  "IsExternal": "false",
+  "ExternalModulePrefix": "HR"
+}
+
+✅ Expected result:
+
+The column employee_name is added as:
+character varying(200) DEFAULT 'John Doe'
+
+🚀 Summary
+
+✅ The assistant must add columns using the correct data type
+✅ "List" type columns must be properly linked to a reference in the AD
+✅ "YesNo" type columns must be NOT NULL with a CHECK constraint
+✅ The table must be validated before performing any modification]]></DESCRIPTION>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53--></ETAPI_OPENAPI_REQ>
 
 <!--E414E8EC14014FF7BCEAFE5B357E4769--><ETAPI_OPENAPI_REQ>
 <!--E414E8EC14014FF7BCEAFE5B357E4769-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[E414E8EC14014FF7BCEAFE5B357E4769]]></ETAPI_OPENAPI_REQ_ID>
