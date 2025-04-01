@@ -125,7 +125,7 @@ Step 3: Using the Write File Tool save the generated file on the requested path,
 You must search on your indexed code class examples that extends of EntityPersistenceEventObserver.
 If you have not indexed code, ask to the user for a path where search.
 Before you give the answer to the user, use the Read File Tool to check if the file was correctly generated on the solicited path.]]></PROMPT>
-<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--363C0AB2AB7B4865A86FD5743EB17A3D-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -871,7 +871,7 @@ If you receive only the javapackage of the translation module add the follow for
 @source.path@/modules/<JAVAPACKAGE.OF.TRANSLATION.MODULE>
 
 ]]></PROMPT>
-<!--4BF7405265D84009BA19F0D95875E4FF-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--4BF7405265D84009BA19F0D95875E4FF-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--4BF7405265D84009BA19F0D95875E4FF-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -909,7 +909,7 @@ Here are the requirements:
 
 - Change variable names
 - Change or add the present documentation.]]></PROMPT>
-<!--531DB139EB364DBE81A862F97A708C03-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--531DB139EB364DBE81A862F97A708C03-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--531DB139EB364DBE81A862F97A708C03-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--531DB139EB364DBE81A862F97A708C03-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--531DB139EB364DBE81A862F97A708C03-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -1267,7 +1267,7 @@ If you creates a new organization, after the confirmation of the successfull cre
 If some initializations fails, indicates to the user to check if is in the correct User and Organization. If The user is "System Administrator" Only can create new Clients. If the user is the Client Admin, only can create new Organizations.
 
 The host and the current user credentials must be infer from the context.]]></PROMPT>
-<!--64E0B62861DC4C279D36CF61811FB8E4-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--64E0B62861DC4C279D36CF61811FB8E4-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--64E0B62861DC4C279D36CF61811FB8E4-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--64E0B62861DC4C279D36CF61811FB8E4-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--64E0B62861DC4C279D36CF61811FB8E4-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -1429,7 +1429,7 @@ Additional instructions:
 
 Using the provided path, save the generated or modified report using the appropriate tool. In the end, respond: "Your report has been successfully generated."
 ]]></PROMPT>
-<!--69C9474B0F4E4B378B3A30529CE7D87C-->  <APPTYPE><![CDATA[openai-assistant]]></APPTYPE>
+<!--69C9474B0F4E4B378B3A30529CE7D87C-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <RETRIEVAL><![CDATA[Y]]></RETRIEVAL>
 <!--69C9474B0F4E4B378B3A30529CE7D87C-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -1458,7 +1458,7 @@ Take into account the following tips:
 - The section after the prefix must be Camel-case, but the prefix in uppercase.
 - After creation, you must say that the AD_message can be used in Java with:  OBMessageUtils.messageBD("MESSAGE_SEARCH_KEY")
 - If the user provides a code fragment when the message is parametriced, you can suggest add %s to parametriced text and return the code fragment to use, using String.format]]></PROMPT>
-<!--6D896AE1470C4CF9957B6B6914D37090-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--6D896AE1470C4CF9957B6B6914D37090-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--6D896AE1470C4CF9957B6B6914D37090-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -1557,7 +1557,7 @@ Examples of queries you might receive:
 - "Give me a summary of the PaymentService class."
 
 Your goal is to assist with speed and accuracy in development tasks related to Etendo's code.]]></PROMPT>
-<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--8D2CC9DCDFC34D0A99BA26893238EB0B-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -1660,7 +1660,7 @@ Step 2: Generate the process structure.
 Step 3: use the Write File Tool to save the file on the solicited path (At this point you can create a new file or update an existing file with the previous data, name and searchkey).
 Step 4: Read with the API Call Tool, the OpenAPI specification of the request to execute the WebHook to register the background process.
 Step 5: Execute the WebHook of RegisterBGProcessWebHook, with its corresponding Body to be able to register the process in Background in Etendo.]]></PROMPT>
-<!--9EE3552B4E9B4561A0BDAF241C484285-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--9EE3552B4E9B4561A0BDAF241C484285-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--9EE3552B4E9B4561A0BDAF241C484285-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -1835,7 +1835,7 @@ and the RegisterNewWebhook command is executed with the parameters:
 
 Before you give the answer to the user, use the Read File Tool to check if the file was correctly generated on the solicited path.
 ]]></PROMPT>
-<!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--D68C9AC5FD5B4E8D81DCF6B2FAB5D68F-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -2767,7 +2767,7 @@ Below is an example of how the assistant should proceed through each step, inclu
 	5.	Problem-solving persistence: Strive to solve each problem as thoroughly as possible. If you encounter issues, troubleshoot and attempt solutions to overcome them.
 
 Your goal is to solve each task independently and efficiently, leveraging Python, Bash, Docker, and file-handling capabilities.]]></PROMPT>
-<!--F785A182187442D3A57BFA5A8883AB85-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--F785A182187442D3A57BFA5A8883AB85-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--F785A182187442D3A57BFA5A8883AB85-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--F785A182187442D3A57BFA5A8883AB85-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -2838,7 +2838,7 @@ After creating the button class, register the process using the webhook ProcessD
 
     Completion:
         Once the process is registered, you must confirm the successful completion by saying: "Your process definition has been saved successfully."]]></PROMPT>
-<!--FCC50642FDD24002AEE45C26A91E5253-->  <APPTYPE><![CDATA[langchain]]></APPTYPE>
+<!--FCC50642FDD24002AEE45C26A91E5253-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--FCC50642FDD24002AEE45C26A91E5253-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--FCC50642FDD24002AEE45C26A91E5253-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
 <!--FCC50642FDD24002AEE45C26A91E5253-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
