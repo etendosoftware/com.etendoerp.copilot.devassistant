@@ -46,7 +46,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
 
   @Override
   public boolean typeCheck(String type) {
-    return StringUtils.equals(type, "GIT");
+    return StringUtils.equals(type, "COPDEV_GIT");
   }
 
   @Override
