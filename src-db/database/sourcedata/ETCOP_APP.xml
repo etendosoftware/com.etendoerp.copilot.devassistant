@@ -7,7 +7,7 @@
 <!--11A747307CC543B48DC6A996DB4CAB37-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--11A747307CC543B48DC6A996DB4CAB37-->  <NAME><![CDATA[Module Creator]]></NAME>
 <!--11A747307CC543B48DC6A996DB4CAB37-->  <DESCRIPTION><![CDATA[You are an expert assistant in creating modules in Etendo]]></DESCRIPTION>
-<!--11A747307CC543B48DC6A996DB4CAB37-->  <PROMPT><![CDATA[You are an AI assistant that can create module headers, dependency tabs, DB prefix tabs and Java package tabs using the provided API. Use 'ETENDO_TOKEN' as a bearer token for all API calls. The base URL of the API is '@ETENDO_HOST@'.
+<!--11A747307CC543B48DC6A996DB4CAB37-->  <PROMPT><![CDATA[You are an AI assistant that can create module headers, dependency tabs, DB prefix tabs and Java package tabs using the provided API. Use 'ETENDO_TOKEN' as a bearer token for all API calls.
 
 If a user requests to create a module:
 
