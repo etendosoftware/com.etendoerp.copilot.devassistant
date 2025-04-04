@@ -117,7 +117,7 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--45CB49C406C444EC870F03F85E171DF5-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <NAME><![CDATA[ReferencesHeader]]></NAME>
-<!--45CB49C406C444EC870F03F85E171DF5-->  <DESCRIPTION><![CDATA[Create the heading of a reference. If the reference is of the type of list, parentreference established in "17" if it is of TYP table, configure it in "18". When creating the body of the application, in "Module_ID" use the ID obtained from the module with that prefix, you should not use the prefix. Only identification. For example, if the prefix is ​​"Copdev" and the ID is "D18B2E6830F84C3DAD445AB026623B99" Then the references will be sent something like: {"module_id": "d18b2e6830f84c3dad445ab026623b99", "name": "Product Reference "," Parentreference ":" 18 "," Description ":" Reference for Products Using M_Product_id as Key and Value as Display Column. "," Helpcomment ":" This reference links to the m_product Table Using m_product}]]></DESCRIPTION>
+<!--45CB49C406C444EC870F03F85E171DF5-->  <DESCRIPTION><![CDATA[Create the header of a reference. If the reference is of the type of list, parentReference established in "17" if it is of type table, configure it in "18". When creating the body of the application, in "module" use the ID obtained from the module with that prefix, you should not use the prefix. Only identification. For example, if the prefix is ​​"COPDEV" and the ID is "D18B2E6830F84C3DAD445AB026623B99" Then the references will be sent something like: {"module": "D18B2E6830F84C3DAD445AB026623B99", "name": "Product Reference ","parentReference":" 18","description":" Reference for Products Using M_Product_id as Key and Value as Display Column. ","helpComment":" This reference links to the m_product Table Using m_product}]]></DESCRIPTION>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--45CB49C406C444EC870F03F85E171DF5--></ETAPI_OPENAPI_REQ>
@@ -172,7 +172,13 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--6918609B8D4B47508A47267751CC5E3D-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <NAME><![CDATA[ViewColumn]]></NAME>
-<!--6918609B8D4B47508A47267751CC5E3D-->  <DESCRIPTION><![CDATA[You need to search for columns related to a table using table_id and the name passed to you by the user. You need to search using only "table" and the "name", otherwise you will not find the columns. You need to return 200 columns from that table that have approximately the same name as the one submitted by the user. IMPORTANT! When using "_endRow" in endpoints, always set the value to "200". Example request: {"q": "table"FF80818132D7FB620132D8129D1A0028", "_startRow": "0", "_endRow": "200"}. When you build the query in the "viewcolumn" endpoint, use the "table" property. Save the ID of the found columns.]]></DESCRIPTION>
+<!--6918609B8D4B47508A47267751CC5E3D-->  <DESCRIPTION><![CDATA[You need to search for columns related to a table using table_id and the name passed to you by the user. You need to search using only "table" and the "name", otherwise you will not find the columns. You need to return 200 columns from that table that have approximately the same name as the one submitted by the user. IMPORTANT! When using "_endRow" in endpoints, always set the value to "200". Example request: 
+?q=table=='ID'&_startRow=0&_endRow=200
+Other example is by name 
+?q=name=ic='NAME'&_startRow=0&_endRow=200
+
+When you build the query in the "viewcolumn" endpoint, use the "table" property. Save the ID of the found columns.
+When you setting the reference in a column. If the reference is base, his ID must be in the reference of Column. But if the reference is not base, must be in the "referenceSearchKey" propertie, and the parent ID of the reference, must be in the "reference" property column.]]></DESCRIPTION>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--6918609B8D4B47508A47267751CC5E3D--></ETAPI_OPENAPI_REQ>
