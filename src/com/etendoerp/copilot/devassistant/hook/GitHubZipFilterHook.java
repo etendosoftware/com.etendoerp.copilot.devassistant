@@ -1,12 +1,36 @@
 package com.etendoerp.copilot.devassistant.hook;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.net.URL;
-import java.nio.file.*;
+
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileSystems;
+
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -56,131 +80,230 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     Set<Path> filesToZip = new HashSet<>();
 
     try {
-      OBCriteria<KnowledgePathFile> pathCriteria = OBDal.getInstance().createCriteria(KnowledgePathFile.class);
-      pathCriteria.add(Restrictions.eq(KnowledgePathFile.PROPERTY_FILE, hookObject));
-      pathCriteria.add(Restrictions.isNotNull(KnowledgePathFile.PROPERTY_PATHFILE));
+      // 1. Fetch the paths from the Path Files subtab
+      List<KnowledgePathFile> pathFiles = fetchPathFiles(hookObject);
 
-      List<KnowledgePathFile> pathFiles = pathCriteria.list();
-      if (pathFiles.isEmpty()) {
-        throw new OBException("No GitHub repository path found in Path Files subtab for CopilotFile ID " + hookObject.getId());
-      }
-
+      // 2. Process each path
       for (KnowledgePathFile pathFile : pathFiles) {
-        String repoPath = pathFile.getPathFile();
-        if (StringUtils.isBlank(repoPath)) {
-          log.warn("Empty Path File found for CopilotFile ID {}. Skipping.", hookObject.getId());
-          continue;
-        }
-
-        log.info("Processing Path File: {}", repoPath);
-
-        if (!repoPath.startsWith("/")) {
-          throw new OBException("Path File must start with '/', got: " + repoPath);
-        }
-
-        Matcher matcher = OWNER_REPO_PATTERN.matcher(repoPath);
-        if (!matcher.find()) {
-          throw new OBException("Invalid Path File format. Expected format: /owner/repo-name/tree/branch/subpath, got: " + repoPath);
-        }
-
-        String owner = matcher.group(1);
-        String repoName = matcher.group(2);
-        String branch = matcher.group(3);
-        String subPathWithExtension = repoPath.substring(matcher.end());
-
-        Matcher extMatcher = EXTENSION_PATTERN.matcher(subPathWithExtension);
-        String fileExtension = "*";
-        if (extMatcher.find()) {
-          fileExtension = extMatcher.group(1);
-          subPathWithExtension = subPathWithExtension.substring(0, subPathWithExtension.length() - (fileExtension.length() + 1));
-        }
-
-        String repoUrl = GITHUB_BASE_URL + "/" + owner + "/" + repoName;
-        log.info("Constructed GitHub repository URL: {}", repoUrl);
-        log.info("Owner: {}", owner);
-        log.info("Branch: {}", branch);
-        log.info("Subpath to filter files: {}", subPathWithExtension);
-        log.info("File extension to filter: {}", fileExtension);
-
-        File zipFile = downloadGitHubZip(repoUrl, branch);
-        log.info("Downloaded ZIP file: {}", zipFile.getAbsolutePath());
-
-        File extractedDir = unzipToTempDirectory(zipFile);
-        log.info("Extracted repository to: {}", extractedDir.getAbsolutePath());
-
-        log.info("Listing all files in extracted directory: {}", extractedDir.getAbsolutePath());
-        Files.walkFileTree(extractedDir.toPath(), new SimpleFileVisitor<Path>() {
-          @Override
-          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            log.info("File: {}", extractedDir.toPath().relativize(file));
-            return FileVisitResult.CONTINUE;
-          }
-
-          @Override
-          public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-            log.info("Directory: {}\n", extractedDir.toPath().relativize(dir));
-            return FileVisitResult.CONTINUE;
-          }
-        });
-
-        extractedPaths.add(extractedDir.toPath());
-
-        if (!zipFile.delete()) {
-          log.warn("Could not delete temporary ZIP file: {}", zipFile.getAbsolutePath());
-        }
-
-        collectFiles(extractedDir.toPath(), subPathWithExtension, branch, fileExtension, filesToZip);
+        processPathFile(pathFile, extractedPaths, filesToZip);
       }
 
+      // 3. Check if any files were found
       if (filesToZip.isEmpty()) {
-        throw new OBException("No files found for CopilotFile ID " + hookObject.getId() + " across all specified paths.");
+        throw new OBException(OBMessageUtils.messageBD("COPDEV_NoFilesFound"));
       }
 
+      // 4. Create and attach the ZIP
       Path basePath = extractedPaths.get(0);
       finalZip = createZip(filesToZip, basePath);
       log.info("Created filtered ZIP file: {}", finalZip.getAbsolutePath());
 
-      AttachImplementationManager aim = WeldUtils.getInstanceFromStaticBeanManager(AttachImplementationManager.class);
-      removeAttachment(aim, hookObject);
-
-      aim.upload(new HashMap<>(), COPILOT_FILE_TAB_ID, hookObject.getId(), hookObject.getOrganization().getId(), finalZip);
-      log.info("Successfully attached ZIP file to CopilotFile ID: {}", hookObject.getId());
+      attachZipFile(hookObject, finalZip);
 
     } catch (Exception e) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ErrorAttachingFile")), e);
     } finally {
-      if (finalZip != null && finalZip.exists()) {
-        if (!finalZip.delete()) {
-          log.warn("Could not delete temporary ZIP file: {}", finalZip.getAbsolutePath());
+      cleanup(finalZip, extractedPaths);
+    }
+  }
+
+  /**
+   * Fetches the list of KnowledgePathFile records associated with the given CopilotFile.
+   * @param hookObject The CopilotFile to fetch paths for.
+   * @return A list of KnowledgePathFile records.
+   * @throws OBException If no paths are found.
+   */
+  private List<KnowledgePathFile> fetchPathFiles(CopilotFile hookObject) {
+    OBCriteria<KnowledgePathFile> pathCriteria = OBDal.getInstance().createCriteria(KnowledgePathFile.class);
+    pathCriteria.add(Restrictions.eq(KnowledgePathFile.PROPERTY_FILE, hookObject));
+    pathCriteria.add(Restrictions.isNotNull(KnowledgePathFile.PROPERTY_PATHFILE));
+
+    List<KnowledgePathFile> pathFiles = pathCriteria.list();
+    if (pathFiles.isEmpty()) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_NoGitHubPathFound"));
+    }
+    return pathFiles;
+  }
+
+  /**
+   * Processes a single KnowledgePathFile by downloading, extracting, and filtering files from the specified GitHub repository.
+   * @param pathFile The KnowledgePathFile to process.
+   * @param extractedPaths A list to store the paths of extracted directories.
+   * @param filesToZip A set to store the paths of files to be included in the final ZIP.
+   * @throws IOException If an I/O error occurs during processing.
+   */
+  private void processPathFile(KnowledgePathFile pathFile, List<Path> extractedPaths, Set<Path> filesToZip) throws IOException {
+    String repoPath = pathFile.getPathFile();
+    if (StringUtils.isBlank(repoPath)) {
+      log.warn("Empty Path File found for CopilotFile ID {}. Skipping.", pathFile.getFile().getId());
+      return;
+    }
+
+    log.info("Processing Path File: {}", repoPath);
+
+    // Validate and parse the relative path
+    validatePathFile(repoPath);
+
+    // Extract repository information
+    Matcher matcher = OWNER_REPO_PATTERN.matcher(repoPath);
+    matcher.find(); // Already validated that it matches
+    String owner = matcher.group(1);
+    String repoName = matcher.group(2);
+    String branch = matcher.group(3);
+
+    // Extract the subpath, ensuring repoPath is not null (already validated)
+    String subPathWithExtension = repoPath.substring(matcher.end());
+
+    // Extract the file extension from the subpath
+    String fileExtension = extractFileExtension(subPathWithExtension);
+    if (!StringUtils.equals(fileExtension, "*")) {
+      // Ensure subPathWithExtension and fileExtension are not null before substring
+      if (StringUtils.isNotBlank(subPathWithExtension) && StringUtils.isNotBlank(fileExtension)) {
+        int extensionLength = fileExtension.length() + 1; // +1 for the dot
+        int endIndex = subPathWithExtension.length() - extensionLength;
+        if (endIndex > 0) {
+          subPathWithExtension = subPathWithExtension.substring(0, endIndex);
         }
       }
-      for (Path extractedPath : extractedPaths) {
-        try {
-          Files.walkFileTree(extractedPath, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-              Files.delete(file);
-              return FileVisitResult.CONTINUE;
-            }
+    }
 
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-              Files.delete(dir);
-              return FileVisitResult.CONTINUE;
-            }
-          });
-        } catch (IOException e) {
-          log.warn("Could not delete temporary directory: {}", extractedPath, e);
-        }
+    // Construct the repository URL
+    String repoUrl = GITHUB_BASE_URL + "/" + owner + "/" + repoName;
+    log.info("Constructed GitHub repository URL: {}", repoUrl);
+    log.info("Owner: {}", owner);
+    log.info("Branch: {}", branch);
+    log.info("Subpath to filter files: {}", subPathWithExtension);
+    log.info("File extension to filter: {}", fileExtension);
+
+    // Download and extract the repository
+    File zipFile = downloadGitHubZip(repoUrl, branch);
+    log.info("Downloaded ZIP file: {}", zipFile.getAbsolutePath());
+
+    File extractedDir = unzipToTempDirectory(zipFile);
+    log.info("Extracted repository to: {}", extractedDir.getAbsolutePath());
+
+    // List all files in the extracted directory
+    log.info("Listing all files in extracted directory: {}", extractedDir.getAbsolutePath());
+    Files.walkFileTree(extractedDir.toPath(), new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        log.info("File: {}", extractedDir.toPath().relativize(file));
+        return FileVisitResult.CONTINUE;
+      }
+
+      @Override
+      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        log.info("Directory: {}\n", extractedDir.toPath().relativize(dir));
+        return FileVisitResult.CONTINUE;
+      }
+    });
+
+    extractedPaths.add(extractedDir.toPath());
+
+    // Delete the temporary ZIP file using Files.delete
+    try {
+      Files.delete(zipFile.toPath());
+    } catch (IOException e) {
+      log.warn("Could not delete temporary ZIP file: {}. Reason: {}", zipFile.getAbsolutePath(), e.getMessage());
+    }
+
+    // Filter files within the subpath
+    collectFiles(extractedDir.toPath(), subPathWithExtension, fileExtension, filesToZip);
+  }
+
+  /**
+   * Validates the format of the Path File.
+   * @param repoPath The path to validate.
+   * @throws OBException If the path format is invalid.
+   */
+  private void validatePathFile(String repoPath) {
+    // Use StringUtils for null-safe string operation
+    if (!StringUtils.startsWith(repoPath, "/")) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_InvalidPathFileFormat"));
+    }
+
+    Matcher matcher = OWNER_REPO_PATTERN.matcher(repoPath);
+    if (!matcher.find()) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_InvalidPathFileFormat"));
+    }
+  }
+
+  /**
+   * Extracts the file extension from the subpath.
+   * @param subPathWithExtension The subpath that may include an extension.
+   * @return The extracted file extension, or "*" if none is found.
+   */
+  private String extractFileExtension(String subPathWithExtension) {
+    Matcher extMatcher = EXTENSION_PATTERN.matcher(StringUtils.defaultString(subPathWithExtension));
+    String fileExtension = "*";
+    if (extMatcher.find()) {
+      fileExtension = extMatcher.group(1);
+    }
+    return fileExtension;
+  }
+
+  /**
+   * Attaches the filtered ZIP file to the CopilotFile record.
+   * @param hookObject The CopilotFile to attach the ZIP to.
+   * @param finalZip The ZIP file to attach.
+   */
+  private void attachZipFile(CopilotFile hookObject, File finalZip) {
+    AttachImplementationManager aim = WeldUtils.getInstanceFromStaticBeanManager(AttachImplementationManager.class);
+    removeAttachment(aim, hookObject);
+
+    aim.upload(new HashMap<>(), COPILOT_FILE_TAB_ID, hookObject.getId(), hookObject.getOrganization().getId(), finalZip);
+    log.info("Successfully attached ZIP file to CopilotFile ID: {}", hookObject.getId());
+  }
+
+  /**
+   * Cleans up temporary files and directories.
+   * @param finalZip The final ZIP file to delete.
+   * @param extractedPaths The list of extracted directories to delete.
+   */
+  private void cleanup(File finalZip, List<Path> extractedPaths) {
+    // Delete the final ZIP file if it exists
+    if (finalZip != null && finalZip.exists()) {
+      try {
+        Files.delete(finalZip.toPath());
+      } catch (IOException e) {
+        log.warn("Could not delete temporary ZIP file: {}. Reason: {}", finalZip.getAbsolutePath(), e.getMessage());
+      }
+    }
+
+    // Delete extracted directories
+    for (Path extractedPath : extractedPaths) {
+      try {
+        Files.walkFileTree(extractedPath, new SimpleFileVisitor<Path>() {
+          @Override
+          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            Files.delete(file);
+            return FileVisitResult.CONTINUE;
+          }
+
+          @Override
+          public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            Files.delete(dir);
+            return FileVisitResult.CONTINUE;
+          }
+        });
+      } catch (IOException e) {
+        log.warn("Could not delete temporary directory: {}. Reason: {}", extractedPath, e.getMessage());
       }
     }
   }
 
+  /**
+   * Downloads a ZIP file from a GitHub repository.
+   * @param repoUrl The URL of the repository.
+   * @param branch The branch to download.
+   * @return The downloaded ZIP file.
+   * @throws IOException If an I/O error occurs during the download.
+   */
   private File downloadGitHubZip(String repoUrl, String branch) throws IOException {
     if (StringUtils.isBlank(repoUrl) || StringUtils.isBlank(branch)) {
       throw new IllegalArgumentException("Repository URL and branch cannot be empty");
     }
-    String zipUrl = repoUrl.endsWith("/") ? repoUrl + "archive/refs/heads/" + branch + ".zip" : repoUrl + "/archive/refs/heads/" + branch + ".zip";
+    String zipUrl = StringUtils.endsWith(repoUrl, "/") ? repoUrl + "archive/refs/heads/" + branch + ".zip" : repoUrl + "/archive/refs/heads/" + branch + ".zip";
     log.info("Downloading ZIP from: {}", zipUrl);
     File tempZip = File.createTempFile("githubRepo", ".zip");
     try (InputStream in = new URL(zipUrl).openStream()) {
@@ -191,6 +314,12 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     return tempZip;
   }
 
+  /**
+   * Unzips a ZIP file to a temporary directory.
+   * @param zipFile The ZIP file to unzip.
+   * @return The directory where the ZIP was extracted.
+   * @throws IOException If an I/O error occurs during extraction.
+   */
   private File unzipToTempDirectory(File zipFile) throws IOException {
     Path tempDir = Files.createTempDirectory("unzippedRepo");
     try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
@@ -208,7 +337,15 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     return tempDir.toFile();
   }
 
-  private void collectFiles(Path basePath, String subPath, String branch, String fileExtension, Set<Path> filesToZip) throws IOException {
+  /**
+   * Collects files from the extracted repository that match the specified subpath and extension.
+   * @param basePath The base path of the extracted repository.
+   * @param subPath The subpath to filter files.
+   * @param fileExtension The file extension to filter.
+   * @param filesToZip A set to store the paths of files to be included in the final ZIP.
+   * @throws IOException If an I/O error occurs during file collection.
+   */
+  private void collectFiles(Path basePath, String subPath, String fileExtension, Set<Path> filesToZip) throws IOException {
     if (StringUtils.isBlank(subPath)) {
       log.warn("Subpath is empty, cannot filter files");
       return;
@@ -230,7 +367,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     log.info("Repository directory prefix: {}", repoDirPrefix);
 
     String globPattern = repoDirPrefix + "/" + subPath;
-    if (!fileExtension.equals("*")) {
+    if (!StringUtils.equals(fileExtension, "*")) {
       globPattern += "." + fileExtension;
     }
     log.info("Filtering files with glob pattern: {}", globPattern);
@@ -261,6 +398,11 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     }
   }
 
+  /**
+   * Checks if a file should be ignored based on predefined ignore strings.
+   * @param path The path of the file to check.
+   * @return True if the file should not be ignored, false otherwise.
+   */
   private boolean checkIgnoredFiles(String path) {
     for (String ignore : IGNORE_STRINGS) {
       if (StringUtils.containsIgnoreCase(path, ignore)) {
@@ -271,6 +413,13 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     return true;
   }
 
+  /**
+   * Creates a ZIP file containing the filtered files.
+   * @param files The set of files to include in the ZIP.
+   * @param basePath The base path for relativizing file paths.
+   * @return The created ZIP file.
+   * @throws IOException If an I/O error occurs during ZIP creation.
+   */
   private File createZip(Set<Path> files, Path basePath) throws IOException {
     Path tempDir = Files.createTempDirectory("filteredZip");
     File zipFile = File.createTempFile("filtered", ".zip", tempDir.toFile());
@@ -285,6 +434,11 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     return zipFile;
   }
 
+  /**
+   * Removes any existing attachment from the CopilotFile.
+   * @param aim The AttachImplementationManager to use.
+   * @param hookObject The CopilotFile to remove the attachment from.
+   */
   private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
     Attachment attachment = getAttachment(hookObject);
     if (attachment != null) {
@@ -292,6 +446,13 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     }
   }
 
+  /**
+   * Retrieves the attachment associated with the specified CopilotFile record.
+   * This method queries the database to find an attachment linked to the given CopilotFile,
+   * ensuring it matches the correct table and record ID, and is not the same as the target instance ID.
+   * @param targetInstance The CopilotFile instance to retrieve the attachment for.
+   * @return The Attachment object associated with the CopilotFile, or null if no attachment is found.
+   */
   public static Attachment getAttachment(CopilotFile targetInstance) {
     OBCriteria<Attachment> attchCriteria = OBDal.getInstance().createCriteria(Attachment.class);
     attchCriteria.add(Restrictions.eq(Attachment.PROPERTY_RECORD, targetInstance.getId()));
