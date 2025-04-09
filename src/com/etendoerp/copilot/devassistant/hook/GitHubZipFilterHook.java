@@ -96,7 +96,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
       // 4. Create and attach the ZIP
       Path basePath = extractedPaths.get(0);
       finalZip = createZip(filesToZip, basePath);
-      log.info("Created filtered ZIP file: {}", finalZip.getAbsolutePath());
+      log.debug("Created filtered ZIP file: {}", finalZip.getAbsolutePath());
 
       attachZipFile(hookObject, finalZip);
 
@@ -139,7 +139,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
       return;
     }
 
-    log.info("Processing Path File: {}", repoPath);
+    log.debug("Processing Path File: {}", repoPath);
 
     // Validate and parse the relative path
     validatePathFile(repoPath);
@@ -169,11 +169,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
 
     // Construct the repository URL
     String repoUrl = GITHUB_BASE_URL + "/" + owner + "/" + repoName;
-    log.info("Constructed GitHub repository URL: {}", repoUrl);
-    log.info("Owner: {}", owner);
-    log.info("Branch: {}", branch);
-    log.info("Subpath to filter files: {}", subPathWithExtension);
-    log.info("File extension to filter: {}", fileExtension);
+    log.debug("Constructed GitHub repository URL: {}", repoUrl);
 
     // Download and extract the repository
     File zipFile = downloadGitHubZip(repoUrl, branch);
@@ -183,17 +179,17 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     log.info("Extracted repository to: {}", extractedDir.getAbsolutePath());
 
     // List all files in the extracted directory
-    log.info("Listing all files in extracted directory: {}", extractedDir.getAbsolutePath());
+    log.debug("Listing all files in extracted directory: {}", extractedDir.getAbsolutePath());
     Files.walkFileTree(extractedDir.toPath(), new SimpleFileVisitor<Path>() {
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        log.info("File: {}", extractedDir.toPath().relativize(file));
+        log.debug("File: {}", extractedDir.toPath().relativize(file));
         return FileVisitResult.CONTINUE;
       }
 
       @Override
       public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-        log.info("Directory: {}\n", extractedDir.toPath().relativize(dir));
+        log.debug("Directory: {}\n", extractedDir.toPath().relativize(dir));
         return FileVisitResult.CONTINUE;
       }
     });
@@ -304,12 +300,14 @@ public class GitHubZipFilterHook implements CopilotFileHook {
       throw new IllegalArgumentException("Repository URL and branch cannot be empty");
     }
     String zipUrl = StringUtils.endsWith(repoUrl, "/") ? repoUrl + "archive/refs/heads/" + branch + ".zip" : repoUrl + "/archive/refs/heads/" + branch + ".zip";
-    log.info("Downloading ZIP from: {}", zipUrl);
+    log.debug("Downloading ZIP from: {}", zipUrl);
     File tempZip = File.createTempFile("githubRepo", ".zip");
     try (InputStream in = new URL(zipUrl).openStream()) {
       Files.copy(in, tempZip.toPath(), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-      throw new IOException("Failed to download ZIP from " + zipUrl, e);
+      String errorMessage = OBMessageUtils.messageBD("COPDEV_FailedToDownloadZip");
+      errorMessage = String.format(errorMessage, zipUrl, repoUrl, branch, e.getMessage());
+      throw new IOException(errorMessage, e);
     }
     return tempZip;
   }
@@ -325,7 +323,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
       ZipEntry entry;
       while ((entry = zis.getNextEntry()) != null) {
-        log.info("Extracting entry: {}", entry.getName());
+        log.debug("Extracting entry: {}", entry.getName());
         Path filePath = tempDir.resolve(entry.getName());
         if (!entry.isDirectory()) {
           Files.createDirectories(filePath.getParent());
@@ -364,13 +362,13 @@ public class GitHubZipFilterHook implements CopilotFileHook {
       }
     }
 
-    log.info("Repository directory prefix: {}", repoDirPrefix);
+    log.debug("Repository directory prefix: {}", repoDirPrefix);
 
     String globPattern = repoDirPrefix + "/" + subPath;
     if (!StringUtils.equals(fileExtension, "*")) {
       globPattern += "." + fileExtension;
     }
-    log.info("Filtering files with glob pattern: {}", globPattern);
+    log.debug("Filtering files with glob pattern: {}", globPattern);
 
     try {
       PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
@@ -378,14 +376,14 @@ public class GitHubZipFilterHook implements CopilotFileHook {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
           Path relPath = basePath.relativize(file);
-          log.info("Checking file: {}", relPath);
+          log.debug("Checking file: {}", relPath);
           boolean matchesPattern = matcher.matches(relPath);
-          log.info("File {} matches pattern: {}", relPath, matchesPattern);
+          log.debug("File {} matches pattern: {}", relPath, matchesPattern);
           boolean notIgnored = checkIgnoredFiles(file.toString());
-          log.info("File {} is not ignored: {}", relPath, notIgnored);
+          log.debug("File {} is not ignored: {}", relPath, notIgnored);
           if (matchesPattern && notIgnored) {
             filesToZip.add(file);
-            log.info("Found file: {}", file.toString());
+            log.debug("Found file: {}", file.toString());
           } else {
             log.debug("File {} does not match pattern or is ignored", relPath);
           }
