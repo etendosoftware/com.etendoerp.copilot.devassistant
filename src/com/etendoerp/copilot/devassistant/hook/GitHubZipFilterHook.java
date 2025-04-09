@@ -152,19 +152,17 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     String branch = matcher.group(3);
 
     // Extract the subpath, ensuring repoPath is not null (already validated)
-    String subPathWithExtension = repoPath.substring(matcher.end());
+    String subPathWithExtension = StringUtils.substring(repoPath, matcher.end());
 
     // Extract the file extension from the subpath
     String fileExtension = extractFileExtension(subPathWithExtension);
-    if (!StringUtils.equals(fileExtension, "*")) {
-      // Ensure subPathWithExtension and fileExtension are not null before substring
-      if (StringUtils.isNotBlank(subPathWithExtension) && StringUtils.isNotBlank(fileExtension)) {
-        int extensionLength = fileExtension.length() + 1; // +1 for the dot
-        int endIndex = subPathWithExtension.length() - extensionLength;
-        if (endIndex > 0) {
-          subPathWithExtension = subPathWithExtension.substring(0, endIndex);
-        }
+    if (!StringUtils.equals(fileExtension, "*") && StringUtils.isNotBlank(subPathWithExtension) && StringUtils.isNotBlank(fileExtension)) {
+      int extensionLength = fileExtension.length() + 1; // +1 for the dot
+      int endIndex = subPathWithExtension.length() - extensionLength;
+      if (endIndex <= 0) {
+        return;
       }
+      subPathWithExtension = StringUtils.substring(subPathWithExtension, 0, endIndex);
     }
 
     // Construct the repository URL
