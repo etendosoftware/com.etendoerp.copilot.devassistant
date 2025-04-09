@@ -1,10 +1,7 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
-import static com.etendoerp.copilot.devassistant.webhooks.AddColumn.validateIfExternalNeeded;
-import static com.etendoerp.copilot.util.OpenAIUtils.logIfDebug;
+import static com.etendoerp.copilot.devassistant.webhooks.CreateColumn.validateIfExternalNeeded;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.exception.OBException;
-import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Table;
 
@@ -100,8 +96,8 @@ public class AddForeign extends BaseWebhookService {
 
 
       // Add the new column to the child table
-      JSONObject resp = AddColumn.addColumn(prefix, childTable, columnName, "ID", "", canBeNull,
-          externalBool);
+      JSONObject resp = CreateColumn.addColumn(prefix, childTable, columnName, null, "", canBeNull
+      );
 
       // Generate the foreign key constraint name
       String constraintFk = CreateTable.getConstName(prefix, childTable, parentTable, "fk");
@@ -109,7 +105,7 @@ public class AddForeign extends BaseWebhookService {
       // Register the columns for the child table
       RegisterColumns.registerColumns(childTable);
 
-    responseVars.put("response", resp.toString());
+      responseVars.put("response", resp.toString());
     } catch (Exception e) {
       // Handle errors and add error message to response
       responseVars.put("error", e.getMessage());
