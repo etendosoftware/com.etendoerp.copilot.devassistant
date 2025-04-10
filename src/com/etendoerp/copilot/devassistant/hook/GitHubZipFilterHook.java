@@ -295,7 +295,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
    */
   private File downloadGitHubZip(String repoUrl, String branch) throws IOException {
     if (StringUtils.isBlank(repoUrl) || StringUtils.isBlank(branch)) {
-      throw new IllegalArgumentException("Repository URL and branch cannot be empty");
+      throw new IllegalArgumentException(OBMessageUtils.messageBD("COPDEV_EmptyRepoUrlOrBranch"));
     }
     String zipUrl = StringUtils.endsWith(repoUrl, "/") ? repoUrl + "archive/refs/heads/" + branch + ".zip" : repoUrl + "/archive/refs/heads/" + branch + ".zip";
     log.debug("Downloading ZIP from: {}", zipUrl);
@@ -356,7 +356,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
           log.warn("Multiple directories found in basePath, using the first one: {}", repoDirPrefix);
         }
       } else {
-        throw new IOException("No directories found in basePath: " + basePath);
+        throw new IOException(String.format(OBMessageUtils.messageBD("COPDEV_NoDirectoriesFound"), basePath));
       }
     }
 
@@ -390,7 +390,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
       });
     } catch (IllegalArgumentException e) {
       log.error("Invalid subpath pattern: {}", subPath, e);
-      throw new IOException("Invalid subpath pattern: " + subPath, e);
+      throw new IOException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidSubpathPattern"), subPath), e);
     }
   }
 
