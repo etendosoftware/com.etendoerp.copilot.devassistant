@@ -303,9 +303,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     try (InputStream in = new URL(zipUrl).openStream()) {
       Files.copy(in, tempZip.toPath(), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-      String errorMessage = OBMessageUtils.messageBD("COPDEV_FailedToDownloadZip");
-      errorMessage = String.format(errorMessage, zipUrl, repoUrl, branch, e.getMessage());
-      throw new IOException(errorMessage, e);
+      throw new IOException(String.format(OBMessageUtils.messageBD("COPDEV_FailedToDownloadZip"), zipUrl, repoUrl, branch, e.getMessage()), e);
     }
     return tempZip;
   }
