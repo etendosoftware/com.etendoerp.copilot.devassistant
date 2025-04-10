@@ -77,9 +77,8 @@ public class CreateColumn extends BaseWebhookService {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_ExternalTableDirRef"));
     }
 
-    if (isTableDirRef(reference) && !validateTableDir(table, columnName)) {
-      //the table dir cannot be used in when is an em_ column
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_ExternalTableDirRef"));
+    if (isTableDirRef(reference)) {
+      validateTableDir(table, columnName);
     }
 
     if (Boolean.FALSE.equals(module.isInDevelopment())) {
@@ -99,8 +98,8 @@ public class CreateColumn extends BaseWebhookService {
       prefixForConstraint = "EM_" + prefix;
     }
 
-    if (!StringUtils.equalsIgnoreCase(columnName, parameter.get("columnNameDB")) ||
-        !StringUtils.equalsIgnoreCase(name, parameter.get("name"))) {
+    if (!StringUtils.equalsIgnoreCase(columnName, parameter.get("columnNameDB")) || !StringUtils.equalsIgnoreCase(name,
+        parameter.get("name"))) {
       messageArray.put(String.format(OBMessageUtils.messageBD("COPDEV_ColumnRenamed"), columnName, name));
     }
 
@@ -125,7 +124,7 @@ public class CreateColumn extends BaseWebhookService {
       }
       OBDal.getInstance().save(newCol);
       OBDal.getInstance().flush();
-      messageArray.put(OBMessageUtils.messageBD("COPDEV_ColumnAdded") + newCol.getId());
+      messageArray.put(String.format(OBMessageUtils.messageBD("COPDEV_ColumnAdded"), newCol.getId()));
 
       response.put("messages", messageArray);
       responseVars.put("response", response.toString());
@@ -173,8 +172,8 @@ public class CreateColumn extends BaseWebhookService {
 
       String constraintFk = CreateTable.getConstName(prefixForConstraint, table.getDBTableName(), targetTableDBName,
           "fk");
-      String query = String.format("ALTER TABLE IF EXISTS public.%s ADD CONSTRAINT %s FOREIGN KEY (%s) " +
-              "REFERENCES public.%s (%s) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;",
+      String query = String.format(
+          "ALTER TABLE IF EXISTS public.%s ADD CONSTRAINT %s FOREIGN KEY (%s) " + "REFERENCES public.%s (%s) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;",
           dbTableName, constraintFk, columnName, targetTableDBName, targetTableDBName + "_id");
       JSONObject responseFk = Utils.executeQuery(query);
       messageArray.put(responseFk.toString());
@@ -198,10 +197,10 @@ public class CreateColumn extends BaseWebhookService {
         TABLE_REFERECE_ID);
   }
 
-  private boolean validateTableDir(Table table, String columnName) {
+  private void validateTableDir(Table table, String columnName) {
     //if is tableDir, must be end with _id
     if (StringUtils.endsWithIgnoreCase(columnName, "_id")) {
-      throw new OBException("TableDir column name must follow the pattern <targetTable>_id");
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_TableDirWrongName"));
     }
     //and the column name must match with a table
     String targetTable = columnName.substring(0, columnName.length() - 3);
@@ -210,8 +209,7 @@ public class CreateColumn extends BaseWebhookService {
     tableCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, targetTable, MatchMode.EXACT));
     List<Table> tables = tableCrit.list();
     if (tables.isEmpty()) {
-      throw new OBException(
-          "Table " + targetTable + " does not exist. If the column is TableDir, the name must be the same as the target table name + _id");
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_TableDirTableNotFound"), targetTable));
     }
     //check if the column already exists
     var columnCrit = OBDal.getInstance().createCriteria(Column.class);
@@ -219,10 +217,8 @@ public class CreateColumn extends BaseWebhookService {
     columnCrit.add(Restrictions.eq(Column.PROPERTY_TABLE, table));
     List<Column> columns = columnCrit.list();
     if (!columns.isEmpty()) {
-      throw new OBException(
-          "There is already a column with the same name in the table, please choose another name and use a Table type reference");
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_ColumnAlreadyExists"));
     }
-    return true;
   }
 
 

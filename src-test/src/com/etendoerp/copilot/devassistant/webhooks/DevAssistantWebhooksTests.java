@@ -1,4 +1,4 @@
-package com.etendoerp.copilot.toolpack.webhook;
+package com.etendoerp.copilot.devassistant.webhooks;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +27,6 @@ import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.test.base.TestConstants;
 
 import com.etendoerp.copilot.devassistant.Utils;
-import com.etendoerp.copilot.devassistant.webhooks.CreateColumn;
 
 /**
  * Unit tests for the Webhooks in the Copilot Toolpack.
