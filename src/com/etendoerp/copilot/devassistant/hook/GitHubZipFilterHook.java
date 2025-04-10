@@ -171,10 +171,10 @@ public class GitHubZipFilterHook implements CopilotFileHook {
 
     // Download and extract the repository
     File zipFile = downloadGitHubZip(repoUrl, branch);
-    log.info("Downloaded ZIP file: {}", zipFile.getAbsolutePath());
+    log.debug("Downloaded ZIP file: {}", zipFile.getAbsolutePath());
 
     File extractedDir = unzipToTempDirectory(zipFile);
-    log.info("Extracted repository to: {}", extractedDir.getAbsolutePath());
+    log.debug("Extracted repository to: {}", extractedDir.getAbsolutePath());
 
     // List all files in the extracted directory
     log.debug("Listing all files in extracted directory: {}", extractedDir.getAbsolutePath());
@@ -246,7 +246,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
     removeAttachment(aim, hookObject);
 
     aim.upload(new HashMap<>(), COPILOT_FILE_TAB_ID, hookObject.getId(), hookObject.getOrganization().getId(), finalZip);
-    log.info("Successfully attached ZIP file to CopilotFile ID: {}", hookObject.getId());
+    log.debug("Successfully attached ZIP file to CopilotFile ID: {}", hookObject.getId());
   }
 
   /**
