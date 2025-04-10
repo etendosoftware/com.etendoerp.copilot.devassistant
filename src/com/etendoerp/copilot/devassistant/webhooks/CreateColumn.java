@@ -8,6 +8,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
@@ -15,10 +17,10 @@ import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.exception.NoConnectionAvailableException;
 import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.domain.Reference;
+import org.openbravo.model.ad.domain.ReferencedTable;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
@@ -38,6 +40,7 @@ public class CreateColumn extends BaseWebhookService {
   private static final String CHAR1 = "character(1)";
   public static final String NUMERIC = "numeric";
   public static final String TABLEDIR_REFERENCE_ID = "17";
+  private static final String TABLE_REFERECE_ID = "18";
 
   /**
    * This method is invoked by the webhook to add a column to a table in the database.
@@ -50,10 +53,12 @@ public class CreateColumn extends BaseWebhookService {
    */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
-    LOG.info("Executing process");
+    LOG.debug("Executing process");
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
-      LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
+      LOG.debug("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
+    JSONArray messageArray = new JSONArray();
+
     String tableId = parameter.get("tableID");
     String name = parameter.get("name");
     String moduleId = parameter.get("moduleID");
@@ -61,8 +66,6 @@ public class CreateColumn extends BaseWebhookService {
     String referenceID = parameter.get("referenceID");
     String columnName = parameter.get("columnNameDB");
     String canBeNull = parameter.get("canBeNull");
-
-    String targetTable = parameter.get("targetTable");
 
     Table table = OBDal.getInstance().get(Table.class, tableId);
     org.openbravo.model.ad.module.Module module = OBDal.getInstance().get(org.openbravo.model.ad.module.Module.class,
@@ -74,7 +77,7 @@ public class CreateColumn extends BaseWebhookService {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_ExternalTableDirRef"));
     }
 
-    if (isTableDirRef(reference) && validateTableDir(table, columnName)) {
+    if (isTableDirRef(reference) && !validateTableDir(table, columnName)) {
       //the table dir cannot be used in when is an em_ column
       throw new OBException(OBMessageUtils.messageBD("COPDEV_ExternalTableDirRef"));
     }
@@ -89,16 +92,22 @@ public class CreateColumn extends BaseWebhookService {
     }
 
     String prefix = module.getModuleDBPrefixList().get(0).getName();
+    String prefixForConstraint = prefix;
     if (isExternal) {
-
       columnName = "EM_" + prefix + "_" + columnName;
       name = "EM_" + prefix + "_ " + name;
+      prefixForConstraint = "EM_" + prefix;
     }
 
+    if (!StringUtils.equalsIgnoreCase(columnName, parameter.get("columnNameDB")) ||
+        !StringUtils.equalsIgnoreCase(name, parameter.get("name"))) {
+      messageArray.put(String.format(OBMessageUtils.messageBD("COPDEV_ColumnRenamed"), columnName, name));
+    }
 
     try {
       JSONObject response = addColumn(prefix, dbTableName, columnName, reference, defaultParam,
           StringUtils.equalsIgnoreCase(canBeNull, "true"));
+      handleFKCase(reference, columnName, prefixForConstraint, table, dbTableName, messageArray);
 
       Column newCol = OBProvider.getInstance().get(Column.class);
       newCol.setName(name);
@@ -111,14 +120,82 @@ public class CreateColumn extends BaseWebhookService {
         newCol.setReferenceSearchKey(reference);
         newCol.setReference(reference.getParentReference());
       }
-      newCol.setDefaultValue(defaultParam.replace("'", ""));
+      if (StringUtils.isNotEmpty(defaultParam)) {
+        newCol.setDefaultValue(defaultParam.replace("'", ""));
+      }
       OBDal.getInstance().save(newCol);
       OBDal.getInstance().flush();
+      messageArray.put(OBMessageUtils.messageBD("COPDEV_ColumnAdded") + newCol.getId());
 
+      response.put("messages", messageArray);
       responseVars.put("response", response.toString());
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
+  }
+
+  /**
+   * Handles the creation of a foreign key (FK) constraint for a database column.
+   * <p>
+   * This method checks if the provided reference is a Table Directory or Table Base Reference.
+   * If so, it determines the target table's database name and constructs an SQL query to add
+   * a foreign key constraint to the specified column. The query is executed, and the response
+   * is added to the provided message array.
+   * </p>
+   *
+   * @param reference
+   *     The `Reference` object that defines the type of the column.
+   * @param columnName
+   *     The name of the column for which the foreign key constraint is being created.
+   * @param prefixForConstraint
+   *     The prefix to be used for naming the foreign key constraint.
+   * @param table
+   *     The `Table` object representing the table to which the column belongs.
+   * @param dbTableName
+   *     The database name of the table to which the column belongs.
+   * @param messageArray
+   *     A `JSONArray` to which the response of the SQL query execution will be added.
+   * @throws SQLException
+   *     If an error occurs while executing the SQL query.
+   * @throws JSONException
+   *     If an error occurs while processing the JSON response.
+   */
+  private void handleFKCase(Reference reference, String columnName, String prefixForConstraint, Table table,
+      String dbTableName, JSONArray messageArray) throws SQLException, JSONException {
+    if (isTableDirRef(reference) || isTableBaseRef(reference)) {
+      String targetTableDBName;
+      if (isTableDirRef(reference)) {
+        targetTableDBName = columnName.substring(0, columnName.length() - 3);
+      } else {
+        ReferencedTable tableRefInfo = reference.getADReferencedTableList().get(0);
+        targetTableDBName = tableRefInfo.getTable().getDBTableName();
+      }
+
+      String constraintFk = CreateTable.getConstName(prefixForConstraint, table.getDBTableName(), targetTableDBName,
+          "fk");
+      String query = String.format("ALTER TABLE IF EXISTS public.%s ADD CONSTRAINT %s FOREIGN KEY (%s) " +
+              "REFERENCES public.%s (%s) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;",
+          dbTableName, constraintFk, columnName, targetTableDBName, targetTableDBName + "_id");
+      JSONObject responseFk = Utils.executeQuery(query);
+      messageArray.put(responseFk.toString());
+    }
+  }
+
+  /**
+   * Checks if the given reference is a Table Base Reference.
+   * <p>
+   * This method determines whether the provided reference is not a base reference
+   * and if its parent reference matches the predefined Table Reference ID.
+   * </p>
+   *
+   * @param reference
+   *     The `Reference` object to be checked.
+   * @return `true` if the reference is not a base reference and its parent reference ID
+   *     matches the Table Reference ID, otherwise `false`.
+   */
+  private boolean isTableBaseRef(Reference reference) {
+    return !reference.isBaseReference() && StringUtils.equals(reference.getParentReference().getId(),
+        TABLE_REFERECE_ID);
   }
 
   private boolean validateTableDir(Table table, String columnName) {
@@ -154,44 +231,31 @@ public class CreateColumn extends BaseWebhookService {
   }
 
   /**
-   * Validates if an external column is needed for the given table.
+   * Adds a new column to a database table.
    * <p>
-   * This method checks whether the column should be marked as external based on the table's module development status.
-   * If the column is not external and the module is not in development, an exception is thrown.
+   * This method constructs and executes an SQL query to add a column to a specified table.
+   * It determines the column's database type, default value, nullability, and any constraints.
+   * If the column type is `CHAR1`, a check constraint is generated to restrict its values.
    * </p>
    *
-   * @param isExternal
-   *     A boolean indicating whether the column is external.
-   * @param table
-   *     The table object to validate.
-   * @throws OBException
-   *     If the column is not external and the module is not in development.
-   */
-  public static void validateIfExternalNeeded(boolean isExternal, Table table) {
-    if (!isExternal && !table.getDataPackage().getModule().isInDevelopment()) {
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_NeededExternalColumn"));
-    }
-  }
-
-  /**
-   * Adds a new column to the specified table in the database.
-   *
    * @param prefix
-   *     The prefix of the table.
+   *     The prefix to be used for naming constraints.
    * @param tableName
    *     The name of the table to which the column will be added.
    * @param column
-   *     The name of the column to be added.
-   * @param
+   *     The name of the column to be added. If blank, a default name is generated.
+   * @param reference
+   *     The `Reference` object that defines the column's type and associated database type.
    * @param defaultValue
-   *     The default value for the column.
+   *     The default value for the column. Can be null or empty.
    * @param canBeNull
    *     A boolean indicating whether the column can have null values.
+   * @return A `JSONObject` containing the result of the SQL query execution.
    * @throws SQLException
-   *     If there is an error during the database operation.
+   *     If an error occurs while executing the SQL query.
    */
   public static JSONObject addColumn(String prefix, String tableName, String column, Reference reference,
-      String defaultValue, boolean canBeNull) throws SQLException, NoConnectionAvailableException {
+      String defaultValue, boolean canBeNull) throws SQLException {
 
     if (StringUtils.isBlank(column)) {
       column = String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
@@ -263,7 +327,7 @@ public class CreateColumn extends BaseWebhookService {
    */
   private static String generateCheckConstraint(String prefix, String tableName, String column) {
     String queryConstraint;
-    String proposal = prefix + "_" + column + "_chk";
+    String proposal = column + "_chk";
     String columnOff = column;
     var offset = 1;
     while ((proposal.length() > MAX_LENGTH) && (offset < 15)) {
@@ -346,7 +410,7 @@ public class CreateColumn extends BaseWebhookService {
       return mapping.get(columnType.getName());
     }
     String parentRefName = columnType.getParentReference().getName();
-    if (!columnType.isBaseReference() && mapping.containsKey(parentRefName)) {
+    if (Boolean.FALSE.equals(columnType.isBaseReference()) && mapping.containsKey(parentRefName)) {
       return mapping.get(parentRefName);
     }
     throw new OBException(OBMessageUtils.messageBD("COPDEV_ColumnTypeNotFound") + columnType.getName());
