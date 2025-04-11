@@ -5,32 +5,24 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.SimpleFileVisitor;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileSystems;
-
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -375,7 +367,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
           log.debug("Checking file: {}", relPath);
           boolean matchesPattern = matcher.matches(relPath);
           log.debug("File {} matches pattern: {}", relPath, matchesPattern);
-          boolean notIgnored = checkIgnoredFiles(file.toString());
+          boolean notIgnored = checkIgnoredFiles(relPath);
           log.debug("File {} is not ignored: {}", relPath, notIgnored);
           if (matchesPattern && notIgnored) {
             filesToZip.add(file);
@@ -394,17 +386,26 @@ public class GitHubZipFilterHook implements CopilotFileHook {
 
   /**
    * Checks if a file should be ignored based on predefined ignore strings.
-   * @param path The path of the file to check.
-   * @return True if the file should not be ignored, false otherwise.
+   * <p>
+   * This method iterates through a list of predefined ignore strings (`IGNORE_STRINGS`)
+   * and checks if the given file path (`relPath`) contains any of these strings,
+   * ignoring case sensitivity. If a match is found, the file is considered ignored.
+   *
+   * @param relPath
+   *     The relative path of the file to check.
+   * @return `false` if the file should be ignored (i.e., it matches one of the ignore strings),
+   *     `true` otherwise.
    */
-  private boolean checkIgnoredFiles(String path) {
+  private boolean checkIgnoredFiles(Path relPath) {
+    // Iterate through the predefined ignore strings
     for (String ignore : IGNORE_STRINGS) {
-      if (StringUtils.containsIgnoreCase(path, ignore)) {
-        log.debug("Ignoring file {} because it contains '{}'", path, ignore);
-        return false;
+      // Check if the file path contains the ignore string (case-insensitive)
+      if (StringUtils.containsIgnoreCase(relPath.toString(), ignore)) {
+        log.debug("Ignoring file {} because it contains '{}'", relPath, ignore);
+        return false; // File should be ignored
       }
     }
-    return true;
+    return true; // File is not ignored
   }
 
   /**
