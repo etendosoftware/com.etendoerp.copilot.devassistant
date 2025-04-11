@@ -1,1 +1,1 @@
-com.etendoerp.copilot.toolpack
+git@github.com:etendosoftware/com.etendoerp.copilot.toolpack.git,git@bitbucket.org:koodu_software/com.etendoerp.task.git

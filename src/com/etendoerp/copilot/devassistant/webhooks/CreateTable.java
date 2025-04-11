@@ -1,10 +1,12 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import java.sql.SQLException;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
@@ -64,35 +66,35 @@ public class CreateTable extends BaseWebhookService {
 
       String query = String.format(
           "CREATE TABLE IF NOT EXISTS public.%s_%s " +
-              "( " +
-              "    %s_%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-              "    ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-              "    ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-              "    isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, " +
-              "    created timestamp without time zone NOT NULL DEFAULT now(), " +
-              "    createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-              "    updated timestamp without time zone NOT NULL DEFAULT now(), " +
-              "    updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-              "    CONSTRAINT %s PRIMARY KEY (%s_%s_id), " +
-              "    CONSTRAINT %s FOREIGN KEY (ad_client_id) " +
-              "        REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE " +
-              "        ON UPDATE NO ACTION " +
-              "        ON DELETE NO ACTION, " +
-              "    CONSTRAINT %s FOREIGN KEY (ad_org_id) " +
-              "        REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE " +
-              "        ON UPDATE NO ACTION " +
-              "        ON DELETE NO ACTION, " +
-              "    CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar,'N'::bpchar])) " +
-              ") " +
-              "TABLESPACE pg_default;",
+"( " +
+"    %s_%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
+"    ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
+"    ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
+"    isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, " +
+"    created timestamp without time zone NOT NULL DEFAULT now(), " +
+"    createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
+"    updated timestamp without time zone NOT NULL DEFAULT now(), " +
+"    updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
+"    CONSTRAINT %s PRIMARY KEY (%s_%s_id), " +
+"    CONSTRAINT %s FOREIGN KEY (ad_client_id) " +
+"        REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE " +
+"        ON UPDATE NO ACTION " +
+"        ON DELETE NO ACTION, " +
+"    CONSTRAINT %s FOREIGN KEY (ad_org_id) " +
+"        REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE " +
+"        ON UPDATE NO ACTION " +
+"        ON DELETE NO ACTION, " +
+"    CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar,'N'::bpchar])) " +
+") " +
+"TABLESPACE pg_default;",
           prefix, name,
-          prefix, name,
-          constraintPk,
-          prefix, name,
-          constraintFkClient,
-          constraintFkOrg,
+prefix, name,
+constraintPk,
+prefix, name,
+constraintFkClient,
+constraintFkOrg,
           constraintIsactive
-      );
+);
 
       JSONObject response = Utils.executeQuery(query);
 
@@ -133,44 +135,34 @@ public class CreateTable extends BaseWebhookService {
    * @param suffix
    *     the suffix to be used for the constraint name
    * @return the generated constraint name
+   * @throws SQLException
+   *     if an error occurs during the SQL query execution
+   * @throws JSONException
+   *     if an error occurs while creating the JSON object
    */
-  public static String getConstName(String prefix, String name1, String name2, String suffix) {
-    // Verify and adjust name1 if it starts with the prefix
-    if (StringUtils.startsWith(name1, prefix + "_") || StringUtils.startsWithIgnoreCase(name1, prefix + "_")) {
-      name1 = StringUtils.substring(name1, prefix.length() + 1);
-    }
-
-    // Verify and adjust name2 if it starts with the prefix
-    if (StringUtils.startsWith(name2, prefix + "_") || StringUtils.startsWithIgnoreCase(name2, prefix + "_")) {
-      name2 = StringUtils.substring(name2, prefix.length() + 1);
-    }
-
-    String proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
-
-    // Reduce length if necessary and contains underscores
-    if (proposal.length() > MAX_LENGTH && (StringUtils.contains(name1, "_") || StringUtils.contains(name2, "_"))) {
-      name1 = name1.replace("_", "");
-      name2 = name2.replace("_", "");
-      proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
-    }
-
-    // Adjust names by trimming initial characters
-    int offset = 1;
-    while (proposal.length() > MAX_LENGTH && offset < 15) {
-      String name1Offsetted = name1.length() > offset ? StringUtils.substring(name1, offset) : name1;
-      String name2Offsetted = name2.length() > offset ? StringUtils.substring(name2, offset) : name2;
-      proposal = prefix + "_" + name1Offsetted + "_" + name2Offsetted + "_" + suffix;
+  public static String getConstName(String prefix, String name1, String name2,
+      String suffix) throws SQLException, JSONException {
+    String fromName = StringUtils.substringAfter(name1, "_");
+    String toName = StringUtils.substringAfter(name2, "_");
+    String proposal = "";
+    int offset = 0;
+    while (StringUtils.isEmpty(proposal) || proposal.length() > MAX_LENGTH) {
+      proposal = String.format("%s_%s_%s_%s", prefix, StringUtils.substring(fromName, 0, fromName.length() - offset),
+          StringUtils.substring(toName, 0, toName.length() - offset), suffix);
       offset++;
     }
 
-    // Generate a random name if it is still too long
-    if (proposal.length() > MAX_LENGTH) {
-      int length = MAX_LENGTH - prefix.length() - suffix.length() - 2;
-      String randomString = Utils.generateRandomString(length);
-      proposal = prefix + "_" + randomString + "_" + suffix;
+    String query = String.format(
+        "SELECT count(1) FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = '%s';",
+        proposal);
+    JSONObject response = Utils.executeQuery(query);
+    int count = response.getJSONArray("result").getJSONObject(0).getInt("count");
+    if (count > 0) {
+      count++;
+      proposal = String.format("%s_%s_%s%d_%s", prefix, StringUtils.substring(name1, 0, name1.length() - offset),
+          StringUtils.substring(name2, 0, name2.length() - offset), count, suffix);
     }
 
-    proposal = proposal.replace("__", "_");
 
     return proposal;
   }
