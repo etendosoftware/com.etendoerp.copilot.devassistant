@@ -12,9 +12,10 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.mockito.MockitoAnnotations;
+import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.base.weld.test.WeldBaseTest;
@@ -24,6 +25,8 @@ import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.module.Module;
+import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.test.base.TestConstants;
 
 import com.etendoerp.copilot.devassistant.Utils;
@@ -40,6 +43,8 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   public static final String YESNO_REFERENCE_ID = "20";
   public static final String BP_TABLE_REF_ID = "138";
   private AutoCloseable mocks;
+  private String testModuleId;
+  private String testModulePrefixId;
 
   /**
    * Sets up the test environment before each test.
@@ -47,7 +52,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
    * @throws Exception
    *     if an error occurs during setup
    */
-  @Before
+  @BeforeAll
   public void setUp() throws Exception {
     mocks = MockitoAnnotations.openMocks(this);
     super.setUp();
@@ -63,6 +68,25 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     vars.setSessionValue("#User_Client", OBContext.getOBContext().getCurrentClient().getId());
     RequestContext.get().setVariableSecureApp(vars);
     OBPropertiesProvider.setInstance(new OBPropertiesProvider());
+
+    Module mod = OBProvider.getInstance().get(Module.class);
+    mod.setNewOBObject(true);
+    mod.setInDevelopment(true);
+    mod.setName("My Test Module");
+    mod.setJavaPackage("com.etendoerp.copilot.devassistant.testmodule");
+    mod.setVersion("1.0.0");
+    mod.setDescription("Test module for Dev Assistant Webhooks");
+    mod.setType("M");
+    OBDal.getInstance().save(mod);
+    OBDal.getInstance().flush();
+    ModuleDBPrefix dbPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
+    dbPrefix.setModule(mod);
+    dbPrefix.setName("COPDEVT");
+    dbPrefix.setNewOBObject(true);
+    OBDal.getInstance().save(dbPrefix);
+    OBDal.getInstance().flush();
+    testModuleId = mod.getId();
+    testModulePrefixId = dbPrefix.getId();
   }
 
   /**
@@ -79,7 +103,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     parameter.put("canBeNull", "false");
     parameter.put("columnNameDB", "mytext");
     parameter.put("defaultValue", "'hello'");
-    parameter.put("moduleID", "77E11BDECDEB44008DD2235D259A77D7");
+    parameter.put("moduleID", testModuleId);
     parameter.put("name", "My Text Test");
     parameter.put("referenceID", REFERENCE_ID_TEXT);
     parameter.put("tableID", C_ORDER_TABLE_ID);
@@ -87,11 +111,11 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
 
-    Column col = getColumn("EM_COPDEV_mytext", C_ORDER_TABLE_ID);
+    Column col = getColumn("EM_COPDEVT_mytext", C_ORDER_TABLE_ID);
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn("C_ORDER", "em_copdev_mytext");
+    dropColumn("C_ORDER", "em_copdevt_mytext");
 
     assertFalse(respVars.keySet().isEmpty());
     String responseString = respVars.get("response");
@@ -114,7 +138,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     parameter.put("canBeNull", "false");
     parameter.put("columnNameDB", "myYesNo");
     parameter.put("defaultValue", "'N'");
-    parameter.put("moduleID", "77E11BDECDEB44008DD2235D259A77D7");
+    parameter.put("moduleID", testModuleId);
     parameter.put("name", "My Boolean");
     parameter.put("referenceID", YESNO_REFERENCE_ID);
     parameter.put("tableID", C_ORDER_TABLE_ID);
@@ -122,11 +146,11 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
 
-    Column col = getColumn("EM_COPDEV_myYesNo", C_ORDER_TABLE_ID);
+    Column col = getColumn("EM_COPDEVT_myYesNo", C_ORDER_TABLE_ID);
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn("C_ORDER", "em_copdev_myYesNo");
+    dropColumn("C_ORDER", "em_copdevt_myYesNo");
 
     assertFalse(respVars.keySet().isEmpty());
     String responseString = respVars.get("response");
@@ -148,7 +172,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Map<String, String> parameter = new HashMap<>();
     parameter.put("canBeNull", "true");
     parameter.put("columnNameDB", "otherbp");
-    parameter.put("moduleID", "77E11BDECDEB44008DD2235D259A77D7");
+    parameter.put("moduleID", testModuleId);
     parameter.put("name", "My OtherBP");
     parameter.put("referenceID", BP_TABLE_REF_ID);
     parameter.put("tableID", C_ORDER_TABLE_ID);
@@ -156,11 +180,11 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
 
-    Column col = getColumn("EM_COPDEV_otherbp", C_ORDER_TABLE_ID);
+    Column col = getColumn("EM_COPDEVT_otherbp", C_ORDER_TABLE_ID);
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn("C_ORDER", "em_copdev_otherbp");
+    dropColumn("C_ORDER", "em_copdevt_otherbp");
 
     assertFalse(respVars.keySet().isEmpty());
     String responseString = respVars.get("response");
@@ -220,6 +244,15 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
         OBContext.getOBContext().getCurrentClient().getId(), OBContext.getOBContext().getCurrentOrganization().getId());
     RequestContext.get().setVariableSecureApp(vars);
     OBDal.getInstance().flush();
+
+    Module mod = OBDal.getInstance().get(Module.class, testModuleId);
+    ModuleDBPrefix modPrefix = OBDal.getInstance().get(ModuleDBPrefix.class, testModulePrefixId);
+    if (modPrefix != null) {
+      OBDal.getInstance().remove(modPrefix);
+    }
+    OBDal.getInstance().remove(mod);
+    OBDal.getInstance().flush();
+
     OBDal.getInstance().commitAndClose();
   }
 }

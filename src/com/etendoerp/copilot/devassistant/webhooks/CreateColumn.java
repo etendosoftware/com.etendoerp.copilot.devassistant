@@ -21,6 +21,7 @@ import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.domain.ReferencedTable;
+import org.openbravo.model.ad.module.ModuleDBPrefix;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
@@ -90,7 +91,7 @@ public class CreateColumn extends BaseWebhookService {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_dbTableNameNotFound"));
     }
 
-    String prefix = module.getModuleDBPrefixList().get(0).getName();
+    String prefix = getPrefix(module);
     String prefixForConstraint = prefix;
     if (isExternal) {
       columnName = "EM_" + prefix + "_" + columnName;
@@ -131,6 +132,28 @@ public class CreateColumn extends BaseWebhookService {
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
     }
+  }
+
+  /**
+   * Retrieves the database prefix associated with a module.
+   * <p>
+   * This method fetches the list of database prefixes for the provided module.
+   * If the list is empty, it refreshes the module from the database and retries fetching the list.
+   * Finally, it returns the name of the first prefix in the list.
+   * </p>
+   *
+   * @param module
+   *     The `Module` object from which the database prefix will be retrieved.
+   * @return The name of the first database prefix associated with the module.
+   */
+  private static String getPrefix(org.openbravo.model.ad.module.Module module) {
+
+    List<ModuleDBPrefix> moduleDBPrefixList = module.getModuleDBPrefixList();
+    if (moduleDBPrefixList.isEmpty()) {
+      OBDal.getInstance().refresh(module);
+      moduleDBPrefixList = module.getModuleDBPrefixList();
+    }
+    return moduleDBPrefixList.get(0).getName();
   }
 
   /**
