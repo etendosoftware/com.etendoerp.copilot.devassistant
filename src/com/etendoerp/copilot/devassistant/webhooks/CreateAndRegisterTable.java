@@ -5,7 +5,6 @@ import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -52,71 +51,75 @@ public class CreateAndRegisterTable extends BaseWebhookService {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
-    String name = parameter.get("Name");
-    String prefix = parameter.get("DBPrefix");
+    String name = StringUtils.lowerCase(parameter.get("Name"));
+    String prefix = StringUtils.lowerCase(parameter.get("Prefix"));
     String javaClass = parameter.get("JavaClass");
-    String tableName = parameter.get("DBTableName");
+    String tableName = StringUtils.isNotEmpty(parameter.get("DBTableName")) ? StringUtils.lowerCase(parameter.get("DBTableName")) : null;
     String dataAccessLevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
     String helpTable = parameter.get("Help");
-    String isView = parameter.get("IsView");
-    boolean isViewB = StringUtils.equalsIgnoreCase(isView, "true");
+    boolean isView = StringUtils.equalsIgnoreCase(parameter.get("IsView"), "true");
 
     try {
-      // Normalize inputs
-      name = StringUtils.lowerCase(name);
-      prefix = StringUtils.lowerCase(prefix);
-      tableName = StringUtils.isNotEmpty(tableName) ? StringUtils.lowerCase(tableName) : null;
-
-      // Use default name if necessary
       name = getDefaultName(name);
-
-      // Generate table name if DBTableName is not provided
-      if (StringUtils.isEmpty(tableName)) {
-        tableName = name;
-        if (StringUtils.startsWith(name, prefix)) {
-          tableName = StringUtils.removeStart(name, prefix);
-          if (StringUtils.isNotEmpty(tableName)) {
-            tableName = StringUtils.substring(tableName, 1);
-          }
-        }
-      }
-
-      // Ensure tableName starts with prefix
-      if (!StringUtils.startsWithIgnoreCase(tableName, prefix)) {
-        tableName = prefix + "_" + tableName;
-      }
-
-      // Generate Java class name if not provided
-      if (javaClass == null || Objects.equals(javaClass, "null")) {
-        javaClass = StringUtils.replaceChars(name, "_", " ");
-        String[] words = javaClass.split(" ");
-        StringBuilder formattedName = new StringBuilder();
-        for (String word : words) {
-          if (!StringUtils.isEmpty(word)) {
-            formattedName.append(Character.toUpperCase(word.charAt(0)));
-            formattedName.append(word.substring(1));
-          }
-        }
-        javaClass = formattedName.toString();
-      }
+      tableName = determineTableName(name, prefix, tableName);
+      javaClass = determineJavaClassName(name, javaClass);
 
       // Step 1: Create the table in the database
-      createTableInDatabase(prefix, tableName, isViewB);
+      createTableInDatabase(prefix, tableName, isView);
 
       // Step 2: Register the table in Openbravo
       alreadyExistTable(tableName);
       DataPackage dataPackage = getDataPackage(prefix);
-      Table adTable = createAdTable(dataPackage, javaClass, tableName, dataAccessLevel, description, helpTable, isViewB);
+      Table adTable = createAdTable(dataPackage, javaClass, tableName, dataAccessLevel, description, helpTable, isView);
 
       // Step 3: Set response
-      responseVars.put("message",
-          String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
+      responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
       OBDal.getInstance().getSession().clear();
     }
+  }
+
+  /**
+   * Determines the table name based on the provided name, prefix, and optional table name.
+   *
+   * @param name      The base name of the table.
+   * @param prefix    The prefix for the table name.
+   * @param tableName The optional table name provided in the parameters.
+   * @return The final table name to use.
+   */
+  private String determineTableName(String name, String prefix, String tableName) {
+    if (StringUtils.isEmpty(tableName)) {
+      tableName = StringUtils.startsWith(name, prefix)
+          ? StringUtils.substring(StringUtils.removeStart(name, prefix), 1)
+          : name;
+    }
+    return StringUtils.startsWithIgnoreCase(tableName, prefix)
+        ? tableName
+        : prefix + "_" + tableName;
+  }
+
+  /**
+   * Determines the Java class name based on the provided name and optional Java class name.
+   *
+   * @param name     The base name of the table.
+   * @param javaClass The optional Java class name provided in the parameters.
+   * @return The final Java class name to use.
+   */
+  private String determineJavaClassName(String name, String javaClass) {
+    if (StringUtils.isEmpty(javaClass) || "null".equals(javaClass)) {
+      StringBuilder formattedName = new StringBuilder();
+      String[] words = StringUtils.split(StringUtils.replaceChars(name, "_", " "), " ");
+      for (String word : words) {
+        if (StringUtils.isNotEmpty(word)) {
+          formattedName.append(StringUtils.capitalize(word));
+        }
+      }
+      return formattedName.toString();
+    }
+    return javaClass;
   }
 
   /**
@@ -155,7 +158,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
             "        REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE " +
             "        ON UPDATE NO ACTION " +
             "        ON DELETE NO ACTION, " +
-            "    CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar,'N'::bpchar])) " +
+            "    CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar])) " +
             ") " +
             "TABLESPACE pg_default;",
         finalTableName,
