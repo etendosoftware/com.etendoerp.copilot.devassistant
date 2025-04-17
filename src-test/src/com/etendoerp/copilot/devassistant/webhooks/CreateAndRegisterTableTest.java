@@ -44,6 +44,12 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final String TEST_PREFIX = "COPDEVT";
+  private static final String PREFIX_KEY = "Prefix";
+  private static final String ERROR_KEY = "error";
+  private static final String MESSAGE_KEY = "message";
+  private static final String WEBHOOK = "Webhook";
+  private static final String ERROR_FROM_WEBHOOK = "Error from " + WEBHOOK + ": ";
+  private static final String WEBHOOK_FAILED_ERROR = WEBHOOK + " failed with error: ";
   private String testModuleId;
   private String testModulePrefixId;
 
@@ -122,19 +128,19 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
     try {
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put("Prefix", TEST_PREFIX);
+      parameter.put(PREFIX_KEY, TEST_PREFIX);
       parameter.put("Name", "my_table");
 
       Map<String, String> responseVars = new HashMap<>();
       webhook.get(parameter, responseVars);
 
       // Verify the response
-      if (responseVars.containsKey("error")) {
-        System.out.println("Error from webhook: " + responseVars.get("error"));
-        fail("Webhook failed with error: " + responseVars.get("error"));
+      if (responseVars.containsKey(ERROR_KEY)) {
+        System.out.println(ERROR_FROM_WEBHOOK + responseVars.get(ERROR_KEY));
+        fail(WEBHOOK_FAILED_ERROR + responseVars.get(ERROR_KEY));
       }
-      assertTrue(responseVars.containsKey("message"));
-      String message = responseVars.get("message");
+      assertTrue(responseVars.containsKey(MESSAGE_KEY));
+      String message = responseVars.get(MESSAGE_KEY);
       assertTrue(message.contains("Table registered successfully with ID"));
 
       // Verify the table exists in the database
@@ -171,7 +177,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
     try {
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put("Prefix", TEST_PREFIX);
+      parameter.put(PREFIX_KEY, TEST_PREFIX);
       parameter.put("Name", "my_view");
       parameter.put("IsView", "true");
 
@@ -179,11 +185,11 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
       webhook.get(parameter, responseVars);
 
       // Verify the response
-      if (responseVars.containsKey("error")) {
-        System.out.println("Error from webhook: " + responseVars.get("error"));
-        fail("Webhook failed with error: " + responseVars.get("error"));
+      if (responseVars.containsKey(ERROR_KEY)) {
+        System.out.println(ERROR_FROM_WEBHOOK + responseVars.get(ERROR_KEY));
+        fail(WEBHOOK_FAILED_ERROR + responseVars.get(ERROR_KEY));
       }
-      assertTrue(responseVars.containsKey("message"));
+      assertTrue(responseVars.containsKey(MESSAGE_KEY));
 
       // Verify the table exists in the database
       String tableName = TEST_PREFIX.toLowerCase() + "_my_view_v";
@@ -220,16 +226,16 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
       // First, create a table
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put("Prefix", TEST_PREFIX);
+      parameter.put(PREFIX_KEY, TEST_PREFIX);
       parameter.put("Name", "duplicate_table");
 
       Map<String, String> responseVars = new HashMap<>();
       webhook.get(parameter, responseVars);
 
       // Verify the first creation was successful
-      if (responseVars.containsKey("error")) {
-        System.out.println("Error from webhook: " + responseVars.get("error"));
-        fail("Webhook failed with error: " + responseVars.get("error"));
+      if (responseVars.containsKey(ERROR_KEY)) {
+        System.out.println(ERROR_FROM_WEBHOOK + responseVars.get(ERROR_KEY));
+        fail(WEBHOOK_FAILED_ERROR + responseVars.get(ERROR_KEY));
       }
       String tableName = TEST_PREFIX.toLowerCase() + "_duplicate_table";
       assertTrue(tableExistsInDatabase(tableName));
@@ -239,8 +245,8 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
       webhook.get(parameter, responseVars);
 
       // Verify the error
-      assertTrue(responseVars.containsKey("error"));
-      String error = responseVars.get("error");
+      assertTrue(responseVars.containsKey(ERROR_KEY));
+      String error = responseVars.get(ERROR_KEY);
       assertTrue(error.contains("COPDEV_TableNameAlreadyUse"));
 
       // Commit the transaction
@@ -267,15 +273,15 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
     try {
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put("Prefix", "INVALIDPREFIX");
+      parameter.put(PREFIX_KEY, "INVALIDPREFIX");
       parameter.put("Name", "my_table");
 
       Map<String, String> responseVars = new HashMap<>();
       webhook.get(parameter, responseVars);
 
       // Verify the error
-      assertTrue(responseVars.containsKey("error"));
-      String error = responseVars.get("error");
+      assertTrue(responseVars.containsKey(ERROR_KEY));
+      String error = responseVars.get(ERROR_KEY);
       assertTrue(error.contains("COPDEV_PrefixNotFound"));
 
       // Commit the transaction

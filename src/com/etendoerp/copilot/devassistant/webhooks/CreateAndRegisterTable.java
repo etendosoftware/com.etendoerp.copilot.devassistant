@@ -109,7 +109,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
    * @return The final Java class name to use.
    */
   private String determineJavaClassName(String name, String javaClass) {
-    if (StringUtils.isEmpty(javaClass) || "null".equals(javaClass)) {
+    if (StringUtils.isEmpty(javaClass) || StringUtils.equals(javaClass, "null")) {
       StringBuilder formattedName = new StringBuilder();
       String[] words = StringUtils.split(StringUtils.replaceChars(name, "_", " "), " ");
       for (String word : words) {
@@ -138,29 +138,30 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
     String finalTableName = isView ? tableName + "_v" : tableName;
 
-    String query = String.format(
-        "CREATE TABLE IF NOT EXISTS public.%s " +
-            "( " +
-            "    %s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-            "    ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-            "    ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-            "    isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, " +
-            "    created timestamp without time zone NOT NULL DEFAULT now(), " +
-            "    createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-            "    updated timestamp without time zone NOT NULL DEFAULT now(), " +
-            "    updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, " +
-            "    CONSTRAINT %s PRIMARY KEY (%s_id), " +
-            "    CONSTRAINT %s FOREIGN KEY (ad_client_id) " +
-            "        REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE " +
-            "        ON UPDATE NO ACTION " +
-            "        ON DELETE NO ACTION, " +
-            "    CONSTRAINT %s FOREIGN KEY (ad_org_id) " +
-            "        REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE " +
-            "        ON UPDATE NO ACTION " +
-            "        ON DELETE NO ACTION, " +
-            "    CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar])) " +
-            ") " +
-            "TABLESPACE pg_default;",
+    // Usar StringBuilder para construir la consulta
+    StringBuilder queryBuilder = new StringBuilder();
+    queryBuilder.append("CREATE TABLE IF NOT EXISTS public.%s ( ")
+        .append("%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
+        .append("ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
+        .append("ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
+        .append("isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, ")
+        .append("created timestamp without time zone NOT NULL DEFAULT now(), ")
+        .append("createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
+        .append("updated timestamp without time zone NOT NULL DEFAULT now(), ")
+        .append("updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
+        .append("CONSTRAINT %s PRIMARY KEY (%s_id), ")
+        .append("CONSTRAINT %s FOREIGN KEY (ad_client_id) ")
+        .append("REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE ")
+        .append("ON UPDATE NO ACTION ")
+        .append("ON DELETE NO ACTION, ")
+        .append("CONSTRAINT %s FOREIGN KEY (ad_org_id) ")
+        .append("REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE ")
+        .append("ON UPDATE NO ACTION ")
+        .append("ON DELETE NO ACTION, ")
+        .append("CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))")
+        .append(") TABLESPACE pg_default;");
+
+    String query = String.format(queryBuilder.toString(),
         finalTableName,
         finalTableName,
         constraintPk,
