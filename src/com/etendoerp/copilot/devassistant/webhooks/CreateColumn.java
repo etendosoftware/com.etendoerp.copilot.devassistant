@@ -187,7 +187,7 @@ public class CreateColumn extends BaseWebhookService {
     if (isTableDirRef(reference) || isTableBaseRef(reference)) {
       String targetTableDBName;
       if (isTableDirRef(reference)) {
-        targetTableDBName = columnName.substring(0, columnName.length() - 3);
+        targetTableDBName = StringUtils.substring(columnName, 0, columnName.length() - 3);
       } else {
         ReferencedTable tableRefInfo = reference.getADReferencedTableList().get(0);
         targetTableDBName = tableRefInfo.getTable().getDBTableName();
@@ -226,7 +226,7 @@ public class CreateColumn extends BaseWebhookService {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_TableDirWrongName"));
     }
     //and the column name must match with a table
-    String targetTable = columnName.substring(0, columnName.length() - 3);
+    String targetTable = StringUtils.substring(columnName, 0, columnName.length() - 3);
     //check if the table exists
     var tableCrit = OBDal.getInstance().createCriteria(Table.class);
     tableCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, targetTable, MatchMode.EXACT));

@@ -14,7 +14,6 @@ import org.hibernate.criterion.Restrictions;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.mockito.MockitoAnnotations;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.session.OBPropertiesProvider;
@@ -42,7 +41,13 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   private static final String C_ORDER_TABLE_ID = "259";
   public static final String YESNO_REFERENCE_ID = "20";
   public static final String BP_TABLE_REF_ID = "138";
-  private AutoCloseable mocks;
+  public static final String PARAM_CAN_BE_NULL = "canBeNull";
+  public static final String PARAM_COLUMN_NAME_DB = "columnNameDB";
+  public static final String PARAM_DEFAULT_VALUE = "defaultValue";
+  public static final String PARAM_MODULE_ID = "moduleID";
+  public static final String PARAM_NAME = "name";
+  public static final String PARAM_REFERENCE_ID = "referenceID";
+  public static final String PARAM_TABLE_ID = "tableID";
   private String testModuleId;
   private String testModulePrefixId;
 
@@ -54,7 +59,6 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
    */
   @BeforeAll
   public void setUp() throws Exception {
-    mocks = MockitoAnnotations.openMocks(this);
     super.setUp();
 
     OBContext.setOBContext(TestConstants.Users.ADMIN, TestConstants.Roles.SYS_ADMIN, TestConstants.Clients.SYSTEM,
@@ -100,13 +104,13 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   public void createStringColumnTest() throws Exception {
     var ccw = new CreateColumn();
     Map<String, String> parameter = new HashMap<>();
-    parameter.put("canBeNull", "false");
-    parameter.put("columnNameDB", "mytext");
-    parameter.put("defaultValue", "'hello'");
-    parameter.put("moduleID", testModuleId);
-    parameter.put("name", "My Text Test");
-    parameter.put("referenceID", REFERENCE_ID_TEXT);
-    parameter.put("tableID", C_ORDER_TABLE_ID);
+    parameter.put(PARAM_CAN_BE_NULL, "false");
+    parameter.put(PARAM_COLUMN_NAME_DB, "mytext");
+    parameter.put(PARAM_DEFAULT_VALUE, "'hello'");
+    parameter.put(PARAM_MODULE_ID, testModuleId);
+    parameter.put(PARAM_NAME, "My Text Test");
+    parameter.put(PARAM_REFERENCE_ID, REFERENCE_ID_TEXT);
+    parameter.put(PARAM_TABLE_ID, C_ORDER_TABLE_ID);
 
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
@@ -135,13 +139,13 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   public void createYesNoColumnTest() throws Exception {
     var ccw = new CreateColumn();
     Map<String, String> parameter = new HashMap<>();
-    parameter.put("canBeNull", "false");
-    parameter.put("columnNameDB", "myYesNo");
-    parameter.put("defaultValue", "'N'");
-    parameter.put("moduleID", testModuleId);
-    parameter.put("name", "My Boolean");
-    parameter.put("referenceID", YESNO_REFERENCE_ID);
-    parameter.put("tableID", C_ORDER_TABLE_ID);
+    parameter.put(PARAM_CAN_BE_NULL, "false");
+    parameter.put(PARAM_COLUMN_NAME_DB, "myYesNo");
+    parameter.put(PARAM_DEFAULT_VALUE, "'N'");
+    parameter.put(PARAM_MODULE_ID, testModuleId);
+    parameter.put(PARAM_NAME, "My Boolean");
+    parameter.put(PARAM_REFERENCE_ID, YESNO_REFERENCE_ID);
+    parameter.put(PARAM_TABLE_ID, C_ORDER_TABLE_ID);
 
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
@@ -170,12 +174,12 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   public void createTableReferenceColumnTest() throws Exception {
     var ccw = new CreateColumn();
     Map<String, String> parameter = new HashMap<>();
-    parameter.put("canBeNull", "true");
-    parameter.put("columnNameDB", "otherbp");
-    parameter.put("moduleID", testModuleId);
-    parameter.put("name", "My OtherBP");
-    parameter.put("referenceID", BP_TABLE_REF_ID);
-    parameter.put("tableID", C_ORDER_TABLE_ID);
+    parameter.put(PARAM_CAN_BE_NULL, "true");
+    parameter.put(PARAM_COLUMN_NAME_DB, "otherbp");
+    parameter.put(PARAM_MODULE_ID, testModuleId);
+    parameter.put(PARAM_NAME, "My OtherBP");
+    parameter.put(PARAM_REFERENCE_ID, BP_TABLE_REF_ID);
+    parameter.put(PARAM_TABLE_ID, C_ORDER_TABLE_ID);
 
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
@@ -208,12 +212,11 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
    * @return The `Column` object matching the specified criteria, or null if no match is found.
    */
   private static Column getColumn(String columnDBName, String tableId) {
-    OBCriteria<Column> col_crit = OBDal.getInstance().createCriteria(Column.class);
-    col_crit.add(Restrictions.eq(Column.PROPERTY_DBCOLUMNNAME, columnDBName));
-    col_crit.add(Restrictions.eq(Column.PROPERTY_TABLE, OBDal.getInstance().get(Table.class, tableId)));
-    col_crit.setMaxResults(1);
-    Column col = (Column) col_crit.uniqueResult();
-    return col;
+    OBCriteria<Column> colCrit = OBDal.getInstance().createCriteria(Column.class);
+    colCrit.add(Restrictions.eq(Column.PROPERTY_DBCOLUMNNAME, columnDBName));
+    colCrit.add(Restrictions.eq(Column.PROPERTY_TABLE, OBDal.getInstance().get(Table.class, tableId)));
+    colCrit.setMaxResults(1);
+    return (Column) colCrit.uniqueResult();
   }
 
   /**
