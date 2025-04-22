@@ -1,7 +1,6 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -15,11 +14,11 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.session.OBPropertiesProvider;
@@ -33,7 +32,6 @@ import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.test.base.TestConstants;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.etendoerp.copilot.devassistant.Utils;
 
@@ -44,7 +42,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final String TEST_PREFIX = "COPDEVT";
-  private static final String PREFIX_KEY = "Prefix";
+  private static final String MODULE_ID = "ModuleID";
   private static final String ERROR_KEY = "error";
   private static final String MESSAGE_KEY = "message";
   private static final String WEBHOOK = "Webhook";
@@ -52,6 +50,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
   private static final String WEBHOOK_FAILED_ERROR = WEBHOOK + " failed with error: ";
   private String testModuleId;
   private String testModulePrefixId;
+  private String testDataPackageId;
 
   /**
    * Sets up the test environment before each test.
@@ -106,6 +105,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
 
       testModuleId = mod.getId();
       testModulePrefixId = dbPrefix.getId();
+      testDataPackageId = dataPackage.getId();
 
       // Commit the transaction
       OBDal.getInstance().commitAndClose();
@@ -128,7 +128,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
     try {
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put(PREFIX_KEY, TEST_PREFIX);
+      parameter.put(MODULE_ID, testModuleId);
       parameter.put("Name", "my_table");
 
       Map<String, String> responseVars = new HashMap<>();
@@ -177,7 +177,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
     try {
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put(PREFIX_KEY, TEST_PREFIX);
+      parameter.put(MODULE_ID, testModuleId);
       parameter.put("Name", "my_view");
       parameter.put("IsView", "true");
 
@@ -226,7 +226,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
       // First, create a table
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put(PREFIX_KEY, TEST_PREFIX);
+      parameter.put(MODULE_ID, testModuleId);
       parameter.put("Name", "duplicate_table");
 
       Map<String, String> responseVars = new HashMap<>();
@@ -273,7 +273,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
     try {
       CreateAndRegisterTable webhook = new CreateAndRegisterTable();
       Map<String, String> parameter = new HashMap<>();
-      parameter.put(PREFIX_KEY, "INVALIDPREFIX");
+      parameter.put(MODULE_ID, "INVALIDID");
       parameter.put("Name", "my_table");
 
       Map<String, String> responseVars = new HashMap<>();
@@ -296,13 +296,15 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
   /**
    * Verifies if a table exists in the database.
    *
-   * @param tableName The name of the table to check.
+   * @param tableName
+   *     The name of the table to check.
    * @return True if the table exists, false otherwise.
    */
   private boolean tableExistsInDatabase(String tableName) throws SQLException {
     try (Connection conn = OBDal.getInstance().getConnection();
          Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery("SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '" + tableName + "')")) {
+         ResultSet rs = stmt.executeQuery(
+             "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '" + tableName + "')")) {
       if (rs.next()) {
         return rs.getBoolean(1);
       }
@@ -313,7 +315,8 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
   /**
    * Drops a table from the database.
    *
-   * @param tableName The name of the table to drop.
+   * @param tableName
+   *     The name of the table to drop.
    */
   private void dropTable(String tableName) throws SQLException {
     String query = "DROP TABLE IF EXISTS " + tableName + ";";
@@ -329,7 +332,8 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
   /**
    * Retrieves a Table object by its database table name.
    *
-   * @param dbTableName The database table name to search for.
+   * @param dbTableName
+   *     The database table name to search for.
    * @return The Table object, or null if not found.
    */
   private Table getTableByDBName(String dbTableName) {
@@ -358,11 +362,15 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
       // Remove the test module and prefix
       Module mod = OBDal.getInstance().get(Module.class, testModuleId);
       ModuleDBPrefix modPref = OBDal.getInstance().get(ModuleDBPrefix.class, testModulePrefixId);
+      DataPackage dataPackage = OBDal.getInstance().get(DataPackage.class, testDataPackageId);
+      if (modPref != null) {
+        OBDal.getInstance().remove(modPref);
+      }
       if (mod != null) {
         OBDal.getInstance().remove(mod);
       }
-      if (modPref != null) {
-        OBDal.getInstance().remove(modPref);
+      if (dataPackage != null) {
+        OBDal.getInstance().remove(dataPackage);
       }
 
       OBDal.getInstance().flush();
