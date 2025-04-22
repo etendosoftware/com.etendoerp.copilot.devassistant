@@ -1,6 +1,5 @@
 package com.etendoerp.copilot.devassistant;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -14,24 +13,24 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
+import org.hibernate.criterion.Restrictions;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
+import org.openbravo.dal.service.OBCriteria;
+import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.reference.PInstanceProcessData;
 import org.openbravo.erpCommon.utility.OBError;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.erpCommon.utility.SequenceIdData;
 import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.exception.NoConnectionAvailableException;
 import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.module.Module;
+import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.scheduling.ProcessBundle;
 import org.openbravo.scheduling.ProcessRunner;
 import org.openbravo.service.db.DalConnectionProvider;
-import org.hibernate.criterion.Restrictions;
-import org.openbravo.dal.service.OBDal;
-import org.openbravo.dal.service.OBCriteria;
-import org.openbravo.base.exception.OBException;
-import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.module.Module;
-import org.openbravo.model.ad.module.ModuleDBPrefix;
 
 import com.etendoerp.copilot.util.CopilotConstants;
 
