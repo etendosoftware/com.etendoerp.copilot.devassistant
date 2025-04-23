@@ -48,6 +48,9 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   public static final String PARAM_NAME = "name";
   public static final String PARAM_REFERENCE_ID = "referenceID";
   public static final String PARAM_TABLE_ID = "tableID";
+  public static final String C_ORDER = "C_ORDER";
+  public static final String RESPONSE = "response";
+  public static final String MESSAGES = "messages";
   private String testModuleId;
   private String testModulePrefixId;
 
@@ -119,12 +122,12 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn("C_ORDER", "em_copdevt_mytext");
+    dropColumn(C_ORDER, "em_copdevt_mytext");
 
     assertFalse(respVars.keySet().isEmpty());
-    String responseString = respVars.get("response");
+    String responseString = respVars.get(RESPONSE);
     JSONObject response = new JSONObject(responseString);
-    JSONArray messages = response.getJSONArray("messages");
+    JSONArray messages = response.getJSONArray(MESSAGES);
     assertTrue(messages.length() > 0);
   }
 
@@ -154,12 +157,12 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn("C_ORDER", "em_copdevt_myYesNo");
+    dropColumn(C_ORDER, "em_copdevt_myYesNo");
 
     assertFalse(respVars.keySet().isEmpty());
-    String responseString = respVars.get("response");
+    String responseString = respVars.get(RESPONSE);
     JSONObject response = new JSONObject(responseString);
-    JSONArray messages = response.getJSONArray("messages");
+    JSONArray messages = response.getJSONArray(MESSAGES);
     assertTrue(messages.length() > 0);
   }
 
@@ -188,12 +191,12 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn("C_ORDER", "em_copdevt_otherbp");
+    dropColumn(C_ORDER, "em_copdevt_otherbp");
 
     assertFalse(respVars.keySet().isEmpty());
-    String responseString = respVars.get("response");
+    String responseString = respVars.get(RESPONSE);
     JSONObject response = new JSONObject(responseString);
-    JSONArray messages = response.getJSONArray("messages");
+    JSONArray messages = response.getJSONArray(MESSAGES);
     assertTrue(messages.length() > 0);
   }
 

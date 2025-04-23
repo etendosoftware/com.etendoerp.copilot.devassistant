@@ -66,10 +66,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     boolean isView = StringUtils.equalsIgnoreCase(parameter.get("IsView"), "true");
 
     try {
-      Module module = OBDal.getInstance().get(Module.class, moduleID);
-      if (module == null) {
-        throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
-      }
+      Module module = Utils.getModuleByID(moduleID);
       List<ModuleDBPrefix> moduleDBPrefixList = module.getModuleDBPrefixList();
       if (moduleDBPrefixList.isEmpty()) {
         throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
@@ -84,7 +81,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
       // Step 2: Register the table in Etendo
       alreadyExistTable(tableName);
-      DataPackage dataPackage = getDataPackage(prefix);
+      DataPackage dataPackage = Utils.getDataPackage(module);
       Table adTable = createAdTable(dataPackage, javaClass, tableName, dataAccessLevel, description, helpTable, isView);
 
       // Step 3: Set response
@@ -315,53 +312,4 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     return true;
   }
 
-  /**
-   * Retrieves the data package associated with the given database prefix.
-   *
-   * @param dbPrefix
-   *     The database prefix to look for.
-   * @return The data package associated with the prefix.
-   * @throws OBException
-   *     if no matching data package is found or if the module is not in development.
-   */
-  private DataPackage getDataPackage(String dbPrefix) {
-    OBCriteria<ModuleDBPrefix> modPrefCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbPrefix));
-    modPrefCrit.setMaxResults(1);
-    ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
-    if (modPref == null) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbPrefix));
-    }
-    Module module = modPref.getModule();
-    if (Boolean.FALSE.equals(module.isInDevelopment())) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
-    }
-    List<DataPackage> dataPackList = module.getDataPackageList();
-    if (dataPackList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
-    }
-    return dataPackList.get(0);
-  }
-
-
-  /**
-   * Retrieves the data package associated with the given database prefix.
-   *
-   * @param module
-   *     The module to look for.
-   * @return The data package associated with the prefix.
-   * @throws OBException
-   *     if no matching data package is found or if the module is not in development.
-   */
-  private DataPackage getDataPackage(Module module) {
-
-    if (Boolean.FALSE.equals(module.isInDevelopment())) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
-    }
-    List<DataPackage> dataPackList = module.getDataPackageList();
-    if (dataPackList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
-    }
-    return dataPackList.get(0);
-  }
 }

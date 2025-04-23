@@ -25,6 +25,7 @@ import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.erpCommon.utility.SequenceIdData;
 import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.scheduling.ProcessBundle;
@@ -142,6 +143,32 @@ public class Utils {
     return (Module) moduleCrit.uniqueResult();
   }
 
+  /**
+   * Retrieves a Module entity based on its unique identifier (ID).
+   * <p>
+   * This method queries the database to find a Module entity that matches the provided ID.
+   * If the ID is null, an exception is thrown. The query is limited to a single result.
+   * </p>
+   *
+   * @param id
+   *     The unique identifier of the Module to retrieve.
+   * @return The Module entity matching the provided ID, or null if no match is found.
+   * @throws OBException
+   *     If the provided ID is null.
+   */
+  public static Module getModuleByID(String id) {
+    if (id == null) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_IDCannotBeNull"));
+    }
+    OBCriteria<Module> criteria = OBDal.getInstance().createCriteria(Module.class);
+    criteria.add(Restrictions.eq(Module.PROPERTY_ID, id));
+    criteria.setMaxResults(1);
+    Module module = (Module) criteria.uniqueResult();
+    if (module == null) {
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), id));
+    }
+    return module;
+  }
 
   // List of control types
   public static final List<String> CONTROL_TYPES = List.of(CopilotConstants.APP_TYPE_LANGCHAIN,
@@ -257,5 +284,25 @@ public class Utils {
     return table;
   }
 
+
+  /**
+   * Retrieves the data package associated with the given database prefix.
+   *
+   * @param module
+   *     The module to look for.
+   * @return The data package associated with the prefix.
+   * @throws OBException
+   *     if no matching data package is found or if the module is not in development.
+   */
+  public static DataPackage getDataPackage(Module module) {
+    if (Boolean.FALSE.equals(module.isInDevelopment())) {
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
+    }
+    List<DataPackage> dataPackList = module.getDataPackageList();
+    if (dataPackList.isEmpty()) {
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
+    }
+    return dataPackList.get(0);
+  }
 
 }
