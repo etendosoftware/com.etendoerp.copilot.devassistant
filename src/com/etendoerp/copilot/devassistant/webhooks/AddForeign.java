@@ -104,7 +104,7 @@ public class AddForeign extends BaseWebhookService {
           externalBool);
 
       // Generate the foreign key constraint name
-      String constraintFk = CreateTable.getConstName(prefix, childTable, parentTable, "fk");
+      String constraintFk = CreateAndRegisterTable.getConstName(prefix, childTable, parentTable, "fk");
 
       // Register the columns for the child table
       RegisterColumns.registerColumns(childTable);
