@@ -2,6 +2,7 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
@@ -64,10 +66,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     boolean isView = StringUtils.equalsIgnoreCase(parameter.get("IsView"), "true");
 
     try {
-      Module module = OBDal.getInstance().get(Module.class, moduleID);
-      if (module == null) {
-        throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
-      }
+      Module module = Utils.getModuleByID(moduleID);
       List<ModuleDBPrefix> moduleDBPrefixList = module.getModuleDBPrefixList();
       if (moduleDBPrefixList.isEmpty()) {
         throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
@@ -82,7 +81,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
       // Step 2: Register the table in Etendo
       alreadyExistTable(tableName);
-      DataPackage dataPackage = getDataPackage(prefix);
+      DataPackage dataPackage = Utils.getDataPackage(module);
       Table adTable = createAdTable(dataPackage, javaClass, tableName, dataAccessLevel, description, helpTable, isView);
 
       // Step 3: Set response
@@ -107,13 +106,10 @@ public class CreateAndRegisterTable extends BaseWebhookService {
    */
   private String determineTableName(String name, String prefix, String tableName) {
     if (StringUtils.isEmpty(tableName)) {
-      tableName = StringUtils.startsWith(name, prefix)
-          ? StringUtils.substring(StringUtils.removeStart(name, prefix), 1)
-          : name;
+      tableName = StringUtils.startsWith(name, prefix) ? StringUtils.substring(StringUtils.removeStart(name, prefix),
+          1) : name;
     }
-    return StringUtils.startsWithIgnoreCase(tableName, prefix)
-        ? tableName
-        : prefix + "_" + tableName;
+    return StringUtils.startsWithIgnoreCase(tableName, prefix) ? tableName : prefix + "_" + tableName;
   }
 
   /**
@@ -161,36 +157,24 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
     // Usar StringBuilder para construir la consulta
     StringBuilder queryBuilder = new StringBuilder();
-    queryBuilder.append("CREATE TABLE IF NOT EXISTS public.%s ( ")
-        .append("%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, ")
-        .append("created timestamp without time zone NOT NULL DEFAULT now(), ")
-        .append("createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("updated timestamp without time zone NOT NULL DEFAULT now(), ")
-        .append("updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("CONSTRAINT %s PRIMARY KEY (%s_id), ")
-        .append("CONSTRAINT %s FOREIGN KEY (ad_client_id) ")
-        .append("REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE ")
-        .append("ON UPDATE NO ACTION ")
-        .append("ON DELETE NO ACTION, ")
-        .append("CONSTRAINT %s FOREIGN KEY (ad_org_id) ")
-        .append("REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE ")
-        .append("ON UPDATE NO ACTION ")
-        .append("ON DELETE NO ACTION, ")
-        .append("CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))")
-        .append(") TABLESPACE pg_default;");
+    queryBuilder.append("CREATE TABLE IF NOT EXISTS public.%s ( ").append(
+        "%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, ").append(
+        "created timestamp without time zone NOT NULL DEFAULT now(), ").append(
+        "createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "updated timestamp without time zone NOT NULL DEFAULT now(), ").append(
+        "updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "CONSTRAINT %s PRIMARY KEY (%s_id), ").append("CONSTRAINT %s FOREIGN KEY (ad_client_id) ").append(
+        "REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE ").append("ON UPDATE NO ACTION ").append(
+        "ON DELETE NO ACTION, ").append("CONSTRAINT %s FOREIGN KEY (ad_org_id) ").append(
+        "REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE ").append("ON UPDATE NO ACTION ").append(
+        "ON DELETE NO ACTION, ").append(
+        "CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))").append(") TABLESPACE pg_default;");
 
-    String query = String.format(queryBuilder.toString(),
-        finalTableName,
-        finalTableName,
-        constraintPk,
-        finalTableName,
-        constraintFkClient,
-        constraintFkOrg,
-        constraintIsactive
-    );
+    String query = String.format(queryBuilder.toString(), finalTableName, finalTableName, constraintPk, finalTableName,
+        constraintFkClient, constraintFkOrg, constraintIsactive);
 
     JSONObject response = Utils.executeQuery(query);
     LOG.info("Table created in database: {}", response.toString());
@@ -211,49 +195,50 @@ public class CreateAndRegisterTable extends BaseWebhookService {
   }
 
   /**
-   * Generates a constraint name based on the provided parameters.
+   * Generates a constraint name based on the provided parameters. The generated name ensures that the length
+   * does not exceed the maximum allowed length and makes adjustments to fit the constraint naming conventions.
+   * <p>
+   * If the name exceeds the maximum length, the name will be shortened by removing underscores or trimming
+   * parts of the name until the length constraint is met.
    *
    * @param prefix
-   *     The prefix to be used for the constraint name.
+   *     the prefix to be used for the constraint name
    * @param name1
-   *     The first part of the constraint name.
+   *     the first part of the constraint name
    * @param name2
-   *     The second part of the constraint name.
+   *     the second part of the constraint name
    * @param suffix
-   *     The suffix to be used for the constraint name.
-   * @return The generated constraint name.
+   *     the suffix to be used for the constraint name
+   * @return the generated constraint name
+   * @throws SQLException
+   *     if an error occurs during the SQL query execution
+   * @throws JSONException
+   *     if an error occurs while creating the JSON object
    */
-  public static String getConstName(String prefix, String name1, String name2, String suffix) {
-    if (StringUtils.startsWith(name1, prefix + "_") || StringUtils.startsWithIgnoreCase(name1, prefix + "_")) {
-      name1 = StringUtils.substring(name1, prefix.length() + 1);
-    }
-    if (StringUtils.startsWith(name2, prefix + "_") || StringUtils.startsWithIgnoreCase(name2, prefix + "_")) {
-      name2 = StringUtils.substring(name2, prefix.length() + 1);
-    }
-
-    String proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
-
-    if (proposal.length() > MAX_LENGTH && (StringUtils.contains(name1, "_") || StringUtils.contains(name2, "_"))) {
-      name1 = name1.replace("_", "");
-      name2 = name2.replace("_", "");
-      proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
-    }
-
-    int offset = 1;
-    while (proposal.length() > MAX_LENGTH && offset < 15) {
-      String name1Offsetted = name1.length() > offset ? StringUtils.substring(name1, offset) : name1;
-      String name2Offsetted = name2.length() > offset ? StringUtils.substring(name2, offset) : name2;
-      proposal = prefix + "_" + name1Offsetted + "_" + name2Offsetted + "_" + suffix;
+  public static String getConstName(String prefix, String name1, String name2,
+      String suffix) throws SQLException, JSONException {
+    String fromName = StringUtils.substringAfter(name1, "_");
+    String toName = StringUtils.substringAfter(name2, "_");
+    String proposal = "";
+    int offset = 0;
+    while (StringUtils.isEmpty(proposal) || proposal.length() > MAX_LENGTH) {
+      proposal = String.format("%s_%s_%s_%s", prefix, StringUtils.substring(fromName, 0, fromName.length() - offset),
+          StringUtils.substring(toName, 0, toName.length() - offset), suffix);
       offset++;
     }
 
-    if (proposal.length() > MAX_LENGTH) {
-      int length = MAX_LENGTH - prefix.length() - suffix.length() - 2;
-      String randomString = Utils.generateRandomString(length);
-      proposal = prefix + "_" + randomString + "_" + suffix;
+    String query = String.format(
+        "SELECT count(1) FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = '%s';",
+        proposal);
+    JSONObject response = Utils.executeQuery(query);
+    int count = response.getJSONArray("result").getJSONObject(0).getInt("count");
+    if (count > 0) {
+      count++;
+      proposal = String.format("%s_%s_%s%d_%s", prefix, StringUtils.substring(name1, 0, name1.length() - offset),
+          StringUtils.substring(name2, 0, name2.length() - offset), count, suffix);
     }
 
-    proposal = proposal.replace("__", "_");
+
     return proposal;
   }
 
@@ -327,53 +312,4 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     return true;
   }
 
-  /**
-   * Retrieves the data package associated with the given database prefix.
-   *
-   * @param dbPrefix
-   *     The database prefix to look for.
-   * @return The data package associated with the prefix.
-   * @throws OBException
-   *     if no matching data package is found or if the module is not in development.
-   */
-  private DataPackage getDataPackage(String dbPrefix) {
-    OBCriteria<ModuleDBPrefix> modPrefCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbPrefix));
-    modPrefCrit.setMaxResults(1);
-    ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
-    if (modPref == null) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbPrefix));
-    }
-    Module module = modPref.getModule();
-    if (Boolean.FALSE.equals(module.isInDevelopment())) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
-    }
-    List<DataPackage> dataPackList = module.getDataPackageList();
-    if (dataPackList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
-    }
-    return dataPackList.get(0);
-  }
-
-
-  /**
-   * Retrieves the data package associated with the given database prefix.
-   *
-   * @param module
-   *     The module to look for.
-   * @return The data package associated with the prefix.
-   * @throws OBException
-   *     if no matching data package is found or if the module is not in development.
-   */
-  private DataPackage getDataPackage(Module module) {
-
-    if (Boolean.FALSE.equals(module.isInDevelopment())) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
-    }
-    List<DataPackage> dataPackList = module.getDataPackageList();
-    if (dataPackList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
-    }
-    return dataPackList.get(0);
-  }
 }
