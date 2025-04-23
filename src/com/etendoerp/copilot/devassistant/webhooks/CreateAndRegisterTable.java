@@ -2,27 +2,17 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.jettison.json.JSONObject;
-import org.hibernate.criterion.Restrictions;
-import org.openbravo.base.exception.OBException;
-import org.openbravo.base.provider.OBProvider;
-import org.openbravo.dal.core.OBContext;
-import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
-import org.openbravo.model.ad.module.ModuleDBPrefix;
-import org.openbravo.model.ad.system.Client;
-import org.openbravo.model.common.enterprise.Organization;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
@@ -30,22 +20,12 @@ import com.etendoerp.webhookevents.services.BaseWebhookService;
 /**
  * The {@code CreateAndRegisterTable} class extends {@link BaseWebhookService} and provides functionality to
  * create a table in a PostgreSQL database and register it in Openbravo's AD_TABLE entity.
- * It combines the functionality of creating the table physically in the database and registering it in the system.
  */
 public class CreateAndRegisterTable extends BaseWebhookService {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final int MAX_LENGTH = 30;
 
-  /**
-   * Processes the incoming webhook request to create and register a table.
-   * It creates the table in the database and then registers it in Openbravo's AD_TABLE entity.
-   *
-   * @param parameter
-   *     A map containing the parameters from the incoming request.
-   * @param responseVars
-   *     A map where the response message or error will be stored.
-   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, LOG);
@@ -56,36 +36,31 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     String name = StringUtils.lowerCase(parameter.get("Name"));
     String moduleID = parameter.get("ModuleID");
     String javaClass = parameter.get("JavaClass");
-    String tableName = StringUtils.isNotEmpty(parameter.get("DBTableName")) ? StringUtils.lowerCase(
-        parameter.get("DBTableName")) : null;
+    String tableName = StringUtils.isNotEmpty(parameter.get("DBTableName")) ? StringUtils.lowerCase(parameter.get("DBTableName")) : null;
     String dataAccessLevel = parameter.get("DataAccessLevel");
     String description = parameter.get("Description");
     String helpTable = parameter.get("Help");
     boolean isView = StringUtils.equalsIgnoreCase(parameter.get("IsView"), "true");
 
     try {
-      Module module = OBDal.getInstance().get(Module.class, moduleID);
-      if (module == null) {
-        throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
-      }
-      List<ModuleDBPrefix> moduleDBPrefixList = module.getModuleDBPrefixList();
-      if (moduleDBPrefixList.isEmpty()) {
-        throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
-      }
-      String prefix = StringUtils.lowerCase(moduleDBPrefixList.get(0).getName());
+      // Step 1: Get the module and prefix
+      Object[] moduleAndPrefix = TableRegistrationUtils.getModuleAndPrefix(moduleID);
+      Module module = (Module) moduleAndPrefix[0];
+      String prefix = (String) moduleAndPrefix[1];
+
       name = getDefaultName(name);
       tableName = determineTableName(name, prefix, tableName);
-      javaClass = determineJavaClassName(name, javaClass);
+      javaClass = TableRegistrationUtils.determineJavaClassName(name, javaClass);
 
-      // Step 1: Create the table in the database
+      // Step 2: Create the table in the database
       createTableInDatabase(prefix, tableName, isView);
 
-      // Step 2: Register the table in Etendo
-      alreadyExistTable(tableName);
-      DataPackage dataPackage = getDataPackage(prefix);
-      Table adTable = createAdTable(dataPackage, javaClass, tableName, dataAccessLevel, description, helpTable, isView);
+      // Step 3: Register the table in Openbravo
+      TableRegistrationUtils.alreadyExistTable(tableName);
+      DataPackage dataPackage = TableRegistrationUtils.getDataPackage(module);
+      Table adTable = TableRegistrationUtils.createAdTable(dataPackage, javaClass, tableName, dataAccessLevel, description, helpTable, isView);
 
-      // Step 3: Set response
+      // Step 4: Set response
       responseVars.put("message", String.format(OBMessageUtils.messageBD("COPDEV_TableRegistSucc"), adTable.getId()));
 
     } catch (Exception e) {
@@ -94,17 +69,6 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     }
   }
 
-  /**
-   * Determines the table name based on the provided name, prefix, and optional table name.
-   *
-   * @param name
-   *     The base name of the table.
-   * @param prefix
-   *     The prefix for the table name.
-   * @param tableName
-   *     The optional table name provided in the parameters.
-   * @return The final table name to use.
-   */
   private String determineTableName(String name, String prefix, String tableName) {
     if (StringUtils.isEmpty(tableName)) {
       tableName = StringUtils.startsWith(name, prefix)
@@ -116,41 +80,6 @@ public class CreateAndRegisterTable extends BaseWebhookService {
         : prefix + "_" + tableName;
   }
 
-  /**
-   * Determines the Java class name based on the provided name and optional Java class name.
-   *
-   * @param name
-   *     The base name of the table.
-   * @param javaClass
-   *     The optional Java class name provided in the parameters.
-   * @return The final Java class name to use.
-   */
-  private String determineJavaClassName(String name, String javaClass) {
-    if (StringUtils.isEmpty(javaClass) || StringUtils.equals(javaClass, "null")) {
-      StringBuilder formattedName = new StringBuilder();
-      String[] words = StringUtils.split(StringUtils.replaceChars(name, "_", " "), " ");
-      for (String word : words) {
-        if (StringUtils.isNotEmpty(word)) {
-          formattedName.append(StringUtils.capitalize(word));
-        }
-      }
-      return formattedName.toString();
-    }
-    return javaClass;
-  }
-
-  /**
-   * Creates the table physically in the PostgreSQL database.
-   *
-   * @param prefix
-   *     The prefix for the table name.
-   * @param tableName
-   *     The base name of the table.
-   * @param isView
-   *     Indicates if the table is a view.
-   * @throws Exception
-   *     If an error occurs during table creation.
-   */
   private void createTableInDatabase(String prefix, String tableName, boolean isView) throws Exception {
     String constraintIsactive = getConstName(prefix, tableName, "isactive", "chk");
     String constraintPk = getConstName(prefix, tableName, "", "pk");
@@ -159,7 +88,6 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
     String finalTableName = isView ? tableName + "_v" : tableName;
 
-    // Usar StringBuilder para construir la consulta
     StringBuilder queryBuilder = new StringBuilder();
     queryBuilder.append("CREATE TABLE IF NOT EXISTS public.%s ( ")
         .append("%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
@@ -196,13 +124,6 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     LOG.info("Table created in database: {}", response.toString());
   }
 
-  /**
-   * Returns the default table name if the provided name is blank.
-   *
-   * @param name
-   *     The name of the table.
-   * @return The provided table name or a default name if the provided name is blank.
-   */
   private String getDefaultName(String name) {
     if (StringUtils.isBlank(name)) {
       return String.format(OBMessageUtils.messageBD("COPDEV_DefaultTableName"));
@@ -210,19 +131,6 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     return name;
   }
 
-  /**
-   * Generates a constraint name based on the provided parameters.
-   *
-   * @param prefix
-   *     The prefix to be used for the constraint name.
-   * @param name1
-   *     The first part of the constraint name.
-   * @param name2
-   *     The second part of the constraint name.
-   * @param suffix
-   *     The suffix to be used for the constraint name.
-   * @return The generated constraint name.
-   */
   public static String getConstName(String prefix, String name1, String name2, String suffix) {
     if (StringUtils.startsWith(name1, prefix + "_") || StringUtils.startsWithIgnoreCase(name1, prefix + "_")) {
       name1 = StringUtils.substring(name1, prefix.length() + 1);
@@ -255,125 +163,5 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
     proposal = proposal.replace("__", "_");
     return proposal;
-  }
-
-  /**
-   * Creates a new table in the system with the provided attributes.
-   *
-   * @param dataPackage
-   *     The data package associated with the table.
-   * @param javaClass
-   *     The Java class name for the table.
-   * @param tableName
-   *     The name of the table.
-   * @param dataAccessLevel
-   *     The data access level for the table.
-   * @param description
-   *     The description of the table.
-   * @param helpTable
-   *     Help comment or description for the table.
-   * @param isView
-   *     Indicates if the table is a view.
-   * @return The newly created table object.
-   */
-  private Table createAdTable(DataPackage dataPackage, String javaClass, String tableName, String dataAccessLevel,
-      String description, String helpTable, boolean isView) {
-    String name = tableName;
-    Table adTable = OBProvider.getInstance().get(Table.class);
-    adTable.setNewOBObject(true);
-    Client client = OBDal.getInstance().get(Client.class, "0");
-    adTable.setClient(client);
-    adTable.setOrganization(OBDal.getInstance().get(Organization.class, "0"));
-    adTable.setActive(true);
-    adTable.setCreationDate(new Date());
-    adTable.setCreatedBy(OBContext.getOBContext().getUser());
-    adTable.setUpdated(new Date());
-    adTable.setUpdatedBy(OBContext.getOBContext().getUser());
-    adTable.setDataAccessLevel(dataAccessLevel != null ? dataAccessLevel : "4"); // Default to "Client/Organization"
-    adTable.setDataPackage(dataPackage);
-    if (isView) {
-      tableName = tableName + "_v";
-      name = name + "V";
-    }
-    adTable.setName(name);
-    adTable.setDBTableName(tableName);
-    adTable.setJavaClassName(javaClass);
-    adTable.setDescription(description);
-    adTable.setHelpComment(helpTable);
-    OBDal.getInstance().save(adTable);
-    OBDal.getInstance().flush();
-
-    return adTable;
-  }
-
-  /**
-   * Checks if a table with the specified name already exists in the system.
-   *
-   * @param tableName
-   *     The name of the table to check.
-   * @return true if the table does not exist; false if the table exists.
-   * @throws OBException
-   *     if a table with the specified name already exists.
-   */
-  private boolean alreadyExistTable(String tableName) {
-    OBCriteria<Table> tableNameCrit = OBDal.getInstance().createCriteria(Table.class);
-    tableNameCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, tableName));
-    tableNameCrit.setMaxResults(1);
-    Table tableExist = (Table) tableNameCrit.uniqueResult();
-
-    if (tableExist != null) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_TableNameAlreadyUse")));
-    }
-    return true;
-  }
-
-  /**
-   * Retrieves the data package associated with the given database prefix.
-   *
-   * @param dbPrefix
-   *     The database prefix to look for.
-   * @return The data package associated with the prefix.
-   * @throws OBException
-   *     if no matching data package is found or if the module is not in development.
-   */
-  private DataPackage getDataPackage(String dbPrefix) {
-    OBCriteria<ModuleDBPrefix> modPrefCrit = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
-    modPrefCrit.add(Restrictions.ilike(ModuleDBPrefix.PROPERTY_NAME, dbPrefix));
-    modPrefCrit.setMaxResults(1);
-    ModuleDBPrefix modPref = (ModuleDBPrefix) modPrefCrit.uniqueResult();
-    if (modPref == null) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PrefixNotFound"), dbPrefix));
-    }
-    Module module = modPref.getModule();
-    if (Boolean.FALSE.equals(module.isInDevelopment())) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
-    }
-    List<DataPackage> dataPackList = module.getDataPackageList();
-    if (dataPackList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
-    }
-    return dataPackList.get(0);
-  }
-
-
-  /**
-   * Retrieves the data package associated with the given database prefix.
-   *
-   * @param module
-   *     The module to look for.
-   * @return The data package associated with the prefix.
-   * @throws OBException
-   *     if no matching data package is found or if the module is not in development.
-   */
-  private DataPackage getDataPackage(Module module) {
-
-    if (Boolean.FALSE.equals(module.isInDevelopment())) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
-    }
-    List<DataPackage> dataPackList = module.getDataPackageList();
-    if (dataPackList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
-    }
-    return dataPackList.get(0);
   }
 }
