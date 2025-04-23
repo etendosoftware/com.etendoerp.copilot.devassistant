@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
 import org.junit.After;
@@ -106,14 +107,8 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   @Test
   public void createStringColumnTest() throws Exception {
     var ccw = new CreateColumn();
-    Map<String, String> parameter = new HashMap<>();
-    parameter.put(PARAM_CAN_BE_NULL, "false");
-    parameter.put(PARAM_COLUMN_NAME_DB, "mytext");
-    parameter.put(PARAM_DEFAULT_VALUE, "'hello'");
-    parameter.put(PARAM_MODULE_ID, testModuleId);
-    parameter.put(PARAM_NAME, "My Text Test");
-    parameter.put(PARAM_REFERENCE_ID, REFERENCE_ID_TEXT);
-    parameter.put(PARAM_TABLE_ID, C_ORDER_TABLE_ID);
+    Map<String, String> parameter = buildParameters("false", "mytext", "'hello'", testModuleId, "My Text Test",
+        REFERENCE_ID_TEXT, C_ORDER_TABLE_ID);
 
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
@@ -124,11 +119,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     OBDal.getInstance().flush();
     dropColumn(C_ORDER, "em_copdevt_mytext");
 
-    assertFalse(respVars.keySet().isEmpty());
-    String responseString = respVars.get(RESPONSE);
-    JSONObject response = new JSONObject(responseString);
-    JSONArray messages = response.getJSONArray(MESSAGES);
-    assertTrue(messages.length() > 0);
+    validateResponse(respVars);
   }
 
   /**
@@ -141,14 +132,8 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   @Test
   public void createYesNoColumnTest() throws Exception {
     var ccw = new CreateColumn();
-    Map<String, String> parameter = new HashMap<>();
-    parameter.put(PARAM_CAN_BE_NULL, "false");
-    parameter.put(PARAM_COLUMN_NAME_DB, "myYesNo");
-    parameter.put(PARAM_DEFAULT_VALUE, "'N'");
-    parameter.put(PARAM_MODULE_ID, testModuleId);
-    parameter.put(PARAM_NAME, "My Boolean");
-    parameter.put(PARAM_REFERENCE_ID, YESNO_REFERENCE_ID);
-    parameter.put(PARAM_TABLE_ID, C_ORDER_TABLE_ID);
+    Map<String, String> parameter = buildParameters("false", "myYesNo", "'N'", testModuleId, "My Boolean",
+        YESNO_REFERENCE_ID, C_ORDER_TABLE_ID);
 
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
@@ -159,11 +144,65 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     OBDal.getInstance().flush();
     dropColumn(C_ORDER, "em_copdevt_myYesNo");
 
+    validateResponse(respVars);
+  }
+
+  /**
+   * Validates the response map to ensure it contains valid data.
+   * <p>
+   * This method checks that the provided response map is not empty, retrieves the response string,
+   * parses it into a JSON object, and verifies that the "messages" array within the JSON object
+   * contains at least one message.
+   * </p>
+   *
+   * @param respVars
+   *     A {@link Map} containing the response variables to validate.
+   * @throws JSONException
+   *     If an error occurs while parsing the JSON response.
+   */
+  private static void validateResponse(Map<String, String> respVars) throws JSONException {
     assertFalse(respVars.keySet().isEmpty());
     String responseString = respVars.get(RESPONSE);
     JSONObject response = new JSONObject(responseString);
     JSONArray messages = response.getJSONArray(MESSAGES);
     assertTrue(messages.length() > 0);
+  }
+
+  /**
+   * Builds a map of parameters required for column creation.
+   * <p>
+   * This method creates and populates a map with the necessary parameters for creating a column
+   * in the database, including whether the column can be null, its database name, default value,
+   * associated module ID, display name, reference ID, and table ID.
+   * </p>
+   *
+   * @param canBeNull
+   *     A {@link String} indicating whether the column can be null ("true" or "false").
+   * @param dbColumnName
+   *     The database name of the column.
+   * @param defaultValue
+   *     The default value for the column.
+   * @param moduleId
+   *     The ID of the module to which the column belongs.
+   * @param name
+   *     The display name of the column.
+   * @param refererenceID
+   *     The reference ID for the column.
+   * @param tableId
+   *     The ID of the table to which the column belongs.
+   * @return A {@link Map} containing the parameters for column creation.
+   */
+  private Map<String, String> buildParameters(String canBeNull, String dbColumnName, String defaultValue,
+      String moduleId, String name, String refererenceID, String tableId) {
+    Map<String, String> parameter = new HashMap<>();
+    parameter.put(PARAM_CAN_BE_NULL, canBeNull);
+    parameter.put(PARAM_COLUMN_NAME_DB, dbColumnName);
+    parameter.put(PARAM_DEFAULT_VALUE, defaultValue);
+    parameter.put(PARAM_MODULE_ID, moduleId);
+    parameter.put(PARAM_NAME, name);
+    parameter.put(PARAM_REFERENCE_ID, refererenceID);
+    parameter.put(PARAM_TABLE_ID, tableId);
+    return parameter;
   }
 
   /**
@@ -193,11 +232,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     OBDal.getInstance().flush();
     dropColumn(C_ORDER, "em_copdevt_otherbp");
 
-    assertFalse(respVars.keySet().isEmpty());
-    String responseString = respVars.get(RESPONSE);
-    JSONObject response = new JSONObject(responseString);
-    JSONArray messages = response.getJSONArray(MESSAGES);
-    assertTrue(messages.length() > 0);
+    validateResponse(respVars);
   }
 
   /**
