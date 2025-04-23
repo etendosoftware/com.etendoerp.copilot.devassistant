@@ -193,7 +193,8 @@ public class CreateColumn extends BaseWebhookService {
         targetTableDBName = tableRefInfo.getTable().getDBTableName();
       }
 
-      String constraintFk = CreateTable.getConstName(prefixForConstraint, table.getDBTableName(), targetTableDBName,
+      String constraintFk = CreateAndRegisterTable.getConstName(prefixForConstraint, table.getDBTableName(),
+          targetTableDBName,
           "fk");
       String query = String.format(
           "ALTER TABLE IF EXISTS public.%s ADD CONSTRAINT %s FOREIGN KEY (%s) " + "REFERENCES public.%s (%s) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;",
