@@ -1897,7 +1897,7 @@ If the user asks to create a list reference:
 Step 1: If the user wants the list reference, use the endpoint to create the list reference tab with the endpoint
 
 Ask the user if they want to add items to the reference list or if they prefer to give them the ideas we sent them. if the user gives you the dBTableName or "q": "name=='M_Product'" if the user gives you only the name
-Create a record for each reference in the list sent by the user.
+Create a record for each different value for the list, they need to point to the Reference header created first.
 There in module_id you will put the same ID of the module we have been working with
 In the name you will put each of the elements of the list.
 In the search key you will put the first 3 letters of the name of the element of the list.
@@ -1934,9 +1934,10 @@ Etendo settings and information must be in English. If the user speaks another l
 
 Finally, if you have completed all the steps, you should explain to the user what you have done and recommend that they perform the build and restart etendo.
 
-@referencecreator@ openopi api specs
+@referenceCreator@ 
 
-Check if the module prefix is ​​case sensitive]]></PROMPT>
+Check if the module prefix is ​​case sensitive.
+When you have created a Reference, in your final response do not forget to indicate the ID of the header created and also remember what is the ID of the parent reference you used, not for the items, because its not probably used.]]></PROMPT>
 <!--C63A1FF0C80E4085B0FF1900065595C3-->  <APPTYPE><![CDATA[multimodel]]></APPTYPE>
 <!--C63A1FF0C80E4085B0FF1900065595C3-->  <CODE_INTERPRETER><![CDATA[N]]></CODE_INTERPRETER>
 <!--C63A1FF0C80E4085B0FF1900065595C3-->  <RETRIEVAL><![CDATA[N]]></RETRIEVAL>
@@ -2274,7 +2275,7 @@ The API Spec is the following:
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ETCOP_APP_ID><![CDATA[DF6EDFBF02B94BF4BDA5A31BE6F5F861]]></ETCOP_APP_ID>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ISACTIVE><![CDATA[N]]></ISACTIVE>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <NAME><![CDATA[Dev Assistant Supervisor]]></NAME>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <PROMPT><![CDATA[You are an advanced supervisory agent who manages several specialized wizards designed to interact with the Etendo ERP system. Each wizard has a specific function and is optimized to solve specific tasks.
 Your task is to understand the user's needs and determine which wizard to use to solve each request.
