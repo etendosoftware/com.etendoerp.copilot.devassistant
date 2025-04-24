@@ -71,13 +71,10 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
   private String determineTableName(String name, String prefix, String tableName) {
     if (StringUtils.isEmpty(tableName)) {
-      tableName = StringUtils.startsWith(name, prefix)
-          ? StringUtils.substring(StringUtils.removeStart(name, prefix), 1)
-          : name;
+      tableName = StringUtils.startsWith(name, prefix) ? StringUtils.substring(StringUtils.removeStart(name, prefix),
+          1) : name;
     }
-    return StringUtils.startsWithIgnoreCase(tableName, prefix)
-        ? tableName
-        : prefix + "_" + tableName;
+    return StringUtils.startsWithIgnoreCase(tableName, prefix) ? tableName : prefix + "_" + tableName;
   }
 
   private void createTableInDatabase(String prefix, String tableName, boolean isView) throws Exception {
@@ -89,36 +86,24 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     String finalTableName = isView ? tableName + "_v" : tableName;
 
     StringBuilder queryBuilder = new StringBuilder();
-    queryBuilder.append("CREATE TABLE IF NOT EXISTS public.%s ( ")
-        .append("%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, ")
-        .append("created timestamp without time zone NOT NULL DEFAULT now(), ")
-        .append("createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("updated timestamp without time zone NOT NULL DEFAULT now(), ")
-        .append("updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ")
-        .append("CONSTRAINT %s PRIMARY KEY (%s_id), ")
-        .append("CONSTRAINT %s FOREIGN KEY (ad_client_id) ")
-        .append("REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE ")
-        .append("ON UPDATE NO ACTION ")
-        .append("ON DELETE NO ACTION, ")
-        .append("CONSTRAINT %s FOREIGN KEY (ad_org_id) ")
-        .append("REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE ")
-        .append("ON UPDATE NO ACTION ")
-        .append("ON DELETE NO ACTION, ")
-        .append("CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))")
-        .append(") TABLESPACE pg_default;");
+    queryBuilder.append("CREATE TABLE IF NOT EXISTS public.%s ( ").append(
+        "%s_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "ad_client_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "ad_org_id character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "isactive character(1) COLLATE pg_catalog.\"default\" NOT NULL DEFAULT 'Y'::bpchar, ").append(
+        "created timestamp without time zone NOT NULL DEFAULT now(), ").append(
+        "createdby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "updated timestamp without time zone NOT NULL DEFAULT now(), ").append(
+        "updatedby character varying(32) COLLATE pg_catalog.\"default\" NOT NULL, ").append(
+        "CONSTRAINT %s PRIMARY KEY (%s_id), ").append("CONSTRAINT %s FOREIGN KEY (ad_client_id) ").append(
+        "REFERENCES public.ad_client (ad_client_id) MATCH SIMPLE ").append("ON UPDATE NO ACTION ").append(
+        "ON DELETE NO ACTION, ").append("CONSTRAINT %s FOREIGN KEY (ad_org_id) ").append(
+        "REFERENCES public.ad_org (ad_org_id) MATCH SIMPLE ").append("ON UPDATE NO ACTION ").append(
+        "ON DELETE NO ACTION, ").append(
+        "CONSTRAINT %s CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))").append(") TABLESPACE pg_default;");
 
-    String query = String.format(queryBuilder.toString(),
-        finalTableName,
-        finalTableName,
-        constraintPk,
-        finalTableName,
-        constraintFkClient,
-        constraintFkOrg,
-        constraintIsactive
-    );
+    String query = String.format(queryBuilder.toString(), finalTableName, finalTableName, constraintPk, finalTableName,
+        constraintFkClient, constraintFkOrg, constraintIsactive);
 
     JSONObject response = Utils.executeQuery(query);
     LOG.info("Table created in database: {}", response.toString());
@@ -155,13 +140,18 @@ public class CreateAndRegisterTable extends BaseWebhookService {
       offset++;
     }
 
-    if (proposal.length() > MAX_LENGTH) {
-      int length = MAX_LENGTH - prefix.length() - suffix.length() - 2;
-      String randomString = Utils.generateRandomString(length);
-      proposal = prefix + "_" + randomString + "_" + suffix;
+    String query = String.format(
+        "SELECT count(1) FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = '%s';",
+        proposal);
+    JSONObject response = Utils.executeQuery(query);
+    int count = response.getJSONArray("result").getJSONObject(0).getInt("count");
+    if (count > 0) {
+      count++;
+      proposal = String.format("%s_%s_%s%d_%s", prefix, StringUtils.substring(name1, 0, name1.length() - offset),
+          StringUtils.substring(name2, 0, name2.length() - offset), count, suffix);
     }
 
-    proposal = proposal.replace("__", "_");
+
     return proposal;
   }
 }
