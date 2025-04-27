@@ -1,4 +1,4 @@
-package com.etendoerp.copilot.devassistant.webhooks;
+package com.etendoerp.copilot.devassistant;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +24,10 @@ import com.etendoerp.copilot.devassistant.Utils;
  * Utility class containing shared methods for registering tables and views in Openbravo's AD_TABLE.
  */
 public class TableRegistrationUtils {
+
+  private TableRegistrationUtils() {
+    throw new AssertionError("Utility class - do not instantiate");
+  }
 
   /**
    * Retrieves the data package associated with the given module.

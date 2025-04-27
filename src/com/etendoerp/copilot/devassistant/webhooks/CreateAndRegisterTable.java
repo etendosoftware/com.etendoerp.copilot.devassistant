@@ -7,15 +7,17 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
+import com.etendoerp.copilot.devassistant.TableRegistrationUtils;
 
 /**
  * The {@code CreateAndRegisterTable} class extends {@link BaseWebhookService} and provides functionality to
@@ -143,14 +145,26 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     String query = String.format(
         "SELECT count(1) FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = '%s';",
         proposal);
-    JSONObject response = Utils.executeQuery(query);
-    int count = response.getJSONArray("result").getJSONObject(0).getInt("count");
+
+    int count = 0;
+    try {
+      JSONObject response = Utils.executeQuery(query);
+      if (response != null) {
+        JSONArray resultArray = response.getJSONArray("result");
+        if (resultArray != null && resultArray.length() > 0) {
+          JSONObject resultObject = resultArray.getJSONObject(0);
+          count = resultObject.getInt("count");
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("Error checking constraint name '{}': {}", proposal, e.getMessage(), e);
+    }
+
     if (count > 0) {
       count++;
       proposal = String.format("%s_%s_%s%d_%s", prefix, StringUtils.substring(name1, 0, name1.length() - offset),
           StringUtils.substring(name2, 0, name2.length() - offset), count, suffix);
     }
-
 
     return proposal;
   }
