@@ -73,7 +73,9 @@ public class CreateView extends BaseWebhookService {
       createAndVerifyView(viewDbName, querySelect);
 
       // Step 6: Register the view in Openbravo
-      registerViewInOpenbravo(module, viewDbName, javaClass, dataAccessLevel, description, helpTable, name, responseVars);
+      ViewRegistrationParams params = new ViewRegistrationParams(module, viewDbName, javaClass,
+          dataAccessLevel, description, helpTable, name);
+      registerViewInOpenbravo(params, responseVars);
 
     } catch (SQLException e) {
       LOG.error("SQL error while creating view: {}", e.getMessage(), e);
@@ -81,6 +83,58 @@ public class CreateView extends BaseWebhookService {
     } catch (Exception e) {
       LOG.error("Error creating view: {}", e.getMessage(), e);
       responseVars.put("error", e.getMessage());
+    }
+  }
+
+  /**
+   * Data class to hold parameters for view registration in Openbravo.
+   */
+  private static class ViewRegistrationParams {
+    private final Module module;
+    private final String viewDbName;
+    private final String javaClass;
+    private final String dataAccessLevel;
+    private final String description;
+    private final String helpTable;
+    private final String name;
+
+    public ViewRegistrationParams(Module module, String viewDbName, String javaClass,
+        String dataAccessLevel, String description, String helpTable, String name) {
+      this.module = module;
+      this.viewDbName = viewDbName;
+      this.javaClass = javaClass;
+      this.dataAccessLevel = dataAccessLevel;
+      this.description = description;
+      this.helpTable = helpTable;
+      this.name = name;
+    }
+
+    public Module getModule() {
+      return module;
+    }
+
+    public String getViewDbName() {
+      return viewDbName;
+    }
+
+    public String getJavaClass() {
+      return javaClass;
+    }
+
+    public String getDataAccessLevel() {
+      return dataAccessLevel;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public String getHelpTable() {
+      return helpTable;
+    }
+
+    public String getName() {
+      return name;
     }
   }
 
@@ -145,21 +199,17 @@ public class CreateView extends BaseWebhookService {
     Connection conn = null;
     PreparedStatement statement = null;
     try {
-      // Create the view
       conn = OBDal.getInstance().getConnection();
       String query = String.format("CREATE OR REPLACE VIEW public.%s AS %s", viewDbName, querySelect);
       statement = conn.prepareStatement(query);
       boolean resultBool = statement.execute();
       LOG.debug("Query executed and returned: {}", resultBool);
 
-      // Commit the transaction
       conn.commit();
       LOG.debug("Transaction committed after creating view");
 
-      // Verify the view exists
       verifyViewExists(conn, viewDbName);
 
-      // Log the columns of the view
       logViewColumns(conn, viewDbName);
 
     } finally {
@@ -238,32 +288,22 @@ public class CreateView extends BaseWebhookService {
   /**
    * Registers the view in Openbravo's application dictionary and verifies column registration.
    *
-   * @param module          The module to associate the view with.
-   * @param viewDbName      The database name of the view.
-   * @param javaClass       The Java class name for the view.
-   * @param dataAccessLevel The data access level for the view.
-   * @param description     The description of the view.
-   * @param helpTable       The help comment for the view.
-   * @param name            The base name of the view.
-   * @param responseVars    The response variables to store the result.
+   * @param params       The parameters for view registration.
+   * @param responseVars The response variables to store the result.
    */
-  private void registerViewInOpenbravo(Module module, String viewDbName, String javaClass,
-      String dataAccessLevel, String description, String helpTable, String name,
-      Map<String, String> responseVars) {
+  private void registerViewInOpenbravo(ViewRegistrationParams params, Map<String, String> responseVars) {
     OBContext.setAdminMode(true);
     try {
-      TableRegistrationUtils.alreadyExistTable(viewDbName);
-      DataPackage dataPackage = TableRegistrationUtils.getDataPackage(module);
-      javaClass = TableRegistrationUtils.determineJavaClassName(name, javaClass);
-      Table adTable = TableRegistrationUtils.createAdTable(dataPackage, javaClass, viewDbName,
-          dataAccessLevel, description, helpTable, true);
+      TableRegistrationUtils.alreadyExistTable(params.getViewDbName());
+      DataPackage dataPackage = TableRegistrationUtils.getDataPackage(params.getModule());
+      String javaClass = TableRegistrationUtils.determineJavaClassName(params.getName(), params.getJavaClass());
+      Table adTable = TableRegistrationUtils.createAdTable(dataPackage, javaClass, params.getViewDbName(),
+          params.getDataAccessLevel(), params.getDescription(), params.getHelpTable(), true);
       OBDal.getInstance().flush();
       LOG.debug("View registered in AD_TABLE with ID: {}", adTable.getId());
 
-      // Verify columns in AD_COLUMN
-      verifyColumnsInAdColumn(adTable, viewDbName);
+      verifyColumnsInAdColumn(adTable, params.getViewDbName());
 
-      // Set response
       setSuccessResponse(adTable, responseVars);
     } finally {
       OBContext.restorePreviousMode();
