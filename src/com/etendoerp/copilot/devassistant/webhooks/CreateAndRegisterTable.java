@@ -73,8 +73,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
   private String determineTableName(String name, String prefix, String tableName) {
     if (StringUtils.isEmpty(tableName)) {
-      tableName = StringUtils.startsWith(name, prefix) ? StringUtils.substring(StringUtils.removeStart(name, prefix),
-          1) : name;
+      tableName = StringUtils.startsWith(name, prefix) ? StringUtils.substring(StringUtils.removeStart(name, prefix), 1) : name;
     }
     return StringUtils.startsWithIgnoreCase(tableName, prefix) ? tableName : prefix + "_" + tableName;
   }
@@ -118,54 +117,140 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     return name;
   }
 
+  /**
+   * Generates a constraint name based on the provided prefix, names, and suffix.
+   * Ensures the name does not exceed the maximum length and does not conflict with existing constraints.
+   *
+   * @param prefix The prefix to use for the constraint name.
+   * @param name1  The first name component.
+   * @param name2  The second name component.
+   * @param suffix The suffix to append to the constraint name.
+   * @return The generated constraint name.
+   */
   public static String getConstName(String prefix, String name1, String name2, String suffix) {
-    if (StringUtils.startsWith(name1, prefix + "_") || StringUtils.startsWithIgnoreCase(name1, prefix + "_")) {
-      name1 = StringUtils.substring(name1, prefix.length() + 1);
-    }
-    if (StringUtils.startsWith(name2, prefix + "_") || StringUtils.startsWithIgnoreCase(name2, prefix + "_")) {
-      name2 = StringUtils.substring(name2, prefix.length() + 1);
+    String adjustedName1 = adjustNameWithPrefix(name1, prefix);
+    String adjustedName2 = adjustNameWithPrefix(name2, prefix);
+    String proposal = buildProposal(prefix, adjustedName1, adjustedName2, suffix);
+
+    proposal = adjustProposalLength(proposal, adjustedName1, adjustedName2, prefix, suffix);
+
+    int count = checkConstraintExists(proposal);
+    if (count > 0) {
+      count++;
+      proposal = String.format("%s_%s_%s%d_%s", prefix,
+          StringUtils.substring(adjustedName1, 0, adjustedName1.length() - 1),
+          StringUtils.substring(adjustedName2, 0, adjustedName2.length() - 1), count, suffix);
     }
 
-    String proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
+    return proposal;
+  }
 
-    if (proposal.length() > MAX_LENGTH && (StringUtils.contains(name1, "_") || StringUtils.contains(name2, "_"))) {
-      name1 = name1.replace("_", "");
-      name2 = name2.replace("_", "");
-      proposal = prefix + "_" + name1 + "_" + name2 + "_" + suffix;
+  /**
+   * Adjusts a name by removing the prefix if it starts with it.
+   *
+   * @param name   The name to adjust.
+   * @param prefix The prefix to check and remove.
+   * @return The adjusted name.
+   */
+  private static String adjustNameWithPrefix(String name, String prefix) {
+    String prefixWithUnderscore = prefix + "_";
+    if (StringUtils.startsWith(name, prefixWithUnderscore) ||
+        StringUtils.startsWithIgnoreCase(name, prefixWithUnderscore)) {
+      return StringUtils.substring(name, prefix.length() + 1);
+    }
+    return name;
+  }
+
+  /**
+   * Builds the initial proposal for the constraint name.
+   *
+   * @param prefix The prefix to use.
+   * @param name1  The first name component.
+   * @param name2  The second name component.
+   * @param suffix The suffix to append.
+   * @return The initial proposal.
+   */
+  private static String buildProposal(String prefix, String name1, String name2, String suffix) {
+    return prefix + "_" + name1 + "_" + name2 + "_" + suffix;
+  }
+
+  /**
+   * Adjusts the proposal if it exceeds the maximum length by removing underscores or trimming characters.
+   *
+   * @param proposal The initial proposal.
+   * @param name1    The first name component.
+   * @param name2    The second name component.
+   * @param prefix   The prefix used.
+   * @param suffix   The suffix used.
+   * @return The adjusted proposal.
+   */
+  private static String adjustProposalLength(String proposal, String name1, String name2,
+      String prefix, String suffix) {
+    String adjustedName1 = name1;
+    String adjustedName2 = name2;
+    String result = proposal;
+
+    if (result.length() > MAX_LENGTH &&
+        (StringUtils.contains(adjustedName1, "_") || StringUtils.contains(adjustedName2, "_"))) {
+      adjustedName1 = adjustedName1.replace("_", "");
+      adjustedName2 = adjustedName2.replace("_", "");
+      result = buildProposal(prefix, adjustedName1, adjustedName2, suffix);
     }
 
     int offset = 1;
-    while (proposal.length() > MAX_LENGTH && offset < 15) {
-      String name1Offsetted = name1.length() > offset ? StringUtils.substring(name1, offset) : name1;
-      String name2Offsetted = name2.length() > offset ? StringUtils.substring(name2, offset) : name2;
-      proposal = prefix + "_" + name1Offsetted + "_" + name2Offsetted + "_" + suffix;
+    while (result.length() > MAX_LENGTH && offset < 15) {
+      adjustedName1 = trimName(adjustedName1, offset);
+      adjustedName2 = trimName(adjustedName2, offset);
+      result = buildProposal(prefix, adjustedName1, adjustedName2, suffix);
       offset++;
     }
 
+    return result;
+  }
+
+  /**
+   * Trims a name by removing characters from the start based on the offset.
+   *
+   * @param name   The name to trim.
+   * @param offset The number of characters to trim from the start.
+   * @return The trimmed name.
+   */
+  private static String trimName(String name, int offset) {
+    if (name.length() > offset) {
+      return StringUtils.substring(name, offset);
+    }
+    return name;
+  }
+
+  /**
+   * Checks if a constraint with the given name already exists in the database.
+   *
+   * @param constraintName The name of the constraint to check.
+   * @return The count of existing constraints with the given name.
+   */
+  private static int checkConstraintExists(String constraintName) {
     String query = String.format(
-        "SELECT count(1) FROM information_schema.table_constraints WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = '%s';",
-        proposal);
+        "SELECT count(1) FROM information_schema.table_constraints " +
+            "WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = '%s';",
+        constraintName);
 
     int count = 0;
     try {
       JSONObject response = Utils.executeQuery(query);
-      if (response != null) {
-        JSONArray resultArray = response.getJSONArray("result");
-        if (resultArray != null && resultArray.length() > 0) {
-          JSONObject resultObject = resultArray.getJSONObject(0);
-          count = resultObject.getInt("count");
-        }
+      if (response == null) {
+        return count;
       }
+
+      JSONArray resultArray = response.getJSONArray("result");
+      if (resultArray == null || resultArray.length() == 0) {
+        return count;
+      }
+
+      JSONObject resultObject = resultArray.getJSONObject(0);
+      count = resultObject.getInt("count");
     } catch (Exception e) {
-      LOG.error("Error checking constraint name '{}': {}", proposal, e.getMessage(), e);
+      LOG.error("Error checking constraint name '{}': {}", constraintName, e.getMessage(), e);
     }
-
-    if (count > 0) {
-      count++;
-      proposal = String.format("%s_%s_%s%d_%s", prefix, StringUtils.substring(name1, 0, name1.length() - offset),
-          StringUtils.substring(name2, 0, name2.length() - offset), count, suffix);
-    }
-
-    return proposal;
+    return count;
   }
 }
