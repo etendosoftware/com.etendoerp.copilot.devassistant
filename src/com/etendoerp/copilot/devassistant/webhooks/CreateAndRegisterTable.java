@@ -28,6 +28,15 @@ public class CreateAndRegisterTable extends BaseWebhookService {
   private static final Logger LOG = LogManager.getLogger();
   private static final int MAX_LENGTH = 30;
 
+  /**
+   * Processes the incoming webhook request to create and register a table.
+   * It creates the table in the database and then registers it in Openbravo's AD_TABLE entity.
+   *
+   * @param parameter
+   *     A map containing the parameters from the incoming request.
+   * @param responseVars
+   *     A map where the response message or error will be stored.
+   */
   @Override
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     logExecutionInit(parameter, LOG);
@@ -71,6 +80,17 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     }
   }
 
+  /**
+   * Determines the table name based on the provided name, prefix, and optional table name.
+   *
+   * @param name
+   *     The base name of the table.
+   * @param prefix
+   *     The prefix for the table name.
+   * @param tableName
+   *     The optional table name provided in the parameters.
+   * @return The final table name to use.
+   * */
   private String determineTableName(String name, String prefix, String tableName) {
     if (StringUtils.isEmpty(tableName)) {
       tableName = StringUtils.startsWith(name, prefix) ? StringUtils.substring(StringUtils.removeStart(name, prefix), 1) : name;
@@ -78,6 +98,18 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     return StringUtils.startsWithIgnoreCase(tableName, prefix) ? tableName : prefix + "_" + tableName;
   }
 
+  /**
+   * Creates the table physically in the PostgreSQL database.
+   *
+   * @param prefix
+   *     The prefix for the table name.
+   * @param tableName
+   *     The base name of the table.
+   * @param isView
+   *     Indicates if the table is a view.
+   * @throws Exception
+   *     If an error occurs during table creation.
+   */
   private void createTableInDatabase(String prefix, String tableName, boolean isView) throws Exception {
     String constraintIsactive = getConstName(prefix, tableName, "isactive", "chk");
     String constraintPk = getConstName(prefix, tableName, "", "pk");
@@ -110,6 +142,13 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     LOG.info("Table created in database: {}", response.toString());
   }
 
+  /**
+   * Returns the default table name if the provided name is blank.
+   *
+   * @param name
+   *     The name of the table.
+   * @return The provided table name or a default name if the provided name is blank.
+   */
   private String getDefaultName(String name) {
     if (StringUtils.isBlank(name)) {
       return String.format(OBMessageUtils.messageBD("COPDEV_DefaultTableName"));
