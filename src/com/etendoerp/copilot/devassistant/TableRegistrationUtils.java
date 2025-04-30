@@ -21,7 +21,7 @@ import org.openbravo.model.common.enterprise.Organization;
 import com.etendoerp.copilot.devassistant.Utils;
 
 /**
- * Utility class containing shared methods for registering tables and views in Openbravo's AD_TABLE.
+ * Utility class containing shared methods for registering tables and views in Etendo's AD_TABLE.
  */
 public class TableRegistrationUtils {
 
