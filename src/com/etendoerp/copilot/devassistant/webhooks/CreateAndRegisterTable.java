@@ -21,7 +21,7 @@ import com.etendoerp.copilot.devassistant.TableRegistrationUtils;
 
 /**
  * The {@code CreateAndRegisterTable} class extends {@link BaseWebhookService} and provides functionality to
- * create a table in a PostgreSQL database and register it in Openbravo's AD_TABLE entity.
+ * create a table in a PostgreSQL database and register it in Etendo's AD_TABLE entity.
  */
 public class CreateAndRegisterTable extends BaseWebhookService {
 
@@ -30,7 +30,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
   /**
    * Processes the incoming webhook request to create and register a table.
-   * It creates the table in the database and then registers it in Openbravo's AD_TABLE entity.
+   * It creates the table in the database and then registers it in Etendo's AD_TABLE entity.
    *
    * @param parameter
    *     A map containing the parameters from the incoming request.
@@ -66,7 +66,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
       // Step 2: Create the table in the database
       createTableInDatabase(prefix, tableName, isView);
 
-      // Step 3: Register the table in Openbravo
+      // Step 3: Register the table in Etendo
       TableRegistrationUtils.alreadyExistTable(tableName);
       DataPackage dataPackage = TableRegistrationUtils.getDataPackage(module);
       Table adTable = TableRegistrationUtils.createAdTable(dataPackage, javaClass, tableName, dataAccessLevel, description, helpTable, isView);
