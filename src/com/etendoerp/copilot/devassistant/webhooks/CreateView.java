@@ -28,8 +28,8 @@ import com.etendoerp.copilot.devassistant.TableRegistrationUtils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 /**
- * Webhook service to create a database view in Openbravo.
- * This service creates a view based on a provided SQL query, registers it in the Openbravo application dictionary,
+ * Webhook service to create a database view in Etendo.
+ * This service creates a view based on a provided SQL query, registers it in the Etendo application dictionary,
  * and validates that the view meets the required column projections.
  */
 public class CreateView extends BaseWebhookService {
@@ -72,10 +72,10 @@ public class CreateView extends BaseWebhookService {
       // Step 5: Create the view in the database and verify
       createAndVerifyView(viewDbName, querySelect);
 
-      // Step 6: Register the view in Openbravo
+      // Step 6: Register the view in Etendo
       ViewRegistrationParams params = new ViewRegistrationParams(module, viewDbName, javaClass,
           dataAccessLevel, description, helpTable, name);
-      registerViewInOpenbravo(params, responseVars);
+      registerView(params, responseVars);
 
     } catch (SQLException e) {
       LOG.error("SQL error while creating view: {}", e.getMessage(), e);
@@ -87,7 +87,7 @@ public class CreateView extends BaseWebhookService {
   }
 
   /**
-   * Data class to hold parameters for view registration in Openbravo.
+   * Data class to hold parameters for view registration in Etendo.
    */
   private static class ViewRegistrationParams {
     private final Module module;
@@ -286,12 +286,12 @@ public class CreateView extends BaseWebhookService {
   }
 
   /**
-   * Registers the view in Openbravo's application dictionary and verifies column registration.
+   * Registers the view in Etendo's application dictionary and verifies column registration.
    *
    * @param params       The parameters for view registration.
    * @param responseVars The response variables to store the result.
    */
-  private void registerViewInOpenbravo(ViewRegistrationParams params, Map<String, String> responseVars) {
+  private void registerView(ViewRegistrationParams params, Map<String, String> responseVars) {
     OBContext.setAdminMode(true);
     try {
       TableRegistrationUtils.alreadyExistTable(params.getViewDbName());
@@ -313,7 +313,7 @@ public class CreateView extends BaseWebhookService {
   /**
    * Verifies that columns were registered in AD_COLUMN for the view.
    *
-   * @param adTable    The table entity in Openbravo.
+   * @param adTable    The table entity in Etendo.
    * @param viewDbName The database name of the view.
    * @throws OBException If no columns were registered.
    */
@@ -335,7 +335,7 @@ public class CreateView extends BaseWebhookService {
   /**
    * Sets the success response for the view creation.
    *
-   * @param adTable      The table entity in Openbravo.
+   * @param adTable      The table entity in Etendo.
    * @param responseVars The response variables to store the result.
    */
   private void setSuccessResponse(Table adTable, Map<String, String> responseVars) {
