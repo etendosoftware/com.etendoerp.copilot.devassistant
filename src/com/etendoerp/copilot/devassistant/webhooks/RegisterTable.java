@@ -3,7 +3,7 @@ package com.etendoerp.copilot.devassistant.webhooks;
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
