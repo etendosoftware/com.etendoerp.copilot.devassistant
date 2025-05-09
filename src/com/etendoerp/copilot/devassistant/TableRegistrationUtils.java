@@ -55,7 +55,7 @@ public class TableRegistrationUtils {
    * @throws OBException if the module is not found or has no prefix.
    */
   public static Object[] getModuleAndPrefix(String moduleID) {
-    Module module = Utils.getModuleByID(moduleID); // Usamos el método de Utils
+    Module module = Utils.getModuleByID(moduleID);
     List<ModuleDBPrefix> moduleDBPrefixList = module.getModuleDBPrefixList();
     if (moduleDBPrefixList.isEmpty()) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
@@ -119,7 +119,7 @@ public class TableRegistrationUtils {
     adTable.setJavaClassName(javaClass);
     adTable.setDescription(description);
     adTable.setHelpComment(helpTable);
-    adTable.setView(isView); // Indicar explícitamente que es una vista
+    adTable.setView(isView);
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
 
