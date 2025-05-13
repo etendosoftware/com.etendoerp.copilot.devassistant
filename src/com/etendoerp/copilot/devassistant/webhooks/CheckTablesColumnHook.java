@@ -12,10 +12,12 @@ import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
-import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.datamodel.Column;
+import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.ui.Tab;
+
+import com.etendoerp.copilot.devassistant.TableRegistrationUtils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
 
 /**
@@ -50,7 +52,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
         responseVars.put("error", "Table with ID " + tableId + " not found.");
         return;
       }
-
+      // Register columns
+      TableRegistrationUtils.executeRegisterColumns(tableId);
+      //validate columns
       List<Column> columns = table.getADColumnList();
       for (Column column : columns) {
         JSONObject error = validateColumn(table, column);
@@ -69,8 +73,10 @@ public class CheckTablesColumnHook extends BaseWebhookService {
   /**
    * Validates a specific column within a table.
    *
-   * @param table  The table that contains the column.
-   * @param column The column to validate.
+   * @param table
+   *     The table that contains the column.
+   * @param column
+   *     The column to validate.
    * @return A JSON object containing the validation errors, or null if no errors are found.
    */
   private JSONObject validateColumn(Table table, Column column) {
@@ -80,34 +86,29 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       // Check for self-referencing foreign keys
       Table referencedTable = getReferencedTable(column);
       if (referencedTable != null && referencedTable.equals(table)) {
-        error.put("error", "Column " + column.getDBColumnName() +
-            " in table " + table.getDBTableName() +
-            " is a self-referencing foreign key, which is not allowed.");
+        error.put("error",
+            "Column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " is a self-referencing foreign key, which is not allowed.");
       }
 
       // Ensure foreign keys link to a valid primary key
       if (referencedTable != null) {
-        boolean hasPrimaryKey = referencedTable.getADColumnList().stream()
-            .anyMatch(Column::isKeyColumn);
+        boolean hasPrimaryKey = referencedTable.getADColumnList().stream().anyMatch(Column::isKeyColumn);
         if (!hasPrimaryKey) {
-          error.put("error", "Column " + column.getDBColumnName() +
-              " in table " + table.getDBTableName() +
-              " does not link to a primary key in the referenced table.");
+          error.put("error",
+              "Column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " does not link to a primary key in the referenced table.");
         }
       }
 
       // Validate TableDir columns have a valid reference table
       if ("TableDir".equals(column.getReference().getName()) && referencedTable == null) {
-        error.put("error", "Column " + column.getDBColumnName() +
-            " in table " + table.getDBTableName() +
-            " is of type TableDir but does not have a valid reference table.");
+        error.put("error",
+            "Column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " is of type TableDir but does not have a valid reference table.");
       }
 
       // Check for column name length violations
       if (column.getDBColumnName().length() > MAX_COLUMN_NAME_LENGTH) {
-        error.put("error", "Column " + column.getDBColumnName() +
-            " in table " + table.getDBTableName() +
-            " name is too long. Maximum allowed length is " + MAX_COLUMN_NAME_LENGTH + " characters.");
+        error.put("error",
+            "Column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " name is too long. Maximum allowed length is " + MAX_COLUMN_NAME_LENGTH + " characters.");
       }
 
       // Validate reference tables are linked to a superior tab
@@ -116,14 +117,13 @@ public class CheckTablesColumnHook extends BaseWebhookService {
         Tab referencedTab = getTabForTable(referencedTable);
 
         if (tab != null && referencedTab != null && referencedTab.getSequenceNumber() <= tab.getSequenceNumber()) {
-          error.put("error", "Column " + column.getDBColumnName() +
-              " in table " + table.getDBTableName() +
-              " references a table that is not a superior tab.");
+          error.put("error",
+              "Column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " references a table that is not a superior tab.");
         }
 
         if (!column.isLinkToParentColumn()) {
-          error.put("suggestion", "Suggestion: Link column " + column.getDBColumnName() +
-              " in table " + table.getDBTableName() + " to the parent column.");
+          error.put("suggestion",
+              "Suggestion: Link column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " to the parent column.");
         }
       }
 
@@ -137,18 +137,20 @@ public class CheckTablesColumnHook extends BaseWebhookService {
   /**
    * Checks if a column is a foreign key.
    *
-   * @param column The column to check.
+   * @param column
+   *     The column to check.
    * @return true if the column is a foreign key, false otherwise.
    */
   private boolean isForeignKey(Column column) {
-    return column.getReference() != null &&
-        ("18".equals(column.getReference().getId()) || "19".equals(column.getReference().getId()));
+    return column.getReference() != null && ("18".equals(column.getReference().getId()) || "19".equals(
+        column.getReference().getId()));
   }
 
   /**
    * Retrieves the table referenced by a foreign key column.
    *
-   * @param column The column to check.
+   * @param column
+   *     The column to check.
    * @return The referenced table, or null if not applicable.
    */
   private Table getReferencedTable(Column column) {
@@ -166,7 +168,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
   /**
    * Retrieves the tab associated with a table.
    *
-   * @param table The table for which to find the corresponding tab.
+   * @param table
+   *     The table for which to find the corresponding tab.
    * @return The associated tab, or null if no tab is found.
    */
   private Tab getTabForTable(Table table) {

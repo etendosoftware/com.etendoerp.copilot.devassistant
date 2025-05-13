@@ -51,7 +51,7 @@ Below is the OpenAPI specification of the API:
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <NAME><![CDATA[Table and Column Agent V2]]></NAME>
+<!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <NAME><![CDATA[Table and Column Agent]]></NAME>
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <DESCRIPTION><![CDATA[You are a developer agent who can create and register tables, windows, and tabs for Etendo.]]></DESCRIPTION>
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <PROMPT><![CDATA[# AI Agent Prompt - Etendo Database Table Assistant
 
@@ -74,7 +74,8 @@ Assist users in:
 - Do not assume missing information—ask the user for clarification if something is unclear.
 
 ## ⚙️ Behavior & Constraints
-- All operations must be performed using the API defined in `@OpenAPISpec@`.
+- If you don't know the module ID, you can look it up by the DB Prefix, if you get the java package ask for the Prefix.
+- All operations must be performed using the API defined in the OpenAPI Specification.
 - Use headless endpoints (`GET`, `PUT`) only for reading or updating simple entity data. For any creation or structured logic, always use the corresponding webhook (WH).
 - When creating a **column**, use `WH: CreateColumn`, and immediately trigger `WH: TableChecker` afterward.
 - When creating a **table**, use `WH: CreateTable`, which must include:
@@ -90,6 +91,7 @@ Assist users in:
   - Execute column registration procedures.
 - After the TableChecker, **always synchronize terms**, then:
   - Trigger `WH: Elementos` to read and correct elements if required.
+- After any change in "elements", throw the  webhook, execute the SyncTerms process to apply the changes.
 - Never skip or reorder the above steps. They are mandatory and must follow the sequence defined in the operational logic.
 
 ## 📌 Additional Rules
@@ -1928,7 +1930,7 @@ Before you give the answer to the user, use the Read File Tool to check if the f
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <NAME><![CDATA[Table and Column Agent]]></NAME>
+<!--D7FC3B9A0301468592909F47BD0AD6EC-->  <NAME><![CDATA[Table and Column Agent[OLD]]]></NAME>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <DESCRIPTION><![CDATA[Your are a developer assistant that can create and register tables, windows and tabs for Etendo.]]></DESCRIPTION>
 <!--D7FC3B9A0301468592909F47BD0AD6EC-->  <PROMPT><![CDATA[You are a developer assistant that can create and register tables, windows and tabs for Etendo.
 

@@ -1,0 +1,419 @@
+[
+    {
+        "run_id": "220db231-69f8-4202-8761-0e886f200a21",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Create a table called sample in the module MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "The table \"sample\" was successfully created in the module MYTEST.  \nAll required Etendo operational steps were executed in the correct order.\n\nSummary:\n- Table Name: sample\n- Database Name: MYTEST_SAMPLE\n- Java Class: Sample\n- Module: MYTEST (ID: 2F0B055F3FA749198BAD291A7F8DE258)\n- Table ID: F8271576F1AC42AB8DA9576CF09FFDD2\n\nStatus of Elements:\n- The mandatory element: Mytest_Sample_ID (ID: ED76D853C8904DD7B7A717DDE0E81878) is missing a description and a help comment.\n\nNext Steps Required:\n- Provide a Description and Help Comment for the column \"Mytest_Sample_ID\" to complete the element registration.\n\nPlease let me know the Description and Help Comment to proceed, or inform me if other customizations are required for this table."
+            },
+            {
+                "role": "user",
+                "content": "Tell taht the table stores records each time a sample is needed"
+            },
+            {
+                "role": "assistant",
+                "content": "Understood. I will register the element with the following information:\n\n- Description: Stores records each time a sample is needed.\n- Help Comment: This table stores a record whenever a new sample request or registration occurs.\n\nProceeding with the completion of element metadata registration and synchronization.",
+                "tool_calls": [
+                    {
+                        "id": "call_dg6YaZLWUdIrCXRYDubb93Q4",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/ElementsHandler\", \"method\": \"POST\", \"body_params\": \"{\\\"TableID\\\":\\\"F8271576F1AC42AB8DA9576CF09FFDD2\\\",\\\"ColumnID\\\":\\\"ED76D853C8904DD7B7A717DDE0E81878\\\",\\\"Description\\\":\\\"Stores records each time a sample is needed.\\\",\\\"HelpComment\\\":\\\"This table stores a record whenever a new sample request or registration occurs.\\\",\\\"Mode\\\":\\\"WRITE_ELEMENTS\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"message\":\"The description and help comment added correctly in column Mytest Sample ID with element Mytest Sample ID and print text Mytest Sample ID.\"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_dg6YaZLWUdIrCXRYDubb93Q4"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_q3yoPiwcYy7yersN84STnU8s",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/SyncTerms\", \"method\": \"GET\", \"body_params\": \"{}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "considerations": "AASSADASDSADASWDASDASDAS",
+        "creation_date": "2025-05-13-13:52:50"
+    },
+    {
+        "run_id": "2233d257-ba8f-45af-a693-724929f0c923",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Create a table called sample in the module with prefix \"MYTEST\", no add specific columns, only the basics"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_fNCEZom1ixaXFpXP5KAgq4Sx",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"1\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"MYTEST\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/33A83787ED6B4ABD9780CE7E9BAC567C\",\"id\":\"33A83787ED6B4ABD9780CE7E9BAC567C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"name\":\"MYTEST\",\"recordTime\":1747133816970}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_fNCEZom1ixaXFpXP5KAgq4Sx"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_wq5A0UNImQfIoHWGZR1SryM9",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/CreateAndRegisterTable\", \"method\": \"POST\", \"body_params\": \"{\\\"Description\\\":\\\"Sample table for MYTEST module\\\",\\\"Help\\\":\\\"Basic sample table with no specific columns, only standard audit fields.\\\",\\\"JavaClass\\\":\\\"Sample\\\",\\\"ModuleID\\\":\\\"2F0B055F3FA749198BAD291A7F8DE258\\\",\\\"DataAccessLevel\\\":\\\"3\\\",\\\"DBTableName\\\":\\\"MYTEST_SAMPLE\\\",\\\"Name\\\":\\\"Sample\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-13-13:00:59"
+    },
+    {
+        "run_id": "4c3d59e9-3086-405f-bd19-7e190c800181",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Create a table called sample in the module with prefix \"MYTEST\", no add specific columns, only the basics"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_fNCEZom1ixaXFpXP5KAgq4Sx",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"1\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"MYTEST\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/33A83787ED6B4ABD9780CE7E9BAC567C\",\"id\":\"33A83787ED6B4ABD9780CE7E9BAC567C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"name\":\"MYTEST\",\"recordTime\":1747133816970}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_fNCEZom1ixaXFpXP5KAgq4Sx"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_wq5A0UNImQfIoHWGZR1SryM9",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/CreateAndRegisterTable\", \"method\": \"POST\", \"body_params\": \"{\\\"Description\\\":\\\"Sample table for MYTEST module\\\",\\\"Help\\\":\\\"Basic sample table with no specific columns, only standard audit fields.\\\",\\\"JavaClass\\\":\\\"Sample\\\",\\\"ModuleID\\\":\\\"2F0B055F3FA749198BAD291A7F8DE258\\\",\\\"DataAccessLevel\\\":\\\"3\\\",\\\"DBTableName\\\":\\\"MYTEST_SAMPLE\\\",\\\"Name\\\":\\\"Sample\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"message\":\"Table registered successfully in Etendo with the ID: \\'BBE92C9C0C52453DA4FA0C86EF34290B\\'.\"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_wq5A0UNImQfIoHWGZR1SryM9"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_0eyBqEMOgrYQOZ9JCsTQBK24",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/CheckTablesColumnHook\", \"method\": \"POST\", \"body_params\": \"{\\\"TableID\\\":\\\"BBE92C9C0C52453DA4FA0C86EF34290B\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-13-13:01:51"
+    },
+    {
+        "run_id": "8658093b-b226-4982-b22d-d92a72505e15",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Create a table called sample in the module MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "The table \"sample\" was successfully created in the module MYTEST.  \nAll required Etendo operational steps were executed in the correct order.\n\nSummary:\n- Table Name: sample\n- Database Name: MYTEST_SAMPLE\n- Java Class: Sample\n- Module: MYTEST (ID: 2F0B055F3FA749198BAD291A7F8DE258)\n- Table ID: F8271576F1AC42AB8DA9576CF09FFDD2\n\nStatus of Elements:\n- The mandatory element: Mytest_Sample_ID (ID: ED76D853C8904DD7B7A717DDE0E81878) is missing a description and a help comment.\n\nNext Steps Required:\n- Provide a Description and Help Comment for the column \"Mytest_Sample_ID\" to complete the element registration.\n\nPlease let me know the Description and Help Comment to proceed, or inform me if other customizations are required for this table."
+            },
+            {
+                "role": "user",
+                "content": "Tell taht the table stores records each time a sample is needed"
+            },
+            {
+                "role": "assistant",
+                "content": "Understood. I will register the element with the following information:\n\n- Description: Stores records each time a sample is needed.\n- Help Comment: This table stores a record whenever a new sample request or registration occurs.\n\nProceeding with the completion of element metadata registration and synchronization.",
+                "tool_calls": [
+                    {
+                        "id": "call_dg6YaZLWUdIrCXRYDubb93Q4",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/ElementsHandler\", \"method\": \"POST\", \"body_params\": \"{\\\"TableID\\\":\\\"F8271576F1AC42AB8DA9576CF09FFDD2\\\",\\\"ColumnID\\\":\\\"ED76D853C8904DD7B7A717DDE0E81878\\\",\\\"Description\\\":\\\"Stores records each time a sample is needed.\\\",\\\"HelpComment\\\":\\\"This table stores a record whenever a new sample request or registration occurs.\\\",\\\"Mode\\\":\\\"WRITE_ELEMENTS\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"message\":\"The description and help comment added correctly in column Mytest Sample ID with element Mytest Sample ID and print text Mytest Sample ID.\"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_dg6YaZLWUdIrCXRYDubb93Q4"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_q3yoPiwcYy7yersN84STnU8s",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/SyncTerms\", \"method\": \"GET\", \"body_params\": \"{}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"message\":\"Process completed successfully - \"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_q3yoPiwcYy7yersN84STnU8s"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "The table element metadata for column \"Mytest_Sample_ID\" has been updated with your specified description and help comment:\n\n- Description: Stores records each time a sample is needed.\n- Help Comment: This table stores a record whenever a new sample request or registration occurs.\n\nThe terminology synchronization has also been completed successfully. No further steps are pending for basic table registration.\n\nIf you need to add columns or further customize this table, please specify your requirements."
+        },
+        "creation_date": "2025-05-13-13:53:06"
+    },
+    {
+        "run_id": "8c97ac6d-a9c7-4dc2-99d7-24a70f8a5a9f",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Create a table called sample in the module MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "The table \"sample\" was successfully created in the module MYTEST.  \nAll required Etendo operational steps were executed in the correct order.\n\nSummary:\n- Table Name: sample\n- Database Name: MYTEST_SAMPLE\n- Java Class: Sample\n- Module: MYTEST (ID: 2F0B055F3FA749198BAD291A7F8DE258)\n- Table ID: F8271576F1AC42AB8DA9576CF09FFDD2\n\nStatus of Elements:\n- The mandatory element: Mytest_Sample_ID (ID: ED76D853C8904DD7B7A717DDE0E81878) is missing a description and a help comment.\n\nNext Steps Required:\n- Provide a Description and Help Comment for the column \"Mytest_Sample_ID\" to complete the element registration.\n\nPlease let me know the Description and Help Comment to proceed, or inform me if other customizations are required for this table."
+            },
+            {
+                "role": "user",
+                "content": "Tell taht the table stores records each time a sample is needed"
+            },
+            {
+                "role": "assistant",
+                "content": "Please provide the following information to proceed with element completion:\n\n- Description for Mytest_Sample_ID (e.g., \"Primary key for Sample records\").\n- Help Comment for Mytest_Sample_ID (e.g., \"Unique identifier of each sample entry created when a sample is needed.\").\n\nFor your use case, does the following work?\n- Description: Primary key for Sample records.\n- Help Comment: Unique identifier of each sample entry created when a sample is needed.\n\nReply YES to confirm or provide your own Description/Help Comment."
+            },
+            {
+                "role": "user",
+                "content": "yes"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "Understood. I will register the element with the following information:\n\n- Description: Stores records each time a sample is needed.\n- Help Comment: This table stores a record whenever a new sample request or registration occurs.\n\nProceeding with the completion of element metadata registration and synchronization.",
+            "tool_calls": [
+                {
+                    "id": "call_dg6YaZLWUdIrCXRYDubb93Q4",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/ElementsHandler\", \"method\": \"POST\", \"body_params\": \"{\\\"TableID\\\":\\\"F8271576F1AC42AB8DA9576CF09FFDD2\\\",\\\"ColumnID\\\":\\\"ED76D853C8904DD7B7A717DDE0E81878\\\",\\\"Description\\\":\\\"Stores records each time a sample is needed.\\\",\\\"HelpComment\\\":\\\"This table stores a record whenever a new sample request or registration occurs.\\\",\\\"Mode\\\":\\\"WRITE_ELEMENTS\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "considerations":"Ensure that the API Call for write, has the parameter ColumnID",
+        "creation_date": "2025-05-13-13:52:24"
+    },
+    {
+        "run_id": "9a257cbd-9a78-4d5a-9d46-815aee3bb364",
+        "messages": [
+            {
+                "role": "user",
+                "content": "I want to create a table to save phones of my contacts. The table must be in the module MYTEST"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "To proceed with creating your table for storing phones of your contacts in the Etendo platform, I need the following details:\n\n1. Table Name: What should be the database table name? (e.g., MYTEST_PHONE)\n2. Table Description: Please provide a purpose/description for the table.\n3. Help Text: Optional, a help comment for the table.\n4. Java Class Name: The name for the Java class that will represent the table entity (e.g., MytestPhone).\n5. Data Access Level: Which access level is required? (Options: System Only, Organization, Client/Organization, or All. Leave blank for default.)\n6. Mandatory columns: By default, standard Etendo tables include columns like ID, Client, Organization, Active, Created, Created By, Updated, Updated By. Do you need any additional mandatory fields at table creation?\n7. Any specific requirements for the table (e.g., is it a high-volume table, audited, etc.)?\n\nPlease provide this information so I can create the table as required."
+        },
+        "creation_date": "2025-05-13-12:00:34"
+    },
+    {
+        "run_id": "9fa62353-fa27-4f2a-bd0a-255572d68420",
+        "messages": [
+            {
+                "role": "user",
+                "content": "I want to create a table to save phones of my contacts. The table must be in the module MYTESTS"
+            },
+            {
+                "role": "assistant",
+                "content": "To proceed, I need some additional information:\n\n1. Database Table Name: What should be the name of the table in the database (e.g., MYT_CONTACT_PHONE)?\n2. Description: Provide a brief description of the table.\n3. Java Class Name: The Java class name associated with this table (e.g., ContactPhone).\n4. Help Comment: Any help text or notes to add.\n5. Data Access Level: Do you want to specify a particular data access level, or should I use the default (3)?\n6. Required Columns: Apart from the mandatory columns, please list any custom columns to include (e.g., phone number, type, etc.).\n\nPlease provide these details so I can start the table creation process in module MYTESTS."
+            },
+            {
+                "role": "user",
+                "content": "add \"phone\" and \"name\", mandatory string type, the rest of the information should be filled in as you wish."
+            },
+            {
+                "role": "assistant",
+                "content": "The module \"MYTESTS\" was not found by name. Please verify the spelling of the module or provide the database prefix (DB Prefix) for the module so I can look it up and continue with the table creation."
+            },
+            {
+                "role": "user",
+                "content": "the prefix is MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "Creation of the table Contact Phone in module MYTESTS is complete.\n\nHowever, the creation of the \"phone\" and \"name\" columns failed due to the missing required parameter: \"defaultValue\" (a non-nullable string column must have a default value).\n\nAction Required:\nPlease specify a default value for both columns \"phone\" and \"name\" (e.g., empty string \"\", or a placeholder text if you have a preference).\n\nAs soon as you provide these, I will add the columns and continue the registration workflow."
+            },
+            {
+                "role": "user",
+                "content": "- as default value"
+            },
+            {
+                "role": "assistant",
+                "content": "The module with prefix MYTEST was not found in the system. Please confirm that the module \"MYTESTS\" (with prefix MYTEST) is already created and registered in Etendo.  \nIf the module exists, please provide the exact module name or the module's unique identifier (Module ID).  \nIf you are not sure, you can provide the Java package name or any other identifying information for the module, and I can assist in locating the correct module."
+            },
+            {
+                "role": "user",
+                "content": "MYTEST is the prefix"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_IJsUnn0BsIPSxLyst5c4evGJ",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"name=ic='MYTEST'\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"1\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"MYTEST\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/33A83787ED6B4ABD9780CE7E9BAC567C\",\"id\":\"33A83787ED6B4ABD9780CE7E9BAC567C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"name\":\"MYTEST\",\"recordTime\":1747131005769}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_IJsUnn0BsIPSxLyst5c4evGJ"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_npsNUgOPrpl6uR4KtadATI6K",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/CreateAndRegisterTable\", \"method\": \"POST\", \"body_params\": \"{\\\"Description\\\":\\\"Stores phone numbers of contacts.\\\",\\\"Help\\\":\\\"Table to save each phone linked to a contact, with descriptive name.\\\",\\\"JavaClass\\\":\\\"ContactPhone\\\",\\\"ModuleID\\\":\\\"2F0B055F3FA749198BAD291A7F8DE258\\\",\\\"DataAccessLevel\\\":\\\"3\\\",\\\"DBTableName\\\":\\\"MYT_CONTACT_PHONE\\\",\\\"Name\\\":\\\"Contact Phone\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"error\":\"The table name is already in use.\"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_npsNUgOPrpl6uR4KtadATI6K"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_OhflLjPhU9ibjVf0pT5IICXm",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/CreateAndRegisterTable\", \"method\": \"POST\", \"body_params\": \"{\\\"Description\\\":\\\"Stores phone numbers of contacts.\\\",\\\"Help\\\":\\\"Table to save each phone linked to a contact, with descriptive name.\\\",\\\"JavaClass\\\":\\\"ContactPhoneNew\\\",\\\"ModuleID\\\":\\\"2F0B055F3FA749198BAD291A7F8DE258\\\",\\\"DataAccessLevel\\\":\\\"3\\\",\\\"DBTableName\\\":\\\"MYT_CONTACT_PHONE2\\\",\\\"Name\\\":\\\"Contact Phone\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"message\":\"Table registered successfully in Etendo with the ID: \\'4351B7429B6345439C280269723CA877\\'.\"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_OhflLjPhU9ibjVf0pT5IICXm"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_1kQK3QAUrzYvQHH8DFKzB357",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/CreateColumn\", \"method\": \"POST\", \"body_params\": \"{\\\"canBeNull\\\":\\\"false\\\",\\\"moduleID\\\":\\\"2F0B055F3FA749198BAD291A7F8DE258\\\",\\\"tableID\\\":\\\"4351B7429B6345439C280269723CA877\\\",\\\"defaultValue\\\":\\\"-\\\",\\\"referenceID\\\":\\\"10\\\",\\\"columnNameDB\\\":\\\"phone\\\",\\\"name\\\":\\\"Phone\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_jVTsLELVRJvLNaNxZj5iD4bt",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/CreateColumn\", \"method\": \"POST\", \"body_params\": \"{\\\"canBeNull\\\":\\\"false\\\",\\\"moduleID\\\":\\\"2F0B055F3FA749198BAD291A7F8DE258\\\",\\\"tableID\\\":\\\"4351B7429B6345439C280269723CA877\\\",\\\"defaultValue\\\":\\\"-\\\",\\\"referenceID\\\":\\\"10\\\",\\\"columnNameDB\\\":\\\"name\\\",\\\"name\\\":\\\"Name\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-13-12:15:50"
+    },
+    {
+        "run_id": "cd4e0b9e-0cc9-4341-a711-2136686566b5",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Create a table called sample in the module with prefix \"MYTEST\", no add specific columns, only the basics"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_fNCEZom1ixaXFpXP5KAgq4Sx",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"1\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-13-12:58:43"
+    }
+]
