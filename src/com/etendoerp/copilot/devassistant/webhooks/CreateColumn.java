@@ -125,7 +125,7 @@ public class CreateColumn extends BaseWebhookService {
       }
       OBDal.getInstance().save(newCol);
       OBDal.getInstance().flush();
-      messageArray.put(String.format(OBMessageUtils.messageBD("COPDEV_ColumnAdded"), newCol.getId()));
+      messageArray.put(String.format(OBMessageUtils.messageBD("COPDEV_ColumnAddedSucc"), newCol.getId()));
 
       response.put("messages", messageArray);
       responseVars.put("response", response.toString());

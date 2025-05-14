@@ -54,6 +54,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       }
       // Register columns
       TableRegistrationUtils.executeRegisterColumns(tableId);
+      OBDal.getInstance().refresh(table);
       //validate columns
       List<Column> columns = table.getADColumnList();
       for (Column column : columns) {
