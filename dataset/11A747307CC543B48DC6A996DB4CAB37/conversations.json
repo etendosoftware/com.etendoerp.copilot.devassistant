@@ -1,0 +1,359 @@
+[
+    {
+        "run_id": "3e3b4b43-60b1-4a14-9d0b-9eb350ecfdc9",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Can you create a Module called \u201cMy Tests\u201d? Fill in the rest of the information as you wish. It must have a dependency to the module \u201ccom.etendoerp.copilot.devassistant\u201d."
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_EyGtkQJF3bSNfiCmu4pHgFlg",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.mytests'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_5RYLwgEIQ6PoNK7ejj9LEuM9",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=sw='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_b9e2MdRNdU6dm6zHpWVGJTbC",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.copilot.devassistant'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-13-10:57:51"
+    },
+    {
+        "run_id": "85b9ac25-116c-4823-85ca-384c17c35bc6",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Can you create a Module called \u201cMy Tests\u201d? Fill in the rest of the information as you wish. It must have a dependency to the module \u201ccom.etendoerp.copilot.devassistant\u201d."
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_EyGtkQJF3bSNfiCmu4pHgFlg",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.mytests'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_5RYLwgEIQ6PoNK7ejj9LEuM9",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=sw='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_b9e2MdRNdU6dm6zHpWVGJTbC",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.copilot.devassistant'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_EyGtkQJF3bSNfiCmu4pHgFlg"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_5RYLwgEIQ6PoNK7ejj9LEuM9"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Dev Assistant - 1.8.1 - English (USA)\",\"_entityName\":\"ADModule\",\"$ref\":\"ADModule\\\\/77E11BDECDEB44008DD2235D259A77D7\",\"id\":\"77E11BDECDEB44008DD2235D259A77D7\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-02-28T10:15:25+01:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-21T12:15:43+02:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"name\":\"Dev Assistant\",\"version\":\"1.8.1\",\"description\":\"Developer\\'s assistant for Copilot\",\"helpComment\":\"This Module includes tools and assistants to facilitate the development in Etendo\",\"uRL\":null,\"type\":\"M\",\"licenseText\":null,\"inDevelopment\":true,\"default\":false,\"sequenceNumber\":null,\"javaPackage\":\"com.etendoerp.copilot.devassistant\",\"licenseType\":\"Apache2.0\",\"author\":\"Etendo Software\",\"status\":\"A\",\"availableUpdate\":null,\"translationRequired\":true,\"language\":\"en_US\",\"language$_identifier\":\"English (USA)\",\"hasChartOfAccounts\":false,\"isTranslationModule\":false,\"hasReferenceData\":false,\"registerModule\":false,\"updateInformation\":null,\"updateVersion\":null,\"referenceDataDescription\":null,\"versionLabel\":null,\"commercial\":false,\"maturityUpdate\":null,\"enabled\":true,\"applyConfigurationScript\":true,\"upgradeAvailable\":null,\"etrxIsrx\":null,\"etrxIsreact\":null,\"freeForTrial\":false,\"etrxRxmodule\":null,\"recordTime\":1747126441547}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_b9e2MdRNdU6dm6zHpWVGJTbC"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_4cnnmuheUmX8BHrQgow3bBeo",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"javaPackage\\\": \\\"com.etendoerp.mytests\\\", \\\"name\\\": \\\"My Tests\\\", \\\"type\\\": \\\"M\\\", \\\"description\\\": \\\"A module for testing purposes, with custom dependency and core integration.\\\", \\\"helpComment\\\": \\\"Use this module to organize and execute custom tests.\\\", \\\"version\\\": \\\"1.0.0\\\", \\\"translationRequired\\\": false, \\\"isTranslationModule\\\": false, \\\"hasChartOfAccounts\\\": false, \\\"hasReferenceData\\\": false, \\\"commercial\\\": false, \\\"applyConfigurationScript\\\": false, \\\"enabled\\\": true, \\\"active\\\": true, \\\"client\\\": \\\"0\\\", \\\"organization\\\": \\\"0\\\", \\\"language\\\":\\\"en_US\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-13-10:58:36"
+    },
+    {
+        "run_id": "8f87a5b7-0d7c-4527-ae2a-81ba0d56de29",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Can you create a Module called \u201cMy Tests\u201d? Fill in the rest of the information as you wish. It must have a dependency to the module \u201ccom.etendoerp.copilot.devassistant\u201d."
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_EyGtkQJF3bSNfiCmu4pHgFlg",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.mytests'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_5RYLwgEIQ6PoNK7ejj9LEuM9",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=sw='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_b9e2MdRNdU6dm6zHpWVGJTbC",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.copilot.devassistant'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_EyGtkQJF3bSNfiCmu4pHgFlg"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_5RYLwgEIQ6PoNK7ejj9LEuM9"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Dev Assistant - 1.8.1 - English (USA)\",\"_entityName\":\"ADModule\",\"$ref\":\"ADModule\\\\/77E11BDECDEB44008DD2235D259A77D7\",\"id\":\"77E11BDECDEB44008DD2235D259A77D7\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-02-28T10:15:25+01:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-21T12:15:43+02:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"name\":\"Dev Assistant\",\"version\":\"1.8.1\",\"description\":\"Developer\\'s assistant for Copilot\",\"helpComment\":\"This Module includes tools and assistants to facilitate the development in Etendo\",\"uRL\":null,\"type\":\"M\",\"licenseText\":null,\"inDevelopment\":true,\"default\":false,\"sequenceNumber\":null,\"javaPackage\":\"com.etendoerp.copilot.devassistant\",\"licenseType\":\"Apache2.0\",\"author\":\"Etendo Software\",\"status\":\"A\",\"availableUpdate\":null,\"translationRequired\":true,\"language\":\"en_US\",\"language$_identifier\":\"English (USA)\",\"hasChartOfAccounts\":false,\"isTranslationModule\":false,\"hasReferenceData\":false,\"registerModule\":false,\"updateInformation\":null,\"updateVersion\":null,\"referenceDataDescription\":null,\"versionLabel\":null,\"commercial\":false,\"maturityUpdate\":null,\"enabled\":true,\"applyConfigurationScript\":true,\"upgradeAvailable\":null,\"etrxIsrx\":null,\"etrxIsreact\":null,\"freeForTrial\":false,\"etrxRxmodule\":null,\"recordTime\":1747126441547}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_b9e2MdRNdU6dm6zHpWVGJTbC"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_4cnnmuheUmX8BHrQgow3bBeo",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"javaPackage\\\": \\\"com.etendoerp.mytests\\\", \\\"name\\\": \\\"My Tests\\\", \\\"type\\\": \\\"M\\\", \\\"description\\\": \\\"A module for testing purposes, with custom dependency and core integration.\\\", \\\"helpComment\\\": \\\"Use this module to organize and execute custom tests.\\\", \\\"version\\\": \\\"1.0.0\\\", \\\"translationRequired\\\": false, \\\"isTranslationModule\\\": false, \\\"hasChartOfAccounts\\\": false, \\\"hasReferenceData\\\": false, \\\"commercial\\\": false, \\\"applyConfigurationScript\\\": false, \\\"enabled\\\": true, \\\"active\\\": true, \\\"client\\\": \\\"0\\\", \\\"organization\\\": \\\"0\\\", \\\"language\\\":\\\"en_US\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"_entityName\":\"ADModule\",\"$ref\":\"ADModule\\\\/2F0B055F3FA749198BAD291A7F8DE258\",\"id\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:05+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:05+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"My Tests\",\"version\":\"1.0.0\",\"description\":\"A module for testing purposes, with custom dependency and core integration.\",\"helpComment\":\"Use this module to organize and execute custom tests.\",\"uRL\":null,\"type\":\"M\",\"licenseText\":null,\"inDevelopment\":true,\"default\":false,\"sequenceNumber\":10,\"javaPackage\":\"com.etendoerp.mytests\",\"licenseType\":null,\"author\":null,\"status\":\"A\",\"availableUpdate\":null,\"translationRequired\":false,\"language\":\"en_US\",\"language$_identifier\":\"English (USA)\",\"hasChartOfAccounts\":false,\"isTranslationModule\":false,\"hasReferenceData\":false,\"registerModule\":false,\"updateInformation\":null,\"updateVersion\":null,\"referenceDataDescription\":null,\"versionLabel\":null,\"commercial\":false,\"maturityUpdate\":null,\"enabled\":true,\"applyConfigurationScript\":false,\"upgradeAvailable\":null,\"etrxIsrx\":false,\"etrxIsreact\":false,\"freeForTrial\":false,\"etrxRxmodule\":null,\"recordTime\":1747126445955}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_4cnnmuheUmX8BHrQgow3bBeo"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_xKfbUUqn5SsKpE1nH8SLQdaP",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\": \\\"MYTEST\\\", \\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_0tahtBRkpLU6LBCnSJvtmAS9",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDependency\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"dependentModule\\\": \\\"0\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_RG3c8ZemtOLwWPzb3vHjX5gT",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDependency\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"dependentModule\\\": \\\"77E11BDECDEB44008DD2235D259A77D7\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_e8A3TvYodXf1fdkcRTUN44aw",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDataPackage\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\": \\\"My Tests Data Package\\\", \\\"javaPackage\\\": \\\"com.etendoerp.mytests.data\\\", \\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-13-10:59:07"
+    },
+    {
+        "run_id": "ffc69c96-df68-4fb0-9bf6-cd5c8300fd9c",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Can you create a Module called \u201cMy Tests\u201d? Fill in the rest of the information as you wish. It must have a dependency to the module \u201ccom.etendoerp.copilot.devassistant\u201d."
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_EyGtkQJF3bSNfiCmu4pHgFlg",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.mytests'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_5RYLwgEIQ6PoNK7ejj9LEuM9",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=sw='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_b9e2MdRNdU6dm6zHpWVGJTbC",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"javaPackage=sw='com.etendoerp.copilot.devassistant'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_EyGtkQJF3bSNfiCmu4pHgFlg"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_5RYLwgEIQ6PoNK7ejj9LEuM9"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Dev Assistant - 1.8.1 - English (USA)\",\"_entityName\":\"ADModule\",\"$ref\":\"ADModule\\\\/77E11BDECDEB44008DD2235D259A77D7\",\"id\":\"77E11BDECDEB44008DD2235D259A77D7\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-02-28T10:15:25+01:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-21T12:15:43+02:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"name\":\"Dev Assistant\",\"version\":\"1.8.1\",\"description\":\"Developer\\'s assistant for Copilot\",\"helpComment\":\"This Module includes tools and assistants to facilitate the development in Etendo\",\"uRL\":null,\"type\":\"M\",\"licenseText\":null,\"inDevelopment\":true,\"default\":false,\"sequenceNumber\":null,\"javaPackage\":\"com.etendoerp.copilot.devassistant\",\"licenseType\":\"Apache2.0\",\"author\":\"Etendo Software\",\"status\":\"A\",\"availableUpdate\":null,\"translationRequired\":true,\"language\":\"en_US\",\"language$_identifier\":\"English (USA)\",\"hasChartOfAccounts\":false,\"isTranslationModule\":false,\"hasReferenceData\":false,\"registerModule\":false,\"updateInformation\":null,\"updateVersion\":null,\"referenceDataDescription\":null,\"versionLabel\":null,\"commercial\":false,\"maturityUpdate\":null,\"enabled\":true,\"applyConfigurationScript\":true,\"upgradeAvailable\":null,\"etrxIsrx\":null,\"etrxIsreact\":null,\"freeForTrial\":false,\"etrxRxmodule\":null,\"recordTime\":1747126441547}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_b9e2MdRNdU6dm6zHpWVGJTbC"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_4cnnmuheUmX8BHrQgow3bBeo",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"javaPackage\\\": \\\"com.etendoerp.mytests\\\", \\\"name\\\": \\\"My Tests\\\", \\\"type\\\": \\\"M\\\", \\\"description\\\": \\\"A module for testing purposes, with custom dependency and core integration.\\\", \\\"helpComment\\\": \\\"Use this module to organize and execute custom tests.\\\", \\\"version\\\": \\\"1.0.0\\\", \\\"translationRequired\\\": false, \\\"isTranslationModule\\\": false, \\\"hasChartOfAccounts\\\": false, \\\"hasReferenceData\\\": false, \\\"commercial\\\": false, \\\"applyConfigurationScript\\\": false, \\\"enabled\\\": true, \\\"active\\\": true, \\\"client\\\": \\\"0\\\", \\\"organization\\\": \\\"0\\\", \\\"language\\\":\\\"en_US\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"_entityName\":\"ADModule\",\"$ref\":\"ADModule\\\\/2F0B055F3FA749198BAD291A7F8DE258\",\"id\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:05+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:05+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"My Tests\",\"version\":\"1.0.0\",\"description\":\"A module for testing purposes, with custom dependency and core integration.\",\"helpComment\":\"Use this module to organize and execute custom tests.\",\"uRL\":null,\"type\":\"M\",\"licenseText\":null,\"inDevelopment\":true,\"default\":false,\"sequenceNumber\":10,\"javaPackage\":\"com.etendoerp.mytests\",\"licenseType\":null,\"author\":null,\"status\":\"A\",\"availableUpdate\":null,\"translationRequired\":false,\"language\":\"en_US\",\"language$_identifier\":\"English (USA)\",\"hasChartOfAccounts\":false,\"isTranslationModule\":false,\"hasReferenceData\":false,\"registerModule\":false,\"updateInformation\":null,\"updateVersion\":null,\"referenceDataDescription\":null,\"versionLabel\":null,\"commercial\":false,\"maturityUpdate\":null,\"enabled\":true,\"applyConfigurationScript\":false,\"upgradeAvailable\":null,\"etrxIsrx\":false,\"etrxIsreact\":false,\"freeForTrial\":false,\"etrxRxmodule\":null,\"recordTime\":1747126445955}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_4cnnmuheUmX8BHrQgow3bBeo"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_xKfbUUqn5SsKpE1nH8SLQdaP",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\": \\\"MYTEST\\\", \\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_0tahtBRkpLU6LBCnSJvtmAS9",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDependency\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"dependentModule\\\": \\\"0\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_RG3c8ZemtOLwWPzb3vHjX5gT",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDependency\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"dependentModule\\\": \\\"77E11BDECDEB44008DD2235D259A77D7\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_e8A3TvYodXf1fdkcRTUN44aw",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDataPackage\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\": \\\"My Tests Data Package\\\", \\\"javaPackage\\\": \\\"com.etendoerp.mytests.data\\\", \\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"MYTEST\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/33A83787ED6B4ABD9780CE7E9BAC567C\",\"id\":\"33A83787ED6B4ABD9780CE7E9BAC567C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"name\":\"MYTEST\",\"recordTime\":1747126451289}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_xKfbUUqn5SsKpE1nH8SLQdaP"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"My Tests - 1.0.0 - English (USA) - Core - 24.4.10\",\"_entityName\":\"ModuleDependency\",\"$ref\":\"ModuleDependency\\\\/22347B67315E4F82B81FC043BC11C9DE\",\"id\":\"22347B67315E4F82B81FC043BC11C9DE\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"dependentModule\":\"0\",\"dependentModule$_identifier\":\"Core\",\"firstVersion\":\"24.4.10\",\"lastVersion\":null,\"isIncluded\":false,\"dependantModuleName\":\"Core\",\"dependencyEnforcement\":\"MAJOR\",\"userEditableEnforcement\":false,\"instanceEnforcement\":null,\"recordTime\":1747126451465}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_0tahtBRkpLU6LBCnSJvtmAS9"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"My Tests - 1.0.0 - English (USA) - Dev Assistant - 1.8.1\",\"_entityName\":\"ModuleDependency\",\"$ref\":\"ModuleDependency\\\\/27BF6253E23848768233E52DA6FA5810\",\"id\":\"27BF6253E23848768233E52DA6FA5810\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"dependentModule\":\"77E11BDECDEB44008DD2235D259A77D7\",\"dependentModule$_identifier\":\"Dev Assistant\",\"firstVersion\":\"1.8.1\",\"lastVersion\":null,\"isIncluded\":false,\"dependantModuleName\":\"Dev Assistant\",\"dependencyEnforcement\":\"MAJOR\",\"userEditableEnforcement\":false,\"instanceEnforcement\":null,\"recordTime\":1747126451605}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_RG3c8ZemtOLwWPzb3vHjX5gT"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"My Tests Data Package\",\"_entityName\":\"DataPackage\",\"$ref\":\"DataPackage\\\\/93F9F0C627084BA9A9A870F4B17C3BCD\",\"id\":\"93F9F0C627084BA9A9A870F4B17C3BCD\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"name\":\"My Tests Data Package\",\"description\":null,\"javaPackage\":\"com.etendoerp.mytests.data\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"recordTime\":1747126451763}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_e8A3TvYodXf1fdkcRTUN44aw"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "The module \"My Tests\" has been successfully created with the following details:\n\n- Module Name: My Tests\n- Java Package: com.etendoerp.mytests\n- Description: A module for testing purposes, with custom dependency and core integration.\n- Help/Comment: Use this module to organize and execute custom tests.\n- Version: 1.0.0\n- Language: en_US\n\nModule Header ID: 2F0B055F3FA749198BAD291A7F8DE258\n\nTabs and settings created:\n- DB Prefix: MYTEST\n- Data Package: My Tests Data Package (Java package: com.etendoerp.mytests.data)\n- Dependencies:\n  - Core (ID: 0)\n  - Dev Assistant (ID: 77E11BDECDEB44008DD2235D259A77D7, java package: com.etendoerp.copilot.devassistant)\n\nIf you need to add more dependencies or make adjustments to the module, let me know!"
+        },
+        "creation_date": "2025-05-13-10:59:39"
+    }
+]

@@ -13,13 +13,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.core.OBContext;
-import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
@@ -73,8 +70,8 @@ public class CreateView extends BaseWebhookService {
       createAndVerifyView(viewDbName, querySelect);
 
       // Step 6: Register the view in Etendo
-      ViewRegistrationParams params = new ViewRegistrationParams(module, viewDbName, javaClass,
-          dataAccessLevel, description, helpTable, name);
+      ViewRegistrationParams params = new ViewRegistrationParams(module, viewDbName, javaClass, dataAccessLevel,
+          description, helpTable, name);
       registerView(params, responseVars);
 
     } catch (SQLException e) {
@@ -98,8 +95,8 @@ public class CreateView extends BaseWebhookService {
     private final String helpTable;
     private final String name;
 
-    public ViewRegistrationParams(Module module, String viewDbName, String javaClass,
-        String dataAccessLevel, String description, String helpTable, String name) {
+    public ViewRegistrationParams(Module module, String viewDbName, String javaClass, String dataAccessLevel,
+        String description, String helpTable, String name) {
       this.module = module;
       this.viewDbName = viewDbName;
       this.javaClass = javaClass;
@@ -141,7 +138,8 @@ public class CreateView extends BaseWebhookService {
   /**
    * Logs all parameters for debugging purposes.
    *
-   * @param parameter The map of parameters to log.
+   * @param parameter
+   *     The map of parameters to log.
    */
   private void logParameters(Map<String, String> parameter) {
     for (Map.Entry<String, String> entry : parameter.entrySet()) {
@@ -152,10 +150,14 @@ public class CreateView extends BaseWebhookService {
   /**
    * Validates the required parameters for creating a view.
    *
-   * @param name       The name of the view.
-   * @param moduleID   The ID of the module.
-   * @param querySelect The SQL SELECT query for the view.
-   * @throws OBException If any required parameter is missing.
+   * @param name
+   *     The name of the view.
+   * @param moduleID
+   *     The ID of the module.
+   * @param querySelect
+   *     The SQL SELECT query for the view.
+   * @throws OBException
+   *     If any required parameter is missing.
    */
   private void validateParameters(String name, String moduleID, String querySelect) {
     if (StringUtils.isEmpty(name)) {
@@ -172,8 +174,10 @@ public class CreateView extends BaseWebhookService {
   /**
    * Constructs the database name for the view based on the prefix and name.
    *
-   * @param name   The base name of the view.
-   * @param prefix The prefix to prepend to the view name.
+   * @param name
+   *     The base name of the view.
+   * @param prefix
+   *     The prefix to prepend to the view name.
    * @return The constructed view database name.
    */
   private String constructViewDbName(String name, String prefix) {
@@ -191,9 +195,12 @@ public class CreateView extends BaseWebhookService {
   /**
    * Creates the view in the database, verifies its creation, and logs its columns.
    *
-   * @param viewDbName  The database name of the view.
-   * @param querySelect The SQL SELECT query for the view.
-   * @throws SQLException If a database error occurs.
+   * @param viewDbName
+   *     The database name of the view.
+   * @param querySelect
+   *     The SQL SELECT query for the view.
+   * @throws SQLException
+   *     If a database error occurs.
    */
   private void createAndVerifyView(String viewDbName, String querySelect) throws SQLException {
     Connection conn = null;
@@ -226,10 +233,14 @@ public class CreateView extends BaseWebhookService {
   /**
    * Verifies that the view exists in the database.
    *
-   * @param conn       The database connection.
-   * @param viewDbName The name of the view to verify.
-   * @throws OBException If the view does not exist.
-   * @throws SQLException If a database error occurs.
+   * @param conn
+   *     The database connection.
+   * @param viewDbName
+   *     The name of the view to verify.
+   * @throws OBException
+   *     If the view does not exist.
+   * @throws SQLException
+   *     If a database error occurs.
    */
   private void verifyViewExists(Connection conn, String viewDbName) throws SQLException {
     PreparedStatement checkStmt = null;
@@ -257,9 +268,12 @@ public class CreateView extends BaseWebhookService {
   /**
    * Logs the columns of the view for debugging purposes.
    *
-   * @param conn       The database connection.
-   * @param viewDbName The name of the view.
-   * @throws SQLException If a database error occurs.
+   * @param conn
+   *     The database connection.
+   * @param viewDbName
+   *     The name of the view.
+   * @throws SQLException
+   *     If a database error occurs.
    */
   private void logViewColumns(Connection conn, String viewDbName) throws SQLException {
     PreparedStatement columnsStmt = null;
@@ -288,8 +302,10 @@ public class CreateView extends BaseWebhookService {
   /**
    * Registers the view in Etendo's application dictionary and verifies column registration.
    *
-   * @param params       The parameters for view registration.
-   * @param responseVars The response variables to store the result.
+   * @param params
+   *     The parameters for view registration.
+   * @param responseVars
+   *     The response variables to store the result.
    */
   private void registerView(ViewRegistrationParams params, Map<String, String> responseVars) {
     OBContext.setAdminMode(true);
@@ -302,41 +318,20 @@ public class CreateView extends BaseWebhookService {
       OBDal.getInstance().flush();
       LOG.debug("View registered in AD_TABLE with ID: {}", adTable.getId());
 
-      verifyColumnsInAdColumn(adTable, params.getViewDbName());
-
       setSuccessResponse(adTable, responseVars);
     } finally {
       OBContext.restorePreviousMode();
     }
   }
 
-  /**
-   * Verifies that columns were registered in AD_COLUMN for the view.
-   *
-   * @param adTable    The table entity in Etendo.
-   * @param viewDbName The database name of the view.
-   * @throws OBException If no columns were registered.
-   */
-  private void verifyColumnsInAdColumn(Table adTable, String viewDbName) {
-    OBCriteria<Column> columnCriteria = OBDal.getInstance().createCriteria(Column.class);
-    columnCriteria.add(Restrictions.eq(Column.PROPERTY_TABLE, adTable));
-    List<Column> columns = columnCriteria.list();
-    if (columns.isEmpty()) {
-      throw new OBException("Failed to register columns for view " + viewDbName +
-          " in AD_COLUMN. Possible causes: permission issues, transaction synchronization, " +
-          "or internal error in TableRegistrationUtils.createAdTable.");
-    }
-    LOG.debug("Registered {} columns for view {}", columns.size(), viewDbName);
-    for (Column column : columns) {
-      LOG.debug("Column registered: {} (DB Column: {})", column.getName(), column.getDBColumnName());
-    }
-  }
 
   /**
    * Sets the success response for the view creation.
    *
-   * @param adTable      The table entity in Etendo.
-   * @param responseVars The response variables to store the result.
+   * @param adTable
+   *     The table entity in Etendo.
+   * @param responseVars
+   *     The response variables to store the result.
    */
   private void setSuccessResponse(Table adTable, Map<String, String> responseVars) {
     String messageTemplate = OBMessageUtils.messageBD("COPDEV_ViewCreatedSuccessfully");
@@ -367,21 +362,16 @@ public class CreateView extends BaseWebhookService {
       }
       LOG.debug("Column List: {}", Arrays.toString(columnList.toArray()));
 
-      if (columnList.stream().noneMatch(col -> StringUtils.equalsIgnoreCase(col, viewDbName + "_id"))) {
-        throw new OBException(
-            String.format(OBMessageUtils.messageBD("COPDEV_ProjectionColumnNotFound"), viewDbName, viewDbName + "_id"));
-      }
       List<String> mandatoryColumns = Arrays.asList("ad_client_id", "ad_org_id", "isactive", "created", "createdby",
-          "updated", "updatedby");
-      List<String> missingCols = mandatoryColumns.stream()
-          .filter(col -> columnList.stream().noneMatch(c -> StringUtils.equalsIgnoreCase(c, col)))
-          .collect(Collectors.toList());
+          "updated", "updatedby", viewDbName + "_id");
+      List<String> missingCols = mandatoryColumns.stream().filter(
+          col -> columnList.stream().noneMatch(c -> StringUtils.equalsIgnoreCase(c, col))).collect(Collectors.toList());
       if (!missingCols.isEmpty()) {
-        throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ProjectionColumnNotFound"), viewDbName,
-            missingCols.toString()));
+        throw new OBException(
+            String.format(OBMessageUtils.messageBD("COPDEV_ProjectionColumnNotFound"), missingCols.toString()));
       }
     } catch (Exception e) {
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_InvalidQuery"));
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidQuery"), e.getMessage()));
     }
   }
 }
