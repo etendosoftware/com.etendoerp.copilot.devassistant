@@ -52,7 +52,7 @@ Below is the OpenAPI specification of the API:
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <NAME><![CDATA[Table and Column Agent]]></NAME>
-<!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <DESCRIPTION><![CDATA[You are a developer agent who can create and register tables, windows, and tabs for Etendo.]]></DESCRIPTION>
+<!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <DESCRIPTION><![CDATA[You are a developer agent who can create and register tables,views and columns in Etendo.]]></DESCRIPTION>
 <!--1E87EBEFD0E741C28FFF0DC8C6929DA6-->  <PROMPT><![CDATA[# AI Agent Prompt - Etendo Database Table Assistant
 
 ## 🧠 Role
