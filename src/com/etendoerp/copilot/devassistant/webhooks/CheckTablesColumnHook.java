@@ -32,9 +32,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   private static final int MAX_COLUMN_NAME_LENGTH = 30;
-  private static final int MAX_TABLE_NAME_LENGTH = 30;
-  private static final String TableDirID = "19";
-  private static final String TableID = "18";
+  private static final String TABLE_DIR_ID = "19";
+  private static final String TABLE_ID = "18";
   public static final String ERROR = "error";
 
   @Override
@@ -110,7 +109,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       Table referencedTable = getReferencedTable(column);
       if (referencedTable != null && referencedTable.equals(table)) {
         error.put(ERROR,
-            "Column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " is a self-referencing foreign key, which is not allowed.");
+            String.format("Column %s in table %s is a self-referencing foreign key, which is not allowed.",
+                column.getDBColumnName(), table.getDBTableName()));
       }
 
 
@@ -130,7 +130,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
               String.format(OBMessageUtils.messageBD("COPDEV_TableDirInvalidReference"), column.getDBColumnName(),
                   table.getDBTableName()));
         }
-        if (StringUtils.equalsIgnoreCase(column.getTable().getDBTableName(), destinationTableObj.getDBTableName())) {
+        if (destinationTableObj != null && StringUtils.equalsIgnoreCase(column.getTable().getDBTableName(),
+            destinationTableObj.getDBTableName())) {
           error.put(ERROR,
               String.format(OBMessageUtils.messageBD("COPDEV_SelfReferenceTableDir"), column.getDBColumnName(),
                   table.getDBTableName()));
@@ -140,7 +141,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       // Check for column name length violations
       if (column.getDBColumnName().length() > MAX_COLUMN_NAME_LENGTH) {
         error.put(ERROR,
-            "Column " + column.getDBColumnName() + " in table " + table.getDBTableName() + " name is too long. Maximum allowed length is " + MAX_COLUMN_NAME_LENGTH + " characters.");
+            String.format("Column %s in table %s name is too long. Maximum allowed length is %d characters.",
+                column.getDBColumnName(), table.getDBTableName(), MAX_COLUMN_NAME_LENGTH));
       }
       //check and modify table type
       var columnInAD = CreateColumn.getDbType(column.getReference());
@@ -194,9 +196,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
     try {
       Utils.executeQuery(query);
     } catch (Exception e) {
-      log.error("Error executing query: " + query, e);
-      error.put(ERROR,
-          "Error executing query: " + query + ". Error: " + e.getMessage() + ". Please try to fix the column type manually.");
+      String msg = "Error executing query: " + query + ". Error: " + e.getMessage() + ". Please try to fix the column type manually.";
+      log.error(msg);
+      error.put(ERROR, msg);
     }
   }
 
@@ -274,7 +276,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    * @return {@code true} if the column is a Table reference, {@code false} otherwise.
    */
   private static boolean isTableRef(Column column) {
-    return StringUtils.equalsIgnoreCase(column.getReference().getId(), TableID);
+    return StringUtils.equalsIgnoreCase(column.getReference().getId(), TABLE_ID);
   }
 
   /**
@@ -288,7 +290,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    * @return {@code true} if the column is a TableDir reference, {@code false} otherwise.
    */
   private static boolean isTableDirRef(Column column) {
-    return StringUtils.equalsIgnoreCase(column.getReference().getId(), TableDirID);
+    return StringUtils.equalsIgnoreCase(column.getReference().getId(), TABLE_DIR_ID);
   }
 
   /**
