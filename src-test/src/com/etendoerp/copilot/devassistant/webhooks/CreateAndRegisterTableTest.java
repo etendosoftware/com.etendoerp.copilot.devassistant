@@ -1,7 +1,6 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -16,11 +15,11 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.openbravo.base.exception.OBException;
+import org.junit.jupiter.api.BeforeAll;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.session.OBPropertiesProvider;
@@ -34,7 +33,6 @@ import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.test.base.TestConstants;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.etendoerp.copilot.devassistant.Utils;
 
@@ -54,7 +52,7 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
   private String testModuleId;
   private String testModulePrefixId;
 
-  @Before
+  @BeforeAll
   public void setUp() throws Exception {
     super.setUp();
 
@@ -269,7 +267,8 @@ public class CreateAndRegisterTableTest extends WeldBaseTest {
   private boolean tableExistsInDatabase(String tableName) throws SQLException {
     try (Connection conn = OBDal.getInstance().getConnection();
          Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery("SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '" + tableName + "')")) {
+         ResultSet rs = stmt.executeQuery(
+             "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '" + tableName + "')")) {
       if (rs.next()) {
         return rs.getBoolean(1);
       }
