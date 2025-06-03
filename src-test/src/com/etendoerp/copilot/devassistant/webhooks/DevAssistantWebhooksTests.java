@@ -72,7 +72,6 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   private static final String WEBHOOK = "Webhook";
   private static final String ERROR_FROM_WEBHOOK = "Error from " + WEBHOOK + ": ";
   private static final String WEBHOOK_FAILED_ERROR = WEBHOOK + " failed with error: ";
-  private static final Logger log = LogManager.getLogger();
 
   /**
    * Sets up the test environment before each test.
@@ -319,7 +318,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     webhook.get(parameter, responseVars);
 
     if (responseVars.containsKey(ERROR_KEY)) {
-      log.error(ERROR_FROM_WEBHOOK + responseVars.get(ERROR_KEY));
+      LOG.error(ERROR_FROM_WEBHOOK + responseVars.get(ERROR_KEY));
       fail(WEBHOOK_FAILED_ERROR + responseVars.get(ERROR_KEY));
     }
     assertTrue(responseVars.containsKey(MESSAGE_KEY));
