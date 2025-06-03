@@ -46,6 +46,7 @@ public class CreateColumn extends BaseWebhookService {
   public static final String CHARACTER_VARYING = "varchar";
   public static final String NUMERIC = "numeric";
   public static final String TIMESTAMP_WITHOUT_TIME_ZONE = "timestamp without time zone";
+  public static final String CHARACTER = "character";
 
   /**
    * This method is invoked by the webhook to add a column to a table in the database.
@@ -328,7 +329,7 @@ public class CreateColumn extends BaseWebhookService {
    */
   private static String prepareDefaultValue(String defaultValue, String dbType) {
     // If the column is a char / varchar type and the default value is not enclosed in single quotes, add them
-    if (StringUtils.startsWithIgnoreCase(dbType, "character") && !StringUtils.startsWith(defaultValue, "'")) {
+    if (StringUtils.startsWithIgnoreCase(dbType, CHARACTER) && !StringUtils.startsWith(defaultValue, "'")) {
       return "'" + defaultValue + "'";
     }
     // If the column is a timestamp type and the default value is empty or null, set it to "now()"
@@ -395,7 +396,7 @@ public class CreateColumn extends BaseWebhookService {
     mapping.put("Amount", getPair(NUMERIC));
     mapping.put("Assignment", getPair(CHARACTER_VARYING, 32));
     mapping.put("Binary", getPair("bytea"));
-    mapping.put("Button", getPair("character", 1));
+    mapping.put("Button", getPair(CHARACTER, 1));
     mapping.put("Button List", getPair(CHARACTER_VARYING, 60));
     mapping.put("Color", getPair(CHARACTER_VARYING, 60));
     mapping.put("Date", getPair(TIMESTAMP_WITHOUT_TIME_ZONE));
@@ -435,7 +436,7 @@ public class CreateColumn extends BaseWebhookService {
     mapping.put("Transactional Sequence", getPair(CHARACTER_VARYING, 60));
     mapping.put("Tree Reference", getPair(CHARACTER_VARYING, 32));
     mapping.put("Window Reference", getPair(CHARACTER_VARYING, 60));
-    mapping.put("YesNo", getPair("character", 1));
+    mapping.put("YesNo", getPair(CHARACTER, 1));
 
     if (mapping.containsKey(columnType.getName())) {
       return mapping.get(columnType.getName());

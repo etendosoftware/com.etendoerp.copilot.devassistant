@@ -105,38 +105,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
     try {
       JSONObject error = new JSONObject();
 
-      // Check for self-referencing foreign keys
-      Table referencedTable = getReferencedTable(column);
-      if (referencedTable != null && referencedTable.equals(table)) {
-        error.put(ERROR,
-            String.format("Column %s in table %s is a self-referencing foreign key, which is not allowed.",
-                column.getDBColumnName(), table.getDBTableName()));
-      }
-
 
       // Validate TableDir points to a valid table
-      if (isTableDirRef(column)) {
-        var destinationTable = column.getDBColumnName().toLowerCase();
-        //substract _id from the column name
-        if (destinationTable.endsWith("_id")) {
-          destinationTable = destinationTable.substring(0, destinationTable.length() - 3);
-        }
-        OBCriteria<Table> tableCriteria = OBDal.getInstance().createCriteria(Table.class);
-        tableCriteria.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, destinationTable));
-        tableCriteria.setMaxResults(1);
-        Table destinationTableObj = (Table) tableCriteria.uniqueResult();
-        if (destinationTableObj == null) {
-          error.put(ERROR,
-              String.format(OBMessageUtils.messageBD("COPDEV_TableDirInvalidReference"), column.getDBColumnName(),
-                  table.getDBTableName()));
-        }
-        if (destinationTableObj != null && StringUtils.equalsIgnoreCase(column.getTable().getDBTableName(),
-            destinationTableObj.getDBTableName())) {
-          error.put(ERROR,
-              String.format(OBMessageUtils.messageBD("COPDEV_SelfReferenceTableDir"), column.getDBColumnName(),
-                  table.getDBTableName()));
-        }
-      }
+      validateTableDir(table, column, error);
 
       // Check for column name length violations
       if (column.getDBColumnName().length() > MAX_COLUMN_NAME_LENGTH) {
@@ -153,27 +124,70 @@ public class CheckTablesColumnHook extends BaseWebhookService {
           column.getTable().getDBTableName(), column.getDBColumnName());
       JSONObject result = Utils.executeQuery(query);
       JSONArray resultArr = result.optJSONArray("result");
-      if (resultArr != null && resultArr.length() > 0) {
-        JSONObject columnInfo = resultArr.getJSONObject(0);
-        String typeInDB = columnInfo.optString("udt_name");
-        if (StringUtils.equalsIgnoreCase(typeInDB, "bpchar")) {
-          typeInDB = "character";
-        }
-        int lengthInDB = columnInfo.optInt("character_maximum_length", -1);
+      if (resultArr == null || resultArr.length() <= 0) {
+        return error.length() > 0 ? error : null;
+      }
+      JSONObject columnInfo = resultArr.getJSONObject(0);
+      String typeInDB = columnInfo.optString("udt_name");
+      if (StringUtils.equalsIgnoreCase(typeInDB, "bpchar")) {
+        typeInDB = "character";
+      }
+      int lengthInDB = columnInfo.optInt("character_maximum_length", -1);
 
-        if (needToApplyChangesInDB(column, typeInAD, typeInDB, lengthInDB)) {
+      if (needToApplyChangesInDB(column, typeInAD, typeInDB, lengthInDB)) {
 
-          query = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s", column.getTable().getDBTableName(),
-              column.getDBColumnName(),
-              typeInAD + ((column.getLength() != null) ? ("(" + column.getLength() + ")") : ""));
-          execAndLog(query, error);
-        }
+        query = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s", column.getTable().getDBTableName(),
+            column.getDBColumnName(),
+            typeInAD + ((column.getLength() != null) ? ("(" + column.getLength() + ")") : ""));
+        execAndLog(query, error);
       }
 
       return error.length() > 0 ? error : null;
     } catch (Exception e) {
       log.error("Error validating column " + column.getDBColumnName(), e);
       return null;
+    }
+  }
+
+  /**
+   * Validates the TableDir reference of a column within a table.
+   * <p>
+   * This method checks if the column is a TableDir reference and validates its destination table.
+   * It ensures that the destination table exists and is not self-referential. Any validation errors
+   * are added to the provided JSON object.
+   * </p>
+   *
+   * @param table
+   *     The {@link Table} containing the column to validate.
+   * @param column
+   *     The {@link Column} being validated.
+   * @param error
+   *     A {@link JSONObject} to store validation errors, if any.
+   * @throws JSONException
+   *     If an error occurs while adding validation errors to the JSON object.
+   */
+  private static void validateTableDir(Table table, Column column, JSONObject error) throws JSONException {
+    if (!isTableDirRef(column)) {
+      return;
+    }
+    var destinationTable = column.getDBColumnName().toLowerCase();
+    // Subtract "_id" from the column name
+    if (destinationTable.endsWith("_id")) {
+      destinationTable = destinationTable.substring(0, destinationTable.length() - 3);
+    }
+    OBCriteria<Table> tableCriteria = OBDal.getInstance().createCriteria(Table.class);
+    tableCriteria.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, destinationTable));
+    tableCriteria.setMaxResults(1);
+    Table destinationTableObj = (Table) tableCriteria.uniqueResult();
+    if (destinationTableObj == null) {
+      error.put(ERROR,
+          String.format(OBMessageUtils.messageBD("COPDEV_TableDirInvalidReference"), column.getDBColumnName(),
+              table.getDBTableName()));
+    }
+    if (destinationTableObj != null && StringUtils.equalsIgnoreCase(column.getTable().getDBTableName(),
+        destinationTableObj.getDBTableName())) {
+      error.put(ERROR, String.format(OBMessageUtils.messageBD("COPDEV_SelfReferenceTableDir"), column.getDBColumnName(),
+          table.getDBTableName()));
     }
   }
 
