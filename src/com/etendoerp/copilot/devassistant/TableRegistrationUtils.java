@@ -46,11 +46,28 @@ public class TableRegistrationUtils {
     if (Boolean.FALSE.equals(module.isInDevelopment())) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDev"), module.getName()));
     }
-    List<DataPackage> dataPackList = module.getDataPackageList();
+    List<DataPackage> dataPackList = getDataPackageList(module);
     if (dataPackList.isEmpty()) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
     }
     return dataPackList.get(0);
+  }
+
+  /**
+   * Retrieves a list of data packages associated with the given module.
+   * <p>
+   * This method creates a criteria query to fetch all {@link DataPackage} objects
+   * that are linked to the specified module.
+   * </p>
+   *
+   * @param module
+   *     The {@link Module} for which the data packages are to be retrieved.
+   * @return A {@link List} of {@link DataPackage} objects associated with the module.
+   */
+  public static List<DataPackage> getDataPackageList(Module module) {
+    return OBDal.getInstance().createCriteria(DataPackage.class)
+        .add(Restrictions.eq(DataPackage.PROPERTY_MODULE, module))
+        .list();
   }
 
   /**
@@ -63,13 +80,29 @@ public class TableRegistrationUtils {
    *     if the module is not found or has no prefix.
    */
   public static Object[] getModuleAndPrefix(String moduleID) {
-    Module module = Utils.getModuleByID(moduleID); // Usamos el método de Utils
-    List<ModuleDBPrefix> moduleDBPrefixList = module.getModuleDBPrefixList();
+    Module module = Utils.getModuleByID(moduleID);
+    List<ModuleDBPrefix> moduleDBPrefixList = getModuleDBPrefixList(module);
     if (moduleDBPrefixList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModuleNotFound"), moduleID));
+      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModulePrefixNotFound"), moduleID));
     }
     String prefix = StringUtils.lowerCase(moduleDBPrefixList.get(0).getName());
     return new Object[]{ module, prefix };
+  }
+
+  /**
+   * Retrieves a list of database prefixes associated with the given module.
+   * <p>
+   * This method creates a criteria query to fetch all {@link ModuleDBPrefix} objects
+   * that are linked to the specified module.
+   * </p>
+   *
+   * @param module
+   *     The {@link Module} for which the database prefixes are to be retrieved.
+   * @return A {@link List} of {@link ModuleDBPrefix} objects associated with the module.
+   */
+  public static List<ModuleDBPrefix> getModuleDBPrefixList(Module module) {
+    return OBDal.getInstance().createCriteria(ModuleDBPrefix.class).add(
+        Restrictions.eq(ModuleDBPrefix.PROPERTY_MODULE, module)).list();
   }
 
   /**
@@ -169,9 +202,11 @@ public class TableRegistrationUtils {
   /**
    * Executes the process to register columns for a given record ID.
    *
-   * @param recordId The ID of the record for which the columns need to be registered.
+   * @param recordId
+   *     The ID of the record for which the columns need to be registered.
    * @return A string containing the title and message of the process execution result.
-   * @throws ServletException If an error occurs during the execution of the process.
+   * @throws ServletException
+   *     If an error occurs during the execution of the process.
    */
   public static String executeRegisterColumns(String recordId) throws ServletException {
     OBError myMessage = Utils.execPInstanceProcess(REGISTER_COLUMNS_PROCESS, recordId);
