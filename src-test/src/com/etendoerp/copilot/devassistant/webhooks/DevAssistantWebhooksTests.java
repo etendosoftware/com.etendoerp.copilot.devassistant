@@ -95,23 +95,35 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     RequestContext.get().setVariableSecureApp(vars);
     OBPropertiesProvider.setInstance(new OBPropertiesProvider());
 
-    Module mod = OBProvider.getInstance().get(Module.class);
-    mod.setNewOBObject(true);
-    mod.setInDevelopment(true);
-    mod.setName("My Test Module");
-    mod.setJavaPackage("com.etendoerp.copilot.devassistant.testmodule");
-    mod.setVersion("1.0.0");
-    mod.setDescription("Test module for Dev Assistant Webhooks");
-    mod.setType("M");
-    OBDal.getInstance().save(mod);
-    OBDal.getInstance().flush();
-    ModuleDBPrefix dbPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
-    dbPrefix.setModule(mod);
-    dbPrefix.setName(TEST_PREFIX);
-    dbPrefix.setNewOBObject(true);
-    OBDal.getInstance().save(dbPrefix);
-    OBDal.getInstance().flush();
-    //data package
+
+    Module mod = getTestModule();
+    ModuleDBPrefix dbPrefix = getModuleDBPrefix(mod);
+    DataPackage dataPackage = getDataPackage(mod);
+    testModuleId = mod.getId();
+    testModulePrefixId = dbPrefix.getId();
+    testModuleDataPackageId = dataPackage.getId();
+  }
+
+  /**
+   * Retrieves or creates a data package for the given module.
+   * <p>
+   * This method first attempts to retrieve an existing {@link DataPackage} associated with the specified module.
+   * If no such data package exists, it creates a new one, assigns it to the module, and saves it to the database.
+   * </p>
+   *
+   * @param mod
+   *     The {@link Module} for which the data package is to be retrieved or created.
+   * @return The {@link DataPackage} object associated with the module.
+   */
+  private static DataPackage getDataPackage(Module mod) {
+    OBCriteria<DataPackage> dpCriteria = OBDal.getInstance().createCriteria(DataPackage.class);
+    dpCriteria.add(Restrictions.eq(DataPackage.PROPERTY_MODULE, mod));
+    dpCriteria.setMaxResults(1);
+    DataPackage existingDataPackage = (DataPackage) dpCriteria.uniqueResult();
+    if (existingDataPackage != null) {
+      return existingDataPackage;
+    }
+
     var dataPackage = OBProvider.getInstance().get(DataPackage.class);
     dataPackage.setNewOBObject(true);
     dataPackage.setName(mod.getName() + " Data Package");
@@ -119,9 +131,67 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     dataPackage.setModule(mod);
     OBDal.getInstance().save(dataPackage);
     OBDal.getInstance().flush();
-    testModuleId = mod.getId();
-    testModulePrefixId = dbPrefix.getId();
-    testModuleDataPackageId = dataPackage.getId();
+    return dataPackage;
+  }
+
+  /**
+   * Retrieves or creates a database prefix for the given module.
+   * <p>
+   * This method first attempts to retrieve an existing {@link ModuleDBPrefix} associated with the specified module.
+   * If no such prefix exists, it creates a new one, assigns it to the module, and saves it to the database.
+   * </p>
+   *
+   * @param mod
+   *     The {@link Module} for which the database prefix is to be retrieved or created.
+   * @return The {@link ModuleDBPrefix} object associated with the module.
+   */
+  private static ModuleDBPrefix getModuleDBPrefix(Module mod) {
+    OBCriteria<ModuleDBPrefix> dbPrefixCriteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
+    dbPrefixCriteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_MODULE, mod));
+    dbPrefixCriteria.setMaxResults(1);
+    ModuleDBPrefix existingDbPrefix = (ModuleDBPrefix) dbPrefixCriteria.uniqueResult();
+    if (existingDbPrefix != null) {
+      return existingDbPrefix;
+    }
+    ModuleDBPrefix dbPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
+    dbPrefix.setModule(mod);
+    dbPrefix.setName(TEST_PREFIX);
+    dbPrefix.setNewOBObject(true);
+    OBDal.getInstance().save(dbPrefix);
+    OBDal.getInstance().flush();
+    return dbPrefix;
+  }
+
+  /**
+   * Retrieves or creates a test module for the Dev Assistant Webhooks.
+   * <p>
+   * This method first attempts to retrieve an existing module with the specified Java package.
+   * If no such module exists, it creates a new module with predefined properties, saves it
+   * to the database, and returns it.
+   * </p>
+   *
+   * @return The {@link Module} object representing the test module.
+   */
+  private Module getTestModule() {
+    OBCriteria<Module> modCriteria = OBDal.getInstance().createCriteria(Module.class);
+    String pkg = "com.etendoerp.copilot.devassistant.testmodule";
+    modCriteria.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, pkg));
+    modCriteria.setMaxResults(1);
+    Module existingModule = (Module) modCriteria.uniqueResult();
+    if (existingModule != null) {
+      return existingModule;
+    }
+    Module mod = OBProvider.getInstance().get(Module.class);
+    mod.setNewOBObject(true);
+    mod.setInDevelopment(true);
+    mod.setName("My Test Module");
+    mod.setJavaPackage(pkg);
+    mod.setVersion("1.0.0");
+    mod.setDescription("Test module for Dev Assistant Webhooks");
+    mod.setType("M");
+    OBDal.getInstance().save(mod);
+    OBDal.getInstance().flush();
+    return mod;
   }
 
   /**
@@ -358,6 +428,24 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     assertTrue(responseVars.containsKey(ERROR_KEY));
     String error = responseVars.get(ERROR_KEY);
     assertTrue(StringUtils.contains(error, "Module not found."));
+  }
+
+  @Test
+  public void useTableChecker() throws Exception {
+    OBContext.setOBContext(TestConstants.Users.ADMIN, TestConstants.Roles.SYS_ADMIN, TestConstants.Clients.SYSTEM,
+        TestConstants.Orgs.MAIN);
+    VariablesSecureApp vars = new VariablesSecureApp(OBContext.getOBContext().getUser().getId(),
+        OBContext.getOBContext().getCurrentClient().getId(), OBContext.getOBContext().getCurrentOrganization().getId());
+    RequestContext.get().setVariableSecureApp(vars);
+
+    CheckTablesColumnHook webhook = new CheckTablesColumnHook();
+    Map<String, String> parameter = new HashMap<>();
+    parameter.put("TableID", "6344EB0DE29E4E52ACF99F591FFCD07D"); //ETCOP_App table
+
+    Map<String, String> responseVars = new HashMap<>();
+    webhook.get(parameter, responseVars);
+
+    assertFalse(responseVars.containsKey(ERROR_KEY));
   }
 
 

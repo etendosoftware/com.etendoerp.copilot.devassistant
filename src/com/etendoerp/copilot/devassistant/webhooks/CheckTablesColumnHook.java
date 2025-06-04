@@ -103,6 +103,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    */
   private JSONObject validateColumn(Table table, Column column) {
     try {
+
+      log.info("Validating column: " + column.getDBColumnName() + " in table: " + table.getDBTableName());
       JSONObject error = new JSONObject();
 
 
@@ -237,6 +239,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
   private static boolean needToApplyChangesInDB(Column column, String typeInAD, String typeInDB, int lengthInDB) {
     if (StringUtils.startsWithIgnoreCase(typeInAD, "timestamp") && StringUtils.startsWithIgnoreCase(typeInDB,
         "timestamp")) {
+      return false;
+    }
+    if (StringUtils.equalsIgnoreCase(typeInAD, typeInDB) && StringUtils.equalsIgnoreCase(typeInAD, "text")) {
       return false;
     }
 
