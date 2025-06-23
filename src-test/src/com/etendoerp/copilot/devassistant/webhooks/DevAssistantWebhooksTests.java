@@ -1,20 +1,28 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.session.OBPropertiesProvider;
@@ -25,6 +33,7 @@ import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.test.base.TestConstants;
@@ -54,6 +63,15 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
   public static final String MESSAGES = "messages";
   private String testModuleId;
   private String testModulePrefixId;
+  private String testModuleDataPackageId;
+  private static final Logger LOG = LogManager.getLogger();
+  private static final String TEST_PREFIX = "COPDALT";
+  private static final String MODULE_ID_KEY = "ModuleID";
+  private static final String ERROR_KEY = "error";
+  private static final String MESSAGE_KEY = "message";
+  private static final String WEBHOOK = "Webhook";
+  private static final String ERROR_FROM_WEBHOOK = "Error from " + WEBHOOK + ": ";
+  private static final String WEBHOOK_FAILED_ERROR = WEBHOOK + " failed with error: ";
 
   /**
    * Sets up the test environment before each test.
@@ -61,7 +79,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
    * @throws Exception
    *     if an error occurs during setup
    */
-  @BeforeAll
+  @Before
   public void setUp() throws Exception {
     super.setUp();
 
@@ -77,24 +95,103 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     RequestContext.get().setVariableSecureApp(vars);
     OBPropertiesProvider.setInstance(new OBPropertiesProvider());
 
+
+    Module mod = getTestModule();
+    ModuleDBPrefix dbPrefix = getModuleDBPrefix(mod);
+    DataPackage dataPackage = getDataPackage(mod);
+    testModuleId = mod.getId();
+    testModulePrefixId = dbPrefix.getId();
+    testModuleDataPackageId = dataPackage.getId();
+  }
+
+  /**
+   * Retrieves or creates a data package for the given module.
+   * <p>
+   * This method first attempts to retrieve an existing {@link DataPackage} associated with the specified module.
+   * If no such data package exists, it creates a new one, assigns it to the module, and saves it to the database.
+   * </p>
+   *
+   * @param mod
+   *     The {@link Module} for which the data package is to be retrieved or created.
+   * @return The {@link DataPackage} object associated with the module.
+   */
+  private static DataPackage getDataPackage(Module mod) {
+    OBCriteria<DataPackage> dpCriteria = OBDal.getInstance().createCriteria(DataPackage.class);
+    dpCriteria.add(Restrictions.eq(DataPackage.PROPERTY_MODULE, mod));
+    dpCriteria.setMaxResults(1);
+    DataPackage existingDataPackage = (DataPackage) dpCriteria.uniqueResult();
+    if (existingDataPackage != null) {
+      return existingDataPackage;
+    }
+
+    var dataPackage = OBProvider.getInstance().get(DataPackage.class);
+    dataPackage.setNewOBObject(true);
+    dataPackage.setName(mod.getName() + " Data Package");
+    dataPackage.setJavaPackage(mod.getJavaPackage() + ".data");
+    dataPackage.setModule(mod);
+    OBDal.getInstance().save(dataPackage);
+    OBDal.getInstance().flush();
+    return dataPackage;
+  }
+
+  /**
+   * Retrieves or creates a database prefix for the given module.
+   * <p>
+   * This method first attempts to retrieve an existing {@link ModuleDBPrefix} associated with the specified module.
+   * If no such prefix exists, it creates a new one, assigns it to the module, and saves it to the database.
+   * </p>
+   *
+   * @param mod
+   *     The {@link Module} for which the database prefix is to be retrieved or created.
+   * @return The {@link ModuleDBPrefix} object associated with the module.
+   */
+  private static ModuleDBPrefix getModuleDBPrefix(Module mod) {
+    OBCriteria<ModuleDBPrefix> dbPrefixCriteria = OBDal.getInstance().createCriteria(ModuleDBPrefix.class);
+    dbPrefixCriteria.add(Restrictions.eq(ModuleDBPrefix.PROPERTY_MODULE, mod));
+    dbPrefixCriteria.setMaxResults(1);
+    ModuleDBPrefix existingDbPrefix = (ModuleDBPrefix) dbPrefixCriteria.uniqueResult();
+    if (existingDbPrefix != null) {
+      return existingDbPrefix;
+    }
+    ModuleDBPrefix dbPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
+    dbPrefix.setModule(mod);
+    dbPrefix.setName(TEST_PREFIX);
+    dbPrefix.setNewOBObject(true);
+    OBDal.getInstance().save(dbPrefix);
+    OBDal.getInstance().flush();
+    return dbPrefix;
+  }
+
+  /**
+   * Retrieves or creates a test module for the Dev Assistant Webhooks.
+   * <p>
+   * This method first attempts to retrieve an existing module with the specified Java package.
+   * If no such module exists, it creates a new module with predefined properties, saves it
+   * to the database, and returns it.
+   * </p>
+   *
+   * @return The {@link Module} object representing the test module.
+   */
+  private Module getTestModule() {
+    OBCriteria<Module> modCriteria = OBDal.getInstance().createCriteria(Module.class);
+    String pkg = "com.etendoerp.copilot.devassistant.testmodule";
+    modCriteria.add(Restrictions.eq(Module.PROPERTY_JAVAPACKAGE, pkg));
+    modCriteria.setMaxResults(1);
+    Module existingModule = (Module) modCriteria.uniqueResult();
+    if (existingModule != null) {
+      return existingModule;
+    }
     Module mod = OBProvider.getInstance().get(Module.class);
     mod.setNewOBObject(true);
     mod.setInDevelopment(true);
     mod.setName("My Test Module");
-    mod.setJavaPackage("com.etendoerp.copilot.devassistant.testmodule");
+    mod.setJavaPackage(pkg);
     mod.setVersion("1.0.0");
     mod.setDescription("Test module for Dev Assistant Webhooks");
     mod.setType("M");
     OBDal.getInstance().save(mod);
     OBDal.getInstance().flush();
-    ModuleDBPrefix dbPrefix = OBProvider.getInstance().get(ModuleDBPrefix.class);
-    dbPrefix.setModule(mod);
-    dbPrefix.setName("COPDEVT");
-    dbPrefix.setNewOBObject(true);
-    OBDal.getInstance().save(dbPrefix);
-    OBDal.getInstance().flush();
-    testModuleId = mod.getId();
-    testModulePrefixId = dbPrefix.getId();
+    return mod;
   }
 
   /**
@@ -113,11 +210,11 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
 
-    Column col = getColumn("EM_COPDEVT_mytext", C_ORDER_TABLE_ID);
+    Column col = getColumn("EM_" + TEST_PREFIX + "_mytext", C_ORDER_TABLE_ID);
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn(C_ORDER, "em_copdevt_mytext");
+    dropColumn(C_ORDER, "em_" + TEST_PREFIX.toLowerCase() + "_mytext");
 
     validateResponse(respVars);
   }
@@ -138,11 +235,11 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
 
-    Column col = getColumn("EM_COPDEVT_myYesNo", C_ORDER_TABLE_ID);
+    Column col = getColumn("EM_" + TEST_PREFIX.toUpperCase() + "_myYesNo", C_ORDER_TABLE_ID);
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn(C_ORDER, "em_copdevt_myYesNo");
+    dropColumn(C_ORDER, "em_" + TEST_PREFIX.toLowerCase() + "_myYesNo");
 
     validateResponse(respVars);
   }
@@ -226,11 +323,11 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Map<String, String> respVars = new HashMap<>();
     ccw.get(parameter, respVars);
 
-    Column col = getColumn("EM_COPDEVT_otherbp", C_ORDER_TABLE_ID);
+    Column col = getColumn("EM_" + TEST_PREFIX + "_otherbp", C_ORDER_TABLE_ID);
     assertNotNull(col);
     OBDal.getInstance().remove(col);
     OBDal.getInstance().flush();
-    dropColumn(C_ORDER, "em_copdevt_otherbp");
+    dropColumn(C_ORDER, "em_" + TEST_PREFIX.toLowerCase() + "_otherbp");
 
     validateResponse(respVars);
   }
@@ -274,6 +371,116 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     Utils.executeQuery(query);
   }
 
+  @Test
+  public void createAndRegisterBasicTableTest() throws Exception {
+    OBContext.setOBContext(TestConstants.Users.ADMIN, TestConstants.Roles.SYS_ADMIN, TestConstants.Clients.SYSTEM,
+        TestConstants.Orgs.MAIN);
+    VariablesSecureApp vars = new VariablesSecureApp(OBContext.getOBContext().getUser().getId(),
+        OBContext.getOBContext().getCurrentClient().getId(), OBContext.getOBContext().getCurrentOrganization().getId());
+    RequestContext.get().setVariableSecureApp(vars);
+
+    CreateAndRegisterTable webhook = new CreateAndRegisterTable();
+    Map<String, String> parameter = new HashMap<>();
+    parameter.put(MODULE_ID_KEY, testModuleId);
+    parameter.put("Name", "my_table");
+
+    Map<String, String> responseVars = new HashMap<>();
+    webhook.get(parameter, responseVars);
+
+    if (responseVars.containsKey(ERROR_KEY)) {
+      LOG.error(ERROR_FROM_WEBHOOK + responseVars.get(ERROR_KEY));
+      fail(WEBHOOK_FAILED_ERROR + responseVars.get(ERROR_KEY));
+    }
+    assertTrue(responseVars.containsKey(MESSAGE_KEY));
+    String message = responseVars.get(MESSAGE_KEY);
+    assertTrue(message.contains("Table registered successfully"));
+
+    String tableName = TEST_PREFIX.toLowerCase() + "_my_table";
+    assertTrue(tableExistsInDatabase(tableName));
+
+    Table table = getTableByDBName(tableName);
+    assertNotNull(table);
+    assertEquals(tableName, table.getDBTableName().toLowerCase());
+    assertEquals("4", table.getDataAccessLevel());
+
+    dropTable(tableName);
+    OBDal.getInstance().remove(table);
+    OBDal.getInstance().flush();
+  }
+
+
+  @Test
+  public void invalidModuleIdTest() throws Exception {
+    OBContext.setOBContext(TestConstants.Users.ADMIN, TestConstants.Roles.SYS_ADMIN, TestConstants.Clients.SYSTEM,
+        TestConstants.Orgs.MAIN);
+    VariablesSecureApp vars = new VariablesSecureApp(OBContext.getOBContext().getUser().getId(),
+        OBContext.getOBContext().getCurrentClient().getId(), OBContext.getOBContext().getCurrentOrganization().getId());
+    RequestContext.get().setVariableSecureApp(vars);
+
+    CreateAndRegisterTable webhook = new CreateAndRegisterTable();
+    Map<String, String> parameter = new HashMap<>();
+    parameter.put(MODULE_ID_KEY, "INVALID_MODULE_ID");
+    parameter.put("Name", "my_table");
+
+    Map<String, String> responseVars = new HashMap<>();
+    webhook.get(parameter, responseVars);
+
+    assertTrue(responseVars.containsKey(ERROR_KEY));
+    String error = responseVars.get(ERROR_KEY);
+    assertTrue(StringUtils.contains(error, "Module not found."));
+  }
+
+  @Test
+  public void useTableChecker() throws Exception {
+    OBContext.setOBContext(TestConstants.Users.ADMIN, TestConstants.Roles.SYS_ADMIN, TestConstants.Clients.SYSTEM,
+        TestConstants.Orgs.MAIN);
+    VariablesSecureApp vars = new VariablesSecureApp(OBContext.getOBContext().getUser().getId(),
+        OBContext.getOBContext().getCurrentClient().getId(), OBContext.getOBContext().getCurrentOrganization().getId());
+    RequestContext.get().setVariableSecureApp(vars);
+
+    CheckTablesColumnHook webhook = new CheckTablesColumnHook();
+    Map<String, String> parameter = new HashMap<>();
+    parameter.put("TableID", "6344EB0DE29E4E52ACF99F591FFCD07D"); //ETCOP_App table
+
+    Map<String, String> responseVars = new HashMap<>();
+    webhook.get(parameter, responseVars);
+
+    assertFalse(responseVars.containsKey(ERROR_KEY));
+  }
+
+
+  private boolean tableExistsInDatabase(String tableName) throws SQLException {
+    Connection conn = OBDal.getInstance().getConnection();
+    try (
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(
+            "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '" + tableName + "')")) {
+      if (rs.next()) {
+        return rs.getBoolean(1);
+      }
+      return false;
+    }
+  }
+
+  private void dropTable(String tableName) throws SQLException {
+    String query = "DROP TABLE IF EXISTS " + tableName + ";";
+    try {
+      JSONObject response = Utils.executeQuery(query);
+      LOG.info("Table dropped: {}", response.toString());
+    } catch (Exception e) {
+      LOG.error("Failed to drop table {}: {}", tableName, e.getMessage(), e);
+      throw new SQLException("Failed to drop table " + tableName, e);
+    }
+  }
+
+  private Table getTableByDBName(String dbTableName) {
+    OBCriteria<Table> tableCrit = OBDal.getInstance().createCriteria(Table.class);
+    tableCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, dbTableName));
+    tableCrit.setMaxResults(1);
+    return (Table) tableCrit.uniqueResult();
+  }
+
+
   /**
    * Cleans up the test environment after each test.
    */
@@ -286,14 +493,17 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     RequestContext.get().setVariableSecureApp(vars);
     OBDal.getInstance().flush();
 
-    Module mod = OBDal.getInstance().get(Module.class, testModuleId);
     ModuleDBPrefix modPrefix = OBDal.getInstance().get(ModuleDBPrefix.class, testModulePrefixId);
     if (modPrefix != null) {
       OBDal.getInstance().remove(modPrefix);
     }
+    DataPackage dataPackage = OBDal.getInstance().get(DataPackage.class, testModuleDataPackageId);
+    if (dataPackage != null) {
+      OBDal.getInstance().remove(dataPackage);
+    }
+    Module mod = OBDal.getInstance().get(Module.class, testModuleId);
     OBDal.getInstance().remove(mod);
     OBDal.getInstance().flush();
 
-    OBDal.getInstance().commitAndClose();
   }
 }
