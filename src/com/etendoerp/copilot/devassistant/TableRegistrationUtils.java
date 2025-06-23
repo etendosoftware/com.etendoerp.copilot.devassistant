@@ -169,7 +169,7 @@ public class TableRegistrationUtils {
     adTable.setJavaClassName(javaClass);
     adTable.setDescription(description);
     adTable.setHelpComment(helpTable);
-    adTable.setView(isView); // Indicar explícitamente que es una vista
+    adTable.setView(isView);
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
 
