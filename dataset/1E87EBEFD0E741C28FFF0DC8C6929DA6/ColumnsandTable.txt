@@ -1,0 +1,3 @@
+Please generate the ERP system using the PTCDM and configure the PTCDM_Product_Score_Matr accordingly, ensuring the PTCDM_Product_Score_Matr:clave primaria, Notes:Text, Manual:Boolean, Name:String, Total:Numérico are properly defined within the Product Score Matrix interface.
+<END_OF_INSTANCE>
+

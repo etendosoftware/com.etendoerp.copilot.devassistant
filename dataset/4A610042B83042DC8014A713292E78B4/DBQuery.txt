@@ -1,0 +1,3 @@
+Could you please provide details on the following query so the assistant can assist you: ¿Cuál fue la última orden de compra??
+<END_OF_INSTANCE>
+

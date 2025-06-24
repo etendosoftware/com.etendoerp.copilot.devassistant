@@ -40,6 +40,116 @@
         "creation_date": "2025-05-13-10:57:51"
     },
     {
+        "run_id": "50594bae-15e2-487d-a28f-6996c6fdd531",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Crea un m\u00f3dulo llamado \u201cEtendo Test Langs\u201d con el paquete \u201ccom.etendoerp.test.langs\u201d y prefijo \u201cESLPR\u201d. Dependencia Core, lo demas infierelo tu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_ClRuPol9Spm4FH4Ygkne43QX",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"(name=ic='Etendo Test Langs') or (javaPackage=ic='com.etendoerp.test.langs')\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_aZ3u8ErUpaYPzNrKYuQeFFwJ",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"name=='ESLPR'\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_ClRuPol9Spm4FH4Ygkne43QX"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_aZ3u8ErUpaYPzNrKYuQeFFwJ"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_L5Bi2e0VR8LycgcXglD3pCb9",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"javaPackage\\\":\\\"com.etendoerp.test.langs\\\",\\\"name\\\":\\\"Etendo Test Langs\\\",\\\"type\\\":\\\"M\\\",\\\"description\\\":\\\"M\\u00f3dulo de prueba para gesti\\u00f3n multilenguaje y test de soporte de m\\u00faltiples idiomas en Etendo.\\\",\\\"version\\\":\\\"1.0.0\\\",\\\"helpComment\\\":\\\"Provee utilidades y ejemplos para escenarios multilenguaje dentro de Etendo.\\\",\\\"language\\\":\\\"en_US\\\",\\\"active\\\":true,\\\"enabled\\\":true,\\\"client\\\":\\\"0\\\",\\\"organization\\\":\\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Etendo Test Langs - 1.0.0 - English (USA)\",\"_entityName\":\"ADModule\",\"$ref\":\"ADModule\\\\/4CF7F297F77E46519399099477F2F782\",\"id\":\"4CF7F297F77E46519399099477F2F782\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-04T10:12:32-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-04T10:12:32-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Etendo Test Langs\",\"version\":\"1.0.0\",\"description\":\"M\u00f3dulo de prueba para gesti\u00f3n multilenguaje y test de soporte de m\u00faltiples idiomas en Etendo.\",\"helpComment\":\"Provee utilidades y ejemplos para escenarios multilenguaje dentro de Etendo.\",\"uRL\":null,\"type\":\"M\",\"licenseText\":null,\"inDevelopment\":true,\"default\":false,\"sequenceNumber\":10,\"javaPackage\":\"com.etendoerp.test.langs\",\"licenseType\":null,\"author\":null,\"status\":\"A\",\"availableUpdate\":null,\"translationRequired\":false,\"language\":\"en_US\",\"language$_identifier\":\"English (USA)\",\"hasChartOfAccounts\":false,\"isTranslationModule\":false,\"hasReferenceData\":false,\"registerModule\":false,\"updateInformation\":null,\"updateVersion\":null,\"referenceDataDescription\":null,\"versionLabel\":null,\"commercial\":false,\"maturityUpdate\":null,\"enabled\":true,\"applyConfigurationScript\":true,\"upgradeAvailable\":null,\"etrxIsrx\":false,\"etrxIsreact\":false,\"freeForTrial\":false,\"etrxRxmodule\":null,\"recordTime\":1749042752668}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_L5Bi2e0VR8LycgcXglD3pCb9"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_PXdnjxTGgS7RQbEF3BDx6J2G",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\":\\\"ESLPR\\\",\\\"module\\\":\\\"4CF7F297F77E46519399099477F2F782\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_BNzssfJJF8ZnbmedRePEhtih",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDependency\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\":\\\"4CF7F297F77E46519399099477F2F782\\\",\\\"dependentModule\\\":\\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_RqvsIipCvwyBXmoKDKZuNQcc",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDataPackage\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\":\\\"Etendo Test Langs Data Package\\\",\\\"javaPackage\\\":\\\"com.etendoerp.test.langs.data\\\",\\\"module\\\":\\\"4CF7F297F77E46519399099477F2F782\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"ESLPR\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/38F5A58D2EF147FDB9C0F558E23E60BF\",\"id\":\"38F5A58D2EF147FDB9C0F558E23E60BF\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-04T10:12:39-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-04T10:12:39-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"4CF7F297F77E46519399099477F2F782\",\"module$_identifier\":\"Etendo Test Langs - 1.0.0 - English (USA)\",\"name\":\"ESLPR\",\"recordTime\":1749042759624}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_PXdnjxTGgS7RQbEF3BDx6J2G"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Etendo Test Langs - 1.0.0 - English (USA) - Core - 24.4.11\",\"_entityName\":\"ModuleDependency\",\"$ref\":\"ModuleDependency\\\\/9E48E7593DA547518DEAC4B9436526A7\",\"id\":\"9E48E7593DA547518DEAC4B9436526A7\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-04T10:12:39-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-04T10:12:39-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"4CF7F297F77E46519399099477F2F782\",\"module$_identifier\":\"Etendo Test Langs - 1.0.0 - English (USA)\",\"dependentModule\":\"0\",\"dependentModule$_identifier\":\"Core\",\"firstVersion\":\"24.4.11\",\"lastVersion\":null,\"isIncluded\":false,\"dependantModuleName\":\"Core\",\"dependencyEnforcement\":\"MAJOR\",\"userEditableEnforcement\":false,\"instanceEnforcement\":null,\"recordTime\":1749042759757}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_BNzssfJJF8ZnbmedRePEhtih"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Etendo Test Langs Data Package\",\"_entityName\":\"DataPackage\",\"$ref\":\"DataPackage\\\\/E7CFA9A79CE5424D82C2F832EBB8D0EA\",\"id\":\"E7CFA9A79CE5424D82C2F832EBB8D0EA\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"name\":\"Etendo Test Langs Data Package\",\"description\":null,\"javaPackage\":\"com.etendoerp.test.langs.data\",\"module\":\"4CF7F297F77E46519399099477F2F782\",\"module$_identifier\":\"Etendo Test Langs - 1.0.0 - English (USA)\",\"active\":true,\"creationDate\":\"2025-06-04T10:12:39-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-04T10:12:39-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"recordTime\":1749042759877}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_RqvsIipCvwyBXmoKDKZuNQcc"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "El m\u00f3dulo \"Etendo Test Langs\" fue creado exitosamente con los siguientes detalles y tabs asociados:\n\n- Nombre del m\u00f3dulo: Etendo Test Langs\n- Java package: com.etendoerp.test.langs\n- Prefijo en la base de datos: ESLPR\n- Dependencia: Core (obligatoria)\n- Data package: com.etendoerp.test.langs.data\n\nDetalles t\u00e9cnicos:\n- Descripci\u00f3n: M\u00f3dulo de prueba para gesti\u00f3n multilenguaje y test de soporte de m\u00faltiples idiomas en Etendo.\n- Comentario de ayuda: Provee utilidades y ejemplos para escenarios multilenguaje dentro de Etendo.\n- Tipo: M\u00f3dulo (M)\n- Versi\u00f3n: 1.0.0\n- Idioma: en_US (por defecto)\n\nID del M\u00f3dulo creado: 4CF7F297F77E46519399099477F2F782\n\nSi deseas agregar dependencias adicionales u otra configuraci\u00f3n, ind\u00edcalo y lo gestiono."
+        },
+        "creation_date": "2025-06-04-12:34:08"
+    },
+    {
         "run_id": "85b9ac25-116c-4823-85ca-384c17c35bc6",
         "messages": [
             {
@@ -219,6 +329,185 @@
             ]
         },
         "creation_date": "2025-05-13-10:59:07"
+    },
+    {
+        "run_id": "b8f16bb5-fccf-4642-85b8-27a7ca9b657a",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Crea un m\u00f3dulo llamado \u201cEtendo Test Langs\u201d con el paquete \u201ccom.etendoerp.test.langs\u201d y prefijo \u201cESLPR\u201d. Dependencia Core, lo demas infierelo tu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_ClRuPol9Spm4FH4Ygkne43QX",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"(name=ic='Etendo Test Langs') or (javaPackage=ic='com.etendoerp.test.langs')\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_aZ3u8ErUpaYPzNrKYuQeFFwJ",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"name=='ESLPR'\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_ClRuPol9Spm4FH4Ygkne43QX"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_aZ3u8ErUpaYPzNrKYuQeFFwJ"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_L5Bi2e0VR8LycgcXglD3pCb9",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"javaPackage\\\":\\\"com.etendoerp.test.langs\\\",\\\"name\\\":\\\"Etendo Test Langs\\\",\\\"type\\\":\\\"M\\\",\\\"description\\\":\\\"M\\u00f3dulo de prueba para gesti\\u00f3n multilenguaje y test de soporte de m\\u00faltiples idiomas en Etendo.\\\",\\\"version\\\":\\\"1.0.0\\\",\\\"helpComment\\\":\\\"Provee utilidades y ejemplos para escenarios multilenguaje dentro de Etendo.\\\",\\\"language\\\":\\\"en_US\\\",\\\"active\\\":true,\\\"enabled\\\":true,\\\"client\\\":\\\"0\\\",\\\"organization\\\":\\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Etendo Test Langs - 1.0.0 - English (USA)\",\"_entityName\":\"ADModule\",\"$ref\":\"ADModule\\\\/4CF7F297F77E46519399099477F2F782\",\"id\":\"4CF7F297F77E46519399099477F2F782\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-04T10:12:32-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-04T10:12:32-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Etendo Test Langs\",\"version\":\"1.0.0\",\"description\":\"M\u00f3dulo de prueba para gesti\u00f3n multilenguaje y test de soporte de m\u00faltiples idiomas en Etendo.\",\"helpComment\":\"Provee utilidades y ejemplos para escenarios multilenguaje dentro de Etendo.\",\"uRL\":null,\"type\":\"M\",\"licenseText\":null,\"inDevelopment\":true,\"default\":false,\"sequenceNumber\":10,\"javaPackage\":\"com.etendoerp.test.langs\",\"licenseType\":null,\"author\":null,\"status\":\"A\",\"availableUpdate\":null,\"translationRequired\":false,\"language\":\"en_US\",\"language$_identifier\":\"English (USA)\",\"hasChartOfAccounts\":false,\"isTranslationModule\":false,\"hasReferenceData\":false,\"registerModule\":false,\"updateInformation\":null,\"updateVersion\":null,\"referenceDataDescription\":null,\"versionLabel\":null,\"commercial\":false,\"maturityUpdate\":null,\"enabled\":true,\"applyConfigurationScript\":true,\"upgradeAvailable\":null,\"etrxIsrx\":false,\"etrxIsreact\":false,\"freeForTrial\":false,\"etrxRxmodule\":null,\"recordTime\":1749042752668}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_L5Bi2e0VR8LycgcXglD3pCb9"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_PXdnjxTGgS7RQbEF3BDx6J2G",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\":\\\"ESLPR\\\",\\\"module\\\":\\\"4CF7F297F77E46519399099477F2F782\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_BNzssfJJF8ZnbmedRePEhtih",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDependency\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\":\\\"4CF7F297F77E46519399099477F2F782\\\",\\\"dependentModule\\\":\\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_RqvsIipCvwyBXmoKDKZuNQcc",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDataPackage\", \"method\": \"POST\", \"body_params\": \"{\\\"name\\\":\\\"Etendo Test Langs Data Package\\\",\\\"javaPackage\\\":\\\"com.etendoerp.test.langs.data\\\",\\\"module\\\":\\\"4CF7F297F77E46519399099477F2F782\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-04-12:31:04"
+    },
+    {
+        "run_id": "bb1a62de-e4f0-46b7-9001-d0e7f3f55b06",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Crea un m\u00f3dulo llamado \u201cEtendo Test Langs\u201d con el paquete \u201ccom.etendoerp.test.langs\u201d y prefijo \u201cESLPR\u201d. Dependencia Core, lo demas infierelo tu"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_ClRuPol9Spm4FH4Ygkne43QX",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"(name=ic='Etendo Test Langs') or (javaPackage=ic='com.etendoerp.test.langs')\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_aZ3u8ErUpaYPzNrKYuQeFFwJ",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"name=='ESLPR'\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-04-11:34:47"
+    },
+    {
+        "run_id": "dea5a7d9-4d2a-4ca8-8397-eaab7ea77f13",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Crea un m\u00f3dulo llamado \u201cEtendo Test Langs\u201d con el paquete \u201ccom.etendoerp.test.langs\u201d y prefijo \u201cESLPR\u201d. Dependencia Core, lo demas infierelo tu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_ClRuPol9Spm4FH4Ygkne43QX",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"(name=ic='Etendo Test Langs') or (javaPackage=ic='com.etendoerp.test.langs')\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_aZ3u8ErUpaYPzNrKYuQeFFwJ",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\":\\\"name=='ESLPR'\\\",\\\"_startRow\\\":\\\"0\\\",\\\"_endRow\\\":\\\"10\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_ClRuPol9Spm4FH4Ygkne43QX"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":0,\"data\":[],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_aZ3u8ErUpaYPzNrKYuQeFFwJ"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_L5Bi2e0VR8LycgcXglD3pCb9",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"javaPackage\\\":\\\"com.etendoerp.test.langs\\\",\\\"name\\\":\\\"Etendo Test Langs\\\",\\\"type\\\":\\\"M\\\",\\\"description\\\":\\\"M\\u00f3dulo de prueba para gesti\\u00f3n multilenguaje y test de soporte de m\\u00faltiples idiomas en Etendo.\\\",\\\"version\\\":\\\"1.0.0\\\",\\\"helpComment\\\":\\\"Provee utilidades y ejemplos para escenarios multilenguaje dentro de Etendo.\\\",\\\"language\\\":\\\"en_US\\\",\\\"active\\\":true,\\\"enabled\\\":true,\\\"client\\\":\\\"0\\\",\\\"organization\\\":\\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-04-12:30:33"
     },
     {
         "run_id": "ffc69c96-df68-4fb0-9bf6-cd5c8300fd9c",

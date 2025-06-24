@@ -1,0 +1,2 @@
+prefix,DBTableName,windowName,columns
+PTCDM,PTCDM_Product_Score_Matr,Product Score Matrix,"PTCDM_Product_Score_Matr:clave primaria, Notes:Text, Manual:Boolean, Name:String, Total:Numérico"
