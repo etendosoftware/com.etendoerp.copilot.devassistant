@@ -1,0 +1,3 @@
+Please set up a background process named GenerateLanguageFiles within the com.etendoerp.hr.langs using TESLAN and ensure it handles the Este proceso genera archivos de propiedades de idioma para los módulos de RR. HH. basándose en las traducciones actuales. efficiently.
+<END_OF_INSTANCE>
+

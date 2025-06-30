@@ -1,0 +1,3 @@
+Could you please create an EventHandler named ProductScoreMatrixHandler for the entity PTCDM_Product_Score_Matr within the Java package com.etendoerp.ptcdm.logic? Here is the description for reference: Calcular el total basado en valores ingresados..
+<END_OF_INSTANCE>
+

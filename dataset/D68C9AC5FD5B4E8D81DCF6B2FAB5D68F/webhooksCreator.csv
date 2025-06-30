@@ -1,0 +1,2 @@
+name,Java package,logica,Parametros
+webhook testing,com.etendoerp.hr.langs,Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados,supplierId

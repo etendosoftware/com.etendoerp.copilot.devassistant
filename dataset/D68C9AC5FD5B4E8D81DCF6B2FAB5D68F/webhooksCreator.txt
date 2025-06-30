@@ -1,0 +1,3 @@
+Please set up a webhook named com.etendoerp.hr.langs using the Java package Cuando se reciba una solicitud and implement the following logic:  genera una orden de compra en un sistema externo con los datos proporcionados. Include these parameters: supplierId.
+<END_OF_INSTANCE>
+

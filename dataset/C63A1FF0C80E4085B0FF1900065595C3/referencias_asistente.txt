@@ -1,0 +1,6 @@
+Please ask the wizard to generate a list reference named Order Status using the values from the  table, specifically linking  and displaying .
+<END_OF_INSTANCE>
+
+Please ask the wizard to generate a table reference named  using the values from the C_Order table, specifically linking C_Invoice_ID and displaying Email.
+<END_OF_INSTANCE>
+
