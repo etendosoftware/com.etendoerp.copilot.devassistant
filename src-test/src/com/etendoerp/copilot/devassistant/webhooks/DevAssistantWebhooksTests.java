@@ -451,14 +451,17 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
 
   private boolean tableExistsInDatabase(String tableName) throws SQLException {
     Connection conn = OBDal.getInstance().getConnection();
+    String sql = "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = ?)";
     try (
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(
-            "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '" + tableName + "')")) {
-      if (rs.next()) {
-        return rs.getBoolean(1);
+            PreparedStatement stmt = conn.prepareStatement(sql)
+    ) {
+      stmt.setString(1, tableName);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          return rs.getBoolean(1);
+        }
+        return false;
       }
-      return false;
     }
   }
 
