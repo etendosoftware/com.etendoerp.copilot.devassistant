@@ -64,11 +64,10 @@ public class IndexZipFileHook implements CopilotFileHook {
    */
   public static File getCodeIndexZipFile(String[] searchPaths) throws IOException {
     Set<Path> filesToZip = new HashSet<>();
-
     for (String searchPath : searchPaths) {
-      // Trim whitespace
       searchPath = StringUtils.trim(searchPath);
-      boolean hasWildcards = StringUtils.contains(searchPath, "*") || StringUtils.contains(searchPath, "?");
+      boolean hasWildcards = StringUtils.contains(searchPath, "*")
+          || StringUtils.contains(searchPath, "?");
       if (hasWildcards) {
         handleWildcardPath(searchPath, filesToZip);
       } else {
@@ -93,23 +92,26 @@ public class IndexZipFileHook implements CopilotFileHook {
    * @throws OBException
    *     If the path does not exist or is invalid.
    */
-  private static void handleSpecificFilePath(String searchPath, Set<Path> filesToZip) throws IOException {
-    // Handle specific files or directories without wildcards
+  private static void handleSpecificFilePath(String searchPath, Set<Path> filesToZip)
+      throws IOException {
     Path path = Paths.get(searchPath).normalize();
-
     if (!Files.exists(path)) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_PathNotExists"), path.toString()));
+      throw new OBException(String.format(
+          OBMessageUtils.messageBD("COPDEV_PathNotExists"), path.toString()));
     }
-
     if (Files.isRegularFile(path)) {
       if (checkIgnoredFiles(path.toString())) {
         filesToZip.add(path);
       }
     } else if (Files.isDirectory(path)) {
-      // Add all files in directory recursively
-      Files.walkFileTree(path, getSimpleFileVisitor(filesToZip));
+      if (checkIgnoredFiles(path.toString())) {
+        Files.walkFileTree(path, getSimpleFileVisitor(filesToZip));
+      } else {
+        log.warn("Skipping ignored directory: " + path);
+      }
     } else {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidPath"), path.toString()));
+      throw new OBException(String.format(
+          OBMessageUtils.messageBD("COPDEV_InvalidPath"), path.toString()));
     }
   }
 
@@ -167,16 +169,41 @@ public class IndexZipFileHook implements CopilotFileHook {
    *     The set to which matching files will be added.
    * @return A SimpleFileVisitor that processes files as described.
    */
-  private static SimpleFileVisitor<Path> getSimpleFileVisitor(Path basePath, PathMatcher matcher,
-      Set<Path> filesToZip) {
+  private static SimpleFileVisitor<Path> getSimpleFileVisitor(Path basePath,
+      PathMatcher matcher, Set<Path> filesToZip) {
     return new SimpleFileVisitor<Path>() {
       @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        Path relativePath = basePath.relativize(file);
-        if (matcher.matches(relativePath) && checkIgnoredFiles(file.toString())) {
-          filesToZip.add(file);
+      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+        String path = dir.toString();
+        if (!checkIgnoredFiles(path)) {
+          log.debug("Skipping entire directory: " + path);
+          return FileVisitResult.SKIP_SUBTREE;
+        }
+        if (!Files.isReadable(dir)) {
+          log.warn("Skipping directory due to access restriction: " + dir);
+          return FileVisitResult.SKIP_SUBTREE;
         }
         return FileVisitResult.CONTINUE;
+      }
+
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+        try {
+          Path rel = basePath.relativize(file);
+          if (matcher.matches(rel)
+              && checkIgnoredFiles(file.toString())
+              && Files.isReadable(file)) {
+            filesToZip.add(file);
+          }
+        } catch (Exception e) {
+          log.warn("Skipping file due to access error: " + file, e);
+        }
+        return FileVisitResult.CONTINUE;
+      }
+      @Override
+      public FileVisitResult visitFileFailed(Path file, IOException exc) {
+        log.warn("Skipping inaccessible path: " + file, exc);
+        return FileVisitResult.SKIP_SUBTREE;
       }
     };
   }
@@ -192,11 +219,30 @@ public class IndexZipFileHook implements CopilotFileHook {
   private static SimpleFileVisitor<Path> getSimpleFileVisitor(Set<Path> filesToZip) {
     return new SimpleFileVisitor<Path>() {
       @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        if (checkIgnoredFiles(file.toString())) {
-          filesToZip.add(file);
+      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+        if (!Files.isReadable(dir)) {
+          log.warn("Skipping directory due to access restriction: " + dir);
+          return FileVisitResult.SKIP_SUBTREE;
         }
         return FileVisitResult.CONTINUE;
+      }
+
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+        try {
+          if (checkIgnoredFiles(file.toString())
+              && Files.isReadable(file)) {
+            filesToZip.add(file);
+          }
+        } catch (Exception e) {
+          log.warn("Skipping file due to access error: " + file, e);
+        }
+        return FileVisitResult.CONTINUE;
+      }
+      @Override
+      public FileVisitResult visitFileFailed(Path file, IOException exc) {
+        log.warn("Skipping inaccessible path: " + file, exc);
+        return FileVisitResult.SKIP_SUBTREE;
       }
     };
   }
@@ -295,30 +341,37 @@ public class IndexZipFileHook implements CopilotFileHook {
     if (log.isDebugEnabled()) {
       log.debug(String.format("IndexZipFile for file: %s executed start", hookObject.getName()));
     }
-
     try {
-
       List<KnowledgePathFile> pathList = hookObject.getCOPDEVKnowledgePathFilesList();
-
-      Properties properties = OBPropertiesProvider.getInstance().getOpenbravoProperties();
-      String sourcePath = "@source.path@";
-      String sourcePathProp = properties.getProperty("source.path");
-
-      String[] paths = pathList.stream()
+      Properties props = OBPropertiesProvider.getInstance().getOpenbravoProperties();
+      String token = "@source.path@";
+      String realSrc = props.getProperty("source.path");
+      String[] realPaths = pathList.stream()
           .map(KnowledgePathFile::getPathFile)
-          .map(path -> path.startsWith(sourcePath) ? path.replaceFirst(sourcePath, sourcePathProp) : path)
+          .map(p -> p.startsWith(token) ? p.replaceFirst(token, realSrc) : p)
           .toArray(String[]::new);
 
-      File file = getCodeIndexZipFile(paths);
+      File zip = getCodeIndexZipFile(realPaths);
+      AttachImplementationManager aim = WeldUtils.getInstanceFromStaticBeanManager(
+          AttachImplementationManager.class);
 
-      AttachImplementationManager aim = WeldUtils.getInstanceFromStaticBeanManager(AttachImplementationManager.class);
-      removeAttachment(aim, hookObject);
-
-      aim.upload(new HashMap<>(), COPILOT_FILE_TAB_ID, hookObject.getId(),
-          hookObject.getOrganization().getId(), file);
+      // Remove existing attachment if present
+      Attachment existing = getAttachment(hookObject);
+      if (existing != null) {
+        aim.delete(existing);
+      }
+      aim.upload(
+          new HashMap<>(),
+          COPILOT_FILE_TAB_ID,
+          hookObject.getId(),
+          hookObject.getOrganization().getId(),
+          zip
+      );
 
     } catch (Exception e) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ErrorAttachingFile")), e);
+      throw new OBException(
+          String.format(OBMessageUtils.messageBD("COPDEV_ErrorAttachingFile")), e
+      );
     }
   }
 
