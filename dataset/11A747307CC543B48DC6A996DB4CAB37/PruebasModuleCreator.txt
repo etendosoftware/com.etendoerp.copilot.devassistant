@@ -1,0 +1,3 @@
+Please create a module named Modulo de prueba Langsmith with the Java package com.etendoerp.test.langsmith and ensure it depends on core. The database prefix should be set as PTCDM.
+<END_OF_INSTANCE>
+

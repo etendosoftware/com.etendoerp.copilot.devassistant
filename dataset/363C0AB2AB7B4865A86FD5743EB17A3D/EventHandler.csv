@@ -1,0 +1,2 @@
+name,Entity,java_package,descripcion
+ProductScoreMatrixHandler,PTCDM_Product_Score_Matr,com.etendoerp.ptcdm.logic,Calcular el total basado en valores ingresados.
