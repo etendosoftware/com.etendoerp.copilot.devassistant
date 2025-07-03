@@ -360,7 +360,6 @@ public class IndexZipFileHook implements CopilotFileHook {
       if (existing != null) {
         aim.delete(existing);
       }
-      // Upload new ZIP;
       aim.upload(
           new HashMap<>(),
           COPILOT_FILE_TAB_ID,
