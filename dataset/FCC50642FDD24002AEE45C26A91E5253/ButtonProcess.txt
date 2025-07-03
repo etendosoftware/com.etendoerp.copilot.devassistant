@@ -1,0 +1,3 @@
+Please create a Button Process using the prefix LANGS, located in the Java package com.etendoerp.langs.buttons, named Export Employee Languages, with the search key PRUEB and implement the following logic: Botón que exporta a Excel o CSV un listado de todos los empleados junto con los idiomas que hablan.. Include parameters: EXPORT_FORMAT,LANGUAGE,ONLY_ACTIVE.
+<END_OF_INSTANCE>
+

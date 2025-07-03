@@ -1,0 +1,3 @@
+Java package,Name,Search Key,Process
+com.etendoerp.hr.langs,GenerateLanguageFiles,TESLAN,Este proceso genera archivos de propiedades de idioma para los módulos de RR. HH. basándose en las traducciones actuales.
+

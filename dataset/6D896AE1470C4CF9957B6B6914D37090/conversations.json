@@ -1,0 +1,224 @@
+[
+    {
+        "run_id": "03bf93b3-789c-4b4c-a389-00881896888f",
+        "messages": [
+            {
+                "role": "user",
+                "content": "quiero crear un mensaje"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para ayudarte a crear un mensaje AD_message en Etendo, primero necesito el ID de m\u00f3dulo al que pertenece el mensaje. \u00bfCu\u00e1l es el ID del m\u00f3dulo para el que crear\u00e1s el mensaje? As\u00ed podr\u00e9 buscar el prefijo correspondiente y guiarte correctamente en el proceso."
+            },
+            {
+                "role": "user",
+                "content": "526B962ADC694EDBB5D8429F2FFED988"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_qsi8HNGPbDSpCzFH86p9RHxf",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"module=='526B962ADC694EDBB5D8429F2FFED988'\\\",\\\"_startRow\\\": \\\"0\\\",\\\"_endRow\\\": \\\"1\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"LANGS\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/E1A117F1A825440B8D3513D26AEF3554\",\"id\":\"E1A117F1A825440B8D3513D26AEF3554\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-03-30T22:27:25-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-03-30T22:27:25-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"name\":\"LANGS\",\"recordTime\":1749743167911}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_qsi8HNGPbDSpCzFH86p9RHxf"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "El prefijo del m\u00f3dulo para el ID 526B962ADC694EDBB5D8429F2FFED988 es LANGS.\n\nAhora necesito los siguientes datos para crear el mensaje:\n\n1. Nombre descriptivo del mensaje (por ejemplo: ErrorClaveDuplicada \u2013 Recuerda: m\u00e1ximo 32 caracteres en total incluyendo el prefijo, y deber\u00e1 ir como LANGS_ErrorClaveDuplicada).\n2. Tipo de mensaje: \u00bfser\u00e1 informativo (\"I\") o de error (\"E\")?\n3. Texto del mensaje (puede ser parametrizado usando %s si quieres que tenga variables).\n4. \u00bfEl mensaje debe incluirse en I18N (internacionalizaci\u00f3n)? (S\u00ed/No)\n5. Texto de pista o ayuda (opcional).\n\nPor favor, ind\u00edcame estos datos y crear\u00e9 el mensaje por ti."
+        },
+        "creation_date": "2025-06-12-13:12:47"
+    },
+    {
+        "run_id": "40478faf-6206-4ec6-8d9b-3b6a0123eeea",
+        "messages": [
+            {
+                "role": "user",
+                "content": "quiero crear un mensaje"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para ayudarte a crear un mensaje AD_message en Etendo, primero necesito el ID de m\u00f3dulo al que pertenece el mensaje. \u00bfCu\u00e1l es el ID del m\u00f3dulo para el que crear\u00e1s el mensaje? As\u00ed podr\u00e9 buscar el prefijo correspondiente y guiarte correctamente en el proceso."
+            },
+            {
+                "role": "user",
+                "content": "526B962ADC694EDBB5D8429F2FFED988"
+            },
+            {
+                "role": "assistant",
+                "content": "El prefijo del m\u00f3dulo para el ID 526B962ADC694EDBB5D8429F2FFED988 es LANGS.\n\nAhora necesito los siguientes datos para crear el mensaje:\n\n1. Nombre descriptivo del mensaje (por ejemplo: ErrorClaveDuplicada \u2013 Recuerda: m\u00e1ximo 32 caracteres en total incluyendo el prefijo, y deber\u00e1 ir como LANGS_ErrorClaveDuplicada).\n2. Tipo de mensaje: \u00bfser\u00e1 informativo (\"I\") o de error (\"E\")?\n3. Texto del mensaje (puede ser parametrizado usando %s si quieres que tenga variables).\n4. \u00bfEl mensaje debe incluirse en I18N (internacionalizaci\u00f3n)? (S\u00ed/No)\n5. Texto de pista o ayuda (opcional).\n\nPor favor, ind\u00edcame estos datos y crear\u00e9 el mensaje por ti."
+            },
+            {
+                "role": "user",
+                "content": "Name:webhook error\n    Message:The order has been saved successfully.\n    Type: E"
+            },
+            {
+                "role": "assistant",
+                "content": "Te recuerdo que el nombre debe comenzar con el prefijo del m\u00f3dulo (LANGS_) y debe estar en formato LANGS_WebhookError, usando may\u00fasculas y sin espacios, para cumplir con las normas de Etendo. Adem\u00e1s, aunque el tipo de mensaje que especificaste es \u201cE\u201d (error), el texto indica que \u201cla orden fue guardada exitosamente\u201d, lo que corresponde a un tipo informativo (\u201cI\u201d). \u00bfDeseas que el mensaje sea de tipo error con ese texto, o prefieres ajustarlo?\n\nPropuesta seg\u00fan tus datos y buenas pr\u00e1cticas:\n\n- Nombre (searchKey): LANGS_WebhookError\n- Tipo (messageType): E (Error)\n- Texto: The order has been saved successfully.\n- Incluir en I18N: (por defecto pondr\u00e9 S\u00ed, puedes corregirlo si lo deseas)\n- Pista (hint): (dejar\u00e9 vac\u00edo a menos que quieras agregar algo)\n\n\u00bfConfirmas la creaci\u00f3n tal cual, o deseas ajustar el tipo de mensaje o el texto? Si confirmas, proceder\u00e9 a crear el mensaje."
+            },
+            {
+                "role": "user",
+                "content": "si, continua"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_Nk4ydl7rZA8fCcYTyfXQcU3T",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ADMessage\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\":\\\"526B962ADC694EDBB5D8429F2FFED988\\\",\\\"searchKey\\\":\\\"LANGS_WebhookError\\\",\\\"messageType\\\":\\\"E\\\",\\\"messageText\\\":\\\"The order has been saved successfully.\\\",\\\"includeInI18N\\\":true,\\\"organization\\\":\\\"0\\\",\\\"client\\\":\\\"0\\\",\\\"active\\\":true}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"LANGS_WebhookError\",\"_entityName\":\"ADMessage\",\"$ref\":\"ADMessage\\\\/D99777798C2947E0874BE54E302CC386\",\"id\":\"D99777798C2947E0874BE54E302CC386\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-12T12:48:26-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-12T12:48:26-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"LANGS_WebhookError\",\"messageText\":\"The order has been saved successfully.\",\"hint\":null,\"messageType\":\"E\",\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"includeInI18N\":true,\"recordTime\":1749743306101}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_Nk4ydl7rZA8fCcYTyfXQcU3T"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "\u00a1Listo! El mensaje fue creado exitosamente con estos datos:\n\n- M\u00f3dulo: Langsmith Test - 1.0.0 - English (USA)\n- searchKey: LANGS_WebhookError\n- Tipo: E (Error)\n- Texto: The order has been saved successfully.\n- Internacionalizaci\u00f3n: S\u00ed\n\nPuedes utilizar este mensaje en Java con:\nOBMessageUtils.messageBD(\"LANGS_WebhookError\")\n\nSi necesitas hacer el texto parametrizado, reemplaza parte del texto por %s y usa String.format. Ejemplo:\nString txt = String.format(OBMessageUtils.messageBD(\"LANGS_WebhookError\"), variable);\n\n\u00bfNecesitas crear otro mensaje o deseas modificar alguno de los datos?"
+        },
+        "creation_date": "2025-06-12-13:13:34"
+    },
+    {
+        "run_id": "4f867dc4-8c65-4fec-b142-df95dfe34b51",
+        "messages": [
+            {
+                "role": "user",
+                "content": "quiero crear un mensaje"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para ayudarte a crear un mensaje AD_message en Etendo, primero necesito el ID de m\u00f3dulo al que pertenece el mensaje. \u00bfCu\u00e1l es el ID del m\u00f3dulo para el que crear\u00e1s el mensaje? As\u00ed podr\u00e9 buscar el prefijo correspondiente y guiarte correctamente en el proceso."
+            },
+            {
+                "role": "user",
+                "content": "526B962ADC694EDBB5D8429F2FFED988"
+            },
+            {
+                "role": "assistant",
+                "content": "El prefijo del m\u00f3dulo para el ID 526B962ADC694EDBB5D8429F2FFED988 es LANGS.\n\nAhora necesito los siguientes datos para crear el mensaje:\n\n1. Nombre descriptivo del mensaje (por ejemplo: ErrorClaveDuplicada \u2013 Recuerda: m\u00e1ximo 32 caracteres en total incluyendo el prefijo, y deber\u00e1 ir como LANGS_ErrorClaveDuplicada).\n2. Tipo de mensaje: \u00bfser\u00e1 informativo (\"I\") o de error (\"E\")?\n3. Texto del mensaje (puede ser parametrizado usando %s si quieres que tenga variables).\n4. \u00bfEl mensaje debe incluirse en I18N (internacionalizaci\u00f3n)? (S\u00ed/No)\n5. Texto de pista o ayuda (opcional).\n\nPor favor, ind\u00edcame estos datos y crear\u00e9 el mensaje por ti."
+            },
+            {
+                "role": "user",
+                "content": "Name:webhook error\n    Message:The order has been saved successfully.\n    Type: E"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "Te recuerdo que el nombre debe comenzar con el prefijo del m\u00f3dulo (LANGS_) y debe estar en formato LANGS_WebhookError, usando may\u00fasculas y sin espacios, para cumplir con las normas de Etendo. Adem\u00e1s, aunque el tipo de mensaje que especificaste es \u201cE\u201d (error), el texto indica que \u201cla orden fue guardada exitosamente\u201d, lo que corresponde a un tipo informativo (\u201cI\u201d). \u00bfDeseas que el mensaje sea de tipo error con ese texto, o prefieres ajustarlo?\n\nPropuesta seg\u00fan tus datos y buenas pr\u00e1cticas:\n\n- Nombre (searchKey): LANGS_WebhookError\n- Tipo (messageType): E (Error)\n- Texto: The order has been saved successfully.\n- Incluir en I18N: (por defecto pondr\u00e9 S\u00ed, puedes corregirlo si lo deseas)\n- Pista (hint): (dejar\u00e9 vac\u00edo a menos que quieras agregar algo)\n\n\u00bfConfirmas la creaci\u00f3n tal cual, o deseas ajustar el tipo de mensaje o el texto? Si confirmas, proceder\u00e9 a crear el mensaje."
+        },
+        "creation_date": "2025-06-12-13:13:02"
+    },
+    {
+        "run_id": "53ac5476-d6da-4963-ac87-037b81f74522",
+        "messages": [
+            {
+                "role": "user",
+                "content": "quiero crear un mensaje"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para ayudarte a crear un mensaje AD_message en Etendo, primero necesito el ID de m\u00f3dulo al que pertenece el mensaje. \u00bfCu\u00e1l es el ID del m\u00f3dulo para el que crear\u00e1s el mensaje? As\u00ed podr\u00e9 buscar el prefijo correspondiente y guiarte correctamente en el proceso."
+            },
+            {
+                "role": "user",
+                "content": "526B962ADC694EDBB5D8429F2FFED988"
+            },
+            {
+                "role": "assistant",
+                "content": "El prefijo del m\u00f3dulo para el ID 526B962ADC694EDBB5D8429F2FFED988 es LANGS.\n\nAhora necesito los siguientes datos para crear el mensaje:\n\n1. Nombre descriptivo del mensaje (por ejemplo: ErrorClaveDuplicada \u2013 Recuerda: m\u00e1ximo 32 caracteres en total incluyendo el prefijo, y deber\u00e1 ir como LANGS_ErrorClaveDuplicada).\n2. Tipo de mensaje: \u00bfser\u00e1 informativo (\"I\") o de error (\"E\")?\n3. Texto del mensaje (puede ser parametrizado usando %s si quieres que tenga variables).\n4. \u00bfEl mensaje debe incluirse en I18N (internacionalizaci\u00f3n)? (S\u00ed/No)\n5. Texto de pista o ayuda (opcional).\n\nPor favor, ind\u00edcame estos datos y crear\u00e9 el mensaje por ti."
+            },
+            {
+                "role": "user",
+                "content": "Name:webhook error\n    Message:The order has been saved successfully.\n    Type: E"
+            },
+            {
+                "role": "assistant",
+                "content": "Te recuerdo que el nombre debe comenzar con el prefijo del m\u00f3dulo (LANGS_) y debe estar en formato LANGS_WebhookError, usando may\u00fasculas y sin espacios, para cumplir con las normas de Etendo. Adem\u00e1s, aunque el tipo de mensaje que especificaste es \u201cE\u201d (error), el texto indica que \u201cla orden fue guardada exitosamente\u201d, lo que corresponde a un tipo informativo (\u201cI\u201d). \u00bfDeseas que el mensaje sea de tipo error con ese texto, o prefieres ajustarlo?\n\nPropuesta seg\u00fan tus datos y buenas pr\u00e1cticas:\n\n- Nombre (searchKey): LANGS_WebhookError\n- Tipo (messageType): E (Error)\n- Texto: The order has been saved successfully.\n- Incluir en I18N: (por defecto pondr\u00e9 S\u00ed, puedes corregirlo si lo deseas)\n- Pista (hint): (dejar\u00e9 vac\u00edo a menos que quieras agregar algo)\n\n\u00bfConfirmas la creaci\u00f3n tal cual, o deseas ajustar el tipo de mensaje o el texto? Si confirmas, proceder\u00e9 a crear el mensaje."
+            },
+            {
+                "role": "user",
+                "content": "si, continua"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_Nk4ydl7rZA8fCcYTyfXQcU3T",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ADMessage\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\":\\\"526B962ADC694EDBB5D8429F2FFED988\\\",\\\"searchKey\\\":\\\"LANGS_WebhookError\\\",\\\"messageType\\\":\\\"E\\\",\\\"messageText\\\":\\\"The order has been saved successfully.\\\",\\\"includeInI18N\\\":true,\\\"organization\\\":\\\"0\\\",\\\"client\\\":\\\"0\\\",\\\"active\\\":true}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-12-13:13:14"
+    },
+    {
+        "run_id": "a842e579-f708-4f42-a947-6572ea4c9de0",
+        "messages": [
+            {
+                "role": "user",
+                "content": "quiero crear un mensaje"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para ayudarte a crear un mensaje AD_message en Etendo, primero necesito el ID de m\u00f3dulo al que pertenece el mensaje. \u00bfCu\u00e1l es el ID del m\u00f3dulo para el que crear\u00e1s el mensaje? As\u00ed podr\u00e9 buscar el prefijo correspondiente y guiarte correctamente en el proceso."
+            },
+            {
+                "role": "user",
+                "content": "526B962ADC694EDBB5D8429F2FFED988"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_qsi8HNGPbDSpCzFH86p9RHxf",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"module=='526B962ADC694EDBB5D8429F2FFED988'\\\",\\\"_startRow\\\": \\\"0\\\",\\\"_endRow\\\": \\\"1\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-12-13:12:37"
+    },
+    {
+        "run_id": "c34100f0-3ff5-4617-8533-2286fa53c7ea",
+        "messages": [
+            {
+                "role": "user",
+                "content": "quiero crear un mensaje"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "\u00a1Perfecto! Para ayudarte a crear un mensaje AD_message en Etendo, primero necesito el ID de m\u00f3dulo al que pertenece el mensaje. \u00bfCu\u00e1l es el ID del m\u00f3dulo para el que crear\u00e1s el mensaje? As\u00ed podr\u00e9 buscar el prefijo correspondiente y guiarte correctamente en el proceso."
+        },
+        "creation_date": "2025-06-12-13:12:22"
+    }
+]

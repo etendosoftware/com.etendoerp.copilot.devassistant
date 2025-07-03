@@ -1,0 +1,909 @@
+[
+    {
+        "run_id": "01322425-7efa-43c2-bebc-ed768c01e90f",
+        "messages": [
+            {
+                "role": "user",
+                "content": "hola, quiero crear un webhook"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para poder crear el webhook, por favor ind\u00edcame la siguiente informaci\u00f3n:\n\n1. \u00bfCu\u00e1l es el nombre que quieres darle al webhook?\n2. \u00bfCu\u00e1l es el paquete Java (Java package) del m\u00f3dulo donde estar\u00e1 ubicado? (Ejemplo: com.etendoerp.module.example)\n3. \u00bfCu\u00e1les ser\u00e1n los par\u00e1metros que deseas que reciba el webhook? (Por favor ind\u00edcalos separados por coma, por ejemplo: parametro1, parametro2, otroparametro)\n\nCon estos datos generar\u00e9 el archivo necesario y lo registrar\u00e9 en Etendo ERP."
+            },
+            {
+                "role": "user",
+                "content": "Java Package: com.etendoerp.hr.langs\n    Name:webhook testing\n    Logica:Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados\n    Parameter: supplierId"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "\u00a1Gracias por la informaci\u00f3n! Confirmo tus datos:\n\n- Java Package del m\u00f3dulo: com.etendoerp.hr.langs\n- Nombre del Webhook: webhook testing\n- Par\u00e1metro: supplierId\n- L\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\n\nSolo una consulta:\n\u00bfPodr\u00edas confirmarme el nombre que prefieres para el archivo Java y el SearchKey del webhook? Usualmente, debe tener formato sin espacios y con may\u00fasculas/camelcase si lo deseas. Por ejemplo: WebhookTesting. \u00bfEst\u00e1 bien ese nombre o prefieres otro?\n\nTan pronto confirmes, procedo con la creaci\u00f3n y el registro."
+        },
+        "creation_date": "2025-06-12-11:43:20"
+    },
+    {
+        "run_id": "0dd25d4c-0c8a-453a-9df1-8cad9e11e38e",
+        "messages": [
+            {
+                "role": "user",
+                "content": "hola, quiero crear un webhook"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para poder crear el webhook, por favor ind\u00edcame la siguiente informaci\u00f3n:\n\n1. \u00bfCu\u00e1l es el nombre que quieres darle al webhook?\n2. \u00bfCu\u00e1l es el paquete Java (Java package) del m\u00f3dulo donde estar\u00e1 ubicado? (Ejemplo: com.etendoerp.module.example)\n3. \u00bfCu\u00e1les ser\u00e1n los par\u00e1metros que deseas que reciba el webhook? (Por favor ind\u00edcalos separados por coma, por ejemplo: parametro1, parametro2, otroparametro)\n\nCon estos datos generar\u00e9 el archivo necesario y lo registrar\u00e9 en Etendo ERP."
+            },
+            {
+                "role": "user",
+                "content": "Java Package: com.etendoerp.hr.langs\n    Name:webhook testing\n    Logica:Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados\n    Parameter: supplierId"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Gracias por la informaci\u00f3n! Confirmo tus datos:\n\n- Java Package del m\u00f3dulo: com.etendoerp.hr.langs\n- Nombre del Webhook: webhook testing\n- Par\u00e1metro: supplierId\n- L\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\n\nSolo una consulta:\n\u00bfPodr\u00edas confirmarme el nombre que prefieres para el archivo Java y el SearchKey del webhook? Usualmente, debe tener formato sin espacios y con may\u00fasculas/camelcase si lo deseas. Por ejemplo: WebhookTesting. \u00bfEst\u00e1 bien ese nombre o prefieres otro?\n\nTan pronto confirmes, procedo con la creaci\u00f3n y el registro."
+            },
+            {
+                "role": "user",
+                "content": "infierelo tu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_j0cUMfXF146TjG8U4jQGntuD",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"clases que extiendan de BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.util.Collections;\nimport java.util.List;\n\nimport org.apache.commons.lang3.StringUtils;\n\nimport com.etendoerp.openapi.model.OpenAPIEndpoint;\n\nimport io.swagger.v3.oas.models.OpenAPI;\nimport io.swagger.v3.oas.models.Paths;\nimport io.swagger.v3.oas.models.media.Content;\nimport io.swagger.v3.oas.models.media.MediaType;\nimport io.swagger.v3.oas.models.media.ObjectSchema;\nimport io.swagger.v3.oas.models.media.StringSchema;\nimport io.swagger.v3.oas.models.parameters.RequestBody;\n\n/**\n * Class responsible for adding Copilot-specific endpoints to the OpenAPI documentation.\n */\npublic class OpenAPIDoc implements OpenAPIEndpoint {\n  private static final List<String> COPILOT_TAG = Collections.singletonList(\"Copilot\");\n\n  /**\n   * Checks if the provided tag is valid for this endpoint.\n   *\n   * @param tag\n   *     The tag to check.\n   * @return true if the tag is \"copilot\", false otherwise.\n   */\n  @Override\n  public boolean isValid(String tag) {\n    return StringUtils.equalsIgnoreCase(tag, \"copilot\");\n  }\n\n  /**\n   * Adds the Copilot endpoints to the provided OpenAPI object.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoints will be added.\n   */\n  @Override\n  public void add(OpenAPI openAPI) {\n    var paths = openAPI.getPaths();\n    if (paths == null) {\n      paths = new Paths();\n      openAPI.setPaths(paths);\n    }\n    addTranscriptionEndpoint(openAPI);\n  }\n\n  /**\n   * Adds the transcription endpoint to the provided OpenAPI object.\n   * <p>\n   * This endpoint allows for the transcription of audio files to text.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoint will be added.\n   */\n  private static void addTranscriptionEndpoint(OpenAPI openAPI) {\n    // Add the copilot endpoints for the REST API\n    // 1. add the endpoint of /transcription, that receives a file and returns a transcription\n    var transcription = new io.swagger.v3.oas.models.Operation();\n    transcription.setSummary(\"Transcribe an audio file to text\");\n    transcription.setTags(COPILOT_TAG);\n    RequestBody request = new RequestBody();\n    request.setDescription(\"The audio file to transcribe\");\n    request.content(new Content()\n        .addMediaType(\"multipart/form-data\", new MediaType()\n            .schema(new ObjectSchema()\n                .addProperties(\"file\",\n                    new StringSchema()\n                        .format(\"binary\")))));\n    transcription.setRequestBody(request);\n    var response = new io.swagger.v3.oas.models.responses.ApiResponse();\n    response.setDescription(\"The transcription of the audio file\");\n    response.content(new Content().\n        addMediaType(\"application/json\", new MediaType()\n            .schema(new StringSchema())));\n    transcription.responses(new io.swagger.v3.oas.models.responses.ApiResponses().addApiResponse(\"200\", response));\n    var pathItem = new io.swagger.v3.oas.models.PathItem();\n    pathItem.setPost(transcription);\n    openAPI.getPaths().put(\"/sws/copilot/transcription\", pathItem);\n  }\n}",
+                "tool_call_id": "call_j0cUMfXF146TjG8U4jQGntuD"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_RUHSJjizFmR2xE1bZmWQPGq5",
+                    "function": {
+                        "name": "WriteFileTool",
+                        "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\\nimport org.apache.commons.lang3.StringUtils;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class WebhookTesting extends BaseWebhookService {\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n  private static final String ERROR = \\\"error\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: WebhookTesting\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    if (StringUtils.isEmpty(supplierId)) {\\n      responseVars.put(ERROR, String.format(OBMessageUtils.messageBD(\\\"smfwhe_missingParameter\\\"), \\\"supplierId\\\"));\\n      return;\\n    }\\n\\n    // Simulaci\\u00f3n de creaci\\u00f3n de una orden de compra en un sistema externo usando supplierId\\n    boolean creationSuccess = createExternalPurchaseOrder(supplierId);\\n\\n    if (creationSuccess) {\\n      responseVars.put(MESSAGE, \\\"Orden de compra creada exitosamente en el sistema externo con supplierId: \\\" + supplierId);\\n    } else {\\n      responseVars.put(ERROR, \\\"No se pudo crear la orden de compra en el sistema externo para supplierId: \\\" + supplierId);\\n    }\\n  }\\n\\n  /**\\n   * Simula una llamada al sistema externo para crear la orden de compra.\\n   */\\n  private boolean createExternalPurchaseOrder(String supplierId) {\\n    LOG.info(\\\"Llamando al sistema externo para crear orden de compra para supplierId: {}\\\", supplierId);\\n    // Aqu\\u00ed ir\\u00eda la integraci\\u00f3n real (HTTP API, SDK externo, etc.)\\n    return true; // Retornar true o false seg\\u00fan el resultado real de la integraci\\u00f3n\\n  }\\n}\\n\", \"override\": true}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-12-11:45:03"
+    },
+    {
+        "run_id": "17461b8e-e5b3-46ec-8981-1b08230e5c6a",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "name: webhook testing\nJava package:com.etendoerp.hr.langs\nL\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\nPar\u00e1metros:\n\nsupplierId (ID del proveedor)\nproductList (Lista de productos y cantidades, en JSON o string)\norderDate (Fecha de la orden)\ntotalAmount (Monto total)"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_f6c3yHJaNwcMyVx0OymaVsJM",
+                    "function": {
+                        "name": "KnowledgeBaseSearch",
+                        "arguments": "{\"query\": \"BaseWebhookService\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-08-19:04:32",
+        "variants": [
+            {
+                "messages": [
+                    {
+                        "id": "10",
+                        "role": "user",
+                        "content": "@{webhooksCreator.txt}"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "run_id": "2f4c00f4-0a45-4073-a6b0-d9ff089e0773",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "name: webhook testing\nJava package:com.etendoerp.hr.langs\nL\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\nPar\u00e1metros:\n\nsupplierId (ID del proveedor)\nproductList (Lista de productos y cantidades, en JSON o string)\norderDate (Fecha de la orden)\ntotalAmount (Monto total)"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_f6c3yHJaNwcMyVx0OymaVsJM",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_f6c3yHJaNwcMyVx0OymaVsJM"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_q1rcV6PE63Xt0xl37rYmAKmF",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService example\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_q1rcV6PE63Xt0xl37rYmAKmF"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_zDiwHhusEXcZkwmjxhIzU7z1",
+                    "function": {
+                        "name": "WriteFileTool",
+                        "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.commons.lang.StringUtils;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class webhook_testing extends BaseWebhookService {\\n\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: webhook_testing\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String[] paramNames = {\\\"supplierId\\\", \\\"productList\\\", \\\"orderDate\\\", \\\"totalAmount\\\"};\\n    String[] params = new String[] {\\n      parameter.get(\\\"supplierId\\\"),\\n      parameter.get(\\\"productList\\\"),\\n      parameter.get(\\\"orderDate\\\"),\\n      parameter.get(\\\"totalAmount\\\")\\n    };\\n    for (int i = 0; i < params.length; i++) {\\n        if (StringUtils.isEmpty(params[i])) {\\n            responseVars.put(\\\"error\\\", \\\"Missing parameter: \\\" + paramNames[i]);\\n            return;\\n        }\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    String productList = parameter.get(\\\"productList\\\");\\n    String orderDate = parameter.get(\\\"orderDate\\\");\\n    String totalAmount = parameter.get(\\\"totalAmount\\\");\\n\\n    // Aqu\\u00ed ir\\u00eda la l\\u00f3gica para crear la orden de compra en el sistema externo\\n    // Por ejemplo, una llamada HTTP POST con los datos capturados\\n    // Este fragmento es solamente ilustrativo:\\n    LOG.info(\\\"Generando orden de compra en sistema externo: proveedor={}, productos={}, fecha={}, total={}\\\", supplierId, productList, orderDate, totalAmount);\\n\\n    // Simulaci\\u00f3n de respuesta exitosa\\n    responseVars.put(MESSAGE, \\\"Orden de compra generada exitosamente en el sistema externo\\\");\\n  }\\n}\\n\", \"override\": true}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-08-19:05:43",
+        "variants": [
+            {
+                "messages": [
+                    {
+                        "id": "10",
+                        "role": "user",
+                        "content": "@{webhooksCreator.txt}"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "run_id": "619bd2bd-2465-4af3-9171-9fd3cce5b7dc",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "name: webhook testing\nJava package:com.etendoerp.hr.langs\nL\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\nPar\u00e1metros:\n\nsupplierId (ID del proveedor)\nproductList (Lista de productos y cantidades, en JSON o string)\norderDate (Fecha de la orden)\ntotalAmount (Monto total)"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_f6c3yHJaNwcMyVx0OymaVsJM",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_f6c3yHJaNwcMyVx0OymaVsJM"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_q1rcV6PE63Xt0xl37rYmAKmF",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService example\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_q1rcV6PE63Xt0xl37rYmAKmF"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zDiwHhusEXcZkwmjxhIzU7z1",
+                        "function": {
+                            "name": "WriteFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.commons.lang.StringUtils;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class webhook_testing extends BaseWebhookService {\\n\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: webhook_testing\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String[] paramNames = {\\\"supplierId\\\", \\\"productList\\\", \\\"orderDate\\\", \\\"totalAmount\\\"};\\n    String[] params = new String[] {\\n      parameter.get(\\\"supplierId\\\"),\\n      parameter.get(\\\"productList\\\"),\\n      parameter.get(\\\"orderDate\\\"),\\n      parameter.get(\\\"totalAmount\\\")\\n    };\\n    for (int i = 0; i < params.length; i++) {\\n        if (StringUtils.isEmpty(params[i])) {\\n            responseVars.put(\\\"error\\\", \\\"Missing parameter: \\\" + paramNames[i]);\\n            return;\\n        }\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    String productList = parameter.get(\\\"productList\\\");\\n    String orderDate = parameter.get(\\\"orderDate\\\");\\n    String totalAmount = parameter.get(\\\"totalAmount\\\");\\n\\n    // Aqu\\u00ed ir\\u00eda la l\\u00f3gica para crear la orden de compra en el sistema externo\\n    // Por ejemplo, una llamada HTTP POST con los datos capturados\\n    // Este fragmento es solamente ilustrativo:\\n    LOG.info(\\\"Generando orden de compra en sistema externo: proveedor={}, productos={}, fecha={}, total={}\\\", supplierId, productList, orderDate, totalAmount);\\n\\n    // Simulaci\\u00f3n de respuesta exitosa\\n    responseVars.put(MESSAGE, \\\"Orden de compra generada exitosamente en el sistema externo\\\");\\n  }\\n}\\n\", \"override\": true}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "File /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java written successfully, backup: False",
+                "tool_call_id": "call_zDiwHhusEXcZkwmjxhIzU7z1"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_sIL59DzgMMf80RK8do5EvZ89",
+                    "function": {
+                        "name": "ReadFileTool",
+                        "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-08-19:07:12",
+        "variants": [
+            {
+                "messages": [
+                    {
+                        "id": "10",
+                        "role": "user",
+                        "content": "@{webhooksCreator.txt}"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "run_id": "68838ad5-d0d7-4aae-b286-8546c2b4ac1c",
+        "messages": [
+            {
+                "role": "user",
+                "content": "hola, quiero crear un webhook"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "\u00a1Perfecto! Para poder crear el webhook, por favor ind\u00edcame la siguiente informaci\u00f3n:\n\n1. \u00bfCu\u00e1l es el nombre que quieres darle al webhook?\n2. \u00bfCu\u00e1l es el paquete Java (Java package) del m\u00f3dulo donde estar\u00e1 ubicado? (Ejemplo: com.etendoerp.module.example)\n3. \u00bfCu\u00e1les ser\u00e1n los par\u00e1metros que deseas que reciba el webhook? (Por favor ind\u00edcalos separados por coma, por ejemplo: parametro1, parametro2, otroparametro)\n\nCon estos datos generar\u00e9 el archivo necesario y lo registrar\u00e9 en Etendo ERP."
+        },
+        "creation_date": "2025-06-12-11:42:44"
+    },
+    {
+        "run_id": "70f95444-c4ab-47d6-86dc-f973f181d53b",
+        "messages": [
+            {
+                "role": "user",
+                "content": "hola, quiero crear un webhook"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para poder crear el webhook, por favor ind\u00edcame la siguiente informaci\u00f3n:\n\n1. \u00bfCu\u00e1l es el nombre que quieres darle al webhook?\n2. \u00bfCu\u00e1l es el paquete Java (Java package) del m\u00f3dulo donde estar\u00e1 ubicado? (Ejemplo: com.etendoerp.module.example)\n3. \u00bfCu\u00e1les ser\u00e1n los par\u00e1metros que deseas que reciba el webhook? (Por favor ind\u00edcalos separados por coma, por ejemplo: parametro1, parametro2, otroparametro)\n\nCon estos datos generar\u00e9 el archivo necesario y lo registrar\u00e9 en Etendo ERP."
+            },
+            {
+                "role": "user",
+                "content": "Java Package: com.etendoerp.hr.langs\n    Name:webhook testing\n    Logica:Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados\n    Parameter: supplierId"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Gracias por la informaci\u00f3n! Confirmo tus datos:\n\n- Java Package del m\u00f3dulo: com.etendoerp.hr.langs\n- Nombre del Webhook: webhook testing\n- Par\u00e1metro: supplierId\n- L\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\n\nSolo una consulta:\n\u00bfPodr\u00edas confirmarme el nombre que prefieres para el archivo Java y el SearchKey del webhook? Usualmente, debe tener formato sin espacios y con may\u00fasculas/camelcase si lo deseas. Por ejemplo: WebhookTesting. \u00bfEst\u00e1 bien ese nombre o prefieres otro?\n\nTan pronto confirmes, procedo con la creaci\u00f3n y el registro."
+            },
+            {
+                "role": "user",
+                "content": "infierelo tu"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_j0cUMfXF146TjG8U4jQGntuD",
+                    "function": {
+                        "name": "KnowledgeBaseSearch",
+                        "arguments": "{\"query\": \"clases que extiendan de BaseWebhookService\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-12-11:43:49"
+    },
+    {
+        "run_id": "76eb6bc2-c045-49a7-8f3f-5d8871291bc2",
+        "messages": [
+            {
+                "role": "user",
+                "content": "hola, quiero crear un webhook"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para poder crear el webhook, por favor ind\u00edcame la siguiente informaci\u00f3n:\n\n1. \u00bfCu\u00e1l es el nombre que quieres darle al webhook?\n2. \u00bfCu\u00e1l es el paquete Java (Java package) del m\u00f3dulo donde estar\u00e1 ubicado? (Ejemplo: com.etendoerp.module.example)\n3. \u00bfCu\u00e1les ser\u00e1n los par\u00e1metros que deseas que reciba el webhook? (Por favor ind\u00edcalos separados por coma, por ejemplo: parametro1, parametro2, otroparametro)\n\nCon estos datos generar\u00e9 el archivo necesario y lo registrar\u00e9 en Etendo ERP."
+            },
+            {
+                "role": "user",
+                "content": "Java Package: com.etendoerp.hr.langs\n    Name:webhook testing\n    Logica:Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados\n    Parameter: supplierId"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Gracias por la informaci\u00f3n! Confirmo tus datos:\n\n- Java Package del m\u00f3dulo: com.etendoerp.hr.langs\n- Nombre del Webhook: webhook testing\n- Par\u00e1metro: supplierId\n- L\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\n\nSolo una consulta:\n\u00bfPodr\u00edas confirmarme el nombre que prefieres para el archivo Java y el SearchKey del webhook? Usualmente, debe tener formato sin espacios y con may\u00fasculas/camelcase si lo deseas. Por ejemplo: WebhookTesting. \u00bfEst\u00e1 bien ese nombre o prefieres otro?\n\nTan pronto confirmes, procedo con la creaci\u00f3n y el registro."
+            },
+            {
+                "role": "user",
+                "content": "infierelo tu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_j0cUMfXF146TjG8U4jQGntuD",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"clases que extiendan de BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.util.Collections;\nimport java.util.List;\n\nimport org.apache.commons.lang3.StringUtils;\n\nimport com.etendoerp.openapi.model.OpenAPIEndpoint;\n\nimport io.swagger.v3.oas.models.OpenAPI;\nimport io.swagger.v3.oas.models.Paths;\nimport io.swagger.v3.oas.models.media.Content;\nimport io.swagger.v3.oas.models.media.MediaType;\nimport io.swagger.v3.oas.models.media.ObjectSchema;\nimport io.swagger.v3.oas.models.media.StringSchema;\nimport io.swagger.v3.oas.models.parameters.RequestBody;\n\n/**\n * Class responsible for adding Copilot-specific endpoints to the OpenAPI documentation.\n */\npublic class OpenAPIDoc implements OpenAPIEndpoint {\n  private static final List<String> COPILOT_TAG = Collections.singletonList(\"Copilot\");\n\n  /**\n   * Checks if the provided tag is valid for this endpoint.\n   *\n   * @param tag\n   *     The tag to check.\n   * @return true if the tag is \"copilot\", false otherwise.\n   */\n  @Override\n  public boolean isValid(String tag) {\n    return StringUtils.equalsIgnoreCase(tag, \"copilot\");\n  }\n\n  /**\n   * Adds the Copilot endpoints to the provided OpenAPI object.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoints will be added.\n   */\n  @Override\n  public void add(OpenAPI openAPI) {\n    var paths = openAPI.getPaths();\n    if (paths == null) {\n      paths = new Paths();\n      openAPI.setPaths(paths);\n    }\n    addTranscriptionEndpoint(openAPI);\n  }\n\n  /**\n   * Adds the transcription endpoint to the provided OpenAPI object.\n   * <p>\n   * This endpoint allows for the transcription of audio files to text.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoint will be added.\n   */\n  private static void addTranscriptionEndpoint(OpenAPI openAPI) {\n    // Add the copilot endpoints for the REST API\n    // 1. add the endpoint of /transcription, that receives a file and returns a transcription\n    var transcription = new io.swagger.v3.oas.models.Operation();\n    transcription.setSummary(\"Transcribe an audio file to text\");\n    transcription.setTags(COPILOT_TAG);\n    RequestBody request = new RequestBody();\n    request.setDescription(\"The audio file to transcribe\");\n    request.content(new Content()\n        .addMediaType(\"multipart/form-data\", new MediaType()\n            .schema(new ObjectSchema()\n                .addProperties(\"file\",\n                    new StringSchema()\n                        .format(\"binary\")))));\n    transcription.setRequestBody(request);\n    var response = new io.swagger.v3.oas.models.responses.ApiResponse();\n    response.setDescription(\"The transcription of the audio file\");\n    response.content(new Content().\n        addMediaType(\"application/json\", new MediaType()\n            .schema(new StringSchema())));\n    transcription.responses(new io.swagger.v3.oas.models.responses.ApiResponses().addApiResponse(\"200\", response));\n    var pathItem = new io.swagger.v3.oas.models.PathItem();\n    pathItem.setPost(transcription);\n    openAPI.getPaths().put(\"/sws/copilot/transcription\", pathItem);\n  }\n}",
+                "tool_call_id": "call_j0cUMfXF146TjG8U4jQGntuD"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_RUHSJjizFmR2xE1bZmWQPGq5",
+                        "function": {
+                            "name": "WriteFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\\nimport org.apache.commons.lang3.StringUtils;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class WebhookTesting extends BaseWebhookService {\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n  private static final String ERROR = \\\"error\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: WebhookTesting\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    if (StringUtils.isEmpty(supplierId)) {\\n      responseVars.put(ERROR, String.format(OBMessageUtils.messageBD(\\\"smfwhe_missingParameter\\\"), \\\"supplierId\\\"));\\n      return;\\n    }\\n\\n    // Simulaci\\u00f3n de creaci\\u00f3n de una orden de compra en un sistema externo usando supplierId\\n    boolean creationSuccess = createExternalPurchaseOrder(supplierId);\\n\\n    if (creationSuccess) {\\n      responseVars.put(MESSAGE, \\\"Orden de compra creada exitosamente en el sistema externo con supplierId: \\\" + supplierId);\\n    } else {\\n      responseVars.put(ERROR, \\\"No se pudo crear la orden de compra en el sistema externo para supplierId: \\\" + supplierId);\\n    }\\n  }\\n\\n  /**\\n   * Simula una llamada al sistema externo para crear la orden de compra.\\n   */\\n  private boolean createExternalPurchaseOrder(String supplierId) {\\n    LOG.info(\\\"Llamando al sistema externo para crear orden de compra para supplierId: {}\\\", supplierId);\\n    // Aqu\\u00ed ir\\u00eda la integraci\\u00f3n real (HTTP API, SDK externo, etc.)\\n    return true; // Retornar true o false seg\\u00fan el resultado real de la integraci\\u00f3n\\n  }\\n}\\n\", \"override\": true}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "File /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java written successfully, backup: False",
+                "tool_call_id": "call_RUHSJjizFmR2xE1bZmWQPGq5"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_2hLuJQVM98gelVt8m4G8qdUN",
+                    "function": {
+                        "name": "ReadFileTool",
+                        "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-12-11:45:30"
+    },
+    {
+        "run_id": "ab2cb4d7-e254-464f-a829-9c2cf5e25381",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "name: webhook testing\nJava package:com.etendoerp.hr.langs\nL\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\nPar\u00e1metros:\n\nsupplierId (ID del proveedor)\nproductList (Lista de productos y cantidades, en JSON o string)\norderDate (Fecha de la orden)\ntotalAmount (Monto total)"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_f6c3yHJaNwcMyVx0OymaVsJM",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_f6c3yHJaNwcMyVx0OymaVsJM"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_q1rcV6PE63Xt0xl37rYmAKmF",
+                    "function": {
+                        "name": "KnowledgeBaseSearch",
+                        "arguments": "{\"query\": \"BaseWebhookService example\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-08-19:04:58",
+        "variants": [
+            {
+                "messages": [
+                    {
+                        "id": "10",
+                        "role": "user",
+                        "content": "@{webhooksCreator.txt}"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "run_id": "f16e6426-a016-4f7a-9b95-74bb66f7e3c2",
+        "messages": [
+            {
+                "role": "user",
+                "content": "hola, quiero crear un webhook"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para poder crear el webhook, por favor ind\u00edcame la siguiente informaci\u00f3n:\n\n1. \u00bfCu\u00e1l es el nombre que quieres darle al webhook?\n2. \u00bfCu\u00e1l es el paquete Java (Java package) del m\u00f3dulo donde estar\u00e1 ubicado? (Ejemplo: com.etendoerp.module.example)\n3. \u00bfCu\u00e1les ser\u00e1n los par\u00e1metros que deseas que reciba el webhook? (Por favor ind\u00edcalos separados por coma, por ejemplo: parametro1, parametro2, otroparametro)\n\nCon estos datos generar\u00e9 el archivo necesario y lo registrar\u00e9 en Etendo ERP."
+            },
+            {
+                "role": "user",
+                "content": "Java Package: com.etendoerp.hr.langs\n    Name:webhook testing\n    Logica:Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados\n    Parameter: supplierId"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Gracias por la informaci\u00f3n! Confirmo tus datos:\n\n- Java Package del m\u00f3dulo: com.etendoerp.hr.langs\n- Nombre del Webhook: webhook testing\n- Par\u00e1metro: supplierId\n- L\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\n\nSolo una consulta:\n\u00bfPodr\u00edas confirmarme el nombre que prefieres para el archivo Java y el SearchKey del webhook? Usualmente, debe tener formato sin espacios y con may\u00fasculas/camelcase si lo deseas. Por ejemplo: WebhookTesting. \u00bfEst\u00e1 bien ese nombre o prefieres otro?\n\nTan pronto confirmes, procedo con la creaci\u00f3n y el registro."
+            },
+            {
+                "role": "user",
+                "content": "infierelo tu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_j0cUMfXF146TjG8U4jQGntuD",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"clases que extiendan de BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.util.Collections;\nimport java.util.List;\n\nimport org.apache.commons.lang3.StringUtils;\n\nimport com.etendoerp.openapi.model.OpenAPIEndpoint;\n\nimport io.swagger.v3.oas.models.OpenAPI;\nimport io.swagger.v3.oas.models.Paths;\nimport io.swagger.v3.oas.models.media.Content;\nimport io.swagger.v3.oas.models.media.MediaType;\nimport io.swagger.v3.oas.models.media.ObjectSchema;\nimport io.swagger.v3.oas.models.media.StringSchema;\nimport io.swagger.v3.oas.models.parameters.RequestBody;\n\n/**\n * Class responsible for adding Copilot-specific endpoints to the OpenAPI documentation.\n */\npublic class OpenAPIDoc implements OpenAPIEndpoint {\n  private static final List<String> COPILOT_TAG = Collections.singletonList(\"Copilot\");\n\n  /**\n   * Checks if the provided tag is valid for this endpoint.\n   *\n   * @param tag\n   *     The tag to check.\n   * @return true if the tag is \"copilot\", false otherwise.\n   */\n  @Override\n  public boolean isValid(String tag) {\n    return StringUtils.equalsIgnoreCase(tag, \"copilot\");\n  }\n\n  /**\n   * Adds the Copilot endpoints to the provided OpenAPI object.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoints will be added.\n   */\n  @Override\n  public void add(OpenAPI openAPI) {\n    var paths = openAPI.getPaths();\n    if (paths == null) {\n      paths = new Paths();\n      openAPI.setPaths(paths);\n    }\n    addTranscriptionEndpoint(openAPI);\n  }\n\n  /**\n   * Adds the transcription endpoint to the provided OpenAPI object.\n   * <p>\n   * This endpoint allows for the transcription of audio files to text.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoint will be added.\n   */\n  private static void addTranscriptionEndpoint(OpenAPI openAPI) {\n    // Add the copilot endpoints for the REST API\n    // 1. add the endpoint of /transcription, that receives a file and returns a transcription\n    var transcription = new io.swagger.v3.oas.models.Operation();\n    transcription.setSummary(\"Transcribe an audio file to text\");\n    transcription.setTags(COPILOT_TAG);\n    RequestBody request = new RequestBody();\n    request.setDescription(\"The audio file to transcribe\");\n    request.content(new Content()\n        .addMediaType(\"multipart/form-data\", new MediaType()\n            .schema(new ObjectSchema()\n                .addProperties(\"file\",\n                    new StringSchema()\n                        .format(\"binary\")))));\n    transcription.setRequestBody(request);\n    var response = new io.swagger.v3.oas.models.responses.ApiResponse();\n    response.setDescription(\"The transcription of the audio file\");\n    response.content(new Content().\n        addMediaType(\"application/json\", new MediaType()\n            .schema(new StringSchema())));\n    transcription.responses(new io.swagger.v3.oas.models.responses.ApiResponses().addApiResponse(\"200\", response));\n    var pathItem = new io.swagger.v3.oas.models.PathItem();\n    pathItem.setPost(transcription);\n    openAPI.getPaths().put(\"/sws/copilot/transcription\", pathItem);\n  }\n}",
+                "tool_call_id": "call_j0cUMfXF146TjG8U4jQGntuD"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_RUHSJjizFmR2xE1bZmWQPGq5",
+                        "function": {
+                            "name": "WriteFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\\nimport org.apache.commons.lang3.StringUtils;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class WebhookTesting extends BaseWebhookService {\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n  private static final String ERROR = \\\"error\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: WebhookTesting\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    if (StringUtils.isEmpty(supplierId)) {\\n      responseVars.put(ERROR, String.format(OBMessageUtils.messageBD(\\\"smfwhe_missingParameter\\\"), \\\"supplierId\\\"));\\n      return;\\n    }\\n\\n    // Simulaci\\u00f3n de creaci\\u00f3n de una orden de compra en un sistema externo usando supplierId\\n    boolean creationSuccess = createExternalPurchaseOrder(supplierId);\\n\\n    if (creationSuccess) {\\n      responseVars.put(MESSAGE, \\\"Orden de compra creada exitosamente en el sistema externo con supplierId: \\\" + supplierId);\\n    } else {\\n      responseVars.put(ERROR, \\\"No se pudo crear la orden de compra en el sistema externo para supplierId: \\\" + supplierId);\\n    }\\n  }\\n\\n  /**\\n   * Simula una llamada al sistema externo para crear la orden de compra.\\n   */\\n  private boolean createExternalPurchaseOrder(String supplierId) {\\n    LOG.info(\\\"Llamando al sistema externo para crear orden de compra para supplierId: {}\\\", supplierId);\\n    // Aqu\\u00ed ir\\u00eda la integraci\\u00f3n real (HTTP API, SDK externo, etc.)\\n    return true; // Retornar true o false seg\\u00fan el resultado real de la integraci\\u00f3n\\n  }\\n}\\n\", \"override\": true}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "File /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java written successfully, backup: False",
+                "tool_call_id": "call_RUHSJjizFmR2xE1bZmWQPGq5"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_2hLuJQVM98gelVt8m4G8qdUN",
+                        "function": {
+                            "name": "ReadFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.hr.langs.webhooks;\n\nimport java.util.Map;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.apache.commons.lang3.StringUtils;\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\n\npublic class WebhookTesting extends BaseWebhookService {\n  private static final Logger LOG = LogManager.getLogger();\n  private static final String MESSAGE = \"message\";\n  private static final String ERROR = \"error\";\n\n  @Override\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\n    LOG.debug(\"Executing WebHook: WebhookTesting\");\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\n      LOG.debug(\"Parameter: {} = {}\", entry.getKey(), entry.getValue());\n    }\n\n    String supplierId = parameter.get(\"supplierId\");\n    if (StringUtils.isEmpty(supplierId)) {\n      responseVars.put(ERROR, String.format(OBMessageUtils.messageBD(\"smfwhe_missingParameter\"), \"supplierId\"));\n      return;\n    }\n\n    // Simulaci\u00f3n de creaci\u00f3n de una orden de compra en un sistema externo usando supplierId\n    boolean creationSuccess = createExternalPurchaseOrder(supplierId);\n\n    if (creationSuccess) {\n      responseVars.put(MESSAGE, \"Orden de compra creada exitosamente en el sistema externo con supplierId: \" + supplierId);\n    } else {\n      responseVars.put(ERROR, \"No se pudo crear la orden de compra en el sistema externo para supplierId: \" + supplierId);\n    }\n  }\n\n  /**\n   * Simula una llamada al sistema externo para crear la orden de compra.\n   */\n  private boolean createExternalPurchaseOrder(String supplierId) {\n    LOG.info(\"Llamando al sistema externo para crear orden de compra para supplierId: {}\", supplierId);\n    // Aqu\u00ed ir\u00eda la integraci\u00f3n real (HTTP API, SDK externo, etc.)\n    return true; // Retornar true o false seg\u00fan el resultado real de la integraci\u00f3n\n  }\n}\n",
+                "tool_call_id": "call_2hLuJQVM98gelVt8m4G8qdUN"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_RsaSG6TgBckzFiQ2Kd9DsOcI",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/RegisterNewWebHook\", \"method\": \"POST\", \"body_params\": \"{\\\"ModuleJavaPackage\\\":\\\"com.etendoerp.hr.langs\\\",\\\"SearchKey\\\":\\\"WebhookTesting\\\",\\\"Params\\\":\\\"supplierId\\\",\\\"Javaclass\\\":\\\"com.etendoerp.hr.langs.webhooks.WebhookTesting\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-12-11:45:52"
+    },
+    {
+        "run_id": "f58fa7f3-fb81-4f27-a727-6f1a1565e4c6",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "name: webhook testing\nJava package:com.etendoerp.hr.langs\nL\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\nPar\u00e1metros:\n\nsupplierId (ID del proveedor)\nproductList (Lista de productos y cantidades, en JSON o string)\norderDate (Fecha de la orden)\ntotalAmount (Monto total)"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_f6c3yHJaNwcMyVx0OymaVsJM",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_f6c3yHJaNwcMyVx0OymaVsJM"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_q1rcV6PE63Xt0xl37rYmAKmF",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService example\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_q1rcV6PE63Xt0xl37rYmAKmF"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zDiwHhusEXcZkwmjxhIzU7z1",
+                        "function": {
+                            "name": "WriteFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.commons.lang.StringUtils;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class webhook_testing extends BaseWebhookService {\\n\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: webhook_testing\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String[] paramNames = {\\\"supplierId\\\", \\\"productList\\\", \\\"orderDate\\\", \\\"totalAmount\\\"};\\n    String[] params = new String[] {\\n      parameter.get(\\\"supplierId\\\"),\\n      parameter.get(\\\"productList\\\"),\\n      parameter.get(\\\"orderDate\\\"),\\n      parameter.get(\\\"totalAmount\\\")\\n    };\\n    for (int i = 0; i < params.length; i++) {\\n        if (StringUtils.isEmpty(params[i])) {\\n            responseVars.put(\\\"error\\\", \\\"Missing parameter: \\\" + paramNames[i]);\\n            return;\\n        }\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    String productList = parameter.get(\\\"productList\\\");\\n    String orderDate = parameter.get(\\\"orderDate\\\");\\n    String totalAmount = parameter.get(\\\"totalAmount\\\");\\n\\n    // Aqu\\u00ed ir\\u00eda la l\\u00f3gica para crear la orden de compra en el sistema externo\\n    // Por ejemplo, una llamada HTTP POST con los datos capturados\\n    // Este fragmento es solamente ilustrativo:\\n    LOG.info(\\\"Generando orden de compra en sistema externo: proveedor={}, productos={}, fecha={}, total={}\\\", supplierId, productList, orderDate, totalAmount);\\n\\n    // Simulaci\\u00f3n de respuesta exitosa\\n    responseVars.put(MESSAGE, \\\"Orden de compra generada exitosamente en el sistema externo\\\");\\n  }\\n}\\n\", \"override\": true}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "File /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java written successfully, backup: False",
+                "tool_call_id": "call_zDiwHhusEXcZkwmjxhIzU7z1"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_sIL59DzgMMf80RK8do5EvZ89",
+                        "function": {
+                            "name": "ReadFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.hr.langs.webhooks;\n\nimport java.util.Map;\nimport org.apache.commons.lang.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\n\npublic class webhook_testing extends BaseWebhookService {\n\n  private static final Logger LOG = LogManager.getLogger();\n  private static final String MESSAGE = \"message\";\n\n  @Override\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\n    LOG.debug(\"Executing WebHook: webhook_testing\");\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\n      LOG.debug(\"Parameter: {} = {}\", entry.getKey(), entry.getValue());\n    }\n\n    String[] paramNames = {\"supplierId\", \"productList\", \"orderDate\", \"totalAmount\"};\n    String[] params = new String[] {\n      parameter.get(\"supplierId\"),\n      parameter.get(\"productList\"),\n      parameter.get(\"orderDate\"),\n      parameter.get(\"totalAmount\")\n    };\n    for (int i = 0; i < params.length; i++) {\n        if (StringUtils.isEmpty(params[i])) {\n            responseVars.put(\"error\", \"Missing parameter: \" + paramNames[i]);\n            return;\n        }\n    }\n\n    String supplierId = parameter.get(\"supplierId\");\n    String productList = parameter.get(\"productList\");\n    String orderDate = parameter.get(\"orderDate\");\n    String totalAmount = parameter.get(\"totalAmount\");\n\n    // Aqu\u00ed ir\u00eda la l\u00f3gica para crear la orden de compra en el sistema externo\n    // Por ejemplo, una llamada HTTP POST con los datos capturados\n    // Este fragmento es solamente ilustrativo:\n    LOG.info(\"Generando orden de compra en sistema externo: proveedor={}, productos={}, fecha={}, total={}\", supplierId, productList, orderDate, totalAmount);\n\n    // Simulaci\u00f3n de respuesta exitosa\n    responseVars.put(MESSAGE, \"Orden de compra generada exitosamente en el sistema externo\");\n  }\n}\n",
+                "tool_call_id": "call_sIL59DzgMMf80RK8do5EvZ89"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_TT8QVtF5Y4hFQrYmYqPlnlXJ",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/RegisterNewWebHook\", \"method\": \"POST\", \"body_params\": \"{\\\"SearchKey\\\": \\\"webhook_testing\\\", \\\"ModuleJavaPackage\\\": \\\"com.etendoerp.hr.langs\\\", \\\"Params\\\": \\\"supplierId;productList;orderDate;totalAmount\\\", \\\"Javaclass\\\": \\\"com.etendoerp.hr.langs.webhooks.webhook_testing\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-08-19:07:36",
+        "variants": [
+            {
+                "messages": [
+                    {
+                        "id": "10",
+                        "role": "user",
+                        "content": "@{webhooksCreator.txt}"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "run_id": "f957bea1-d226-4b62-8424-908162d60c50",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "name: webhook testing\nJava package:com.etendoerp.hr.langs\nL\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\nPar\u00e1metros:\n\nsupplierId (ID del proveedor)\nproductList (Lista de productos y cantidades, en JSON o string)\norderDate (Fecha de la orden)\ntotalAmount (Monto total)"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_f6c3yHJaNwcMyVx0OymaVsJM",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_f6c3yHJaNwcMyVx0OymaVsJM"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_q1rcV6PE63Xt0xl37rYmAKmF",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"BaseWebhookService example\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.replaceCopilotPromptVariables;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.util.CopilotUtils;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */",
+                "tool_call_id": "call_q1rcV6PE63Xt0xl37rYmAKmF"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zDiwHhusEXcZkwmjxhIzU7z1",
+                        "function": {
+                            "name": "WriteFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.commons.lang.StringUtils;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class webhook_testing extends BaseWebhookService {\\n\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: webhook_testing\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String[] paramNames = {\\\"supplierId\\\", \\\"productList\\\", \\\"orderDate\\\", \\\"totalAmount\\\"};\\n    String[] params = new String[] {\\n      parameter.get(\\\"supplierId\\\"),\\n      parameter.get(\\\"productList\\\"),\\n      parameter.get(\\\"orderDate\\\"),\\n      parameter.get(\\\"totalAmount\\\")\\n    };\\n    for (int i = 0; i < params.length; i++) {\\n        if (StringUtils.isEmpty(params[i])) {\\n            responseVars.put(\\\"error\\\", \\\"Missing parameter: \\\" + paramNames[i]);\\n            return;\\n        }\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    String productList = parameter.get(\\\"productList\\\");\\n    String orderDate = parameter.get(\\\"orderDate\\\");\\n    String totalAmount = parameter.get(\\\"totalAmount\\\");\\n\\n    // Aqu\\u00ed ir\\u00eda la l\\u00f3gica para crear la orden de compra en el sistema externo\\n    // Por ejemplo, una llamada HTTP POST con los datos capturados\\n    // Este fragmento es solamente ilustrativo:\\n    LOG.info(\\\"Generando orden de compra en sistema externo: proveedor={}, productos={}, fecha={}, total={}\\\", supplierId, productList, orderDate, totalAmount);\\n\\n    // Simulaci\\u00f3n de respuesta exitosa\\n    responseVars.put(MESSAGE, \\\"Orden de compra generada exitosamente en el sistema externo\\\");\\n  }\\n}\\n\", \"override\": true}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "File /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java written successfully, backup: False",
+                "tool_call_id": "call_zDiwHhusEXcZkwmjxhIzU7z1"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_sIL59DzgMMf80RK8do5EvZ89",
+                        "function": {
+                            "name": "ReadFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.hr.langs.webhooks;\n\nimport java.util.Map;\nimport org.apache.commons.lang.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\n\npublic class webhook_testing extends BaseWebhookService {\n\n  private static final Logger LOG = LogManager.getLogger();\n  private static final String MESSAGE = \"message\";\n\n  @Override\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\n    LOG.debug(\"Executing WebHook: webhook_testing\");\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\n      LOG.debug(\"Parameter: {} = {}\", entry.getKey(), entry.getValue());\n    }\n\n    String[] paramNames = {\"supplierId\", \"productList\", \"orderDate\", \"totalAmount\"};\n    String[] params = new String[] {\n      parameter.get(\"supplierId\"),\n      parameter.get(\"productList\"),\n      parameter.get(\"orderDate\"),\n      parameter.get(\"totalAmount\")\n    };\n    for (int i = 0; i < params.length; i++) {\n        if (StringUtils.isEmpty(params[i])) {\n            responseVars.put(\"error\", \"Missing parameter: \" + paramNames[i]);\n            return;\n        }\n    }\n\n    String supplierId = parameter.get(\"supplierId\");\n    String productList = parameter.get(\"productList\");\n    String orderDate = parameter.get(\"orderDate\");\n    String totalAmount = parameter.get(\"totalAmount\");\n\n    // Aqu\u00ed ir\u00eda la l\u00f3gica para crear la orden de compra en el sistema externo\n    // Por ejemplo, una llamada HTTP POST con los datos capturados\n    // Este fragmento es solamente ilustrativo:\n    LOG.info(\"Generando orden de compra en sistema externo: proveedor={}, productos={}, fecha={}, total={}\", supplierId, productList, orderDate, totalAmount);\n\n    // Simulaci\u00f3n de respuesta exitosa\n    responseVars.put(MESSAGE, \"Orden de compra generada exitosamente en el sistema externo\");\n  }\n}\n",
+                "tool_call_id": "call_sIL59DzgMMf80RK8do5EvZ89"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_TT8QVtF5Y4hFQrYmYqPlnlXJ",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/RegisterNewWebHook\", \"method\": \"POST\", \"body_params\": \"{\\\"SearchKey\\\": \\\"webhook_testing\\\", \\\"ModuleJavaPackage\\\": \\\"com.etendoerp.hr.langs\\\", \\\"Params\\\": \\\"supplierId;productList;orderDate;totalAmount\\\", \\\"Javaclass\\\": \\\"com.etendoerp.hr.langs.webhooks.webhook_testing\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"message\":\"Webhook webhook_testing created successfully. .\"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_TT8QVtF5Y4hFQrYmYqPlnlXJ"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "El webhook webhook_testing se ha creado exitosamente con la siguiente l\u00f3gica:\n\n- Cuando reciba una solicitud, verifica que los par\u00e1metros \"supplierId\", \"productList\", \"orderDate\" y \"totalAmount\" est\u00e9n presentes.\n- Luego, (ejemplo ilustrativo) registra en logs la generaci\u00f3n de la orden de compra en un sistema externo con los datos recibidos.\n- Retorna una respuesta de \u00e9xito si todo est\u00e1 correcto.\n\nUbicaci\u00f3n del archivo generado:\n- /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/webhook_testing.java\n\nRegistro en EtendoERP:\n- El webhook ha sido registrado exitosamente con los par\u00e1metros:\n  - ModuleJavaPackage: com.etendoerp.hr.langs\n  - SearchKey: webhook_testing\n  - Params: supplierId;productList;orderDate;totalAmount\n  - Javaclass: com.etendoerp.hr.langs.webhooks.webhook_testing\n\n\u00bfNecesitas agregar l\u00f3gica espec\u00edfica para la integraci\u00f3n con el sistema externo? \u00bfO necesitas realizar alguna prueba adicional?"
+        },
+        "creation_date": "2025-06-08-19:08:01",
+        "variants": [
+            {
+                "messages": [
+                    {
+                        "id": "10",
+                        "role": "user",
+                        "content": "@{webhooksCreator.txt}"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "run_id": "ff29b4a0-c8d8-4c5b-a657-e2fffc228f90",
+        "messages": [
+            {
+                "role": "user",
+                "content": "hola, quiero crear un webhook"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Perfecto! Para poder crear el webhook, por favor ind\u00edcame la siguiente informaci\u00f3n:\n\n1. \u00bfCu\u00e1l es el nombre que quieres darle al webhook?\n2. \u00bfCu\u00e1l es el paquete Java (Java package) del m\u00f3dulo donde estar\u00e1 ubicado? (Ejemplo: com.etendoerp.module.example)\n3. \u00bfCu\u00e1les ser\u00e1n los par\u00e1metros que deseas que reciba el webhook? (Por favor ind\u00edcalos separados por coma, por ejemplo: parametro1, parametro2, otroparametro)\n\nCon estos datos generar\u00e9 el archivo necesario y lo registrar\u00e9 en Etendo ERP."
+            },
+            {
+                "role": "user",
+                "content": "Java Package: com.etendoerp.hr.langs\n    Name:webhook testing\n    Logica:Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados\n    Parameter: supplierId"
+            },
+            {
+                "role": "assistant",
+                "content": "\u00a1Gracias por la informaci\u00f3n! Confirmo tus datos:\n\n- Java Package del m\u00f3dulo: com.etendoerp.hr.langs\n- Nombre del Webhook: webhook testing\n- Par\u00e1metro: supplierId\n- L\u00f3gica: Cuando se reciba una solicitud, genera una orden de compra en un sistema externo con los datos proporcionados.\n\nSolo una consulta:\n\u00bfPodr\u00edas confirmarme el nombre que prefieres para el archivo Java y el SearchKey del webhook? Usualmente, debe tener formato sin espacios y con may\u00fasculas/camelcase si lo deseas. Por ejemplo: WebhookTesting. \u00bfEst\u00e1 bien ese nombre o prefieres otro?\n\nTan pronto confirmes, procedo con la creaci\u00f3n y el registro."
+            },
+            {
+                "role": "user",
+                "content": "infierelo tu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_j0cUMfXF146TjG8U4jQGntuD",
+                        "function": {
+                            "name": "KnowledgeBaseSearch",
+                            "arguments": "{\"query\": \"clases que extiendan de BaseWebhookService\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.copilot.hook;\n\nimport static com.etendoerp.copilot.util.CopilotUtils.getEtendoHostDocker;\n\nimport java.io.BufferedInputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.net.URL;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.HashMap;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.codehaus.jettison.json.JSONException;\nimport org.codehaus.jettison.json.JSONObject;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.openapi.OpenAPIController;\nimport com.etendoerp.openapi.data.OpenApiFlow;\nimport com.google.gson.JsonObject;\n\n/**\n *\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.stream.Collectors;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.structure.BaseOBObject;\nimport org.openbravo.dal.core.OBContext;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.service.datasource.DataSourceUtils;\nimport org.openbravo.service.json.JsonConstants;\n\nimport com.etendoerp.copilot.data.CopilotAppSource;\nimport com.etendoerp.copilot.data.CopilotFile;\n\npackage com.etendoerp.copilot.devassistant.hook;\n\nimport static com.etendoerp.copilot.devassistant.Utils.logIfDebug;\n\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.IOException;\nimport java.nio.file.FileSystems;\nimport java.nio.file.FileVisitResult;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.PathMatcher;\nimport java.nio.file.Paths;\nimport java.nio.file.SimpleFileVisitor;\nimport java.nio.file.attribute.BasicFileAttributes;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.zip.ZipEntry;\nimport java.util.zip.ZipOutputStream;\n\nimport org.apache.commons.lang3.StringUtils;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.hibernate.criterion.Restrictions;\nimport org.openbravo.base.exception.OBException;\nimport org.openbravo.base.session.OBPropertiesProvider;\nimport org.openbravo.base.weld.WeldUtils;\nimport org.openbravo.client.application.attachment.AttachImplementationManager;\nimport org.openbravo.dal.service.OBCriteria;\nimport org.openbravo.dal.service.OBDal;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.openbravo.model.ad.datamodel.Table;\nimport org.openbravo.model.ad.utility.Attachment;\n\nimport com.etendoerp.copilot.data.CopilotFile;\nimport com.etendoerp.copilot.devassistant.KnowledgePathFile;\nimport com.etendoerp.copilot.hook.CopilotFileHook;\n\n/**\n * This class implements the CopilotFileHook interface and provides functionality\n * for handling remote files.\n */\n\npackage com.etendoerp.copilot.hook;\n\nimport java.util.Collections;\nimport java.util.List;\n\nimport org.apache.commons.lang3.StringUtils;\n\nimport com.etendoerp.openapi.model.OpenAPIEndpoint;\n\nimport io.swagger.v3.oas.models.OpenAPI;\nimport io.swagger.v3.oas.models.Paths;\nimport io.swagger.v3.oas.models.media.Content;\nimport io.swagger.v3.oas.models.media.MediaType;\nimport io.swagger.v3.oas.models.media.ObjectSchema;\nimport io.swagger.v3.oas.models.media.StringSchema;\nimport io.swagger.v3.oas.models.parameters.RequestBody;\n\n/**\n * Class responsible for adding Copilot-specific endpoints to the OpenAPI documentation.\n */\npublic class OpenAPIDoc implements OpenAPIEndpoint {\n  private static final List<String> COPILOT_TAG = Collections.singletonList(\"Copilot\");\n\n  /**\n   * Checks if the provided tag is valid for this endpoint.\n   *\n   * @param tag\n   *     The tag to check.\n   * @return true if the tag is \"copilot\", false otherwise.\n   */\n  @Override\n  public boolean isValid(String tag) {\n    return StringUtils.equalsIgnoreCase(tag, \"copilot\");\n  }\n\n  /**\n   * Adds the Copilot endpoints to the provided OpenAPI object.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoints will be added.\n   */\n  @Override\n  public void add(OpenAPI openAPI) {\n    var paths = openAPI.getPaths();\n    if (paths == null) {\n      paths = new Paths();\n      openAPI.setPaths(paths);\n    }\n    addTranscriptionEndpoint(openAPI);\n  }\n\n  /**\n   * Adds the transcription endpoint to the provided OpenAPI object.\n   * <p>\n   * This endpoint allows for the transcription of audio files to text.\n   *\n   * @param openAPI\n   *     The OpenAPI object to which the endpoint will be added.\n   */\n  private static void addTranscriptionEndpoint(OpenAPI openAPI) {\n    // Add the copilot endpoints for the REST API\n    // 1. add the endpoint of /transcription, that receives a file and returns a transcription\n    var transcription = new io.swagger.v3.oas.models.Operation();\n    transcription.setSummary(\"Transcribe an audio file to text\");\n    transcription.setTags(COPILOT_TAG);\n    RequestBody request = new RequestBody();\n    request.setDescription(\"The audio file to transcribe\");\n    request.content(new Content()\n        .addMediaType(\"multipart/form-data\", new MediaType()\n            .schema(new ObjectSchema()\n                .addProperties(\"file\",\n                    new StringSchema()\n                        .format(\"binary\")))));\n    transcription.setRequestBody(request);\n    var response = new io.swagger.v3.oas.models.responses.ApiResponse();\n    response.setDescription(\"The transcription of the audio file\");\n    response.content(new Content().\n        addMediaType(\"application/json\", new MediaType()\n            .schema(new StringSchema())));\n    transcription.responses(new io.swagger.v3.oas.models.responses.ApiResponses().addApiResponse(\"200\", response));\n    var pathItem = new io.swagger.v3.oas.models.PathItem();\n    pathItem.setPost(transcription);\n    openAPI.getPaths().put(\"/sws/copilot/transcription\", pathItem);\n  }\n}",
+                "tool_call_id": "call_j0cUMfXF146TjG8U4jQGntuD"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_RUHSJjizFmR2xE1bZmWQPGq5",
+                        "function": {
+                            "name": "WriteFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\", \"content\": \"package com.etendoerp.hr.langs.webhooks;\\n\\nimport java.util.Map;\\nimport org.apache.logging.log4j.LogManager;\\nimport org.apache.logging.log4j.Logger;\\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\\nimport org.apache.commons.lang3.StringUtils;\\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\\n\\npublic class WebhookTesting extends BaseWebhookService {\\n  private static final Logger LOG = LogManager.getLogger();\\n  private static final String MESSAGE = \\\"message\\\";\\n  private static final String ERROR = \\\"error\\\";\\n\\n  @Override\\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\\n    LOG.debug(\\\"Executing WebHook: WebhookTesting\\\");\\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\\n      LOG.debug(\\\"Parameter: {} = {}\\\", entry.getKey(), entry.getValue());\\n    }\\n\\n    String supplierId = parameter.get(\\\"supplierId\\\");\\n    if (StringUtils.isEmpty(supplierId)) {\\n      responseVars.put(ERROR, String.format(OBMessageUtils.messageBD(\\\"smfwhe_missingParameter\\\"), \\\"supplierId\\\"));\\n      return;\\n    }\\n\\n    // Simulaci\\u00f3n de creaci\\u00f3n de una orden de compra en un sistema externo usando supplierId\\n    boolean creationSuccess = createExternalPurchaseOrder(supplierId);\\n\\n    if (creationSuccess) {\\n      responseVars.put(MESSAGE, \\\"Orden de compra creada exitosamente en el sistema externo con supplierId: \\\" + supplierId);\\n    } else {\\n      responseVars.put(ERROR, \\\"No se pudo crear la orden de compra en el sistema externo para supplierId: \\\" + supplierId);\\n    }\\n  }\\n\\n  /**\\n   * Simula una llamada al sistema externo para crear la orden de compra.\\n   */\\n  private boolean createExternalPurchaseOrder(String supplierId) {\\n    LOG.info(\\\"Llamando al sistema externo para crear orden de compra para supplierId: {}\\\", supplierId);\\n    // Aqu\\u00ed ir\\u00eda la integraci\\u00f3n real (HTTP API, SDK externo, etc.)\\n    return true; // Retornar true o false seg\\u00fan el resultado real de la integraci\\u00f3n\\n  }\\n}\\n\", \"override\": true}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "File /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java written successfully, backup: False",
+                "tool_call_id": "call_RUHSJjizFmR2xE1bZmWQPGq5"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_2hLuJQVM98gelVt8m4G8qdUN",
+                        "function": {
+                            "name": "ReadFileTool",
+                            "arguments": "{\"filepath\": \"/home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "package com.etendoerp.hr.langs.webhooks;\n\nimport java.util.Map;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\nimport org.openbravo.erpCommon.utility.OBMessageUtils;\nimport org.apache.commons.lang3.StringUtils;\nimport com.etendoerp.webhookevents.services.BaseWebhookService;\n\npublic class WebhookTesting extends BaseWebhookService {\n  private static final Logger LOG = LogManager.getLogger();\n  private static final String MESSAGE = \"message\";\n  private static final String ERROR = \"error\";\n\n  @Override\n  public void get(Map<String, String> parameter, Map<String, String> responseVars) {\n    LOG.debug(\"Executing WebHook: WebhookTesting\");\n    for (Map.Entry<String, String> entry : parameter.entrySet()) {\n      LOG.debug(\"Parameter: {} = {}\", entry.getKey(), entry.getValue());\n    }\n\n    String supplierId = parameter.get(\"supplierId\");\n    if (StringUtils.isEmpty(supplierId)) {\n      responseVars.put(ERROR, String.format(OBMessageUtils.messageBD(\"smfwhe_missingParameter\"), \"supplierId\"));\n      return;\n    }\n\n    // Simulaci\u00f3n de creaci\u00f3n de una orden de compra en un sistema externo usando supplierId\n    boolean creationSuccess = createExternalPurchaseOrder(supplierId);\n\n    if (creationSuccess) {\n      responseVars.put(MESSAGE, \"Orden de compra creada exitosamente en el sistema externo con supplierId: \" + supplierId);\n    } else {\n      responseVars.put(ERROR, \"No se pudo crear la orden de compra en el sistema externo para supplierId: \" + supplierId);\n    }\n  }\n\n  /**\n   * Simula una llamada al sistema externo para crear la orden de compra.\n   */\n  private boolean createExternalPurchaseOrder(String supplierId) {\n    LOG.info(\"Llamando al sistema externo para crear orden de compra para supplierId: {}\", supplierId);\n    // Aqu\u00ed ir\u00eda la integraci\u00f3n real (HTTP API, SDK externo, etc.)\n    return true; // Retornar true o false seg\u00fan el resultado real de la integraci\u00f3n\n  }\n}\n",
+                "tool_call_id": "call_2hLuJQVM98gelVt8m4G8qdUN"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_RsaSG6TgBckzFiQ2Kd9DsOcI",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/webhooks/RegisterNewWebHook\", \"method\": \"POST\", \"body_params\": \"{\\\"ModuleJavaPackage\\\":\\\"com.etendoerp.hr.langs\\\",\\\"SearchKey\\\":\\\"WebhookTesting\\\",\\\"Params\\\":\\\"supplierId\\\",\\\"Javaclass\\\":\\\"com.etendoerp.hr.langs.webhooks.WebhookTesting\\\"}\", \"query_params\": \"{}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"message\":\"Webhook WebhookTesting created successfully. .\"}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_RsaSG6TgBckzFiQ2Kd9DsOcI"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "\u00a1Webhook creado y registrado correctamente!\n\nResumen de lo realizado:\n- Archivo generado: /home/rocio/intellij/etendo_dockerizado/etendo_dockerizado/modules/com.etendoerp.hr.langs/src/com/etendoerp/hr/langs/webhooks/WebhookTesting.java\n- Clase: com.etendoerp.hr.langs.webhooks.WebhookTesting\n- Par\u00e1metro: supplierId\n- Funcionalidad: Al recibir la solicitud, se simula la creaci\u00f3n de una orden de compra en un sistema externo utilizando el par\u00e1metro supplierId. Puedes completar la integraci\u00f3n real en el m\u00e9todo createExternalPurchaseOrder.\n\nAdem\u00e1s, el webhook ya fue registrado en Etendo ERP con SearchKey: WebhookTesting.\n\nSi necesitas modificar la l\u00f3gica o registrar otro webhook, \u00a1av\u00edsame!"
+        },
+        "creation_date": "2025-06-12-11:46:23"
+    }
+]

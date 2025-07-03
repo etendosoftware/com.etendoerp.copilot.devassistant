@@ -1,0 +1,1318 @@
+[
+    {
+        "run_id": "0d9cf1e1-5e30-464c-87da-d88cc99c247b",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "I want to create a referecence list called emotions, with possible values \"SAD\" HAPPY\" and \"In Love\""
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_MKYYOUcUHBneMUd3ZRFRdbw0",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_MKYYOUcUHBneMUd3ZRFRdbw0"
+            },
+            {
+                "role": "assistant",
+                "content": "Let's start creating your reference list called \"Emotions\" with the possible values: \"SAD\", \"HAPPY\", and \"In Love\".\n\nFirst, I need to know which module prefix you want to use for this reference. Could you please provide the module prefix (for example, \"copdev\") where you want to create this reference? \n\nOnce I have the module prefix, I will proceed to create the reference header and then add the list items."
+            },
+            {
+                "role": "assistant",
+                "content": "Transferring back to DevAssistantSupervisor",
+                "tool_calls": [
+                    {
+                        "id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a",
+                        "function": {
+                            "name": "transfer_back_to_devassistantsupervisor",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred back to DevAssistantSupervisor",
+                "tool_call_id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a"
+            },
+            {
+                "role": "assistant",
+                "content": "To create the reference list \"Emotions\" with the values \"SAD\", \"HAPPY\", and \"In Love\", I used the ReferenceCreator wizard. I need you to provide the module prefix where you want this reference to be created. Once I have that information, I can proceed with the creation."
+            },
+            {
+                "role": "user",
+                "content": "MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_yQJdlrqDkQ82kglv7cOZwsSR",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_yQJdlrqDkQ82kglv7cOZwsSR"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_PeH1LFXhX0CU5lTxlbtTREsK",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"MYTEST\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/33A83787ED6B4ABD9780CE7E9BAC567C\",\"id\":\"33A83787ED6B4ABD9780CE7E9BAC567C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"name\":\"MYTEST\",\"recordTime\":1747407601638}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_PeH1LFXhX0CU5lTxlbtTREsK"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_0MFHzRY7WQMlRCyKuNNcHIyL",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"Emotions\\\", \\\"parentReference\\\": \\\"17\\\", \\\"description\\\": \\\"Reference list for Emotions with values SAD, HAPPY, and In Love.\\\", \\\"helpComment\\\": \\\"This reference list allows selection of an emotion: SAD, HAPPY, or In Love.\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-16-17:01:02"
+    },
+    {
+        "run_id": "15e6f47c-4ca7-4ac0-ba1a-bd94453658c7",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo lista de jugadores de futbol. Los valores seran messi, di maria, julian alvarez, neymar y de paul. El prefijo del modulo es LANGS y el nombre de la referencia es Jugadores de futbol"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_KJHTRftcaeazvtgUQ9ii5AAI",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='langs'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"LANGS\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/E1A117F1A825440B8D3513D26AEF3554\",\"id\":\"E1A117F1A825440B8D3513D26AEF3554\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-03-30T22:27:25-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-03-30T22:27:25-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"name\":\"LANGS\",\"recordTime\":1749228330116}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_KJHTRftcaeazvtgUQ9ii5AAI"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_jr9374RMRNqLn0j7dQw8W7sv",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"name\\\": \\\"Jugadores De Futbol\\\", \\\"parentReference\\\": \\\"17\\\", \\\"description\\\": \\\"Reference for Soccer Players: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\\\", \\\"helpComment\\\": \\\"This reference provides a list of soccer players for selection: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Jugadores De Futbol\",\"_entityName\":\"ADReference\",\"$ref\":\"ADReference\\\\/3B037BF49E0D4E789C56AE77CACF474C\",\"id\":\"3B037BF49E0D4E789C56AE77CACF474C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:45:37-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:45:37-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Jugadores De Futbol\",\"description\":\"Reference for Soccer Players: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\",\"helpComment\":\"This reference provides a list of soccer players for selection: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\",\"validationType\":null,\"valueFormat\":null,\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"isBaseReference\":false,\"parentReference\":\"17\",\"parentReference$_identifier\":\"List\",\"modelImpl\":null,\"wADImpl\":null,\"impl\":null,\"displayedValue\":false,\"recordTime\":1749228337723}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_jr9374RMRNqLn0j7dQw8W7sv"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_Mb22vvDfVfxVz0jph4I6fJIG",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"mes\\\", \\\"name\\\": \\\"Messi\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_KIhDNuD6imNGInOMDP3V7vHa",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"di \\\", \\\"name\\\": \\\"Di Maria\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_QrulC6UJ7kSCNCDKsRabpvQW",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"jul\\\", \\\"name\\\": \\\"Julian Alvarez\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_3agVKdN0Ng2EPYveQMV43c1Q",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"ney\\\", \\\"name\\\": \\\"Neymar\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_a2qbtME3hQLBGDbRzwdj9ryW",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"de \\\", \\\"name\\\": \\\"De Paul\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-13:54:40"
+    },
+    {
+        "run_id": "456a9498-7ce6-44c3-8ef0-9a85d40487e9",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo table en la tabla ethrt_measurable_concept,prefijo : ETHRT, nombre de la referencia, Testing reference table, key column: Name , display column: Search Key"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zQJS8S1KoUqOXfq5jMi3ygJU",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='ETHRT'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ETHRT\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/134258042EEB47989BF913209B983F46\",\"id\":\"134258042EEB47989BF913209B983F46\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-04-10T12:17:06-03:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-10T12:17:06-03:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"name\":\"ETHRT\",\"recordTime\":1749232355384}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_zQJS8S1KoUqOXfq5jMi3ygJU"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_CQpeCFiG8u5lDmW30pmhbGo8",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/Table\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"dBTableName=='ethrt_measurable_concept'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ethrt_measurable_concept\",\"_entityName\":\"ADTable\",\"$ref\":\"ADTable\\\\/B674BCCA6D684FABBD3CA732ED4339A9\",\"id\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:59:54-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:59:54-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"ethrt_measurable_concept\",\"description\":\"Measurable Concepts table\",\"helpComment\":\"Table for storing measurable concept definitions.\",\"dBTableName\":\"ethrt_measurable_concept\",\"javaClassName\":\"MeasurableConcept\",\"view\":false,\"dataAccessLevel\":\"3\",\"window\":null,\"securityEnabled\":false,\"deletableRecords\":true,\"highVolume\":false,\"importTable\":false,\"maintainChangeLog\":false,\"pOWindow\":null,\"defaultAccount\":false,\"sQLRecordIdentifier\":null,\"developmentStatus\":\"RE\",\"dataPackage\":\"59871987EAA84F90AAAB5116A85F02E8\",\"dataPackage$_identifier\":\"Etendo Human Resources Module: Teams Data Package\",\"treeType\":null,\"acctdateColumn\":null,\"acctclassname\":null,\"isFullyAudited\":false,\"isAuditInserts\":true,\"dataOriginType\":\"Table\",\"obserdsDatasource\":null,\"istree\":false,\"hqlQuery\":null,\"entityAlias\":null,\"recordTime\":1749232358390}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_CQpeCFiG8u5lDmW30pmhbGo8"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_6UozhzQAESYZldCIFVc048ui",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Name'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_e0KQj42VCf4g2hS40IZEj1jC",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Search Key'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Name\",\"_entityName\":\"ADColumn\",\"$ref\":\"ADColumn\\\\/0BA1295E038647E097CB78D304F2988E\",\"id\":\"0BA1295E038647E097CB78D304F2988E\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:00:06-03:00\",\"updated\":\"2025-06-06T14:00:38-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Name Color Palette\",\"description\":\"Name of the color palette.\",\"helpComment\":\"Name of the color palette.\",\"dBColumnName\":\"Name\",\"table\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"table$_identifier\":\"ethrt_measurable_concept\",\"reference\":\"14\",\"reference$_identifier\":\"Text\",\"referenceSearchKey\":null,\"validation\":null,\"length\":0,\"defaultValue\":null,\"keyColumn\":false,\"linkToParentColumn\":false,\"mandatory\":false,\"updatable\":true,\"readOnlyLogic\":null,\"identifier\":false,\"sequenceNumber\":null,\"translation\":false,\"displayEncription\":false,\"calloutFunction\":null,\"valueFormat\":null,\"minValue\":null,\"maxValue\":null,\"filterColumn\":false,\"applicationElement\":\"CCFC0153E8264E54BDFE6A159579D432\",\"applicationElement$_identifier\":\"Name - Name Color Palette\",\"process\":null,\"storedInSession\":false,\"secondaryKey\":false,\"deencryptable\":false,\"callout\":null,\"developmentStatus\":\"RE\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"position\":9,\"transient\":false,\"transientCondition\":null,\"isautosave\":true,\"validateOnNew\":true,\"excludeAudit\":false,\"imageSizeValuesAction\":\"N\",\"imageWidth\":null,\"imageHeight\":null,\"useAutomaticSequence\":false,\"sqllogic\":null,\"entityAlias\":null,\"allowSorting\":true,\"oBUIAPPProcess\":null,\"allowFiltering\":true,\"allowedCrossOrganizationReference\":false,\"childPropertyInParentEntity\":false,\"recordTime\":1749232362434}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_6UozhzQAESYZldCIFVc048ui"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Value\",\"_entityName\":\"ADColumn\",\"$ref\":\"ADColumn\\\\/82832A38DBE04072977473E2A13C4BA2\",\"id\":\"82832A38DBE04072977473E2A13C4BA2\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:00:06-03:00\",\"updated\":\"2025-06-06T14:00:38-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Search Key\",\"description\":\"A fast method for finding a particular record.\",\"helpComment\":\"A search key allows for a fast method of finding a particular record. If you leave the search key empty, the system automatically creates a numeric number originating from a document sequence defined in the  \\\\\"Document Sequence\\\\\" window. The sequence naming convention follows a rule \\\\\"DocumentNo_TableName\\\\\", where TableName is the actual name of the database table (e.g. C_Order).\\\\n\\\\nUsually, company\\'s internal identifiers for various records (products, customers, etc) are stored here.\",\"dBColumnName\":\"Value\",\"table\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"table$_identifier\":\"ethrt_measurable_concept\",\"reference\":\"22\",\"reference$_identifier\":\"Number\",\"referenceSearchKey\":null,\"validation\":null,\"length\":0,\"defaultValue\":null,\"keyColumn\":false,\"linkToParentColumn\":false,\"mandatory\":false,\"updatable\":true,\"readOnlyLogic\":null,\"identifier\":false,\"sequenceNumber\":null,\"translation\":false,\"displayEncription\":false,\"calloutFunction\":null,\"valueFormat\":null,\"minValue\":null,\"maxValue\":null,\"filterColumn\":false,\"applicationElement\":\"620\",\"applicationElement$_identifier\":\"Value - Search Key\",\"process\":null,\"storedInSession\":false,\"secondaryKey\":false,\"deencryptable\":false,\"callout\":null,\"developmentStatus\":\"RE\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"position\":11,\"transient\":false,\"transientCondition\":null,\"isautosave\":true,\"validateOnNew\":true,\"excludeAudit\":false,\"imageSizeValuesAction\":\"N\",\"imageWidth\":null,\"imageHeight\":null,\"useAutomaticSequence\":false,\"sqllogic\":null,\"entityAlias\":null,\"allowSorting\":true,\"oBUIAPPProcess\":null,\"allowFiltering\":true,\"allowedCrossOrganizationReference\":false,\"childPropertyInParentEntity\":false,\"recordTime\":1749232362466}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_e0KQj42VCf4g2hS40IZEj1jC"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_6t04xoOJQ0jc8ShvkdYXoDqu",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"3840E671E7974984BCABEE0630D63F88\\\", \\\"name\\\": \\\"Testing Reference Table\\\", \\\"parentReference\\\": \\\"18\\\", \\\"description\\\": \\\"Reference for Testing Reference Table using Name as key and Search Key as display column.\\\", \\\"helpComment\\\": \\\"This reference links to the ethrt_measurable_concept table using Name as key and Search Key as display column.\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Testing Reference Table\",\"_entityName\":\"ADReference\",\"$ref\":\"ADReference\\\\/38E033375E94426FB2573B9C2F8932A3\",\"id\":\"38E033375E94426FB2573B9C2F8932A3\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:52:46-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T14:52:46-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Testing Reference Table\",\"description\":\"Reference for Testing Reference Table using Name as key and Search Key as display column.\",\"helpComment\":\"This reference links to the ethrt_measurable_concept table using Name as key and Search Key as display column.\",\"validationType\":null,\"valueFormat\":null,\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"isBaseReference\":false,\"parentReference\":\"18\",\"parentReference$_identifier\":\"Table\",\"modelImpl\":null,\"wADImpl\":null,\"impl\":null,\"displayedValue\":false,\"recordTime\":1749232366113}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_6t04xoOJQ0jc8ShvkdYXoDqu"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_30CitRhmWqbyGfVqwb3zTRhU",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesTab\", \"method\": \"POST\", \"body_params\": \"{\\\"table\\\": \\\"B674BCCA6D684FABBD3CA732ED4339A9\\\", \\\"keyColumn\\\": \\\"0BA1295E038647E097CB78D304F2988E\\\", \\\"displayedColumn\\\": \\\"82832A38DBE04072977473E2A13C4BA2\\\", \\\"reference\\\": \\\"38E033375E94426FB2573B9C2F8932A3\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-14:56:48"
+    },
+    {
+        "run_id": "4bdbf1d5-1cb0-4e1b-9a84-b6badd98f878",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "I want to create a referecence list called emotions, with possible values \"SAD\" HAPPY\" and \"In Love\""
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_MKYYOUcUHBneMUd3ZRFRdbw0",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_MKYYOUcUHBneMUd3ZRFRdbw0"
+            },
+            {
+                "role": "assistant",
+                "content": "Let's start creating your reference list called \"Emotions\" with the possible values: \"SAD\", \"HAPPY\", and \"In Love\".\n\nFirst, I need to know which module prefix you want to use for this reference. Could you please provide the module prefix (for example, \"copdev\") where you want to create this reference? \n\nOnce I have the module prefix, I will proceed to create the reference header and then add the list items."
+            },
+            {
+                "role": "assistant",
+                "content": "Transferring back to DevAssistantSupervisor",
+                "tool_calls": [
+                    {
+                        "id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a",
+                        "function": {
+                            "name": "transfer_back_to_devassistantsupervisor",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred back to DevAssistantSupervisor",
+                "tool_call_id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a"
+            },
+            {
+                "role": "assistant",
+                "content": "To create the reference list \"Emotions\" with the values \"SAD\", \"HAPPY\", and \"In Love\", I used the ReferenceCreator wizard. I need you to provide the module prefix where you want this reference to be created. Once I have that information, I can proceed with the creation."
+            },
+            {
+                "role": "user",
+                "content": "MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_yQJdlrqDkQ82kglv7cOZwsSR",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_yQJdlrqDkQ82kglv7cOZwsSR"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_PeH1LFXhX0CU5lTxlbtTREsK",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"MYTEST\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/33A83787ED6B4ABD9780CE7E9BAC567C\",\"id\":\"33A83787ED6B4ABD9780CE7E9BAC567C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"name\":\"MYTEST\",\"recordTime\":1747407601638}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_PeH1LFXhX0CU5lTxlbtTREsK"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_0MFHzRY7WQMlRCyKuNNcHIyL",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"Emotions\\\", \\\"parentReference\\\": \\\"17\\\", \\\"description\\\": \\\"Reference list for Emotions with values SAD, HAPPY, and In Love.\\\", \\\"helpComment\\\": \\\"This reference list allows selection of an emotion: SAD, HAPPY, or In Love.\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"Emotions\",\"_entityName\":\"ADReference\",\"$ref\":\"ADReference\\\\/F324A1E0611446E58FE19A1546F127CD\",\"id\":\"F324A1E0611446E58FE19A1546F127CD\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-16T17:00:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-16T17:00:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Emotions\",\"description\":\"Reference list for Emotions with values SAD, HAPPY, and In Love.\",\"helpComment\":\"This reference list allows selection of an emotion: SAD, HAPPY, or In Love.\",\"validationType\":null,\"valueFormat\":null,\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"isBaseReference\":false,\"parentReference\":\"17\",\"parentReference$_identifier\":\"List\",\"modelImpl\":null,\"wADImpl\":null,\"impl\":null,\"displayedValue\":false,\"recordTime\":1747407611033}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_0MFHzRY7WQMlRCyKuNNcHIyL"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_a6VhjxhOHIqrOWmrdynFSSTl",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"SAD\\\", \\\"searchKey\\\": \\\"SAD\\\", \\\"reference\\\": \\\"F324A1E0611446E58FE19A1546F127CD\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_C8EU5xjByB2kt7cze1hYh8Qd",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"HAPPY\\\", \\\"searchKey\\\": \\\"HAP\\\", \\\"reference\\\": \\\"F324A1E0611446E58FE19A1546F127CD\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_vroKl0IxLP127AorANwL25dL",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"In Love\\\", \\\"searchKey\\\": \\\"INL\\\", \\\"reference\\\": \\\"F324A1E0611446E58FE19A1546F127CD\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"SAD\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/F2C8D8D581834CD79F0F06E6016866E3\",\"id\":\"F2C8D8D581834CD79F0F06E6016866E3\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-16T17:00:17+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-16T17:00:17+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"SAD\",\"name\":\"SAD\",\"description\":null,\"reference\":\"F324A1E0611446E58FE19A1546F127CD\",\"reference$_identifier\":\"Emotions\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1747407617825}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_a6VhjxhOHIqrOWmrdynFSSTl"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"HAPPY\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/D5295B0BF83D474FBC71A5E4F2ECBF83\",\"id\":\"D5295B0BF83D474FBC71A5E4F2ECBF83\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-16T17:00:18+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-16T17:00:18+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"HAP\",\"name\":\"HAPPY\",\"description\":null,\"reference\":\"F324A1E0611446E58FE19A1546F127CD\",\"reference$_identifier\":\"Emotions\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1747407618356}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_C8EU5xjByB2kt7cze1hYh8Qd"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"In Love\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/DD6BEDA5E63045CEBF77801188694773\",\"id\":\"DD6BEDA5E63045CEBF77801188694773\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-16T17:00:18+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-16T17:00:18+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"INL\",\"name\":\"In Love\",\"description\":null,\"reference\":\"F324A1E0611446E58FE19A1546F127CD\",\"reference$_identifier\":\"Emotions\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1747407618669}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_vroKl0IxLP127AorANwL25dL"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "The reference list \"Emotions\" has been successfully created in the module with prefix \"MYTEST\". The list includes the following values:\n- SAD (search key: SAD)\n- HAPPY (search key: HAP)\n- In Love (search key: INL)\n\nDetails:\n- Reference Header Name: Emotions\n- Reference Header ID: F324A1E0611446E58FE19A1546F127CD\n- Parent Reference ID used: 17 (List)\n- Module: My Tests - 1.0.0 - English (USA)\n\nDescriptions and help comments were inferred from your input. If you want to adjust them, let me know!\n\n**Next step:** Please perform a build and restart Etendo to apply the changes. If you need to use this reference in a column or need further help, just ask!"
+        },
+        "creation_date": "2025-05-16-17:01:28"
+    },
+    {
+        "run_id": "4fb7025e-de12-47e9-9478-99bca240abe2",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo table en la tabla ethrt_measurable_concept,prefijo : ETHRT, nombre de la referencia, Testing reference table, key column: Name , display column: Search Key"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zQJS8S1KoUqOXfq5jMi3ygJU",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='ETHRT'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ETHRT\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/134258042EEB47989BF913209B983F46\",\"id\":\"134258042EEB47989BF913209B983F46\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-04-10T12:17:06-03:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-10T12:17:06-03:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"name\":\"ETHRT\",\"recordTime\":1749232355384}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_zQJS8S1KoUqOXfq5jMi3ygJU"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_CQpeCFiG8u5lDmW30pmhbGo8",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/Table\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"dBTableName=='ethrt_measurable_concept'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ethrt_measurable_concept\",\"_entityName\":\"ADTable\",\"$ref\":\"ADTable\\\\/B674BCCA6D684FABBD3CA732ED4339A9\",\"id\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:59:54-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:59:54-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"ethrt_measurable_concept\",\"description\":\"Measurable Concepts table\",\"helpComment\":\"Table for storing measurable concept definitions.\",\"dBTableName\":\"ethrt_measurable_concept\",\"javaClassName\":\"MeasurableConcept\",\"view\":false,\"dataAccessLevel\":\"3\",\"window\":null,\"securityEnabled\":false,\"deletableRecords\":true,\"highVolume\":false,\"importTable\":false,\"maintainChangeLog\":false,\"pOWindow\":null,\"defaultAccount\":false,\"sQLRecordIdentifier\":null,\"developmentStatus\":\"RE\",\"dataPackage\":\"59871987EAA84F90AAAB5116A85F02E8\",\"dataPackage$_identifier\":\"Etendo Human Resources Module: Teams Data Package\",\"treeType\":null,\"acctdateColumn\":null,\"acctclassname\":null,\"isFullyAudited\":false,\"isAuditInserts\":true,\"dataOriginType\":\"Table\",\"obserdsDatasource\":null,\"istree\":false,\"hqlQuery\":null,\"entityAlias\":null,\"recordTime\":1749232358390}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_CQpeCFiG8u5lDmW30pmhbGo8"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_6UozhzQAESYZldCIFVc048ui",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Name'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_e0KQj42VCf4g2hS40IZEj1jC",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Search Key'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Name\",\"_entityName\":\"ADColumn\",\"$ref\":\"ADColumn\\\\/0BA1295E038647E097CB78D304F2988E\",\"id\":\"0BA1295E038647E097CB78D304F2988E\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:00:06-03:00\",\"updated\":\"2025-06-06T14:00:38-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Name Color Palette\",\"description\":\"Name of the color palette.\",\"helpComment\":\"Name of the color palette.\",\"dBColumnName\":\"Name\",\"table\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"table$_identifier\":\"ethrt_measurable_concept\",\"reference\":\"14\",\"reference$_identifier\":\"Text\",\"referenceSearchKey\":null,\"validation\":null,\"length\":0,\"defaultValue\":null,\"keyColumn\":false,\"linkToParentColumn\":false,\"mandatory\":false,\"updatable\":true,\"readOnlyLogic\":null,\"identifier\":false,\"sequenceNumber\":null,\"translation\":false,\"displayEncription\":false,\"calloutFunction\":null,\"valueFormat\":null,\"minValue\":null,\"maxValue\":null,\"filterColumn\":false,\"applicationElement\":\"CCFC0153E8264E54BDFE6A159579D432\",\"applicationElement$_identifier\":\"Name - Name Color Palette\",\"process\":null,\"storedInSession\":false,\"secondaryKey\":false,\"deencryptable\":false,\"callout\":null,\"developmentStatus\":\"RE\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"position\":9,\"transient\":false,\"transientCondition\":null,\"isautosave\":true,\"validateOnNew\":true,\"excludeAudit\":false,\"imageSizeValuesAction\":\"N\",\"imageWidth\":null,\"imageHeight\":null,\"useAutomaticSequence\":false,\"sqllogic\":null,\"entityAlias\":null,\"allowSorting\":true,\"oBUIAPPProcess\":null,\"allowFiltering\":true,\"allowedCrossOrganizationReference\":false,\"childPropertyInParentEntity\":false,\"recordTime\":1749232362434}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_6UozhzQAESYZldCIFVc048ui"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Value\",\"_entityName\":\"ADColumn\",\"$ref\":\"ADColumn\\\\/82832A38DBE04072977473E2A13C4BA2\",\"id\":\"82832A38DBE04072977473E2A13C4BA2\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:00:06-03:00\",\"updated\":\"2025-06-06T14:00:38-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Search Key\",\"description\":\"A fast method for finding a particular record.\",\"helpComment\":\"A search key allows for a fast method of finding a particular record. If you leave the search key empty, the system automatically creates a numeric number originating from a document sequence defined in the  \\\\\"Document Sequence\\\\\" window. The sequence naming convention follows a rule \\\\\"DocumentNo_TableName\\\\\", where TableName is the actual name of the database table (e.g. C_Order).\\\\n\\\\nUsually, company\\'s internal identifiers for various records (products, customers, etc) are stored here.\",\"dBColumnName\":\"Value\",\"table\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"table$_identifier\":\"ethrt_measurable_concept\",\"reference\":\"22\",\"reference$_identifier\":\"Number\",\"referenceSearchKey\":null,\"validation\":null,\"length\":0,\"defaultValue\":null,\"keyColumn\":false,\"linkToParentColumn\":false,\"mandatory\":false,\"updatable\":true,\"readOnlyLogic\":null,\"identifier\":false,\"sequenceNumber\":null,\"translation\":false,\"displayEncription\":false,\"calloutFunction\":null,\"valueFormat\":null,\"minValue\":null,\"maxValue\":null,\"filterColumn\":false,\"applicationElement\":\"620\",\"applicationElement$_identifier\":\"Value - Search Key\",\"process\":null,\"storedInSession\":false,\"secondaryKey\":false,\"deencryptable\":false,\"callout\":null,\"developmentStatus\":\"RE\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"position\":11,\"transient\":false,\"transientCondition\":null,\"isautosave\":true,\"validateOnNew\":true,\"excludeAudit\":false,\"imageSizeValuesAction\":\"N\",\"imageWidth\":null,\"imageHeight\":null,\"useAutomaticSequence\":false,\"sqllogic\":null,\"entityAlias\":null,\"allowSorting\":true,\"oBUIAPPProcess\":null,\"allowFiltering\":true,\"allowedCrossOrganizationReference\":false,\"childPropertyInParentEntity\":false,\"recordTime\":1749232362466}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_e0KQj42VCf4g2hS40IZEj1jC"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_6t04xoOJQ0jc8ShvkdYXoDqu",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"3840E671E7974984BCABEE0630D63F88\\\", \\\"name\\\": \\\"Testing Reference Table\\\", \\\"parentReference\\\": \\\"18\\\", \\\"description\\\": \\\"Reference for Testing Reference Table using Name as key and Search Key as display column.\\\", \\\"helpComment\\\": \\\"This reference links to the ethrt_measurable_concept table using Name as key and Search Key as display column.\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Testing Reference Table\",\"_entityName\":\"ADReference\",\"$ref\":\"ADReference\\\\/38E033375E94426FB2573B9C2F8932A3\",\"id\":\"38E033375E94426FB2573B9C2F8932A3\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:52:46-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T14:52:46-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Testing Reference Table\",\"description\":\"Reference for Testing Reference Table using Name as key and Search Key as display column.\",\"helpComment\":\"This reference links to the ethrt_measurable_concept table using Name as key and Search Key as display column.\",\"validationType\":null,\"valueFormat\":null,\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"isBaseReference\":false,\"parentReference\":\"18\",\"parentReference$_identifier\":\"Table\",\"modelImpl\":null,\"wADImpl\":null,\"impl\":null,\"displayedValue\":false,\"recordTime\":1749232366113}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_6t04xoOJQ0jc8ShvkdYXoDqu"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_30CitRhmWqbyGfVqwb3zTRhU",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesTab\", \"method\": \"POST\", \"body_params\": \"{\\\"table\\\": \\\"B674BCCA6D684FABBD3CA732ED4339A9\\\", \\\"keyColumn\\\": \\\"0BA1295E038647E097CB78D304F2988E\\\", \\\"displayedColumn\\\": \\\"82832A38DBE04072977473E2A13C4BA2\\\", \\\"reference\\\": \\\"38E033375E94426FB2573B9C2F8932A3\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Testing Reference Table\",\"_entityName\":\"ADReferencedTable\",\"$ref\":\"ADReferencedTable\\\\/38E033375E94426FB2573B9C2F8932A3\",\"id\":\"38E033375E94426FB2573B9C2F8932A3\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:52:48-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T14:52:48-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"table\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"table$_identifier\":\"ethrt_measurable_concept\",\"keyColumn\":\"0BA1295E038647E097CB78D304F2988E\",\"keyColumn$_identifier\":\"Name\",\"displayedColumn\":\"82832A38DBE04072977473E2A13C4BA2\",\"displayedColumn$_identifier\":\"Value\",\"displayedValue\":false,\"sQLWhereClause\":null,\"sQLOrderByClause\":null,\"hqlwhereclause\":null,\"hqlorderbyclause\":null,\"reference\":\"38E033375E94426FB2573B9C2F8932A3\",\"reference$_identifier\":\"Testing Reference Table\",\"recordTime\":1749232368849}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_30CitRhmWqbyGfVqwb3zTRhU"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "La referencia tipo \"table\" ha sido creada exitosamente en la tabla ethrt_measurable_concept con el prefijo ETHRT y el nombre \"Testing Reference Table\".\n\nDetalles de la referencia creada:\n- M\u00f3dulo: Etendo Human Resources Module: Teams (ID: 3840E671E7974984BCABEE0630D63F88)\n- Nombre de la referencia: Testing Reference Table\n- Tipo de referencia: Table (parentReference: 18)\n- Tabla apuntada: ethrt_measurable_concept (ID: B674BCCA6D684FABBD3CA732ED4339A9)\n- Columna clave (key column): Name (ID: 0BA1295E038647E097CB78D304F2988E)\n- Columna a mostrar (display column): Search Key (ID: 82832A38DBE04072977473E2A13C4BA2)\n- Descripci\u00f3n: Reference for Testing Reference Table using Name as key and Search Key as display column.\n- Comentario de ayuda: This reference links to the ethrt_measurable_concept table using Name as key and Search Key as display column.\n- ID del header de la referencia: 38E033375E94426FB2573B9C2F8932A3\n- ID del parentReference utilizado: 18 (Table)\n\nRecomendaci\u00f3n final:\nPor favor, realiza un build y reinicia Etendo para que los cambios sean aplicados correctamente en el sistema. Si necesitas asociar esta referencia a una columna espec\u00edfica, ind\u00edcalo y te ayudo con el proceso."
+        },
+        "creation_date": "2025-06-06-14:57:12"
+    },
+    {
+        "run_id": "61f5847b-63b2-41fd-9be4-fa63bb89114c",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo table en la tabla ethrt_measurable_concept,prefijo : ETHRT, nombre de la referencia, Testing reference table, key column: Name , display column: Search Key"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zQJS8S1KoUqOXfq5jMi3ygJU",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='ETHRT'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ETHRT\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/134258042EEB47989BF913209B983F46\",\"id\":\"134258042EEB47989BF913209B983F46\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-04-10T12:17:06-03:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-10T12:17:06-03:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"name\":\"ETHRT\",\"recordTime\":1749232355384}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_zQJS8S1KoUqOXfq5jMi3ygJU"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_CQpeCFiG8u5lDmW30pmhbGo8",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/Table\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"dBTableName=='ethrt_measurable_concept'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ethrt_measurable_concept\",\"_entityName\":\"ADTable\",\"$ref\":\"ADTable\\\\/B674BCCA6D684FABBD3CA732ED4339A9\",\"id\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:59:54-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:59:54-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"ethrt_measurable_concept\",\"description\":\"Measurable Concepts table\",\"helpComment\":\"Table for storing measurable concept definitions.\",\"dBTableName\":\"ethrt_measurable_concept\",\"javaClassName\":\"MeasurableConcept\",\"view\":false,\"dataAccessLevel\":\"3\",\"window\":null,\"securityEnabled\":false,\"deletableRecords\":true,\"highVolume\":false,\"importTable\":false,\"maintainChangeLog\":false,\"pOWindow\":null,\"defaultAccount\":false,\"sQLRecordIdentifier\":null,\"developmentStatus\":\"RE\",\"dataPackage\":\"59871987EAA84F90AAAB5116A85F02E8\",\"dataPackage$_identifier\":\"Etendo Human Resources Module: Teams Data Package\",\"treeType\":null,\"acctdateColumn\":null,\"acctclassname\":null,\"isFullyAudited\":false,\"isAuditInserts\":true,\"dataOriginType\":\"Table\",\"obserdsDatasource\":null,\"istree\":false,\"hqlQuery\":null,\"entityAlias\":null,\"recordTime\":1749232358390}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_CQpeCFiG8u5lDmW30pmhbGo8"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_6UozhzQAESYZldCIFVc048ui",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Name'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_e0KQj42VCf4g2hS40IZEj1jC",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Search Key'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-14:55:41"
+    },
+    {
+        "run_id": "6ec5f2b4-fbfc-4d2c-92e1-4a0f80a2aaba",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo lista de jugadores de futbol. Los valores seran messi, di maria, julian alvarez, neymar y de paul. El prefijo del modulo es LANGS y el nombre de la referencia es Jugadores de futbol"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_KJHTRftcaeazvtgUQ9ii5AAI",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='langs'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"LANGS\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/E1A117F1A825440B8D3513D26AEF3554\",\"id\":\"E1A117F1A825440B8D3513D26AEF3554\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-03-30T22:27:25-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-03-30T22:27:25-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"name\":\"LANGS\",\"recordTime\":1749228330116}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_KJHTRftcaeazvtgUQ9ii5AAI"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_jr9374RMRNqLn0j7dQw8W7sv",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"name\\\": \\\"Jugadores De Futbol\\\", \\\"parentReference\\\": \\\"17\\\", \\\"description\\\": \\\"Reference for Soccer Players: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\\\", \\\"helpComment\\\": \\\"This reference provides a list of soccer players for selection: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Jugadores De Futbol\",\"_entityName\":\"ADReference\",\"$ref\":\"ADReference\\\\/3B037BF49E0D4E789C56AE77CACF474C\",\"id\":\"3B037BF49E0D4E789C56AE77CACF474C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:45:37-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:45:37-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Jugadores De Futbol\",\"description\":\"Reference for Soccer Players: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\",\"helpComment\":\"This reference provides a list of soccer players for selection: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\",\"validationType\":null,\"valueFormat\":null,\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"isBaseReference\":false,\"parentReference\":\"17\",\"parentReference$_identifier\":\"List\",\"modelImpl\":null,\"wADImpl\":null,\"impl\":null,\"displayedValue\":false,\"recordTime\":1749228337723}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_jr9374RMRNqLn0j7dQw8W7sv"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_Mb22vvDfVfxVz0jph4I6fJIG",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"mes\\\", \\\"name\\\": \\\"Messi\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_KIhDNuD6imNGInOMDP3V7vHa",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"di \\\", \\\"name\\\": \\\"Di Maria\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_QrulC6UJ7kSCNCDKsRabpvQW",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"jul\\\", \\\"name\\\": \\\"Julian Alvarez\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_3agVKdN0Ng2EPYveQMV43c1Q",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"ney\\\", \\\"name\\\": \\\"Neymar\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_a2qbtME3hQLBGDbRzwdj9ryW",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"searchKey\\\": \\\"de \\\", \\\"name\\\": \\\"De Paul\\\", \\\"reference\\\": \\\"3B037BF49E0D4E789C56AE77CACF474C\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Messi\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/7EBFDBD4D0AB4688BE97CDFF2119F632\",\"id\":\"7EBFDBD4D0AB4688BE97CDFF2119F632\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:45:48-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:45:48-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"mes\",\"name\":\"Messi\",\"description\":null,\"reference\":\"3B037BF49E0D4E789C56AE77CACF474C\",\"reference$_identifier\":\"Jugadores De Futbol\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1749228348383}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_Mb22vvDfVfxVz0jph4I6fJIG"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Di Maria\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/04A7FBAF44AA4232BB77115E108089FE\",\"id\":\"04A7FBAF44AA4232BB77115E108089FE\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:45:48-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:45:48-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"di \",\"name\":\"Di Maria\",\"description\":null,\"reference\":\"3B037BF49E0D4E789C56AE77CACF474C\",\"reference$_identifier\":\"Jugadores De Futbol\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1749228348506}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_KIhDNuD6imNGInOMDP3V7vHa"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Julian Alvarez\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/B5149D7732FB4CF38C377828B023B3E3\",\"id\":\"B5149D7732FB4CF38C377828B023B3E3\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:45:48-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:45:48-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"jul\",\"name\":\"Julian Alvarez\",\"description\":null,\"reference\":\"3B037BF49E0D4E789C56AE77CACF474C\",\"reference$_identifier\":\"Jugadores De Futbol\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1749228348640}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_QrulC6UJ7kSCNCDKsRabpvQW"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"Neymar\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/21B6F23BC37C4779B1B1C03A04D5929B\",\"id\":\"21B6F23BC37C4779B1B1C03A04D5929B\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:45:48-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:45:48-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"ney\",\"name\":\"Neymar\",\"description\":null,\"reference\":\"3B037BF49E0D4E789C56AE77CACF474C\",\"reference$_identifier\":\"Jugadores De Futbol\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1749228348771}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_3agVKdN0Ng2EPYveQMV43c1Q"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"data\":[{\"_identifier\":\"De Paul\",\"_entityName\":\"ADList\",\"$ref\":\"ADList\\\\/CA41E32D0E264AC7A090063ECC2B6399\",\"id\":\"CA41E32D0E264AC7A090063ECC2B6399\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:45:48-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:45:48-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"searchKey\":\"de \",\"name\":\"De Paul\",\"description\":null,\"reference\":\"3B037BF49E0D4E789C56AE77CACF474C\",\"reference$_identifier\":\"Jugadores De Futbol\",\"validFromDate\":null,\"validToDate\":null,\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"sequenceNumber\":null,\"recordTime\":1749228348883}]},\"status\":0}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_a2qbtME3hQLBGDbRzwdj9ryW"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "La referencia tipo lista \"Jugadores De Futbol\" ha sido creada exitosamente en el m\u00f3dulo con prefijo LANGS (ID de m\u00f3dulo: 526B962ADC694EDBB5D8429F2FFED988). Los valores registrados en la lista son:\n\n- Messi (searchKey: mes)\n- Di Maria (searchKey: di )\n- Julian Alvarez (searchKey: jul)\n- Neymar (searchKey: ney)\n- De Paul (searchKey: de )\n\nDetalles t\u00e9cnicos:\n- ID de la referencia creada: 3B037BF49E0D4E789C56AE77CACF474C\n- ID de la parentReference utilizada: 17 (Lista)\n\nDescripci\u00f3n y ayuda generadas:\n- Descripci\u00f3n: Reference for Soccer Players: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\n- HelpComment: This reference provides a list of soccer players for selection: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\n\nRecomendaci\u00f3n final:\nPor favor, realiza un build y reinicia Etendo para que los cambios sean aplicados correctamente en el sistema. Si necesitas asociar esta referencia a un campo o tabla, ind\u00edcalo y te ayudo con el siguiente paso."
+        },
+        "creation_date": "2025-06-06-13:55:10"
+    },
+    {
+        "run_id": "6fc35cc4-b99d-4e53-9cc1-a58bf4d9bdbe",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo lista de jugadores de futbol. Los valores seran messi, di maria, julian alvarez, neymar y de paul. El prefijo del modulo es LANGS y el nombre de la referencia es Jugadores de futbol"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_KJHTRftcaeazvtgUQ9ii5AAI",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='langs'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-13:53:37"
+    },
+    {
+        "run_id": "a410989c-f934-405f-95ae-085718c425d5",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "I want to create a referecence list called emotions, with possible values \"SAD\" HAPPY\" and \"In Love\""
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_MKYYOUcUHBneMUd3ZRFRdbw0",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_MKYYOUcUHBneMUd3ZRFRdbw0"
+            },
+            {
+                "role": "assistant",
+                "content": "Let's start creating your reference list called \"Emotions\" with the possible values: \"SAD\", \"HAPPY\", and \"In Love\".\n\nFirst, I need to know which module prefix you want to use for this reference. Could you please provide the module prefix (for example, \"copdev\") where you want to create this reference? \n\nOnce I have the module prefix, I will proceed to create the reference header and then add the list items."
+            },
+            {
+                "role": "assistant",
+                "content": "Transferring back to DevAssistantSupervisor",
+                "tool_calls": [
+                    {
+                        "id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a",
+                        "function": {
+                            "name": "transfer_back_to_devassistantsupervisor",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred back to DevAssistantSupervisor",
+                "tool_call_id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a"
+            },
+            {
+                "role": "assistant",
+                "content": "To create the reference list \"Emotions\" with the values \"SAD\", \"HAPPY\", and \"In Love\", I used the ReferenceCreator wizard. I need you to provide the module prefix where you want this reference to be created. Once I have that information, I can proceed with the creation."
+            },
+            {
+                "role": "user",
+                "content": "MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_yQJdlrqDkQ82kglv7cOZwsSR",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_yQJdlrqDkQ82kglv7cOZwsSR"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_PeH1LFXhX0CU5lTxlbtTREsK",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-16-17:00:52"
+    },
+    {
+        "run_id": "a50fa0fb-ee60-4b4f-912e-e60dcd5d5fb0",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo lista de jugadores de futbol. Los valores seran messi, di maria, julian alvarez, neymar y de paul. El prefijo del modulo es LANGS y el nombre de la referencia es Jugadores de futbol"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_KJHTRftcaeazvtgUQ9ii5AAI",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='langs'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"LANGS\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/E1A117F1A825440B8D3513D26AEF3554\",\"id\":\"E1A117F1A825440B8D3513D26AEF3554\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-03-30T22:27:25-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-03-30T22:27:25-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"526B962ADC694EDBB5D8429F2FFED988\",\"module$_identifier\":\"Langsmith Test - 1.0.0 - English (USA)\",\"name\":\"LANGS\",\"recordTime\":1749228330116}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_KJHTRftcaeazvtgUQ9ii5AAI"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_jr9374RMRNqLn0j7dQw8W7sv",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"526B962ADC694EDBB5D8429F2FFED988\\\", \\\"name\\\": \\\"Jugadores De Futbol\\\", \\\"parentReference\\\": \\\"17\\\", \\\"description\\\": \\\"Reference for Soccer Players: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\\\", \\\"helpComment\\\": \\\"This reference provides a list of soccer players for selection: Messi, Di Maria, Julian Alvarez, Neymar, De Paul.\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-13:54:16"
+    },
+    {
+        "run_id": "ba910f32-fdf2-40fb-86b2-46c9f9a6479e",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "I want to create a referecence list called emotions, with possible values \"SAD\" HAPPY\" and \"In Love\""
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_MKYYOUcUHBneMUd3ZRFRdbw0",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_MKYYOUcUHBneMUd3ZRFRdbw0"
+            },
+            {
+                "role": "assistant",
+                "content": "Let's start creating your reference list called \"Emotions\" with the possible values: \"SAD\", \"HAPPY\", and \"In Love\".\n\nFirst, I need to know which module prefix you want to use for this reference. Could you please provide the module prefix (for example, \"copdev\") where you want to create this reference? \n\nOnce I have the module prefix, I will proceed to create the reference header and then add the list items."
+            },
+            {
+                "role": "assistant",
+                "content": "Transferring back to DevAssistantSupervisor",
+                "tool_calls": [
+                    {
+                        "id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a",
+                        "function": {
+                            "name": "transfer_back_to_devassistantsupervisor",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred back to DevAssistantSupervisor",
+                "tool_call_id": "348c73ae-b2d2-4bd3-b297-efd76a360b6a"
+            },
+            {
+                "role": "assistant",
+                "content": "To create the reference list \"Emotions\" with the values \"SAD\", \"HAPPY\", and \"In Love\", I used the ReferenceCreator wizard. I need you to provide the module prefix where you want this reference to be created. Once I have that information, I can proceed with the creation."
+            },
+            {
+                "role": "user",
+                "content": "MYTEST"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_yQJdlrqDkQ82kglv7cOZwsSR",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_yQJdlrqDkQ82kglv7cOZwsSR"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_PeH1LFXhX0CU5lTxlbtTREsK",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='MYTEST'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"MYTEST\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/33A83787ED6B4ABD9780CE7E9BAC567C\",\"id\":\"33A83787ED6B4ABD9780CE7E9BAC567C\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-13T10:54:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-13T10:54:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"name\":\"MYTEST\",\"recordTime\":1747407601638}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_PeH1LFXhX0CU5lTxlbtTREsK"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_0MFHzRY7WQMlRCyKuNNcHIyL",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"Emotions\\\", \\\"parentReference\\\": \\\"17\\\", \\\"description\\\": \\\"Reference list for Emotions with values SAD, HAPPY, and In Love.\\\", \\\"helpComment\\\": \\\"This reference list allows selection of an emotion: SAD, HAPPY, or In Love.\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"status\":0,\"data\":[{\"_identifier\":\"Emotions\",\"_entityName\":\"ADReference\",\"$ref\":\"ADReference\\\\/F324A1E0611446E58FE19A1546F127CD\",\"id\":\"F324A1E0611446E58FE19A1546F127CD\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-05-16T17:00:11+02:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-05-16T17:00:11+02:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Emotions\",\"description\":\"Reference list for Emotions with values SAD, HAPPY, and In Love.\",\"helpComment\":\"This reference list allows selection of an emotion: SAD, HAPPY, or In Love.\",\"validationType\":null,\"valueFormat\":null,\"module\":\"2F0B055F3FA749198BAD291A7F8DE258\",\"module$_identifier\":\"My Tests - 1.0.0 - English (USA)\",\"isBaseReference\":false,\"parentReference\":\"17\",\"parentReference$_identifier\":\"List\",\"modelImpl\":null,\"wADImpl\":null,\"impl\":null,\"displayedValue\":false,\"recordTime\":1747407611033}]}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_0MFHzRY7WQMlRCyKuNNcHIyL"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_a6VhjxhOHIqrOWmrdynFSSTl",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"SAD\\\", \\\"searchKey\\\": \\\"SAD\\\", \\\"reference\\\": \\\"F324A1E0611446E58FE19A1546F127CD\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_C8EU5xjByB2kt7cze1hYh8Qd",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"HAPPY\\\", \\\"searchKey\\\": \\\"HAP\\\", \\\"reference\\\": \\\"F324A1E0611446E58FE19A1546F127CD\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                },
+                {
+                    "id": "call_vroKl0IxLP127AorANwL25dL",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesList\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"2F0B055F3FA749198BAD291A7F8DE258\\\", \\\"name\\\": \\\"In Love\\\", \\\"searchKey\\\": \\\"INL\\\", \\\"reference\\\": \\\"F324A1E0611446E58FE19A1546F127CD\\\", \\\"organization\\\": \\\"0\\\", \\\"client\\\": \\\"0\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-05-16-17:01:18"
+    },
+    {
+        "run_id": "be0727ea-7a98-421a-a44b-0a7c26ebe449",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "I want to create a referecence list called emotions, with possible values \"SAD\" HAPPY\" and \"In Love\""
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_MKYYOUcUHBneMUd3ZRFRdbw0",
+                        "function": {
+                            "name": "transfer_to_referencecreator",
+                            "arguments": "{}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Successfully transferred to ReferenceCreator",
+                "tool_call_id": "call_MKYYOUcUHBneMUd3ZRFRdbw0"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "Let's start creating your reference list called \"Emotions\" with the possible values: \"SAD\", \"HAPPY\", and \"In Love\".\n\nFirst, I need to know which module prefix you want to use for this reference. Could you please provide the module prefix (for example, \"copdev\") where you want to create this reference? \n\nOnce I have the module prefix, I will proceed to create the reference header and then add the list items."
+        },
+        "creation_date": "2025-05-16-17:00:14"
+    },
+    {
+        "run_id": "c19c2410-1fd6-4b07-a4d3-06ac2bd323c5",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo table en la tabla ethrt_measurable_concept,prefijo : ETHRT, nombre de la referencia, Testing reference table, key column: Name , display column: Search Key"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_zQJS8S1KoUqOXfq5jMi3ygJU",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='ETHRT'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-14:54:39"
+    },
+    {
+        "run_id": "d8afb186-5cb9-4020-9e27-57dd0839c4ad",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo table en la tabla ethrt_measurable_concept,prefijo : ETHRT, nombre de la referencia, Testing reference table, key column: Name , display column: Search Key"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zQJS8S1KoUqOXfq5jMi3ygJU",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='ETHRT'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ETHRT\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/134258042EEB47989BF913209B983F46\",\"id\":\"134258042EEB47989BF913209B983F46\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-04-10T12:17:06-03:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-10T12:17:06-03:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"name\":\"ETHRT\",\"recordTime\":1749232355384}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_zQJS8S1KoUqOXfq5jMi3ygJU"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_CQpeCFiG8u5lDmW30pmhbGo8",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/Table\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"dBTableName=='ethrt_measurable_concept'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-14:55:15"
+    },
+    {
+        "run_id": "fd83ae6d-5b18-420c-b111-5d8f52eb7d0a",
+        "messages": [
+            {
+                "id": "10",
+                "role": "user",
+                "content": "Crea una referencia tipo table en la tabla ethrt_measurable_concept,prefijo : ETHRT, nombre de la referencia, Testing reference table, key column: Name , display column: Search Key"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_zQJS8S1KoUqOXfq5jMi3ygJU",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ModulePrefix\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"name=ic='ETHRT'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ETHRT\",\"_entityName\":\"ModuleDBPrefix\",\"$ref\":\"ModuleDBPrefix\\\\/134258042EEB47989BF913209B983F46\",\"id\":\"134258042EEB47989BF913209B983F46\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-04-10T12:17:06-03:00\",\"createdBy\":\"0\",\"createdBy$_identifier\":\"System\",\"updated\":\"2025-04-10T12:17:06-03:00\",\"updatedBy\":\"0\",\"updatedBy$_identifier\":\"System\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"name\":\"ETHRT\",\"recordTime\":1749232355384}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_zQJS8S1KoUqOXfq5jMi3ygJU"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_CQpeCFiG8u5lDmW30pmhbGo8",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/Table\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"dBTableName=='ethrt_measurable_concept'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"ethrt_measurable_concept\",\"_entityName\":\"ADTable\",\"$ref\":\"ADTable\\\\/B674BCCA6D684FABBD3CA732ED4339A9\",\"id\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T13:59:54-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updated\":\"2025-06-06T13:59:54-03:00\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"ethrt_measurable_concept\",\"description\":\"Measurable Concepts table\",\"helpComment\":\"Table for storing measurable concept definitions.\",\"dBTableName\":\"ethrt_measurable_concept\",\"javaClassName\":\"MeasurableConcept\",\"view\":false,\"dataAccessLevel\":\"3\",\"window\":null,\"securityEnabled\":false,\"deletableRecords\":true,\"highVolume\":false,\"importTable\":false,\"maintainChangeLog\":false,\"pOWindow\":null,\"defaultAccount\":false,\"sQLRecordIdentifier\":null,\"developmentStatus\":\"RE\",\"dataPackage\":\"59871987EAA84F90AAAB5116A85F02E8\",\"dataPackage$_identifier\":\"Etendo Human Resources Module: Teams Data Package\",\"treeType\":null,\"acctdateColumn\":null,\"acctclassname\":null,\"isFullyAudited\":false,\"isAuditInserts\":true,\"dataOriginType\":\"Table\",\"obserdsDatasource\":null,\"istree\":false,\"hqlQuery\":null,\"entityAlias\":null,\"recordTime\":1749232358390}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_CQpeCFiG8u5lDmW30pmhbGo8"
+            },
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_6UozhzQAESYZldCIFVc048ui",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Name'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    },
+                    {
+                        "id": "call_e0KQj42VCf4g2hS40IZEj1jC",
+                        "function": {
+                            "name": "APICallTool",
+                            "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ViewColumn\", \"method\": \"GET\", \"body_params\": null, \"query_params\": \"{\\\"q\\\": \\\"table=='B674BCCA6D684FABBD3CA732ED4339A9' and name=ic='Search Key'\\\", \\\"_startRow\\\": \\\"0\\\", \\\"_endRow\\\": \\\"200\\\"}\", \"token\": \"ETENDO_TOKEN\"}"
+                        },
+                        "type": "function"
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Name\",\"_entityName\":\"ADColumn\",\"$ref\":\"ADColumn\\\\/0BA1295E038647E097CB78D304F2988E\",\"id\":\"0BA1295E038647E097CB78D304F2988E\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:00:06-03:00\",\"updated\":\"2025-06-06T14:00:38-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Name Color Palette\",\"description\":\"Name of the color palette.\",\"helpComment\":\"Name of the color palette.\",\"dBColumnName\":\"Name\",\"table\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"table$_identifier\":\"ethrt_measurable_concept\",\"reference\":\"14\",\"reference$_identifier\":\"Text\",\"referenceSearchKey\":null,\"validation\":null,\"length\":0,\"defaultValue\":null,\"keyColumn\":false,\"linkToParentColumn\":false,\"mandatory\":false,\"updatable\":true,\"readOnlyLogic\":null,\"identifier\":false,\"sequenceNumber\":null,\"translation\":false,\"displayEncription\":false,\"calloutFunction\":null,\"valueFormat\":null,\"minValue\":null,\"maxValue\":null,\"filterColumn\":false,\"applicationElement\":\"CCFC0153E8264E54BDFE6A159579D432\",\"applicationElement$_identifier\":\"Name - Name Color Palette\",\"process\":null,\"storedInSession\":false,\"secondaryKey\":false,\"deencryptable\":false,\"callout\":null,\"developmentStatus\":\"RE\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"position\":9,\"transient\":false,\"transientCondition\":null,\"isautosave\":true,\"validateOnNew\":true,\"excludeAudit\":false,\"imageSizeValuesAction\":\"N\",\"imageWidth\":null,\"imageHeight\":null,\"useAutomaticSequence\":false,\"sqllogic\":null,\"entityAlias\":null,\"allowSorting\":true,\"oBUIAPPProcess\":null,\"allowFiltering\":true,\"allowedCrossOrganizationReference\":false,\"childPropertyInParentEntity\":false,\"recordTime\":1749232362434}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_6UozhzQAESYZldCIFVc048ui"
+            },
+            {
+                "role": "tool",
+                "content": "{'requestResponse': '{\"response\":{\"startRow\":0,\"endRow\":0,\"totalRows\":1,\"data\":[{\"_identifier\":\"Value\",\"_entityName\":\"ADColumn\",\"$ref\":\"ADColumn\\\\/82832A38DBE04072977473E2A13C4BA2\",\"id\":\"82832A38DBE04072977473E2A13C4BA2\",\"client\":\"0\",\"client$_identifier\":\"System\",\"organization\":\"0\",\"organization$_identifier\":\"*\",\"active\":true,\"creationDate\":\"2025-06-06T14:00:06-03:00\",\"updated\":\"2025-06-06T14:00:38-03:00\",\"createdBy\":\"100\",\"createdBy$_identifier\":\"Admin\",\"updatedBy\":\"100\",\"updatedBy$_identifier\":\"Admin\",\"name\":\"Search Key\",\"description\":\"A fast method for finding a particular record.\",\"helpComment\":\"A search key allows for a fast method of finding a particular record. If you leave the search key empty, the system automatically creates a numeric number originating from a document sequence defined in the  \\\\\"Document Sequence\\\\\" window. The sequence naming convention follows a rule \\\\\"DocumentNo_TableName\\\\\", where TableName is the actual name of the database table (e.g. C_Order).\\\\n\\\\nUsually, company\\'s internal identifiers for various records (products, customers, etc) are stored here.\",\"dBColumnName\":\"Value\",\"table\":\"B674BCCA6D684FABBD3CA732ED4339A9\",\"table$_identifier\":\"ethrt_measurable_concept\",\"reference\":\"22\",\"reference$_identifier\":\"Number\",\"referenceSearchKey\":null,\"validation\":null,\"length\":0,\"defaultValue\":null,\"keyColumn\":false,\"linkToParentColumn\":false,\"mandatory\":false,\"updatable\":true,\"readOnlyLogic\":null,\"identifier\":false,\"sequenceNumber\":null,\"translation\":false,\"displayEncription\":false,\"calloutFunction\":null,\"valueFormat\":null,\"minValue\":null,\"maxValue\":null,\"filterColumn\":false,\"applicationElement\":\"620\",\"applicationElement$_identifier\":\"Value - Search Key\",\"process\":null,\"storedInSession\":false,\"secondaryKey\":false,\"deencryptable\":false,\"callout\":null,\"developmentStatus\":\"RE\",\"module\":\"3840E671E7974984BCABEE0630D63F88\",\"module$_identifier\":\"Etendo Human Resources Module: Teams - 1.0.0 - English (USA)\",\"position\":11,\"transient\":false,\"transientCondition\":null,\"isautosave\":true,\"validateOnNew\":true,\"excludeAudit\":false,\"imageSizeValuesAction\":\"N\",\"imageWidth\":null,\"imageHeight\":null,\"useAutomaticSequence\":false,\"sqllogic\":null,\"entityAlias\":null,\"allowSorting\":true,\"oBUIAPPProcess\":null,\"allowFiltering\":true,\"allowedCrossOrganizationReference\":false,\"childPropertyInParentEntity\":false,\"recordTime\":1749232362466}],\"status\":0}}', 'requestStatusCode': 200}",
+                "tool_call_id": "call_e0KQj42VCf4g2hS40IZEj1jC"
+            }
+        ],
+        "expected_response": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {
+                    "id": "call_6t04xoOJQ0jc8ShvkdYXoDqu",
+                    "function": {
+                        "name": "APICallTool",
+                        "arguments": "{\"url\": \"http://localhost:8080/etendo\", \"endpoint\": \"/sws/com.etendoerp.etendorx.datasource/ReferencesHeader\", \"method\": \"POST\", \"body_params\": \"{\\\"module\\\": \\\"3840E671E7974984BCABEE0630D63F88\\\", \\\"name\\\": \\\"Testing Reference Table\\\", \\\"parentReference\\\": \\\"18\\\", \\\"description\\\": \\\"Reference for Testing Reference Table using Name as key and Search Key as display column.\\\", \\\"helpComment\\\": \\\"This reference links to the ethrt_measurable_concept table using Name as key and Search Key as display column.\\\"}\", \"query_params\": null, \"token\": \"ETENDO_TOKEN\"}"
+                    },
+                    "type": "function"
+                }
+            ]
+        },
+        "creation_date": "2025-06-06-14:56:19"
+    }
+]

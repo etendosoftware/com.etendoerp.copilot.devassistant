@@ -5,7 +5,7 @@
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--02B9A7AB38FA466AA249F56AD97131DE-->  <NAME><![CDATA[AddColumn]]></NAME>
+<!--02B9A7AB38FA466AA249F56AD97131DE-->  <NAME><![CDATA[CreateColumn]]></NAME>
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <DESCRIPTION><![CDATA[Add a specific column in a database table. ]]></DESCRIPTION>
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -16,7 +16,7 @@
 <!--03946B5B81A54655B070F84785A42902-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--03946B5B81A54655B070F84785A42902-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--03946B5B81A54655B070F84785A42902-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--03946B5B81A54655B070F84785A42902-->  <NAME><![CDATA[ViewTable]]></NAME>
+<!--03946B5B81A54655B070F84785A42902-->  <NAME><![CDATA[Table]]></NAME>
 <!--03946B5B81A54655B070F84785A42902-->  <DESCRIPTION><![CDATA[Find the table requested by the user in the table type reference, the user will pass you the "db_table_name". You should try for example "q": "dBTableName=='M_Product'". Save the table ID.]]></DESCRIPTION>
 <!--03946B5B81A54655B070F84785A42902-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--03946B5B81A54655B070F84785A42902-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
@@ -54,6 +54,17 @@
 <!--19953B36114747CF91B38DFA358741FE-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--19953B36114747CF91B38DFA358741FE-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--19953B36114747CF91B38DFA358741FE--></ETAPI_OPENAPI_REQ>
+
+<!--1E9C55A41DB444A19D476B71B6461244--><ETAPI_OPENAPI_REQ>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[1E9C55A41DB444A19D476B71B6461244]]></ETAPI_OPENAPI_REQ_ID>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <NAME><![CDATA[CreateAndRegisterTable]]></NAME>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <DESCRIPTION><![CDATA[Create a table in the database with the basic columns, without any specific columns and register in Etendo a table previously created in the database.]]></DESCRIPTION>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--1E9C55A41DB444A19D476B71B6461244--></ETAPI_OPENAPI_REQ>
 
 <!--2A34C8913AF84A31B1F7FB8399B70FBC--><ETAPI_OPENAPI_REQ>
 <!--2A34C8913AF84A31B1F7FB8399B70FBC-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[2A34C8913AF84A31B1F7FB8399B70FBC]]></ETAPI_OPENAPI_REQ_ID>
@@ -106,7 +117,8 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <NAME><![CDATA[moduleHeader]]></NAME>
-<!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <DESCRIPTION><![CDATA[Add a specific module]]></DESCRIPTION>
+<!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <DESCRIPTION><![CDATA[Manage the Module entity. Knowing the "module name" you can search the info of the module searching by name filtering wuth "q": "name=ic=\'name\'"
+]]></DESCRIPTION>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422--></ETAPI_OPENAPI_REQ>
@@ -117,7 +129,7 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--45CB49C406C444EC870F03F85E171DF5-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <NAME><![CDATA[ReferencesHeader]]></NAME>
-<!--45CB49C406C444EC870F03F85E171DF5-->  <DESCRIPTION><![CDATA[Create the heading of a reference. If the reference is of the type of list, parentreference established in "17" if it is of TYP table, configure it in "18". When creating the body of the application, in "Module_ID" use the ID obtained from the module with that prefix, you should not use the prefix. Only identification. For example, if the prefix is ​​"Copdev" and the ID is "D18B2E6830F84C3DAD445AB026623B99" Then the references will be sent something like: {"module_id": "d18b2e6830f84c3dad445ab026623b99", "name": "Product Reference "," Parentreference ":" 18 "," Description ":" Reference for Products Using M_Product_id as Key and Value as Display Column. "," Helpcomment ":" This reference links to the m_product Table Using m_product}]]></DESCRIPTION>
+<!--45CB49C406C444EC870F03F85E171DF5-->  <DESCRIPTION><![CDATA[Create the header of a reference. If the reference is of the type of list, parentReference established in "17" if it is of type table, configure it in "18". When creating the body of the application, in "module" use the ID obtained from the module with that prefix, you should not use the prefix. Only identification. For example, if the prefix is ​​"COPDEV" and the ID is "D18B2E6830F84C3DAD445AB026623B99" Then the references will be sent something like: {"module": "D18B2E6830F84C3DAD445AB026623B99", "name": "Product Reference ","parentReference":" 18","description":" Reference for Products Using M_Product_id as Key and Value as Display Column. ","helpComment":" This reference links to the m_product Table Using m_product}]]></DESCRIPTION>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--45CB49C406C444EC870F03F85E171DF5--></ETAPI_OPENAPI_REQ>
@@ -132,17 +144,6 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--4C54F12A79564A04AB90A267E4F4895A-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--4C54F12A79564A04AB90A267E4F4895A-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--4C54F12A79564A04AB90A267E4F4895A--></ETAPI_OPENAPI_REQ>
-
-<!--558DE49D31BC4C06804359FE24D352C0--><ETAPI_OPENAPI_REQ>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[558DE49D31BC4C06804359FE24D352C0]]></ETAPI_OPENAPI_REQ_ID>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <NAME><![CDATA[RegisterTable]]></NAME>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <DESCRIPTION><![CDATA[This Webhook allows to register in Etendo a previously created in the Database.]]></DESCRIPTION>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
-<!--558DE49D31BC4C06804359FE24D352C0-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
-<!--558DE49D31BC4C06804359FE24D352C0--></ETAPI_OPENAPI_REQ>
 
 <!--56D0A51212774CC4A939F11AC14EF444--><ETAPI_OPENAPI_REQ>
 <!--56D0A51212774CC4A939F11AC14EF444-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[56D0A51212774CC4A939F11AC14EF444]]></ETAPI_OPENAPI_REQ_ID>
@@ -166,13 +167,30 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--596FCF9CB4394E6396B4ECF91947EF39-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--596FCF9CB4394E6396B4ECF91947EF39--></ETAPI_OPENAPI_REQ>
 
+<!--68273101836A45259289907FC6B4CB24--><ETAPI_OPENAPI_REQ>
+<!--68273101836A45259289907FC6B4CB24-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[68273101836A45259289907FC6B4CB24]]></ETAPI_OPENAPI_REQ_ID>
+<!--68273101836A45259289907FC6B4CB24-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--68273101836A45259289907FC6B4CB24-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--68273101836A45259289907FC6B4CB24-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--68273101836A45259289907FC6B4CB24-->  <NAME><![CDATA[ValidationSetup]]></NAME>
+<!--68273101836A45259289907FC6B4CB24-->  <DESCRIPTION><![CDATA[endpoint that creates a "Validation" for a selector,  In Module, we set the module ID. In Name, we put the name of the validation given by the user. In Description, we infer a description. In ValidationCode, we set the validation given by the user. In Type, if the user chooses "HQL", we set the value "HQL_JS". If the user chooses "SQL", we set the value "S".]]></DESCRIPTION>
+<!--68273101836A45259289907FC6B4CB24-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
+<!--68273101836A45259289907FC6B4CB24-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--68273101836A45259289907FC6B4CB24--></ETAPI_OPENAPI_REQ>
+
 <!--6918609B8D4B47508A47267751CC5E3D--><ETAPI_OPENAPI_REQ>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[6918609B8D4B47508A47267751CC5E3D]]></ETAPI_OPENAPI_REQ_ID>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <NAME><![CDATA[ViewColumn]]></NAME>
-<!--6918609B8D4B47508A47267751CC5E3D-->  <DESCRIPTION><![CDATA[You need to search for columns related to a table using table_id and the name passed to you by the user. You need to search using only "table" and the "name", otherwise you will not find the columns. You need to return 200 columns from that table that have approximately the same name as the one submitted by the user. IMPORTANT! When using "_endRow" in endpoints, always set the value to "200". Example request: {"q": "table"FF80818132D7FB620132D8129D1A0028", "_startRow": "0", "_endRow": "200"}. When you build the query in the "viewcolumn" endpoint, use the "table" property. Save the ID of the found columns.]]></DESCRIPTION>
+<!--6918609B8D4B47508A47267751CC5E3D-->  <DESCRIPTION><![CDATA[You need to search for columns related to a table using table_id and the name passed to you by the user. You need to search using only "table" and the "name", otherwise you will not find the columns. You need to return 200 columns from that table that have approximately the same name as the one submitted by the user. IMPORTANT! When using "_endRow" in endpoints, always set the value to "200". Example request: 
+?q=table=='ID'&_startRow=0&_endRow=200
+Other example is by name 
+?q=name=ic='NAME'&_startRow=0&_endRow=200
+
+When you build the query in the "viewcolumn" endpoint, use the "table" property. Save the ID of the found columns.
+When you setting the reference in a column. If the reference is base, his ID must be in the reference of Column. But if the reference is not base, must be in the "referenceSearchKey" propertie, and the parent ID of the reference, must be in the "reference" property column.]]></DESCRIPTION>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--6918609B8D4B47508A47267751CC5E3D--></ETAPI_OPENAPI_REQ>
@@ -182,7 +200,7 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--762E9D84382E481C995DA82EB5D22F66-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--762E9D84382E481C995DA82EB5D22F66-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--762E9D84382E481C995DA82EB5D22F66-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--762E9D84382E481C995DA82EB5D22F66-->  <NAME><![CDATA[getModule]]></NAME>
+<!--762E9D84382E481C995DA82EB5D22F66-->  <NAME><![CDATA[ModulePrefix]]></NAME>
 <!--762E9D84382E481C995DA82EB5D22F66-->  <DESCRIPTION><![CDATA[We only need the name of the dbPrefix, you must use the name and not the dbPrefix. "q": "name=ic=\'copdev\'"
 Once you have the module, save the value of the "module" property, which is the id of the module. don't save the "id" property, it's not needed.]]></DESCRIPTION>
 <!--762E9D84382E481C995DA82EB5D22F66-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
@@ -222,12 +240,23 @@ Once you have the module, save the value of the "module" property, which is the 
 <!--A9BCF1993ABF4141B469A36FE4B41836-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--A9BCF1993ABF4141B469A36FE4B41836--></ETAPI_OPENAPI_REQ>
 
+<!--AE083CAA7B3840F7A80F294BED8C6E8F--><ETAPI_OPENAPI_REQ>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[AE083CAA7B3840F7A80F294BED8C6E8F]]></ETAPI_OPENAPI_REQ_ID>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <NAME><![CDATA[ADMessage]]></NAME>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <DESCRIPTION><![CDATA[Manage AD Messages. ]]></DESCRIPTION>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F--></ETAPI_OPENAPI_REQ>
+
 <!--B642096A05EA44969452FBC29D432207--><ETAPI_OPENAPI_REQ>
 <!--B642096A05EA44969452FBC29D432207-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[B642096A05EA44969452FBC29D432207]]></ETAPI_OPENAPI_REQ_ID>
 <!--B642096A05EA44969452FBC29D432207-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--B642096A05EA44969452FBC29D432207-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--B642096A05EA44969452FBC29D432207-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--B642096A05EA44969452FBC29D432207-->  <NAME><![CDATA[ConfigIsTree]]></NAME>
+<!--B642096A05EA44969452FBC29D432207-->  <NAME><![CDATA[TableTreeConfiguration]]></NAME>
 <!--B642096A05EA44969452FBC29D432207-->  <DESCRIPTION><![CDATA[You must put in “module” the ID of the module you are working on. In “table” you must search and assign the ID of the table that the user mentioned to you. In “name”, put the name chosen by the user for the table. In the “treeStructure” property, assign “ADTree”.
 ⚠ Important: In the “table” property, you must send the ID of the table instead of the name.
 If the user only provides the name of the table, first use the “ViewTable” endpoint to get its ID and then use it in this request.]]></DESCRIPTION>
@@ -240,7 +269,7 @@ If the user only provides the name of the table, first use the “ViewTable” e
 <!--CC764636C21C4310B5A5616F51C00004-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--CC764636C21C4310B5A5616F51C00004-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--CC764636C21C4310B5A5616F51C00004-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--CC764636C21C4310B5A5616F51C00004-->  <NAME><![CDATA[ChangeColumn]]></NAME>
+<!--CC764636C21C4310B5A5616F51C00004-->  <NAME><![CDATA[Column]]></NAME>
 <!--CC764636C21C4310B5A5616F51C00004-->  <DESCRIPTION><![CDATA[You must take the ID of the column that the user wants to be of type list and you must modify the "reference" parameter to "17" and in the "referenceSearchKey" parameter you must put the ID of the reference that the user passed you.
 Example of the call:
 {'url': 'http://tomcat:8080/etendo', 'endpoint': '/sws/com.etendoerp.etendorx.datasource/ChangeColumn/"ID of the column type list"', 'method': 'PUT', 'body_params': '{"reference":"17","referenceSearchKey":"REFERENCE ID"}', 'query_params': None, 'token': 'ETENDO_TOKEN'}]]></DESCRIPTION>
@@ -253,22 +282,11 @@ Example of the call:
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <NAME><![CDATA[ViewReferences]]></NAME>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <NAME><![CDATA[Reference]]></NAME>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <DESCRIPTION><![CDATA[They will give you a reference ID and you must bring the data of the same, the type parameter and the name]]></DESCRIPTION>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD--></ETAPI_OPENAPI_REQ>
-
-<!--DEA3574E04C44EA78925DD5D8FC9A887--><ETAPI_OPENAPI_REQ>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[DEA3574E04C44EA78925DD5D8FC9A887]]></ETAPI_OPENAPI_REQ_ID>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <NAME><![CDATA[CreateTable]]></NAME>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <DESCRIPTION><![CDATA[Creates a table in the Database with the basic columns, without any specific column.]]></DESCRIPTION>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
-<!--DEA3574E04C44EA78925DD5D8FC9A887-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
-<!--DEA3574E04C44EA78925DD5D8FC9A887--></ETAPI_OPENAPI_REQ>
 
 <!--E0DB36E7BEED4DB3AACA4E03EB5C1D53--><ETAPI_OPENAPI_REQ>
 <!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <ETAPI_OPENAPI_REQ_ID><![CDATA[E0DB36E7BEED4DB3AACA4E03EB5C1D53]]></ETAPI_OPENAPI_REQ_ID>

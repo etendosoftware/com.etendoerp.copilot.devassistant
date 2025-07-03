@@ -1,0 +1,4 @@
+reference_type,Value,Reference name,table,key column,display column,module prefix
+list,Draft,Order Status,,,,ZJYKM
+table,,,C_Order,C_Invoice_ID,Email,CYLNB
+

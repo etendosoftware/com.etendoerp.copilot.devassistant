@@ -1,0 +1,2 @@
+Prefix,Java package,Name,Search Key,Logic,Parameters
+LANGS,com.etendoerp.langs.buttons,Export Employee Languages,PRUEB,Botón que exporta a Excel o CSV un listado de todos los empleados junto con los idiomas que hablan.,"EXPORT_FORMAT,LANGUAGE,ONLY_ACTIVE"
