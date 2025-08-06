@@ -2,7 +2,7 @@ from typing import Dict, Optional, Type
 
 import requests
 
-from copilot.core import etendo_utils
+from copilot.core.etendo_utils import get_etendo_host, get_etendo_token, login_etendo
 from copilot.core.tool_input import ToolField
 from copilot.core.tool_input import ToolInput
 from copilot.core.tool_wrapper import (
@@ -125,13 +125,11 @@ class ClientInitTool(ToolWrapper):
         sysadmin_user = input_params.get("sysadmin_user")
         sysadmin_password = input_params.get("sysadmin_password")
         if server_url is None:
-            server_url = etendo_utils.get_etendo_host()
+            server_url = get_etendo_host()
         if sysadmin_user is None:
-            token = etendo_utils.get_etendo_token()
+            token = get_etendo_token()
         else:
-            token = etendo_utils.login_etendo(
-                server_url, sysadmin_password, sysadmin_password
-            )
+            token = login_etendo(server_url, sysadmin_password, sysadmin_password)
         if password != confirm_password:
             return ToolOutputError(error="Passwords do not match.")
         try:
