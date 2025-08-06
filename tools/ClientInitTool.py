@@ -2,7 +2,6 @@ from typing import Dict, Optional, Type
 
 import requests
 
-from copilot.core import etendo_utils
 from copilot.core.tool_input import ToolField
 from copilot.core.tool_input import ToolInput
 from copilot.core.tool_wrapper import (
@@ -11,6 +10,7 @@ from copilot.core.tool_wrapper import (
     ToolOutputMessage,
     ToolWrapper,
 )
+from core import etendo_utils
 
 
 def build_init_headers(bearer_token):

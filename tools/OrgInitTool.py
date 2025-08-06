@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Type
 
-from copilot.core import etendo_utils
 from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import (
     ToolOutput,
@@ -8,6 +7,7 @@ from copilot.core.tool_wrapper import (
     ToolOutputMessage,
     ToolWrapper,
 )
+from core import etendo_utils
 from tools.ClientInitTool import do_init_request
 
 
