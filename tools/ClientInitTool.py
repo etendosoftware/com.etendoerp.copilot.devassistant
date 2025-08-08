@@ -129,7 +129,7 @@ class ClientInitTool(ToolWrapper):
         if sysadmin_user is None:
             token = get_etendo_token()
         else:
-            token = login_etendo(server_url, sysadmin_password, sysadmin_password)
+            token = login_etendo(server_url, sysadmin_user, sysadmin_password)
         if password != confirm_password:
             return ToolOutputError(error="Passwords do not match.")
         try:
