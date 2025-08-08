@@ -2,9 +2,10 @@ from typing import Dict, Type, Optional, List
 
 from langsmith import traceable
 
-from copilot.core.etendo_utils import call_webhook, get_etendo_token, get_etendo_host
+
 from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
+from copilot.core.etendo_utils import call_webhook, get_etendo_host, get_etendo_token
 
 
 class ProcessDefinitionJasperInput(ToolInput):
@@ -33,7 +34,8 @@ class ProcessDefinitionJasperInput(ToolInput):
 
     i_parameters: str = ToolField(
         title="Parameters",
-        description="Semicolon-separated list of parameter definitions in the format BD_NAME-NAME-LENGTH-SEQNO-REFERENCENCE.",
+        description="Semicolon-separated list of parameter definitions in the format "
+        "BD_NAME-NAME-LENGTH-SEQNO-REFERENCENCE.",
     )
 
     i_report_path: str = ToolField(
@@ -60,15 +62,20 @@ def process_parameters(parameter_string: str) -> List[Dict[str, str]]:
 
 
 class ProcessDefinitionJasperTool(ToolWrapper):
-    """This tool creates a process definition for Jasper reports in the Etendo Application Dictionary."""
+    """This tool creates a process definition for Jasper reports in the
+    Etendo Application Dictionary."""
 
     name: str = "ProcessDefinitionJasperTool"
-    description: str = "Creates a process definition for Jasper reports in the Etendo Application Dictionary."
+    description: str = (
+        "Creates a process definition for Jasper reports in the "
+        "Etendo Application Dictionary."
+    )
     args_schema: Type[ToolInput] = ProcessDefinitionJasperInput
 
     @traceable
     def run(self, input_params: Dict, *args, **kwargs) -> Dict:
-        """Runs the process to create a process definition for a Jasper report in the Etendo Application Dictionary."""
+        """Runs the process to create a process definition for a Jasper report in
+        the Etendo Application Dictionary."""
         prefix = input_params.get("i_prefix", "").upper()
         searchkey = input_params.get("i_searchkey", "").replace(" ", "_")
         if not searchkey.startswith(prefix):
