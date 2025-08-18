@@ -35,6 +35,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
   private static final String TABLE_DIR_ID = "19";
   private static final String TABLE_ID = "18";
   public static final String ERROR = "error";
+  private static final String REFERNCE_INTEGER_ID = "11";
 
   @Override
   /**
@@ -138,9 +139,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
 
       if (needToApplyChangesInDB(column, typeInAD, typeInDB, lengthInDB)) {
 
-        query = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s", column.getTable().getDBTableName(),
+        query = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s%s", column.getTable().getDBTableName(),
             column.getDBColumnName(),
-            typeInAD + ((column.getLength() != null) ? ("(" + column.getLength() + ")") : ""));
+            typeInAD, getLength(column));
         execAndLog(query, error);
       }
 
@@ -149,6 +150,26 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       log.error("Error validating column " + column.getDBColumnName(), e);
       return null;
     }
+  }
+
+  /**
+   * Retrieves the length of a column as a string formatted for SQL.
+   * <p>
+   * This method checks the reference type of the column. If the column's reference ID matches
+   * the predefined integer reference ID, it returns a fixed length of "(10)". Otherwise, it
+   * returns the column's length enclosed in parentheses, or an empty string if the length is null.
+   * </p>
+   *
+   * @param column
+   *     The {@link Column} object whose length is to be retrieved.
+   * @return A {@link String} representing the column length formatted for SQL, or an empty string if no length is defined.
+   */
+  private static String getLength(Column column) {
+    var reference = column.getReference();
+    if (StringUtils.equalsIgnoreCase(reference.getId(), REFERNCE_INTEGER_ID)) {
+      return "(10)";
+    }
+    return (column.getLength() != null) ? ("(" + column.getLength() + ")") : "";
   }
 
   /**
