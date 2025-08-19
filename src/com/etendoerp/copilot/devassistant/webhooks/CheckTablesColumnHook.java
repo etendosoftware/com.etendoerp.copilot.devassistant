@@ -35,7 +35,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
   private static final String TABLE_DIR_ID = "19";
   private static final String TABLE_ID = "18";
   public static final String ERROR = "error";
-  private static final String REFERNCE_INTEGER_ID = "11";
+  private static final String REFERENCE_INTEGER_ID = "11";
 
   @Override
   /**
@@ -166,7 +166,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    */
   private static String getLength(Column column) {
     var reference = column.getReference();
-    if (StringUtils.equalsIgnoreCase(reference.getId(), REFERNCE_INTEGER_ID)) {
+    if (StringUtils.equalsIgnoreCase(reference.getId(), REFERENCE_INTEGER_ID)) {
       return "(10)";
     }
     return (column.getLength() != null) ? ("(" + column.getLength() + ")") : "";
