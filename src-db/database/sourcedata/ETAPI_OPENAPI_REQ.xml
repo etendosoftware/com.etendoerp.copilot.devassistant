@@ -9,6 +9,7 @@
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <DESCRIPTION><![CDATA[Add a specific column in a database table. ]]></DESCRIPTION>
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--02B9A7AB38FA466AA249F56AD97131DE-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--02B9A7AB38FA466AA249F56AD97131DE-->  <POST_DESCRIPTION><![CDATA[Add a specific column in a database table. ]]></POST_DESCRIPTION>
 <!--02B9A7AB38FA466AA249F56AD97131DE--></ETAPI_OPENAPI_REQ>
 
 <!--03946B5B81A54655B070F84785A42902--><ETAPI_OPENAPI_REQ>
@@ -20,6 +21,9 @@
 <!--03946B5B81A54655B070F84785A42902-->  <DESCRIPTION><![CDATA[Find the table requested by the user in the table type reference, the user will pass you the "db_table_name". You should try for example "q": "dBTableName=='M_Product'". Save the table ID.]]></DESCRIPTION>
 <!--03946B5B81A54655B070F84785A42902-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--03946B5B81A54655B070F84785A42902-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--03946B5B81A54655B070F84785A42902-->  <GET_DESCRIPTION><![CDATA[Find the table requested by the user in the table type reference using the database table name. Use query parameter example: "q": "dBTableName=='M_Product'". Save the table ID from the response.]]></GET_DESCRIPTION>
+<!--03946B5B81A54655B070F84785A42902-->  <POST_DESCRIPTION><![CDATA[Create a new table entry in the table type reference. Provide the database table name and other required table configuration parameters.]]></POST_DESCRIPTION>
+<!--03946B5B81A54655B070F84785A42902-->  <PUT_DESCRIPTION><![CDATA[Update existing table information in the table type reference using the table ID. Modify table properties and configuration as needed.]]></PUT_DESCRIPTION>
 <!--03946B5B81A54655B070F84785A42902--></ETAPI_OPENAPI_REQ>
 
 <!--0B7BEA7184DD46E1925C7785C0D99CA6--><ETAPI_OPENAPI_REQ>
@@ -31,6 +35,9 @@
 <!--0B7BEA7184DD46E1925C7785C0D99CA6-->  <DESCRIPTION><![CDATA[Endpoint that creates a reference list tab in the created header. In module_id, use the module id of the reference. Creates a record for each reference list item of type. The search key for the list item will be the first 3 letters of the list name.]]></DESCRIPTION>
 <!--0B7BEA7184DD46E1925C7785C0D99CA6-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--0B7BEA7184DD46E1925C7785C0D99CA6-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--0B7BEA7184DD46E1925C7785C0D99CA6-->  <GET_DESCRIPTION><![CDATA[Retrieve reference list items and their associated data for a specific reference module. Search for existing reference list configurations.]]></GET_DESCRIPTION>
+<!--0B7BEA7184DD46E1925C7785C0D99CA6-->  <POST_DESCRIPTION><![CDATA[Create a reference list tab in the created header. In module_id, use the module id of the reference. Creates a record for each reference list item of type. The search key for the list item will be the first 3 letters of the list name.]]></POST_DESCRIPTION>
+<!--0B7BEA7184DD46E1925C7785C0D99CA6-->  <PUT_DESCRIPTION><![CDATA[Update existing reference list items and their properties. Modify search keys, names, and associated module configurations for reference list entries.]]></PUT_DESCRIPTION>
 <!--0B7BEA7184DD46E1925C7785C0D99CA6--></ETAPI_OPENAPI_REQ>
 
 <!--131A2A79E14143C6BECEA5F75A7BC442--><ETAPI_OPENAPI_REQ>
@@ -42,6 +49,9 @@
 <!--131A2A79E14143C6BECEA5F75A7BC442-->  <DESCRIPTION><![CDATA[Add a DB prefix to the created module. The "module" field is the Module ID. If the prefix to be used is used by another module, add an extra capital letter and try again.]]></DESCRIPTION>
 <!--131A2A79E14143C6BECEA5F75A7BC442-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--131A2A79E14143C6BECEA5F75A7BC442-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--131A2A79E14143C6BECEA5F75A7BC442-->  <GET_DESCRIPTION><![CDATA[Retrieve the current database prefix configuration for a specific module. Search existing prefixes to check availability.]]></GET_DESCRIPTION>
+<!--131A2A79E14143C6BECEA5F75A7BC442-->  <POST_DESCRIPTION><![CDATA[Add a DB prefix to the created module. The "module" field is the Module ID. If the prefix to be used is used by another module, add an extra capital letter and try again.]]></POST_DESCRIPTION>
+<!--131A2A79E14143C6BECEA5F75A7BC442-->  <PUT_DESCRIPTION><![CDATA[Update the database prefix for an existing module. If the prefix to be used is used by another module, add an extra capital letter and try again.]]></PUT_DESCRIPTION>
 <!--131A2A79E14143C6BECEA5F75A7BC442--></ETAPI_OPENAPI_REQ>
 
 <!--19953B36114747CF91B38DFA358741FE--><ETAPI_OPENAPI_REQ>
@@ -53,6 +63,7 @@
 <!--19953B36114747CF91B38DFA358741FE-->  <DESCRIPTION><![CDATA[Creates a Window in Etendo and add a Menu entry for it.]]></DESCRIPTION>
 <!--19953B36114747CF91B38DFA358741FE-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--19953B36114747CF91B38DFA358741FE-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--19953B36114747CF91B38DFA358741FE-->  <POST_DESCRIPTION><![CDATA[Creates a Window in Etendo and add a Menu entry for it.]]></POST_DESCRIPTION>
 <!--19953B36114747CF91B38DFA358741FE--></ETAPI_OPENAPI_REQ>
 
 <!--1E9C55A41DB444A19D476B71B6461244--><ETAPI_OPENAPI_REQ>
@@ -64,6 +75,7 @@
 <!--1E9C55A41DB444A19D476B71B6461244-->  <DESCRIPTION><![CDATA[Create a table in the database with the basic columns, without any specific columns and register in Etendo a table previously created in the database.]]></DESCRIPTION>
 <!--1E9C55A41DB444A19D476B71B6461244-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--1E9C55A41DB444A19D476B71B6461244-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--1E9C55A41DB444A19D476B71B6461244-->  <POST_DESCRIPTION><![CDATA[Create a table in the database with the basic columns, without any specific columns and register in Etendo a table previously created in the database.]]></POST_DESCRIPTION>
 <!--1E9C55A41DB444A19D476B71B6461244--></ETAPI_OPENAPI_REQ>
 
 <!--2A34C8913AF84A31B1F7FB8399B70FBC--><ETAPI_OPENAPI_REQ>
@@ -75,6 +87,7 @@
 <!--2A34C8913AF84A31B1F7FB8399B70FBC-->  <DESCRIPTION><![CDATA[Its a variant of AddColumn made for create Foreign keys from a table to other table. Like the other process, must be followed for a Register Column and a Sync terms.]]></DESCRIPTION>
 <!--2A34C8913AF84A31B1F7FB8399B70FBC-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--2A34C8913AF84A31B1F7FB8399B70FBC-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--2A34C8913AF84A31B1F7FB8399B70FBC-->  <POST_DESCRIPTION><![CDATA[Its a variant of AddColumn made for create Foreign keys from a table to other table. Like the other process, must be followed for a Register Column and a Sync terms.]]></POST_DESCRIPTION>
 <!--2A34C8913AF84A31B1F7FB8399B70FBC--></ETAPI_OPENAPI_REQ>
 
 <!--2ADF644AA2074F48BE8837B57CA40C31--><ETAPI_OPENAPI_REQ>
@@ -86,6 +99,9 @@
 <!--2ADF644AA2074F48BE8837B57CA40C31-->  <DESCRIPTION><![CDATA[Take the name of a table passed to you by the user and look up its ID. To register a table as a tree, use the table ID and make a PUT request to the TreeCkeck/{table_id} endpoint, setting "istree" to true, as a boolean value (no quotes, must be a boolean data type and not a string).]]></DESCRIPTION>
 <!--2ADF644AA2074F48BE8837B57CA40C31-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--2ADF644AA2074F48BE8837B57CA40C31-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--2ADF644AA2074F48BE8837B57CA40C31-->  <GET_DESCRIPTION><![CDATA[Retrieve the current tree configuration status for a specific table by its ID.]]></GET_DESCRIPTION>
+<!--2ADF644AA2074F48BE8837B57CA40C31-->  <POST_DESCRIPTION><![CDATA[Create a new tree configuration entry for a table using the table ID.]]></POST_DESCRIPTION>
+<!--2ADF644AA2074F48BE8837B57CA40C31-->  <PUT_DESCRIPTION><![CDATA[Update table tree configuration by setting the "istree" property to true or false using the table ID.]]></PUT_DESCRIPTION>
 <!--2ADF644AA2074F48BE8837B57CA40C31--></ETAPI_OPENAPI_REQ>
 
 <!--3054CA329ED646839C0D60D51FDE3EA0--><ETAPI_OPENAPI_REQ>
@@ -97,6 +113,7 @@
 <!--3054CA329ED646839C0D60D51FDE3EA0-->  <DESCRIPTION><![CDATA[Allow to read the information of a Window, Tab or Table in Etendo.]]></DESCRIPTION>
 <!--3054CA329ED646839C0D60D51FDE3EA0-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--3054CA329ED646839C0D60D51FDE3EA0-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--3054CA329ED646839C0D60D51FDE3EA0-->  <POST_DESCRIPTION><![CDATA[Allow to read the information of a Window, Tab or Table in Etendo.]]></POST_DESCRIPTION>
 <!--3054CA329ED646839C0D60D51FDE3EA0--></ETAPI_OPENAPI_REQ>
 
 <!--3C2B3CD2C069437880B25E59C84D0079--><ETAPI_OPENAPI_REQ>
@@ -109,6 +126,9 @@
 The field "module" is the ID of the Module and field "javaPackage" is the java package of the module with ".data" at the end. The Standad name is the Module Name "Data Package" and the end. Only set this fields when creating.]]></DESCRIPTION>
 <!--3C2B3CD2C069437880B25E59C84D0079-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--3C2B3CD2C069437880B25E59C84D0079-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--3C2B3CD2C069437880B25E59C84D0079-->  <GET_DESCRIPTION><![CDATA[Retrieve data package information for a specific module including java package configuration and naming conventions.]]></GET_DESCRIPTION>
+<!--3C2B3CD2C069437880B25E59C84D0079-->  <POST_DESCRIPTION><![CDATA[Add a data package to the created module. The field "module" is the ID of the Module and field "javaPackage" is the java package of the module with ".data" at the end. The standard name is the Module Name "Data Package" at the end. Only set these fields when creating.]]></POST_DESCRIPTION>
+<!--3C2B3CD2C069437880B25E59C84D0079-->  <PUT_DESCRIPTION><![CDATA[Update existing data package configuration for a module. Modify the java package settings and naming conventions. The javaPackage should end with ".data".]]></PUT_DESCRIPTION>
 <!--3C2B3CD2C069437880B25E59C84D0079--></ETAPI_OPENAPI_REQ>
 
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422--><ETAPI_OPENAPI_REQ>
@@ -121,6 +141,9 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 ]]></DESCRIPTION>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <GET_DESCRIPTION><![CDATA[Search the info of the module by name using filtering with "q": "name=ic='name'". Retrieve module information and configuration details.]]></GET_DESCRIPTION>
+<!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <POST_DESCRIPTION><![CDATA[Create a new module entity with the specified name and configuration parameters. Set up the module header with required properties.]]></POST_DESCRIPTION>
+<!--3F5A7B5A0D8F4BF0B2A075BD66BAB422-->  <PUT_DESCRIPTION><![CDATA[Update existing module entity information including name and other module properties. Modify module configuration and settings.]]></PUT_DESCRIPTION>
 <!--3F5A7B5A0D8F4BF0B2A075BD66BAB422--></ETAPI_OPENAPI_REQ>
 
 <!--45CB49C406C444EC870F03F85E171DF5--><ETAPI_OPENAPI_REQ>
@@ -132,6 +155,9 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--45CB49C406C444EC870F03F85E171DF5-->  <DESCRIPTION><![CDATA[Create the header of a reference. If the reference is of the type of list, parentReference established in "17" if it is of type table, configure it in "18". When creating the body of the application, in "module" use the ID obtained from the module with that prefix, you should not use the prefix. Only identification. For example, if the prefix is ​​"COPDEV" and the ID is "D18B2E6830F84C3DAD445AB026623B99" Then the references will be sent something like: {"module": "D18B2E6830F84C3DAD445AB026623B99", "name": "Product Reference ","parentReference":" 18","description":" Reference for Products Using M_Product_id as Key and Value as Display Column. ","helpComment":" This reference links to the m_product Table Using m_product}]]></DESCRIPTION>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--45CB49C406C444EC870F03F85E171DF5-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--45CB49C406C444EC870F03F85E171DF5-->  <GET_DESCRIPTION><![CDATA[Retrieve reference header information including parent reference type and module configuration. Search for existing reference configurations.]]></GET_DESCRIPTION>
+<!--45CB49C406C444EC870F03F85E171DF5-->  <POST_DESCRIPTION><![CDATA[Create the header of a reference. If the reference is of the type of list, parentReference established in "17" if it is of type table, configure it in "18". In "module" use the ID obtained from the module with that prefix, you should not use the prefix. Only identification. Example: {"module": "D18B2E6830F84C3DAD445AB026623B99", "name": "Product Reference", "parentReference": "18", "description": "Reference for Products Using M_Product_id as Key and Value as Display Column.", "helpComment": "This reference links to the m_product Table Using m_product"}]]></POST_DESCRIPTION>
+<!--45CB49C406C444EC870F03F85E171DF5-->  <PUT_DESCRIPTION><![CDATA[Update existing reference header configuration including parent reference type and module settings. Modify reference properties, parentReference (17 for list, 18 for table), and module associations.]]></PUT_DESCRIPTION>
 <!--45CB49C406C444EC870F03F85E171DF5--></ETAPI_OPENAPI_REQ>
 
 <!--4C54F12A79564A04AB90A267E4F4895A--><ETAPI_OPENAPI_REQ>
@@ -143,6 +169,7 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--4C54F12A79564A04AB90A267E4F4895A-->  <DESCRIPTION><![CDATA[This webhook allows to read the Elements generated after the Terminology Synchronization. Has a mode to read the incomplete elements and other mode to write the missing information. After complete this information is necessary to execute the process of SyncTerms.]]></DESCRIPTION>
 <!--4C54F12A79564A04AB90A267E4F4895A-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--4C54F12A79564A04AB90A267E4F4895A-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--4C54F12A79564A04AB90A267E4F4895A-->  <POST_DESCRIPTION><![CDATA[This webhook allows to read the Elements generated after the Terminology Synchronization. Has a mode to read the incomplete elements and other mode to write the missing information. After complete this information is necessary to execute the process of SyncTerms.]]></POST_DESCRIPTION>
 <!--4C54F12A79564A04AB90A267E4F4895A--></ETAPI_OPENAPI_REQ>
 
 <!--56D0A51212774CC4A939F11AC14EF444--><ETAPI_OPENAPI_REQ>
@@ -154,6 +181,7 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--56D0A51212774CC4A939F11AC14EF444-->  <DESCRIPTION><![CDATA[Executes the Registration process for Columns of a previously registered Table. This process reads the database columns and register incrementally the columns. This process needs to be executed after add columns to the table in DB. ]]></DESCRIPTION>
 <!--56D0A51212774CC4A939F11AC14EF444-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--56D0A51212774CC4A939F11AC14EF444-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--56D0A51212774CC4A939F11AC14EF444-->  <POST_DESCRIPTION><![CDATA[Executes the Registration process for Columns of a previously registered Table. This process reads the database columns and register incrementally the columns. This process needs to be executed after add columns to the table in DB. ]]></POST_DESCRIPTION>
 <!--56D0A51212774CC4A939F11AC14EF444--></ETAPI_OPENAPI_REQ>
 
 <!--596FCF9CB4394E6396B4ECF91947EF39--><ETAPI_OPENAPI_REQ>
@@ -165,6 +193,7 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--596FCF9CB4394E6396B4ECF91947EF39-->  <DESCRIPTION><![CDATA[Executes the process of terminology Synchronization. This process needs to be executed After Column registration and after field registration. ]]></DESCRIPTION>
 <!--596FCF9CB4394E6396B4ECF91947EF39-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--596FCF9CB4394E6396B4ECF91947EF39-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--596FCF9CB4394E6396B4ECF91947EF39-->  <POST_DESCRIPTION><![CDATA[Executes the process of terminology Synchronization. This process needs to be executed After Column registration and after field registration. ]]></POST_DESCRIPTION>
 <!--596FCF9CB4394E6396B4ECF91947EF39--></ETAPI_OPENAPI_REQ>
 
 <!--68273101836A45259289907FC6B4CB24--><ETAPI_OPENAPI_REQ>
@@ -176,6 +205,9 @@ The field "module" is the ID of the Module and field "javaPackage" is the java p
 <!--68273101836A45259289907FC6B4CB24-->  <DESCRIPTION><![CDATA[endpoint that creates a "Validation" for a selector,  In Module, we set the module ID. In Name, we put the name of the validation given by the user. In Description, we infer a description. In ValidationCode, we set the validation given by the user. In Type, if the user chooses "HQL", we set the value "HQL_JS". If the user chooses "SQL", we set the value "S".]]></DESCRIPTION>
 <!--68273101836A45259289907FC6B4CB24-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--68273101836A45259289907FC6B4CB24-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--68273101836A45259289907FC6B4CB24-->  <GET_DESCRIPTION><![CDATA[Retrieve validation configuration for a specific selector including type and validation code. Search for existing validations by module ID or validation name.]]></GET_DESCRIPTION>
+<!--68273101836A45259289907FC6B4CB24-->  <POST_DESCRIPTION><![CDATA[Create a "Validation" for a selector. In Module, set the module ID. In Name, put the name of the validation given by the user. In Description, infer a description. In ValidationCode, set the validation given by the user. In Type, if the user chooses "HQL", set the value "HQL_JS". If the user chooses "SQL", set the value "S".]]></POST_DESCRIPTION>
+<!--68273101836A45259289907FC6B4CB24-->  <PUT_DESCRIPTION><![CDATA[Update existing validation configuration. Modify validation code, type (HQL_JS for HQL, S for SQL), name, and description for a selector validation.]]></PUT_DESCRIPTION>
 <!--68273101836A45259289907FC6B4CB24--></ETAPI_OPENAPI_REQ>
 
 <!--6918609B8D4B47508A47267751CC5E3D--><ETAPI_OPENAPI_REQ>
@@ -193,6 +225,9 @@ When you build the query in the "viewcolumn" endpoint, use the "table" property.
 When you setting the reference in a column. If the reference is base, his ID must be in the reference of Column. But if the reference is not base, must be in the "referenceSearchKey" propertie, and the parent ID of the reference, must be in the "reference" property column.]]></DESCRIPTION>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--6918609B8D4B47508A47267751CC5E3D-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--6918609B8D4B47508A47267751CC5E3D-->  <GET_DESCRIPTION><![CDATA[Search for columns related to a table using table_id and the name passed by the user. Use only "table" and "name" in the search. Return 200 columns from that table. IMPORTANT! Always set "_endRow" to "200". Example requests: ?q=table=='ID'&_startRow=0&_endRow=200 or ?q=name=ic='NAME'&_startRow=0&_endRow=200. Use the "table" property when building the query. Save the ID of the found columns.]]></GET_DESCRIPTION>
+<!--6918609B8D4B47508A47267751CC5E3D-->  <POST_DESCRIPTION><![CDATA[Create new column entries for a table with appropriate reference configuration. When setting the reference in a column: If the reference is base, its ID must be in the reference of Column. If the reference is not base, it must be in the "referenceSearchKey" property, and the parent ID of the reference must be in the "reference" property column.]]></POST_DESCRIPTION>
+<!--6918609B8D4B47508A47267751CC5E3D-->  <PUT_DESCRIPTION><![CDATA[Update existing column configuration including reference settings. When setting the reference in a column: If the reference is base, its ID must be in the reference of Column. If the reference is not base, it must be in the "referenceSearchKey" property, and the parent ID of the reference must be in the "reference" property column.]]></PUT_DESCRIPTION>
 <!--6918609B8D4B47508A47267751CC5E3D--></ETAPI_OPENAPI_REQ>
 
 <!--762E9D84382E481C995DA82EB5D22F66--><ETAPI_OPENAPI_REQ>
@@ -205,6 +240,9 @@ When you setting the reference in a column. If the reference is base, his ID mus
 Once you have the module, save the value of the "module" property, which is the id of the module. don't save the "id" property, it's not needed.]]></DESCRIPTION>
 <!--762E9D84382E481C995DA82EB5D22F66-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--762E9D84382E481C995DA82EB5D22F66-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--762E9D84382E481C995DA82EB5D22F66-->  <GET_DESCRIPTION><![CDATA[Search for the module by the name of the dbPrefix using "q": "name=ic='copdev'". Use the name and not the dbPrefix. Once you have the module, save the value of the "module" property, which is the id of the module. Don't save the "id" property, it's not needed.]]></GET_DESCRIPTION>
+<!--762E9D84382E481C995DA82EB5D22F66-->  <POST_DESCRIPTION><![CDATA[Create a new module prefix configuration with the specified database prefix name and module association.]]></POST_DESCRIPTION>
+<!--762E9D84382E481C995DA82EB5D22F66-->  <PUT_DESCRIPTION><![CDATA[Update existing module prefix configuration and associated module properties. Modify the database prefix name and module relationships.]]></PUT_DESCRIPTION>
 <!--762E9D84382E481C995DA82EB5D22F66--></ETAPI_OPENAPI_REQ>
 
 <!--77745A18E93D436A939515FAEB95E0F8--><ETAPI_OPENAPI_REQ>
@@ -216,6 +254,7 @@ Once you have the module, save the value of the "module" property, which is the 
 <!--77745A18E93D436A939515FAEB95E0F8-->  <DESCRIPTION><![CDATA[Executes the Fields registration process for a given tab. It creates/updates the fields based in the table in DB.  This process is necesary to excecute after the Tab registration or after the registration of new columns in the linked table.]]></DESCRIPTION>
 <!--77745A18E93D436A939515FAEB95E0F8-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--77745A18E93D436A939515FAEB95E0F8-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--77745A18E93D436A939515FAEB95E0F8-->  <POST_DESCRIPTION><![CDATA[Executes the Fields registration process for a given tab. It creates/updates the fields based in the table in DB.  This process is necesary to excecute after the Tab registration or after the registration of new columns in the linked table.]]></POST_DESCRIPTION>
 <!--77745A18E93D436A939515FAEB95E0F8--></ETAPI_OPENAPI_REQ>
 
 <!--8EC00FC1E1A04432B5823D52E5316E8B--><ETAPI_OPENAPI_REQ>
@@ -227,6 +266,7 @@ Once you have the module, save the value of the "module" property, which is the 
 <!--8EC00FC1E1A04432B5823D52E5316E8B-->  <DESCRIPTION><![CDATA[webhook to check column and table validations]]></DESCRIPTION>
 <!--8EC00FC1E1A04432B5823D52E5316E8B-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--8EC00FC1E1A04432B5823D52E5316E8B-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--8EC00FC1E1A04432B5823D52E5316E8B-->  <POST_DESCRIPTION><![CDATA[Execute a process to check column and table validations. Retrieves issues o messages explaining the auto-fixes done.]]></POST_DESCRIPTION>
 <!--8EC00FC1E1A04432B5823D52E5316E8B--></ETAPI_OPENAPI_REQ>
 
 <!--A9BCF1993ABF4141B469A36FE4B41836--><ETAPI_OPENAPI_REQ>
@@ -238,6 +278,7 @@ Once you have the module, save the value of the "module" property, which is the 
 <!--A9BCF1993ABF4141B469A36FE4B41836-->  <DESCRIPTION><![CDATA[Creates a tab in Etendo, associated showing the data of a table. After create a Tab, will not have any field, so it necessary execute the Fields Registration process, to generate the fields based in the columns of the associated table.]]></DESCRIPTION>
 <!--A9BCF1993ABF4141B469A36FE4B41836-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--A9BCF1993ABF4141B469A36FE4B41836-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--A9BCF1993ABF4141B469A36FE4B41836-->  <POST_DESCRIPTION><![CDATA[Creates a tab in Etendo, associated showing the data of a table. After create a Tab, will not have any field, so it necessary execute the Fields Registration process, to generate the fields based in the columns of the associated table.]]></POST_DESCRIPTION>
 <!--A9BCF1993ABF4141B469A36FE4B41836--></ETAPI_OPENAPI_REQ>
 
 <!--AE083CAA7B3840F7A80F294BED8C6E8F--><ETAPI_OPENAPI_REQ>
@@ -249,6 +290,9 @@ Once you have the module, save the value of the "module" property, which is the 
 <!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <DESCRIPTION><![CDATA[Manage AD Messages. ]]></DESCRIPTION>
 <!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <GET_DESCRIPTION><![CDATA[Retrieve AD message information and configurations from the system.]]></GET_DESCRIPTION>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <POST_DESCRIPTION><![CDATA[Create new AD messages with specified content and configuration parameters.]]></POST_DESCRIPTION>
+<!--AE083CAA7B3840F7A80F294BED8C6E8F-->  <PUT_DESCRIPTION><![CDATA[Update existing AD message content and configuration settings.]]></PUT_DESCRIPTION>
 <!--AE083CAA7B3840F7A80F294BED8C6E8F--></ETAPI_OPENAPI_REQ>
 
 <!--B642096A05EA44969452FBC29D432207--><ETAPI_OPENAPI_REQ>
@@ -275,6 +319,9 @@ Example of the call:
 {'url': 'http://tomcat:8080/etendo', 'endpoint': '/sws/com.etendoerp.etendorx.datasource/ChangeColumn/"ID of the column type list"', 'method': 'PUT', 'body_params': '{"reference":"17","referenceSearchKey":"REFERENCE ID"}', 'query_params': None, 'token': 'ETENDO_TOKEN'}]]></DESCRIPTION>
 <!--CC764636C21C4310B5A5616F51C00004-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--CC764636C21C4310B5A5616F51C00004-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--CC764636C21C4310B5A5616F51C00004-->  <GET_DESCRIPTION><![CDATA[Retrieve column information including reference type and configuration parameters. Search for column details by ID.]]></GET_DESCRIPTION>
+<!--CC764636C21C4310B5A5616F51C00004-->  <POST_DESCRIPTION><![CDATA[Create a new column with specified reference type and search key configuration. Set appropriate reference parameters for list-type columns.]]></POST_DESCRIPTION>
+<!--CC764636C21C4310B5A5616F51C00004-->  <PUT_DESCRIPTION><![CDATA[Take the ID of the column that the user wants to be of type list and modify the "reference" parameter to "17" and in the "referenceSearchKey" parameter put the ID of the reference. Example: {'endpoint': '/sws/com.etendoerp.etendorx.datasource/ChangeColumn/"COLUMN_ID"', 'method': 'PUT', 'body_params': '{"reference":"17","referenceSearchKey":"REFERENCE_ID"}'}]]></PUT_DESCRIPTION>
 <!--CC764636C21C4310B5A5616F51C00004--></ETAPI_OPENAPI_REQ>
 
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD--><ETAPI_OPENAPI_REQ>
@@ -286,6 +333,9 @@ Example of the call:
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <DESCRIPTION><![CDATA[They will give you a reference ID and you must bring the data of the same, the type parameter and the name]]></DESCRIPTION>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <GET_DESCRIPTION><![CDATA[Retrieve reference data including type parameter and name using the reference ID.]]></GET_DESCRIPTION>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <POST_DESCRIPTION><![CDATA[Create a new reference entry with specified type parameter and name configuration.]]></POST_DESCRIPTION>
+<!--CCB9A32732B14FAE9CA0B9F98A0444BD-->  <PUT_DESCRIPTION><![CDATA[Update existing reference data including type parameter and name properties.]]></PUT_DESCRIPTION>
 <!--CCB9A32732B14FAE9CA0B9F98A0444BD--></ETAPI_OPENAPI_REQ>
 
 <!--E0DB36E7BEED4DB3AACA4E03EB5C1D53--><ETAPI_OPENAPI_REQ>
@@ -294,7 +344,11 @@ Example of the call:
 <!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <NAME><![CDATA[AddColumnFlow]]></NAME>
-<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <DESCRIPTION><![CDATA[Your task is to add columns to a table in Etendo, ensuring that they are correctly registered both in the database and in the Application Dictionary (AD).
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <DESCRIPTION><![CDATA[Add columns to a table in Etendo with correct registration in both database and Application Dictionary (AD). Required parameters: TableName, ColumnName, ColumnType, CanBeNull, IsExternal, ExternalModulePrefix. For "List" type columns, ReferenceId is required. Data type mappings: "String" → character varying(200), "Integer" → numeric, "DateTime" → timestamp without time zone, "YesNo" → character(1) NOT NULL DEFAULT 'N' CHECK (column IN ('Y', 'N')). For "List" type, assign reference in AD instead of fixed data type.]]></DESCRIPTION>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <GET_DESCRIPTION><![CDATA[Retrieve existing column configurations for a table. Check if the table exists in the database using viewTable. Validate existing column types and their data type mappings.]]></GET_DESCRIPTION>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <POST_DESCRIPTION><![CDATA[Your task is to add columns to a table in Etendo, ensuring that they are correctly registered both in the database and in the Application Dictionary (AD).
 
 Each column must have the correct data type, validate its values, and, if necessary, create references in the AD.
 
@@ -428,9 +482,8 @@ character varying(200) DEFAULT 'John Doe'
 ✅ The assistant must add columns using the correct data type
 ✅ "List" type columns must be properly linked to a reference in the AD
 ✅ "YesNo" type columns must be NOT NULL with a CHECK constraint
-✅ The table must be validated before performing any modification]]></DESCRIPTION>
-<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
-<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+✅ The table must be validated before performing any modification]]></POST_DESCRIPTION>
+<!--E0DB36E7BEED4DB3AACA4E03EB5C1D53-->  <PUT_DESCRIPTION><![CDATA[Update existing column configuration in the table and Application Dictionary. Modify column properties, data types, and reference assignments. Ensure proper validation for "YesNo" types with CHECK constraints and correct reference handling for "List" types.]]></PUT_DESCRIPTION>
 <!--E0DB36E7BEED4DB3AACA4E03EB5C1D53--></ETAPI_OPENAPI_REQ>
 
 <!--E414E8EC14014FF7BCEAFE5B357E4769--><ETAPI_OPENAPI_REQ>
@@ -443,6 +496,9 @@ character varying(200) DEFAULT 'John Doe'
 When building the ReferencesTab body, the "table" property will be the table id, "keyColumn" will be the id of the column chosen by the user as the key column and "displayedColumn" will be the id of the other column chosen by the user as the display column.]]></DESCRIPTION>
 <!--E414E8EC14014FF7BCEAFE5B357E4769-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--E414E8EC14014FF7BCEAFE5B357E4769-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--E414E8EC14014FF7BCEAFE5B357E4769-->  <GET_DESCRIPTION><![CDATA[Retrieve table and column information for references. Look up the columns in the table using the table name. IMPORTANT! When using "_endRow" in endpoints, always set the value to "30". Find column IDs for key and display columns.]]></GET_DESCRIPTION>
+<!--E414E8EC14014FF7BCEAFE5B357E4769-->  <POST_DESCRIPTION><![CDATA[Create a reference tab configuration. Set the table mentioned by the user and save its ID and name. When building the ReferencesTab body: "table" property will be the table id, "keyColumn" will be the id of the column chosen by the user as the key column and "displayedColumn" will be the id of the other column chosen by the user as the display column.]]></POST_DESCRIPTION>
+<!--E414E8EC14014FF7BCEAFE5B357E4769-->  <PUT_DESCRIPTION><![CDATA[Update existing reference tab configuration. Modify the table ID, key column, and display column settings. When updating, use the table ID for the "table" property, set "keyColumn" to the id of the chosen key column and "displayedColumn" to the id of the chosen display column.]]></PUT_DESCRIPTION>
 <!--E414E8EC14014FF7BCEAFE5B357E4769--></ETAPI_OPENAPI_REQ>
 
 <!--E71FF48CA97C48218409D9EEBE02C915--><ETAPI_OPENAPI_REQ>
@@ -456,6 +512,9 @@ All the Modules must have the default dependency to Core ( ID='0').
 To Create a module dependency, only send the field "module" and "dependentModule", with both ID of the modules.]]></DESCRIPTION>
 <!--E71FF48CA97C48218409D9EEBE02C915-->  <TYPE><![CDATA[ETRX_Tab]]></TYPE>
 <!--E71FF48CA97C48218409D9EEBE02C915-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--E71FF48CA97C48218409D9EEBE02C915-->  <GET_DESCRIPTION><![CDATA[Retrieve module dependency information. Search for existing dependencies between modules using module IDs.]]></GET_DESCRIPTION>
+<!--E71FF48CA97C48218409D9EEBE02C915-->  <POST_DESCRIPTION><![CDATA[Add a dependency to the created module. The field "module" is the ID of the Module and the default dependency is the ID of the other module. All the Modules must have the default dependency to Core (ID='0'). To create a module dependency, only send the field "module" and "dependentModule", with both ID of the modules.]]></POST_DESCRIPTION>
+<!--E71FF48CA97C48218409D9EEBE02C915-->  <PUT_DESCRIPTION><![CDATA[Update existing module dependency configuration. Modify the dependency relationships between modules using their IDs. Ensure Core dependency (ID='0') is maintained.]]></PUT_DESCRIPTION>
 <!--E71FF48CA97C48218409D9EEBE02C915--></ETAPI_OPENAPI_REQ>
 
 <!--F73995961FE945D99F860BAC90FDDFA0--><ETAPI_OPENAPI_REQ>
@@ -467,6 +526,7 @@ To Create a module dependency, only send the field "module" and "dependentModule
 <!--F73995961FE945D99F860BAC90FDDFA0-->  <DESCRIPTION><![CDATA[A variant of the CreateTable webhook, allows to create a view in the Database from a DB Query. After the execution the flow must be the same of the Normal table creation.]]></DESCRIPTION>
 <!--F73995961FE945D99F860BAC90FDDFA0-->  <TYPE><![CDATA[SMFWHE_WBHK]]></TYPE>
 <!--F73995961FE945D99F860BAC90FDDFA0-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
+<!--F73995961FE945D99F860BAC90FDDFA0-->  <POST_DESCRIPTION><![CDATA[A variant of the CreateTable webhook, allows to create a view in the Database from a DB Query. After the execution the flow must be the same of the Normal table creation.]]></POST_DESCRIPTION>
 <!--F73995961FE945D99F860BAC90FDDFA0--></ETAPI_OPENAPI_REQ>
 
 </data>
