@@ -2,7 +2,7 @@ from typing import Dict, Optional, Type
 
 import requests
 
-from copilot.core.etendo_utils import get_etendo_host, get_etendo_token, login_etendo
+from copilot.core.utils.etendo_utils import get_etendo_host, get_etendo_token, login_etendo
 from copilot.core.tool_input import ToolField
 from copilot.core.tool_input import ToolInput
 from copilot.core.tool_wrapper import (
