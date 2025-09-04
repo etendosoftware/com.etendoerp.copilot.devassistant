@@ -1,16 +1,34 @@
 import os
 import xml.etree.ElementTree as ET
-from typing import Type, Dict
+from typing import Dict, Type
 
 from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
+from copilot.core.utils.models import get_openai_client
 
 
 class XMLTranslationToolInput(ToolInput):
+    """
+    Input schema for the XMLTranslationTool.
+
+    Attributes:
+        relative_path (str): Relative path to the directory containing XML files to
+         translate.
+    """
+
     relative_path: str = ToolField(description="relative path to the XML files")
 
 
 class XMLTranslationTool(ToolWrapper):
+    """
+    A tool for translating XML files from one language to another using OpenAI's API.
+
+    This tool walks through a directory structure, identifies XML files that need
+    translation, and translates untranslated text elements within them. It uses the
+    language specified in the XML file's attributes and translates content in the
+    context of ERP software.
+    """
+
     name: str = "XMLTranslationTool"
     description: str = (
         "This is a tool that receives a relative path and directly "
@@ -20,6 +38,20 @@ class XMLTranslationTool(ToolWrapper):
     args_schema: Type[ToolInput] = XMLTranslationToolInput
 
     def run(self, input_params: Dict, *args, **kwargs):
+        """
+        Execute the XML translation process for files in the specified relative path.
+
+        Args:
+            input_params (Dict): Dictionary containing 'relative_path' key with the
+                relative path to the directory containing XML files to translate.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Dict or str: Dictionary with 'translated_files_paths' containing list of
+                translated file paths, or a string message if no files were translated
+                or path not found.
+        """
         relative_path = input_params.get("relative_path")
         translated_files_paths = []
         script_directory = os.path.dirname(os.path.abspath(__file__))
@@ -50,6 +82,15 @@ class XMLTranslationTool(ToolWrapper):
         return {"translated_files_paths": translated_files_paths}
 
     def get_language_name(self, iso_code):
+        """
+        Convert an ISO language code to the full language name.
+
+        Args:
+            iso_code (str): ISO language code (e.g., 'es_ES', 'en_US').
+
+        Returns:
+            str or None: Full language name if found, None otherwise.
+        """
         import pycountry
 
         language_part = iso_code.split("_")[0]
@@ -59,6 +100,16 @@ class XMLTranslationTool(ToolWrapper):
         return None
 
     def split_xml_into_segments(self, content, max_tokens):
+        """
+        Split XML content into segments based on token limits for translation.
+
+        Args:
+            content (str): The XML content as a string.
+            max_tokens (int): Maximum number of tokens allowed per segment.
+
+        Returns:
+            List[str]: List of XML segments as strings.
+        """
         root = ET.fromstring(content)
         segments = []
         current_segment = ET.Element(root.tag)
@@ -88,9 +139,17 @@ class XMLTranslationTool(ToolWrapper):
         return segments
 
     def translate_xml_file(self, filepath):
-        from openai import OpenAI
+        """
+        Translate untranslated text elements in an XML file using OpenAI API.
 
-        client = OpenAI()
+        Args:
+            filepath (str): Absolute path to the XML file to translate.
+
+        Returns:
+            str or None: Success message with file path if translation occurred,
+                None if no untranslated elements were found.
+        """
+        client = get_openai_client()
         business_requirement = os.getenv("BUSINESS_TOPIC", "ERP")
         model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
         with open(filepath, "r") as file:
@@ -103,20 +162,7 @@ class XMLTranslationTool(ToolWrapper):
             if not target_language:
                 target_language = "English"
             value_elements = []
-            for child in root:
-                if child.attrib.get("trl") == "Y":
-                    continue
-
-                values = child.findall("value")
-                for value in values:
-                    if value.get("isTrl", "N") == "Y":
-                        continue
-                    original_text = value.get("original", "").strip()
-                    if not original_text:
-                        continue
-                    value_elements.append(value)
-                    is_trl = "Y"
-                    child.attrib["trl"] = is_trl
+            self.find_untranslated(root, value_elements)
 
             if not value_elements:
                 return None
@@ -154,7 +200,39 @@ class XMLTranslationTool(ToolWrapper):
 
             return f"Successfully translated file {filepath}."
 
+    def find_untranslated(self, root, value_elements):
+        """
+        Find untranslated value elements in the XML tree.
+
+        Args:
+            root: Root element of the XML tree.
+            value_elements (List): List to append untranslated value elements to.
+        """
+        for child in root:
+            if child.attrib.get("trl") == "Y":
+                continue
+
+            values = child.findall("value")
+            for value in values:
+                if value.get("isTrl", "N") == "Y":
+                    continue
+                original_text = value.get("original", "").strip()
+                if not original_text:
+                    continue
+                value_elements.append(value)
+                is_trl = "Y"
+                child.attrib["trl"] = is_trl
+
     def is_already_translated(self, filepath):
+        """
+        Check if an XML file has already been fully translated.
+
+        Args:
+            filepath (str): Path to the XML file to check.
+
+        Returns:
+            bool: True if all value elements are translated, False otherwise.
+        """
         try:
             with open(filepath, "r") as file:
                 root = ET.parse(file).getroot()
