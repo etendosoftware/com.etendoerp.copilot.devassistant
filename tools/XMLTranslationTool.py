@@ -4,6 +4,7 @@ from typing import Type, Dict
 
 from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
+from copilot.core.utils import get_openai_client
 
 
 class XMLTranslationToolInput(ToolInput):
@@ -88,9 +89,7 @@ class XMLTranslationTool(ToolWrapper):
         return segments
 
     def translate_xml_file(self, filepath):
-        from openai import OpenAI
-
-        client = OpenAI()
+        client = get_openai_client()
         business_requirement = os.getenv("BUSINESS_TOPIC", "ERP")
         model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
         with open(filepath, "r") as file:
