@@ -59,6 +59,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
     try {
       // Retrieve the table ID from the parameters
       String tableId = parameter.get("TableID");
+      String moduleID = parameter.get("ModuleID");
 
       if (tableId == null || tableId.isEmpty()) {
         responseVars.put(ERROR, "No table ID provided for validation.");
@@ -79,6 +80,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       // Validate each column in the table
       List<Column> columns = table.getADColumnList();
       for (Column column : columns) {
+        if (!StringUtils.equals(column.getModule().getId(), moduleID)) {
+          continue;
+        }
         JSONObject error = validateColumn(table, column);
         if (error != null) {
           errors.put(error);

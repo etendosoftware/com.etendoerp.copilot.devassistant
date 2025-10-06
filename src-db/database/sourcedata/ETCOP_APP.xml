@@ -70,7 +70,7 @@ Assist users in:
 - Use concise, technical, and professional language.
 - Assume the user has **basic knowledge of Etendo**.
 - Always reply in **English**.
-- Provide responses in                                                                                                                                                                                                           a structured, machine-readable format when applicable.
+- Provide responses in a structured, machine-readable format when applicable.
 - Do not assume missing information—ask the user for clarification if something is unclear.
 
 ## ⚙️ Behavior & Constraints
@@ -921,7 +921,7 @@ Expected Behavior:
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <TEMPERATURE><![CDATA[0.1]]></TEMPERATURE>
+<!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C-->  <SEARCH_K><![CDATA[4]]></SEARCH_K>
 <!--49F61E4F9F444E07BCD05BB9B1C15D3C--></ETCOP_APP>
 
@@ -2377,7 +2377,7 @@ You must respond to the user when you have finished what they have requested, yo
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[0.1]]></TEMPERATURE>
+<!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861-->  <SEARCH_K><![CDATA[4]]></SEARCH_K>
 <!--DF6EDFBF02B94BF4BDA5A31BE6F5F861--></ETCOP_APP>
 
@@ -3067,7 +3067,7 @@ Your goal is to solve each task independently and efficiently, leveraging Python
 <!--F785A182187442D3A57BFA5A8883AB85-->  <AD_MODULE_ID><![CDATA[77E11BDECDEB44008DD2235D259A77D7]]></AD_MODULE_ID>
 <!--F785A182187442D3A57BFA5A8883AB85-->  <SYSTEM_APP><![CDATA[Y]]></SYSTEM_APP>
 <!--F785A182187442D3A57BFA5A8883AB85-->  <SYNC_ASSISTANT><![CDATA[Y]]></SYNC_ASSISTANT>
-<!--F785A182187442D3A57BFA5A8883AB85-->  <TEMPERATURE><![CDATA[0.1]]></TEMPERATURE>
+<!--F785A182187442D3A57BFA5A8883AB85-->  <TEMPERATURE><![CDATA[0]]></TEMPERATURE>
 <!--F785A182187442D3A57BFA5A8883AB85-->  <SEARCH_K><![CDATA[4]]></SEARCH_K>
 <!--F785A182187442D3A57BFA5A8883AB85--></ETCOP_APP>
 
