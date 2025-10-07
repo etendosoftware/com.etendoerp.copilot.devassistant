@@ -26,7 +26,8 @@ import org.openbravo.client.kernel.RequestContext;
  * Tests for {@link CheckTablesColumnHook}.
  */
 public class CheckTablesColumnHookTest extends WeldBaseTest {
-
+  private static final String TABLE_ID = "TableID";
+  private static final String MESSAGE = "message";
   private static final String EXISTING_TABLE_ID = "6344EB0DE29E4E52ACF99F591FFCD07D";
 
   @Before
@@ -42,7 +43,7 @@ public class CheckTablesColumnHookTest extends WeldBaseTest {
   @Test
   public void missingTableIdProducesError() {
     CheckTablesColumnHook hook = new CheckTablesColumnHook();
-    Map<String, String> params = new HashMap<>(); // no TableID
+    Map<String, String> params = new HashMap<>();
     Map<String, String> resp = new HashMap<>();
     hook.get(params, resp);
     assertTrue("Expected error key", resp.containsKey(CheckTablesColumnHook.ERROR));
@@ -53,7 +54,7 @@ public class CheckTablesColumnHookTest extends WeldBaseTest {
   public void invalidTableIdProducesError() {
     CheckTablesColumnHook hook = new CheckTablesColumnHook();
     Map<String, String> params = new HashMap<>();
-    params.put("TableID", "NON_EXISTENT_ID");
+    params.put(TABLE_ID, "NON_EXISTENT_ID");
     Map<String, String> resp = new HashMap<>();
     hook.get(params, resp);
     assertTrue(resp.containsKey(CheckTablesColumnHook.ERROR));
@@ -71,16 +72,16 @@ public class CheckTablesColumnHookTest extends WeldBaseTest {
 
     CheckTablesColumnHook hook = new CheckTablesColumnHook();
     Map<String, String> params = new HashMap<>();
-    params.put("TableID", EXISTING_TABLE_ID);
+    params.put(TABLE_ID, EXISTING_TABLE_ID);
     params.put("ModuleID", moduleId);
     Map<String, String> resp = new HashMap<>();
     hook.get(params, resp);
 
     assertFalse("Should not return error for valid table", resp.containsKey(CheckTablesColumnHook.ERROR));
-    assertTrue(resp.containsKey("message"));
+    assertTrue(resp.containsKey(MESSAGE));
 
     // Parse the message (JSON array of errors). It can be empty or contain objects.
-    String raw = resp.get("message");
+    String raw = resp.get(MESSAGE);
     JSONArray arr = new JSONArray(raw);
     // Basic sanity: all entries (if any) must contain an 'error' key or be empty objects
     for (int i = 0; i < arr.length(); i++) {
@@ -107,14 +108,14 @@ public class CheckTablesColumnHookTest extends WeldBaseTest {
 
     CheckTablesColumnHook hook = new CheckTablesColumnHook();
     Map<String, String> params = new HashMap<>();
-    params.put("TableID", EXISTING_TABLE_ID);
+    params.put(TABLE_ID, EXISTING_TABLE_ID);
     params.put("ModuleID", impossibleModuleId);
     Map<String, String> resp = new HashMap<>();
     hook.get(params, resp);
 
     assertFalse(resp.containsKey(CheckTablesColumnHook.ERROR));
-    assertTrue(resp.containsKey("message"));
-    JSONArray arr = new JSONArray(resp.get("message"));
+    assertTrue(resp.containsKey(MESSAGE));
+    JSONArray arr = new JSONArray(resp.get(MESSAGE));
     assertEquals("Expect no validated columns when module filter excludes all", 0, arr.length());
   }
 }
