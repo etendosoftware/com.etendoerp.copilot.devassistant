@@ -80,7 +80,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       // Validate each column in the table
       List<Column> columns = table.getADColumnList();
       for (Column column : columns) {
-        if (!StringUtils.equals(column.getModule().getId(), moduleID)) {
+        if (column.getModule() == null || !StringUtils.equals(column.getModule().getId(), moduleID)) {
           continue;
         }
         JSONObject error = validateColumn(table, column);
