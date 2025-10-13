@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.service.OBDal;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
@@ -26,7 +25,8 @@ import kong.unirest.json.JSONArray;
  * method to process the webhook request.
  */
 public class GetWindowTabOrTableInfo extends BaseWebhookService {
-
+  private static final String TABLE = "table";
+  private static final String ERROR = "error";
   private static final Logger LOG = LogManager.getLogger();
   private static final String QUERY_EXECUTED = "QueryExecuted";
   private static final String COLUMNS = "Columns";
@@ -51,13 +51,13 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
-    List<String> allowedKeywords = Arrays.asList("column","field","table", "window", "tab");
+    List<String> allowedKeywords = Arrays.asList("column","field",TABLE, "window", "tab");
 
     String name = parameter.get("Name");
     String keyWord = parameter.get("KeyWord");
 
     if (StringUtils.isBlank(keyWord)) {
-      responseVars.put("error", "KeyWord parameter is required");
+      responseVars.put(ERROR, "KeyWord parameter is required");
       return;
     }
 
@@ -65,7 +65,7 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
 
     // Validate the keyWord to ensure it's allowed
     if (!allowedKeywords.contains(keyWord)) {
-      responseVars.put("error", "Key word is not correct.");
+      responseVars.put(ERROR, "Key word is not correct.");
       return;
     }
 
@@ -88,7 +88,7 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
     // Build the SELECT clause dynamically
     StringBuilder queryBuilder = new StringBuilder();
     queryBuilder.append("SELECT ad_").append(keyWord).append("_id, ");
-    if (StringUtils.equals(keyWord, "table")) {
+    if (StringUtils.equals(keyWord, TABLE)) {
       queryBuilder.append("tablename, ");
     }
     if (parentKeyColumn != null) {
@@ -96,7 +96,7 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
     }
     queryBuilder.append("name FROM ad_").append(keyWord)
         .append(" WHERE (name ILIKE ? ");
-    boolean hasTableNameSearch = StringUtils.equals(keyWord, "table");
+    boolean hasTableNameSearch = StringUtils.equals(keyWord, TABLE);
     if (hasTableNameSearch) {
       queryBuilder.append(" OR tablename ILIKE ? ");
     }
@@ -139,27 +139,8 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
       responseVars.put(DATA, data.toString());
 
     } catch (Exception e) {
-      responseVars.put("error", e.getMessage());
+      responseVars.put(ERROR, e.getMessage());
     }
-  }
-
-  /**
-   * Returns the provided text if the keyWord is "table", otherwise returns an empty string.
-   * <p>
-   * This method checks if the given keyWord is equal to "table" (case-insensitive).
-   * If it is, the method returns the provided text. Otherwise, it returns an empty string.
-   *
-   * @param keyWord
-   *     the keyword to check
-   * @param text
-   *     the text to return if the keyword is "table"
-   * @return the text if the keyword is "table", otherwise an empty string
-   */
-  private String ifIsTable(String keyWord, String text) {
-    if (StringUtils.equalsIgnoreCase(keyWord, "table")) {
-      return text;
-    }
-    return "";
   }
 
 }
