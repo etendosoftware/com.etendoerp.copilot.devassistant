@@ -6,12 +6,14 @@ import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import com.etendoerp.copilot.devassistant.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
+import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.ui.Element;
 import org.openbravo.model.ad.ui.Field;
 import org.openbravo.model.ad.ui.Tab;
@@ -35,7 +37,7 @@ public class RegisterFields extends BaseWebhookService {
   /**
    * Processes the incoming webhook request to register fields for the specified window tab.
    * It retrieves the tab ID, help comment, and description from the parameters,
-   * calls the {@link #registerFields(String, String, String)} method to execute the registration process,
+   * calls the registerFields method to execute the registration process,
    * and updates the fields with the specified help comment and description.
    *
    * @param parameter A map containing the input parameters for the request, including the window tab ID, help comment, and description.
@@ -48,8 +50,10 @@ public class RegisterFields extends BaseWebhookService {
       String tabID = parameter.get("WindowTabID");
       String helpComment = parameter.get("HelpComment");
       String description = parameter.get("Description");
+      String dbPrefix = parameter.get("DBPrefix");
 
       Tab tab = OBDal.getInstance().get(Tab.class, tabID);
+      Module module = Utils.getModuleByPrefix(dbPrefix);
 
       if (tab == null) {
         responseVars.put(ERROR_PROPERTY, String.format(OBMessageUtils.messageBD("COPDEV_TabNotFound"), tabID));
@@ -61,6 +65,7 @@ public class RegisterFields extends BaseWebhookService {
 
       // Refresh tab and update fields to show them in Grid view
       OBDal.getInstance().refresh(tab);
+      OBDal.getInstance().refresh(module);
       List<Field> fields = tab.getADFieldList();
       fields.stream()
           .filter(field -> !field.getColumn().isKeyColumn())  // Ignore key columns
@@ -76,9 +81,11 @@ public class RegisterFields extends BaseWebhookService {
             if (StringUtils.isBlank(elementPrinTxt)) {
               elementPrinTxt = field.getColumn().getName();
             }
-            element.setName(StringUtils.replace(elementName, "_", " "));
-            element.setPrintText(StringUtils.replace(elementPrinTxt, "_", " "));
-            OBDal.getInstance().save(element);
+            if (element.getModule().equals(module)) {
+                element.setName(StringUtils.replace(elementName, "_", " "));
+                element.setPrintText(StringUtils.replace(elementPrinTxt, "_", " "));
+                OBDal.getInstance().save(element);
+            }
 
             // Set help comment, description, and show field in grid view
             field.setHelpComment(helpComment);
