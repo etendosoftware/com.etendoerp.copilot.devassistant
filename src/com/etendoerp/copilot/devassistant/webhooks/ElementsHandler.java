@@ -54,7 +54,7 @@ public class ElementsHandler extends BaseWebhookService {
       if (column == null) {
         throw new IllegalArgumentException("Column with ID " + columnId + " not found.");
       }
-      if (!column.getName().contains("EM_")) {
+      if (!column.getName().startsWith("EM_")) {
         column.setName(StringUtils.replace(column.getName(), "_", " "));
       }
       column.setDescription(description);
