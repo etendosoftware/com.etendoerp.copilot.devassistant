@@ -51,35 +51,74 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
       LOG.info("Parameter: {} = {}", entry.getKey(), entry.getValue());
     }
 
-    List<String> allowedKeywords = Arrays.asList("table", "window", "tab");
+    List<String> allowedKeywords = Arrays.asList("column","field","table", "window", "tab");
 
     String name = parameter.get("Name");
     String keyWord = parameter.get("KeyWord");
 
-    // Construct SQL query to fetch data based on the name and keyWord
-    String query = "SELECT " +
-        "ad_" + keyWord + "_id, " +
-        ifIsTable(keyWord, "tablename,") +
-        "name " +
-        "FROM ad_" + keyWord + " " +
-        "WHERE name ilike '%" + name + "%'" +
-        ifIsTable(keyWord, "OR tablename ILIKE '%" + name + "%' ") +
-        "OR ad_" + keyWord + "_id = '" + name + "'";
+    if (StringUtils.isBlank(keyWord)) {
+      responseVars.put("error", "KeyWord parameter is required");
+      return;
+    }
+
+    keyWord = StringUtils.lowerCase(keyWord.trim());
+
+    // Validate the keyWord to ensure it's allowed
+    if (!allowedKeywords.contains(keyWord)) {
+      responseVars.put("error", "Key word is not correct.");
+      return;
+    }
+
+    // Determine parent key column (if any) to include in the SELECT list
+    String parentKeyColumn = null; // column name in the underlying AD_ table
+    switch (keyWord) {
+      case "column":
+        parentKeyColumn = "ad_table_id";
+        break;
+      case "field":
+        parentKeyColumn = "ad_tab_id";
+        break;
+      case "tab":
+        parentKeyColumn = "ad_window_id";
+        break;
+      default: // window, table -> no parent
+        break;
+    }
+
+    // Build the SELECT clause dynamically
+    StringBuilder queryBuilder = new StringBuilder();
+    queryBuilder.append("SELECT ad_").append(keyWord).append("_id, ");
+    if (StringUtils.equals(keyWord, "table")) {
+      queryBuilder.append("tablename, ");
+    }
+    if (parentKeyColumn != null) {
+      queryBuilder.append(parentKeyColumn).append(", ");
+    }
+    queryBuilder.append("name FROM ad_").append(keyWord)
+        .append(" WHERE (name ILIKE ? ");
+    boolean hasTableNameSearch = StringUtils.equals(keyWord, "table");
+    if (hasTableNameSearch) {
+      queryBuilder.append(" OR tablename ILIKE ? ");
+    }
+    queryBuilder.append(" OR ad_").append(keyWord).append("_id = ?) ");
+
+    String query = queryBuilder.toString();
+    LOG.debug("Executing query: {}", query);
 
     Connection conn = OBDal.getInstance().getConnection();
 
     try (PreparedStatement statement = conn.prepareStatement(query)) {
-      keyWord = StringUtils.lowerCase(keyWord);
-
-      // Validate the keyWord to ensure it's allowed
-      if (!allowedKeywords.contains(keyWord)) {
-        throw new OBException("Key word is not correct.");
+      // Bind parameters
+      String likeValue = "%" + name + "%";
+      int paramIndex = 1;
+      statement.setString(paramIndex++, likeValue);
+      if (hasTableNameSearch) {
+        statement.setString(paramIndex++, likeValue);
       }
+      statement.setString(paramIndex, name); // id match (exact)
 
-      // Execute the query and process the result set
       ResultSet result = statement.executeQuery();
 
-      // Get column names and prepare the response
       int columnCount = result.getMetaData().getColumnCount();
       JSONArray columns = new JSONArray();
       for (int i = 1; i <= columnCount; i++) {
@@ -95,13 +134,11 @@ public class GetWindowTabOrTableInfo extends BaseWebhookService {
         data.put(row);
       }
 
-      // Add results to response variables
       responseVars.put(QUERY_EXECUTED, query);
       responseVars.put(COLUMNS, columns.toString());
       responseVars.put(DATA, data.toString());
 
     } catch (Exception e) {
-      // Handle exceptions and store the error message
       responseVars.put("error", e.getMessage());
     }
   }
