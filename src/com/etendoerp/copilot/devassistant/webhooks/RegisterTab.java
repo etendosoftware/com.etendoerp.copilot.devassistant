@@ -132,7 +132,8 @@ public class RegisterTab extends BaseWebhookService {
       OBContext context = OBContext.getOBContext();
 
       // Fetching the window and setting the table for the window
-      if (table.getDataPackage().equals(dataPackage)) {
+      if (table.getDataPackage() != null && dataPackage != null
+              && StringUtils.equals(table.getDataPackage().getId(), dataPackage.getId())) {
         table.setWindow(window);
         OBDal.getInstance().save(table);
       }
