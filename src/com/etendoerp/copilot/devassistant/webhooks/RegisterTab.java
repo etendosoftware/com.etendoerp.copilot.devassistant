@@ -9,12 +9,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.module.DataPackage;
+import org.openbravo.model.ad.module.Module;
+import org.openbravo.model.ad.module.ModuleDBPrefix;
 import org.openbravo.model.ad.ui.Tab;
 import org.openbravo.model.ad.ui.Window;
 
@@ -64,6 +68,10 @@ public class RegisterTab extends BaseWebhookService {
    * Constant for the default UI pattern
    */
   public static final String STD = "STD";
+  /**
+   * Constant for the DBPrefix parameter
+   */
+  public static final String DB_PREFIX = "DBPrefix";
 
   /**
    * Handles the registration of a new tab for the specified window.
@@ -86,9 +94,14 @@ public class RegisterTab extends BaseWebhookService {
       String helpComment = parameter.get(HELP_COMMENT);
       String tableNae = parameter.get(TABLE_NAME);
       String sequenceNumber = parameter.get(SEQUENCE_NUMBER);
+      String dbPrefix = parameter.get(DB_PREFIX);
 
       // Fetching the table based on the provided TableID
       Table table = Utils.getTableByDBName(tableNae);
+
+      // Retrieve the associated DataPackage
+      Module module = Utils.getModuleByPrefix(dbPrefix);
+      DataPackage dataPackage = Utils.getDataPackage(module);
 
       // Formatting the table name by replacing underscores with spaces
       String name = table.getName().replace("_", " ");
@@ -119,11 +132,14 @@ public class RegisterTab extends BaseWebhookService {
       OBContext context = OBContext.getOBContext();
 
       // Fetching the window and setting the table for the window
-      table.setWindow(window);
-      OBDal.getInstance().save(table);
+      if (table.getDataPackage() != null && dataPackage != null
+              && StringUtils.equals(table.getDataPackage().getId(), dataPackage.getId())) {
+        table.setWindow(window);
+        OBDal.getInstance().save(table);
+      }
 
       // Creating and saving the new tab
-      tab = createTab(window, name, table, context, description, helpComment, tabLevel, sequenceNumber);
+      tab = createTab(window, name, table, context, description, helpComment, tabLevel, sequenceNumber, module);
 
       OBDal.getInstance().flush();
 
@@ -161,7 +177,7 @@ public class RegisterTab extends BaseWebhookService {
    * @return the newly created Tab object
    */
   private Tab createTab(Window window, String name, Table table, OBContext context, String description,
-      String helpComment, String tabLevel, String sequenceNumber) {
+      String helpComment, String tabLevel, String sequenceNumber, Module module) {
     Tab tab;
     // Saving the window instance
     OBDal.getInstance().save(window);
@@ -175,7 +191,7 @@ public class RegisterTab extends BaseWebhookService {
     tab.setWindow(window);
     tab.setUIPattern(STD);
     tab.setSequenceNumber(Long.parseLong(sequenceNumber));
-    tab.setModule(window.getModule());
+    tab.setModule(module);
     tab.setDescription(description);
     tab.setHelpComment(helpComment);
     tab.setTabLevel(Long.parseLong(tabLevel));
