@@ -66,9 +66,6 @@ public class RegisterWindow extends BaseWebhookService {
       // Retrieve the associated DataPackage
       DataPackage dataPackage = getDataPackage(dbPrefix);
 
-      // Normalize the name based on the DB prefix
-      name = fixName(name, dbPrefix);
-
       OBContext context = OBContext.getOBContext();
 
       // Create the window record
@@ -165,28 +162,6 @@ public class RegisterWindow extends BaseWebhookService {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
     }
     return dataPackList.get(0);
-  }
-
-  /**
-   * Fixes the name by removing the DB prefix and formatting it with proper capitalization.
-   *
-   * @param name The name to be fixed.
-   * @param dbPrefix The DB prefix to remove.
-   * @return The formatted name.
-   */
-  public static String fixName(String name, String dbPrefix) {
-    if (StringUtils.startsWith(name, dbPrefix)) {
-      name = StringUtils.removeStart(name, dbPrefix).substring(1);
-    }
-    if (!Character.isUpperCase(name.charAt(0))) {
-      name = StringUtils.capitalize(name);
-    }
-    if (StringUtils.contains(name, "_")) {
-      return Arrays.stream(name.replace("_", " ").split(" "))
-          .map(word -> (StringUtils.isNotBlank(word) ? StringUtils.capitalize(word) : ""))
-          .collect(Collectors.joining(" "));
-    }
-    return name;
   }
 
 }

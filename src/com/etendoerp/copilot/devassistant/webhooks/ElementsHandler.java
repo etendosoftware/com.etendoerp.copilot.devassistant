@@ -47,14 +47,16 @@ public class ElementsHandler extends BaseWebhookService {
       if (columnId == null) {
         throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidElementID")));
       }
-
+      String name = parameter.get("Name");
       String description = parameter.get("Description");
       String helpComment = parameter.get("HelpComment");
       Column column = OBDal.getInstance().get(Column.class, columnId);
       if (column == null) {
         throw new IllegalArgumentException("Column with ID " + columnId + " not found.");
       }
-      column.setName(StringUtils.replace(column.getName(), "_", " "));
+      if (!column.getName().startsWith("EM_")) {
+        column.setName(StringUtils.replace(column.getName(), "_", " "));
+      }
       column.setDescription(description);
       column.setHelpComment(helpComment);
       Element element = column.getApplicationElement();
@@ -62,7 +64,7 @@ public class ElementsHandler extends BaseWebhookService {
         throw new IllegalArgumentException("Element not found.");
       }
 
-      String elementName = element.getName();
+      String elementName = StringUtils.isBlank(name) ? element.getName() : name;
       String elementPrinTxt = element.getPrintText();
       if (StringUtils.isBlank(elementName)) {
         elementName = column.getName();
