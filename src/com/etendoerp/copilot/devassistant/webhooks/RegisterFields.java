@@ -81,7 +81,8 @@ public class RegisterFields extends BaseWebhookService {
             if (StringUtils.isBlank(elementPrinTxt)) {
               elementPrinTxt = field.getColumn().getName();
             }
-            if (element.getModule().equals(module)) {
+              if (element.getModule() != null && module != null
+                      && StringUtils.equals(element.getModule().getId(), module.getId())) {
                 element.setName(StringUtils.replace(elementName, "_", " "));
                 element.setPrintText(StringUtils.replace(elementPrinTxt, "_", " "));
                 OBDal.getInstance().save(element);
