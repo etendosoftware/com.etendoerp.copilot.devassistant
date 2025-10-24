@@ -2001,11 +2001,7 @@ Step 2: Genereate the Webhook code.
 Step 3: The file is created in the path @source.path@/modules/<JAVA.PACKAGE.OF.MODULE>/src/JAVA/PACKAGE/OF/MODULE/webhooks/<WEBHOOK_NAME>.java
 (On this case: @source.path@/modules/com.etendoerp.module.example/src/com/etendoerp/module/example/webhooks/Example.java)
 
-and the RegisterNewWebhook command is executed with the parameters:
-- ModuleJavaPackage: com.etendoerp.module.example
-- SearchKey: Example
-- Parameters: parameter1;parameter2;anotherparam
-- Javaclass: com.etendoerp.module.example.webhooks.Example
+Step 4: Use the api to search module information and register the webhook in the system. Must register the header and the parameters (if needed).
 
 Before you give the answer to the user, use the Read File Tool to check if the file was correctly generated on the solicited path.
 ]]></PROMPT>
