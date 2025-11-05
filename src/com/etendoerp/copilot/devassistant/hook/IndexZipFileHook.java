@@ -38,6 +38,7 @@ import org.openbravo.model.ad.utility.Attachment;
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
 import com.etendoerp.copilot.hook.CopilotFileHook;
+import com.etendoerp.copilot.util.FileUtils;
 
 /**
  * This class implements the CopilotFileHook interface and provides functionality
@@ -200,6 +201,7 @@ public class IndexZipFileHook implements CopilotFileHook {
         }
         return FileVisitResult.CONTINUE;
       }
+
       @Override
       public FileVisitResult visitFileFailed(Path file, IOException exc) {
         log.warn("Skipping inaccessible path: " + file, exc);
@@ -239,6 +241,7 @@ public class IndexZipFileHook implements CopilotFileHook {
         }
         return FileVisitResult.CONTINUE;
       }
+
       @Override
       public FileVisitResult visitFileFailed(Path file, IOException exc) {
         log.warn("Skipping inaccessible path: " + file, exc);
@@ -279,7 +282,7 @@ public class IndexZipFileHook implements CopilotFileHook {
    */
   private static File getZipFile(Set<Path> filesToZip) throws IOException {
     Path tempDirPath = Files.createTempDirectory("copilotZipGeneration");
-    File zipFile = File.createTempFile("files", ".zip", tempDirPath.toFile());
+    File zipFile = File.createTempFile("filesCodeIndex", ".zip", tempDirPath.toFile());
     try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
       int total = filesToZip.size();
       int i = 0;
@@ -367,6 +370,7 @@ public class IndexZipFileHook implements CopilotFileHook {
           hookObject.getOrganization().getId(),
           zip
       );
+      FileUtils.cleanupTempFile(zip.toPath(), true);
 
     } catch (Exception e) {
       throw new OBException(
