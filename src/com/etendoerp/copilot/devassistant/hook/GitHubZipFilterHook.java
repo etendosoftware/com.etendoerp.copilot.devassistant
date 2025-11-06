@@ -43,6 +43,7 @@ import org.openbravo.model.ad.utility.Attachment;
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
 import com.etendoerp.copilot.hook.CopilotFileHook;
+import com.etendoerp.copilot.util.FileUtils;
 
 /**
  * This class implements the CopilotFileHook interface to handle GitHub repositories.
@@ -91,6 +92,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
       log.debug("Created filtered ZIP file: {}", finalZip.getAbsolutePath());
 
       attachZipFile(hookObject, finalZip);
+
 
     } catch (Exception e) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ErrorAttachingFile")), e);
@@ -248,13 +250,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
    */
   private void cleanup(File finalZip, List<Path> extractedPaths) {
     // Delete the final ZIP file if it exists
-    if (finalZip != null && finalZip.exists()) {
-      try {
-        Files.delete(finalZip.toPath());
-      } catch (IOException e) {
-        log.warn("Could not delete temporary ZIP file: {}. Reason: {}", finalZip.getAbsolutePath(), e.getMessage());
-      }
-    }
+    FileUtils.cleanupTempFile(finalZip != null ? finalZip.toPath() : null, true);
 
     // Delete extracted directories
     for (Path extractedPath : extractedPaths) {
