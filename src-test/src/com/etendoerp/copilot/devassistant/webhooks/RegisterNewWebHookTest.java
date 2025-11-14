@@ -1,5 +1,19 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.ERR_MISSING_PARAMETERS;
+import static com.etendoerp.copilot.devassistant.TestConstants.JAVA_CLASS;
+import static com.etendoerp.copilot.devassistant.TestConstants.JAVA_CLASS_VALUE;
+import static com.etendoerp.copilot.devassistant.TestConstants.MESSAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.MISSING_REQUIRED_PARAMS;
+import static com.etendoerp.copilot.devassistant.TestConstants.MODULE_JAVA_PACKAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.MODULE_TEST_PACKAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.PARAMS;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.PARAM_LIST;
+import static com.etendoerp.copilot.devassistant.TestConstants.SEARCH_KEY;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_WEBHOOK;
+import static com.etendoerp.copilot.devassistant.TestConstants.WEBHOOK_CREATED;
+import static com.etendoerp.copilot.devassistant.TestConstants.WEBHOOK_CREATED_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -129,14 +143,12 @@ class RegisterNewWebHookTest {
   void testGetWithValidParametersShouldCreateWebhookSuccessfully() {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook '%s' created successfully. %s");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
     verify(obDal, atLeastOnce()).save(any(DefinedWebHook.class));
     verify(obDal, atLeastOnce()).save(any(DefinedWebhookParam.class));
     verify(obDal, atLeastOnce()).save(any(DefinedwebhookRole.class));
@@ -148,17 +160,12 @@ class RegisterNewWebHookTest {
    */
   @Test
   void testGetWithMissingJavaclassShouldReturnError() {
-    requestParams.put("SearchKey", "TestWebhook");
-    requestParams.put("Params", "param1;param2");
-    requestParams.put("ModuleJavaPackage", "com.test.module");
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_MisisngParameters"))
-        .thenReturn("Missing required parameters");
+    setupRequestParamsWithoutParam(JAVA_CLASS);
+    setupMissingParametersMessage();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing required parameters", responseVars.get("error"));
+    assertErrorResponse();
     verify(obDal, never()).save(any());
   }
 
@@ -167,17 +174,12 @@ class RegisterNewWebHookTest {
    */
   @Test
   void testGetWithMissingSearchKeyShouldReturnError() {
-    requestParams.put("Javaclass", "com.test.MyWebhook");
-    requestParams.put("Params", "param1;param2");
-    requestParams.put("ModuleJavaPackage", "com.test.module");
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_MisisngParameters"))
-        .thenReturn("Missing required parameters");
+    setupRequestParamsWithoutParam(SEARCH_KEY);
+    setupMissingParametersMessage();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing required parameters", responseVars.get("error"));
+    assertErrorResponse();
     verify(obDal, never()).save(any());
   }
 
@@ -186,17 +188,12 @@ class RegisterNewWebHookTest {
    */
   @Test
   void testGetWithMissingParamsShouldReturnError() {
-    requestParams.put("Javaclass", "com.test.MyWebhook");
-    requestParams.put("SearchKey", "TestWebhook");
-    requestParams.put("ModuleJavaPackage", "com.test.module");
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_MisisngParameters"))
-        .thenReturn("Missing required parameters");
+    setupRequestParamsWithoutParam(PARAMS);
+    setupMissingParametersMessage();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing required parameters", responseVars.get("error"));
+    assertErrorResponse();
     verify(obDal, never()).save(any());
   }
 
@@ -205,17 +202,12 @@ class RegisterNewWebHookTest {
    */
   @Test
   void testGetWithMissingModuleJavaPackageShouldReturnError() {
-    requestParams.put("Javaclass", "com.test.MyWebhook");
-    requestParams.put("SearchKey", "TestWebhook");
-    requestParams.put("Params", "param1;param2");
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_MisisngParameters"))
-        .thenReturn("Missing required parameters");
+    setupRequestParamsWithoutParam(MODULE_JAVA_PACKAGE);
+    setupMissingParametersMessage();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing required parameters", responseVars.get("error"));
+    assertErrorResponse();
     verify(obDal, never()).save(any());
   }
 
@@ -224,19 +216,15 @@ class RegisterNewWebHookTest {
    */
   @Test
   void testGetWithBlankParametersShouldReturnError() {
-    // Arrange
-    requestParams.put("Javaclass", "   ");
-    requestParams.put("SearchKey", "   ");
-    requestParams.put("Params", "   ");
-    requestParams.put("ModuleJavaPackage", "   ");
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_MisisngParameters"))
-        .thenReturn("Missing required parameters");
+    requestParams.put(JAVA_CLASS, "   ");
+    requestParams.put(SEARCH_KEY, "   ");
+    requestParams.put(PARAMS, "   ");
+    requestParams.put(MODULE_JAVA_PACKAGE, "   ");
+    setupMissingParametersMessage();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing required parameters", responseVars.get("error"));
+    assertErrorResponse();
   }
 
   /**
@@ -246,16 +234,14 @@ class RegisterNewWebHookTest {
   void testGetShouldCreateWebhookWithCorrectProperties() {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
     verify(definedWebHook).setNewOBObject(true);
     verify(definedWebHook).setModule(module);
-    verify(definedWebHook).setJavaClass("com.test.MyWebhook");
-    verify(definedWebHook).setName("TestWebhook");
+    verify(definedWebHook).setJavaClass(JAVA_CLASS_VALUE);
+    verify(definedWebHook).setName(TEST_WEBHOOK);
     verify(definedWebHook).setAllowGroupAccess(true);
   }
 
@@ -266,11 +252,9 @@ class RegisterNewWebHookTest {
   @Test
   void testGetWithMultipleParamsShouldCreateAllParameters() {
     setupValidRequestParams();
-    requestParams.put("Params", "param1;param2;param3");
+    requestParams.put(PARAMS, "param1;param2;param3");
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -283,11 +267,9 @@ class RegisterNewWebHookTest {
   @Test
   void testGetWithSingleParamShouldCreateOneParameter() {
     setupValidRequestParams();
-    requestParams.put("Params", "singleParam");
+    requestParams.put(PARAMS, "singleParam");
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -300,11 +282,9 @@ class RegisterNewWebHookTest {
   @Test
   void testGetWithParamsContainingSpacesShouldTrimParameters() {
     setupValidRequestParams();
-    requestParams.put("Params", " param1 ; param2 ; param3 ");
+    requestParams.put(PARAMS, " param1 ; param2 ; param3 ");
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     ArgumentCaptor<DefinedWebhookParam> paramCaptor = ArgumentCaptor.forClass(DefinedWebhookParam.class);
 
@@ -321,11 +301,9 @@ class RegisterNewWebHookTest {
   @Test
   void testGetWithEmptyParamsBetweenSemicolonsShouldSkipEmpty() {
     setupValidRequestParams();
-    requestParams.put("Params", "param1;;param2;  ;param3");
+    requestParams.put(PARAMS, "param1;;param2;  ;param3");
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -339,9 +317,7 @@ class RegisterNewWebHookTest {
   void testGetShouldSetParameterPropertiesCorrectly() {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -360,10 +336,7 @@ class RegisterNewWebHookTest {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
     when(obContext.getRole()).thenReturn(role);
-
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -382,17 +355,17 @@ class RegisterNewWebHookTest {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
 
-    utilsMock.when(() -> Utils.getModuleByJavaPackage("com.test.module")).thenReturn(null);
+    utilsMock.when(() -> Utils.getModuleByJavaPackage(MODULE_TEST_PACKAGE)).thenReturn(null);
 
     messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_SetModuleManually"))
         .thenReturn("Please set module manually");
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
+    messageMock.when(() -> OBMessageUtils.messageBD(WEBHOOK_CREATED))
         .thenReturn("Webhook '%s' created. %s");
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertTrue(responseVars.get("message").contains("Please set module manually"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertTrue(responseVars.get(MESSAGE).contains("Please set module manually"));
   }
 
   /**
@@ -402,13 +375,11 @@ class RegisterNewWebHookTest {
   void testGetWhenModuleFoundShouldNotIncludeWarningMessage() {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook '%s' created. %s");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
+    assertTrue(responseVars.containsKey(MESSAGE));
   }
 
   /**
@@ -418,9 +389,7 @@ class RegisterNewWebHookTest {
   void testGetShouldFlushAfterAllSaves() {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -433,11 +402,9 @@ class RegisterNewWebHookTest {
   @Test
   void testGetWithLongParameterListShouldCreateAllParameters() {
     setupValidRequestParams();
-    requestParams.put("Params", "p1;p2;p3;p4;p5;p6;p7;p8;p9;p10");
+    requestParams.put(PARAMS, "p1;p2;p3;p4;p5;p6;p7;p8;p9;p10");
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -450,11 +417,9 @@ class RegisterNewWebHookTest {
   @Test
   void testGetWithSpecialCharactersInParamsShouldHandleCorrectly() {
     setupValidRequestParams();
-    requestParams.put("Params", "param-1;param_2;param.3");
+    requestParams.put(PARAMS, "param-1;param_2;param.3");
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -468,9 +433,7 @@ class RegisterNewWebHookTest {
   void testGetShouldSetAllowGroupAccessToTrue() {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -485,9 +448,7 @@ class RegisterNewWebHookTest {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
     when(obContext.getRole()).thenReturn(role);
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WebhookCreated"))
-        .thenReturn("Webhook created");
+    setupWebhookCreatedMessage();
 
     service.get(requestParams, responseVars);
 
@@ -499,10 +460,30 @@ class RegisterNewWebHookTest {
    * Populates requestParams with a valid set of input values for successful execution.
    */
   private void setupValidRequestParams() {
-    requestParams.put("Javaclass", "com.test.MyWebhook");
-    requestParams.put("SearchKey", "TestWebhook");
-    requestParams.put("Params", "param1;param2");
-    requestParams.put("ModuleJavaPackage", "com.test.module");
+    requestParams.put(JAVA_CLASS, JAVA_CLASS_VALUE);
+    requestParams.put(SEARCH_KEY, TEST_WEBHOOK);
+    requestParams.put(PARAMS, PARAM_LIST);
+    requestParams.put(MODULE_JAVA_PACKAGE, MODULE_TEST_PACKAGE);
+  }
+
+  /**
+   * Populates requestParams excluding one parameter to test missing parameter scenarios.
+   *
+   * @param excludedParam the parameter key to exclude
+   */
+  private void setupRequestParamsWithoutParam(String excludedParam) {
+    if (!JAVA_CLASS.equals(excludedParam)) {
+      requestParams.put(JAVA_CLASS, JAVA_CLASS_VALUE);
+    }
+    if (!SEARCH_KEY.equals(excludedParam)) {
+      requestParams.put(SEARCH_KEY, TEST_WEBHOOK);
+    }
+    if (!PARAMS.equals(excludedParam)) {
+      requestParams.put(PARAMS, PARAM_LIST);
+    }
+    if (!MODULE_JAVA_PACKAGE.equals(excludedParam)) {
+      requestParams.put(MODULE_JAVA_PACKAGE, MODULE_TEST_PACKAGE);
+    }
   }
 
   /**
@@ -510,10 +491,34 @@ class RegisterNewWebHookTest {
    * entity provisioning via OBProvider.
    */
   private void setupMocksForSuccessfulCreation() {
-    utilsMock.when(() -> Utils.getModuleByJavaPackage("com.test.module")).thenReturn(module);
+    utilsMock.when(() -> Utils.getModuleByJavaPackage(MODULE_TEST_PACKAGE)).thenReturn(module);
 
     when(obProvider.get(DefinedWebHook.class)).thenReturn(definedWebHook);
     when(obProvider.get(DefinedWebhookParam.class)).thenReturn(webhookParam);
     when(obProvider.get(DefinedwebhookRole.class)).thenReturn(webhookRole);
+  }
+
+  /**
+   * Sets up the mock for the webhook created success message.
+   */
+  private void setupWebhookCreatedMessage() {
+    messageMock.when(() -> OBMessageUtils.messageBD(WEBHOOK_CREATED))
+        .thenReturn(WEBHOOK_CREATED_MESSAGE);
+  }
+
+  /**
+   * Sets up the mock for the missing parameters error message.
+   */
+  private void setupMissingParametersMessage() {
+    messageMock.when(() -> OBMessageUtils.messageBD(ERR_MISSING_PARAMETERS))
+        .thenReturn(MISSING_REQUIRED_PARAMS);
+  }
+
+  /**
+   * Asserts that an error response is present in responseVars.
+   */
+  private void assertErrorResponse() {
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals(MISSING_REQUIRED_PARAMS, responseVars.get(ERROR));
   }
 }

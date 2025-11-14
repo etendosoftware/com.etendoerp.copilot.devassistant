@@ -1,5 +1,12 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.MESSAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.MODULE_123;
+import static com.etendoerp.copilot.devassistant.TestConstants.MODULE_ID;
+import static com.etendoerp.copilot.devassistant.TestConstants.QUERY_SELECT;
+import static com.etendoerp.copilot.devassistant.TestConstants.SQL_SELECT_TEST;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_VIEW;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -119,13 +126,13 @@ class CreateViewTest {
    */
   @Test
   void testGetWithMissingNameShouldThrowException() {
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "SELECT * FROM test");
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, SQL_SELECT_TEST);
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("Name parameter is required"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("Name parameter is required"));
   }
 
   /**
@@ -134,71 +141,71 @@ class CreateViewTest {
   @Test
   void testGetWithEmptyNameShouldThrowException() {
     parameters.put("Name", "");
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "SELECT * FROM test");
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, SQL_SELECT_TEST);
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("Name parameter is required"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("Name parameter is required"));
   }
 
   /**
-   * Ensures that missing "ModuleID" is detected and reported.
+   * Ensures that missing MODULE_ID is detected and reported.
    */
   @Test
   void testGetWithMissingModuleIDShouldThrowException() {
-    parameters.put("Name", "TestView");
-    parameters.put("QuerySelect", "SELECT * FROM test");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(QUERY_SELECT, SQL_SELECT_TEST);
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("ModuleID parameter is required"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("ModuleID parameter is required"));
   }
 
   /**
-   * Ensures that empty "ModuleID" is treated as invalid.
+   * Ensures that empty MODULE_ID is treated as invalid.
    */
   @Test
   void testGetWithEmptyModuleIDShouldThrowException() {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "");
-    parameters.put("QuerySelect", "SELECT * FROM test");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, "");
+    parameters.put(QUERY_SELECT, SQL_SELECT_TEST);
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("ModuleID parameter is required"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("ModuleID parameter is required"));
   }
 
   /**
-   * Ensures that missing "QuerySelect" triggers an error.
+   * Ensures that missing QUERY_SELECT triggers an error.
    */
   @Test
   void testGetWithMissingQuerySelectShouldThrowException() {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "module123");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, MODULE_123);
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("QuerySelect parameter is required"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("QuerySelect parameter is required"));
   }
 
   /**
-   * Ensures that empty "QuerySelect" is considered invalid.
+   * Ensures that empty QUERY_SELECT is considered invalid.
    */
   @Test
   void testGetWithEmptyQuerySelectShouldThrowException() {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, "");
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("QuerySelect parameter is required"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("QuerySelect parameter is required"));
   }
 
   /**
@@ -207,12 +214,12 @@ class CreateViewTest {
   @Test
   void testGetWithNullParametersShouldThrowException() {
     parameters.put("Name", null);
-    parameters.put("ModuleID", null);
-    parameters.put("QuerySelect", null);
+    parameters.put(MODULE_ID, null);
+    parameters.put(QUERY_SELECT, null);
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -224,12 +231,12 @@ class CreateViewTest {
    */
   @Test
   void testGetWithMissingMandatoryColumnsShouldThrowException() throws Exception {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "SELECT id, name FROM test");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, "SELECT id, name FROM test");
 
     Object[] moduleAndPrefix = new Object[] { module, "TEST" };
-    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix("module123"))
+    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix(MODULE_123))
         .thenReturn(moduleAndPrefix);
 
     when(module.getName()).thenReturn("Test Module");
@@ -246,9 +253,9 @@ class CreateViewTest {
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("Mandatory columns missing")
-        || responseVars.get("error").contains("Invalid query"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("Mandatory columns missing")
+        || responseVars.get(ERROR).contains("Invalid query"));
   }
 
   /**
@@ -257,12 +264,12 @@ class CreateViewTest {
    */
   @Test
   void testGetWithSQLExceptionShouldReturnError() throws Exception {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "INVALID SQL");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, "INVALID SQL");
 
     Object[] moduleAndPrefix = new Object[] { module, "TEST" };
-    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix("module123"))
+    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix(MODULE_123))
         .thenReturn(moduleAndPrefix);
 
     when(obDal.getConnection()).thenReturn(connection);
@@ -270,9 +277,9 @@ class CreateViewTest {
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("SQL Error")
-        || responseVars.get("error").contains("Syntax error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("SQL Error")
+        || responseVars.get(ERROR).contains("Syntax error"));
   }
 
   /**
@@ -283,12 +290,12 @@ class CreateViewTest {
    */
   @Test
   void testGetShouldRestorePreviousModeEvenOnError() throws Exception {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "SELECT * FROM test");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, SQL_SELECT_TEST);
 
     Object[] moduleAndPrefix = new Object[] { module, "TEST" };
-    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix("module123"))
+    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix(MODULE_123))
         .thenReturn(moduleAndPrefix);
 
     when(connection.prepareStatement(anyString())).thenThrow(new SQLException("Error"));
@@ -296,7 +303,7 @@ class CreateViewTest {
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -306,9 +313,9 @@ class CreateViewTest {
    */
   @Test
   void testGetWithAllOptionalParametersShouldUseThemInRegistration() throws Exception {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "SELECT * FROM test");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, SQL_SELECT_TEST);
     parameters.put("JavaClass", "CustomClass");
     parameters.put("DataAccessLevel", "3");
     parameters.put("Description", "Test Description");
@@ -319,8 +326,8 @@ class CreateViewTest {
 
     createView.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -335,12 +342,12 @@ class CreateViewTest {
    * @throws Exception if any mocked SQL operation unexpectedly fails
    */
   private void setupSuccessfulScenario() throws Exception {
-    parameters.put("Name", "TestView");
-    parameters.put("ModuleID", "module123");
-    parameters.put("QuerySelect", "SELECT * FROM test");
+    parameters.put("Name", TEST_VIEW);
+    parameters.put(MODULE_ID, MODULE_123);
+    parameters.put(QUERY_SELECT, SQL_SELECT_TEST);
 
     Object[] moduleAndPrefix = new Object[] { module, "TEST" };
-    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix("module123"))
+    tableRegUtilsMock.when(() -> TableRegistrationUtils.getModuleAndPrefix(MODULE_123))
         .thenReturn(moduleAndPrefix);
 
     when(module.getName()).thenReturn("Test Module");

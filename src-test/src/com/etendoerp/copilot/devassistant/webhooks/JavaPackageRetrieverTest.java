@@ -1,5 +1,9 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.JAVA_PACKAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.KEYWORD;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,7 +13,8 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,32 +102,26 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithValidKeywordShouldReturnJavaPackages() {
-    parameters.put("KeyWord", "copilot");
+    addKeyword("copilot");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
-    moduleList.add(module2);
-    moduleList.add(module3);
+    List<Module> moduleList = Arrays.asList(module1, module2, module3);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.etendoerp.copilot");
-    when(module2.getJavaPackage()).thenReturn("com.etendoerp.copilot.core");
-    when(module3.getJavaPackage()).thenReturn("com.etendoerp.copilot.assistant");
+    mockModule(module1, JAVA_PACKAGE);
+    mockModule(module2, "com.etendoerp.copilot.core");
+    mockModule(module3, "com.etendoerp.copilot.assistant");
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
     String result = responseVars.get("info");
     assertNotNull(result);
-    assertTrue(result.contains("com.etendoerp.copilot"));
-    assertTrue(result.contains("com.etendoerp.copilot.core"));
-    assertTrue(result.contains("com.etendoerp.copilot.assistant"));
-    assertEquals("com.etendoerp.copilot, com.etendoerp.copilot.core, com.etendoerp.copilot.assistant", result);
 
-    assertFalse(responseVars.containsKey("error"));
+    assertEquals(
+        "com.etendoerp.copilot, com.etendoerp.copilot.core, com.etendoerp.copilot.assistant",
+        result
+    );
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -131,22 +130,18 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithSingleModuleFoundShouldReturnOnePackage() {
-    parameters.put("KeyWord", "warehouse");
+    addKeyword("warehouse");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
+    List<Module> moduleList = Collections.singletonList(module1);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("org.openbravo.warehouse");
+    mockModule(module1, "org.openbravo.warehouse");
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
     assertEquals("org.openbravo.warehouse", responseVars.get("info"));
-    assertFalse(responseVars.containsKey("error"));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -155,19 +150,14 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithNoModulesFoundShouldReturnEmptyString() {
-    parameters.put("KeyWord", "nonexistent");
-
-    List<Module> moduleList = new ArrayList<>();
-
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
+    addKeyword("nonexistent");
+    setupCriteriaReturning(Collections.emptyList());
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
     assertEquals("", responseVars.get("info"));
-    assertFalse(responseVars.containsKey("error"));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -178,8 +168,8 @@ class JavaPackageRetrieverTest {
   void testGetWithNullKeywordShouldReturnError() {
     javaPackageRetriever.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing parameters.", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Missing parameters.", responseVars.get(ERROR));
     assertFalse(responseVars.containsKey("info"));
   }
 
@@ -189,25 +179,18 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithEmptyKeywordShouldSearchAllModules() {
-    parameters.put("KeyWord", "");
+    addKeyword("");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
-    moduleList.add(module2);
+    List<Module> moduleList = Arrays.asList(module1, module2);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.test.module1");
-    when(module2.getJavaPackage()).thenReturn("com.test.module2");
+    mockModule(module1, "com.test.module1");
+    mockModule(module2, "com.test.module2");
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
-    String result = responseVars.get("info");
-    assertEquals("com.test.module1, com.test.module2", result);
-    assertFalse(responseVars.containsKey("error"));
+    assertEquals("com.test.module1, com.test.module2", responseVars.get("info"));
   }
 
   /**
@@ -216,21 +199,17 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithCaseInsensitiveKeywordShouldFindModules() {
-    parameters.put("KeyWord", "COPILOT");
+    addKeyword("COPILOT");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
+    List<Module> moduleList = Collections.singletonList(module1);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.etendoerp.copilot");
+    mockModule(module1, JAVA_PACKAGE);
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
-    assertEquals("com.etendoerp.copilot", responseVars.get("info"));
+    assertEquals(JAVA_PACKAGE, responseVars.get("info"));
     verify(moduleCriteria).add(any());
   }
 
@@ -240,24 +219,18 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithPartialKeywordShouldFindMatchingModules() {
-    parameters.put("KeyWord", "cop");
+    addKeyword("cop");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
-    moduleList.add(module2);
+    List<Module> moduleList = Arrays.asList(module1, module2);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.etendoerp.copilot");
-    when(module2.getJavaPackage()).thenReturn("com.etendoerp.copilot.dev");
+    mockModule(module1, JAVA_PACKAGE);
+    mockModule(module2, "com.etendoerp.copilot.dev");
 
     javaPackageRetriever.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("info"));
     String result = responseVars.get("info");
-    assertTrue(result.contains("com.etendoerp.copilot"));
+    assertTrue(result.contains(JAVA_PACKAGE));
     assertTrue(result.contains("com.etendoerp.copilot.dev"));
   }
 
@@ -267,21 +240,17 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithSpecialCharactersInKeywordShouldSearch() {
-    parameters.put("KeyWord", "test-module");
+    addKeyword("test-module");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
+    List<Module> moduleList = Collections.singletonList(module1);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.test.module");
+    mockModule(module1, "com.test.module");
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
-    assertFalse(responseVars.containsKey("error"));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -290,21 +259,17 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithWhitespaceKeywordShouldSearch() {
-    parameters.put("KeyWord", "  copilot  ");
+    addKeyword("  copilot  ");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
+    List<Module> moduleList = Collections.singletonList(module1);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.etendoerp.copilot");
+    mockModule(module1, JAVA_PACKAGE);
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
-    assertEquals("com.etendoerp.copilot", responseVars.get("info"));
+    assertEquals(JAVA_PACKAGE, responseVars.get("info"));
   }
 
   /**
@@ -313,13 +278,10 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetShouldUseCriteriaCorrectly() {
-    parameters.put("KeyWord", "test");
+    addKeyword("test");
 
-    List<Module> moduleList = new ArrayList<>();
-
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
+    List<Module> moduleList = Collections.emptyList();
+    setupCriteriaReturning(moduleList);
 
     javaPackageRetriever.get(parameters, responseVars);
 
@@ -334,24 +296,18 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithNullJavaPackageShouldHandleGracefully() {
-    parameters.put("KeyWord", "test");
+    addKeyword("test");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
-    moduleList.add(module2);
+    List<Module> moduleList = Arrays.asList(module1, module2);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.etendoerp.test");
-    when(module2.getJavaPackage()).thenReturn(null);
+    mockModule(module1, "com.etendoerp.test");
+    mockModule(module2, null);
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
-    String result = responseVars.get("info");
-    assertNotNull(result);
+    assertNotNull(responseVars.get("info"));
   }
 
   /**
@@ -360,24 +316,18 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithMultipleModulesWithSamePackageShouldListAll() {
-    parameters.put("KeyWord", "copilot");
+    addKeyword("copilot");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
-    moduleList.add(module2);
+    List<Module> moduleList = Arrays.asList(module1, module2);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.etendoerp.copilot");
-    when(module2.getJavaPackage()).thenReturn("com.etendoerp.copilot");
+    mockModule(module1, JAVA_PACKAGE);
+    mockModule(module2, JAVA_PACKAGE);
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
-    String result = responseVars.get("info");
-    assertEquals("com.etendoerp.copilot, com.etendoerp.copilot", result);
+    assertEquals("com.etendoerp.copilot, com.etendoerp.copilot", responseVars.get("info"));
   }
 
   /**
@@ -386,18 +336,14 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetShouldNotModifyInputParameters() {
-    parameters.put("KeyWord", "test");
-    Map<String, String> originalParams = new HashMap<>(parameters);
+    addKeyword("test");
+    Map<String, String> original = new HashMap<>(parameters);
 
-    List<Module> moduleList = new ArrayList<>();
-
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
+    setupCriteriaReturning(Collections.emptyList());
 
     javaPackageRetriever.get(parameters, responseVars);
 
-    assertEquals(originalParams, parameters);
+    assertEquals(original, parameters);
   }
 
   /**
@@ -406,25 +352,20 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetShouldOnlySetInfoOrErrorNotBoth() {
-    parameters.put("KeyWord", "test");
+    addKeyword("test");
 
-    List<Module> moduleList = new ArrayList<>();
-
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
+    setupCriteriaReturning(Collections.emptyList());
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
-    assertFalse(responseVars.containsKey("error"));
+    assertFalse(responseVars.containsKey(ERROR));
 
     responseVars.clear();
     parameters.clear();
 
     javaPackageRetriever.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(ERROR));
     assertFalse(responseVars.containsKey("info"));
   }
 
@@ -434,20 +375,44 @@ class JavaPackageRetrieverTest {
    */
   @Test
   void testGetWithNumericKeywordShouldSearch() {
-    parameters.put("KeyWord", "123");
+    addKeyword("123");
 
-    List<Module> moduleList = new ArrayList<>();
-    moduleList.add(module1);
+    List<Module> moduleList = Collections.singletonList(module1);
+    setupCriteriaReturning(moduleList);
 
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
-    when(moduleCriteria.list()).thenReturn(moduleList);
-
-    when(module1.getJavaPackage()).thenReturn("com.module123");
+    mockModule(module1, "com.module123");
 
     javaPackageRetriever.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey("info"));
     assertEquals("com.module123", responseVars.get("info"));
+  }
+
+  /**
+   * Adds a KEYWORD parameter to the test input map.
+   */
+  private void addKeyword(String keyword) {
+    parameters.put(KEYWORD, keyword);
+  }
+
+  /**
+   * Mocks OBDal criteria behavior for a given list of modules.
+   *
+   * @param moduleList list to be returned by moduleCriteria.list()
+   */
+  private void setupCriteriaReturning(List<Module> moduleList) {
+    when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
+    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
+    when(moduleCriteria.list()).thenReturn(moduleList);
+  }
+
+  /**
+   * Mocks a Module instance with the specified java package.
+   *
+   * @param module      mocked Module
+   * @param javaPackage java package value to return (nullable)
+   */
+  private void mockModule(Module module, String javaPackage) {
+    when(module.getJavaPackage()).thenReturn(javaPackage);
   }
 }

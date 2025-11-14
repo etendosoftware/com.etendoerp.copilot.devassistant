@@ -1,5 +1,26 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.ERR_MISSING_PARAMETER;
+import static com.etendoerp.copilot.devassistant.TestConstants.INCORRECT_FORMAT_NO_JRXML;
+import static com.etendoerp.copilot.devassistant.TestConstants.INCORRECT_FORMAT_NO_WEB;
+import static com.etendoerp.copilot.devassistant.TestConstants.MISSING_PARAM_PREFIX;
+import static com.etendoerp.copilot.devassistant.TestConstants.MISSING_PARAM_REPORT_NAME;
+import static com.etendoerp.copilot.devassistant.TestConstants.MISSING_PARAM_REPORT_PATH;
+import static com.etendoerp.copilot.devassistant.TestConstants.MISSING_PARAM_SEARCH_KEY;
+import static com.etendoerp.copilot.devassistant.TestConstants.PARAMETERS;
+import static com.etendoerp.copilot.devassistant.TestConstants.PREFIX;
+import static com.etendoerp.copilot.devassistant.TestConstants.RECORD_CREATED_SUCCESS;
+import static com.etendoerp.copilot.devassistant.TestConstants.REFERENCE_NULL_ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.REPORT_NAME;
+import static com.etendoerp.copilot.devassistant.TestConstants.REPORT_PATH;
+import static com.etendoerp.copilot.devassistant.TestConstants.REPORT_PATH_VALUE;
+import static com.etendoerp.copilot.devassistant.TestConstants.SEARCH_KEY;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_HELP;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_KEY;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_PREFIX;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_REPORT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -147,14 +168,11 @@ class ProcessDefinitionJasperTest {
   void testGetWithValidParametersShouldCreateProcessSuccessfully() {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_RecordCreated"))
-        .thenReturn("Record created successfully");
+    setupRecordCreatedMessage();
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Record created successfully", responseVars.get("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertSuccessResponse();
     verify(obDal, atLeastOnce()).save(any());
     verify(obDal, atLeastOnce()).flush();
   }
@@ -164,18 +182,12 @@ class ProcessDefinitionJasperTest {
    */
   @Test
   void testGetWithMissingPrefixShouldReturnError() {
-    requestParams.put("SearchKey", "TEST_KEY");
-    requestParams.put("ReportName", "Test Report");
-    requestParams.put("ReportPath", "web/test/report.jrxml");
-    requestParams.put("Parameters", "[]");
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_MissingParameter", new String[]{"Prefix"}))
-        .thenReturn("Missing parameter: Prefix");
+    setupRequestParamsWithoutParam(PREFIX);
+    setupMissingParameterMessage(PREFIX, MISSING_PARAM_PREFIX);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing parameter: Prefix", responseVars.get("error"));
+    assertErrorResponse(MISSING_PARAM_PREFIX);
   }
 
   /**
@@ -183,18 +195,12 @@ class ProcessDefinitionJasperTest {
    */
   @Test
   void testGetWithMissingSearchKeyShouldReturnError() {
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("ReportName", "Test Report");
-    requestParams.put("ReportPath", "web/test/report.jrxml");
-    requestParams.put("Parameters", "[]");
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_MissingParameter", new String[]{"SearchKey"}))
-        .thenReturn("Missing parameter: SearchKey");
+    setupRequestParamsWithoutParam(SEARCH_KEY);
+    setupMissingParameterMessage(SEARCH_KEY, MISSING_PARAM_SEARCH_KEY);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing parameter: SearchKey", responseVars.get("error"));
+    assertErrorResponse(MISSING_PARAM_SEARCH_KEY);
   }
 
   /**
@@ -202,18 +208,12 @@ class ProcessDefinitionJasperTest {
    */
   @Test
   void testGetWithMissingReportNameShouldReturnError() {
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("SearchKey", "TEST_KEY");
-    requestParams.put("ReportPath", "web/test/report.jrxml");
-    requestParams.put("Parameters", "[]");
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_MissingParameter", new String[]{"ReportName"}))
-        .thenReturn("Missing parameter: ReportName");
+    setupRequestParamsWithoutParam(REPORT_NAME);
+    setupMissingParameterMessage(REPORT_NAME, MISSING_PARAM_REPORT_NAME);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing parameter: ReportName", responseVars.get("error"));
+    assertErrorResponse(MISSING_PARAM_REPORT_NAME);
   }
 
   /**
@@ -221,18 +221,12 @@ class ProcessDefinitionJasperTest {
    */
   @Test
   void testGetWithMissingReportPathShouldReturnError() {
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("SearchKey", "TEST_KEY");
-    requestParams.put("ReportName", "Test Report");
-    requestParams.put("Parameters", "[]");
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_MissingParameter", new String[]{"ReportPath"}))
-        .thenReturn("Missing parameter: ReportPath");
+    setupRequestParamsWithoutParam(REPORT_PATH);
+    setupMissingParameterMessage(REPORT_PATH, MISSING_PARAM_REPORT_PATH);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing parameter: ReportPath", responseVars.get("error"));
+    assertErrorResponse(MISSING_PARAM_REPORT_PATH);
   }
 
   /**
@@ -241,16 +235,12 @@ class ProcessDefinitionJasperTest {
   @Test
   void testGetWithInvalidPrefixShouldReturnError() {
     setupValidRequestParams();
-    when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCriteria);
-    when(prefixCriteria.add(any())).thenReturn(prefixCriteria);
-    when(prefixCriteria.createAlias(anyString(), anyString())).thenReturn(prefixCriteria);
-    when(prefixCriteria.setMaxResults(anyInt())).thenReturn(prefixCriteria);
-    when(prefixCriteria.uniqueResult()).thenReturn(null);
+    setupPrefixCriteriaReturningNull();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("prefix does not exist"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("prefix does not exist"));
   }
 
   /**
@@ -259,17 +249,13 @@ class ProcessDefinitionJasperTest {
   @Test
   void testGetWithInvalidPathFormatMissingWebIndicatorShouldReturnError() {
     setupValidRequestParams();
-    requestParams.put("ReportPath", "test/report.jrxml");
-
+    requestParams.put(REPORT_PATH, "test/report.jrxml");
     setupPrefixValidation();
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage(eq("COPDEV_IncorrectFormat"), any()))
-        .thenReturn("Incorrect format: test/report.jrxml");
+    setupIncorrectFormatMessage("test/report.jrxml", INCORRECT_FORMAT_NO_WEB);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Incorrect format: test/report.jrxml", responseVars.get("error"));
+    assertErrorResponse(INCORRECT_FORMAT_NO_WEB);
   }
 
   /**
@@ -278,17 +264,13 @@ class ProcessDefinitionJasperTest {
   @Test
   void testGetWithInvalidPathFormatMissingExtensionShouldReturnError() {
     setupValidRequestParams();
-    requestParams.put("ReportPath", "web/test/report.xml");
-
+    requestParams.put(REPORT_PATH, "web/test/report.xml");
     setupPrefixValidation();
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage(eq("COPDEV_IncorrectFormat"), any()))
-        .thenReturn("Incorrect format: web/test/report.xml");
+    setupIncorrectFormatMessage("web/test/report.xml", INCORRECT_FORMAT_NO_JRXML);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Incorrect format: web/test/report.xml", responseVars.get("error"));
+    assertErrorResponse(INCORRECT_FORMAT_NO_JRXML);
   }
 
   /**
@@ -297,14 +279,13 @@ class ProcessDefinitionJasperTest {
   @Test
   void testGetWithInvalidParametersFormatShouldReturnError() {
     setupValidRequestParams();
-    requestParams.put("Parameters", "[{\"BD_NAME\":\"test\",\"NAME\":\"Test\"}]");
-
+    requestParams.put(PARAMETERS, "[{\"BD_NAME\":\"test\",\"NAME\":\"Test\"}]");
     setupPrefixValidation();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("format is incorrect"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("format is incorrect"));
   }
 
   /**
@@ -314,30 +295,18 @@ class ProcessDefinitionJasperTest {
   @Test
   void testCreateProcessDefinitionShouldCreateAndReturnProcess() {
     when(obProvider.get(Process.class)).thenReturn(process);
-    utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
+    utilsMock.when(() -> Utils.getModuleByPrefix(TEST_PREFIX)).thenReturn(module);
 
     Process result = service.createProcessDefinition(
-        "TEST",
-        "TEST_KEY",
-        "Test Report",
-        "Test Description",
-        "Test Help"
+        TEST_PREFIX,
+        TEST_KEY,
+        TEST_REPORT,
+        TEST_DESCRIPTION,
+        TEST_HELP
     );
 
-    // Assert
     assertNotNull(result);
-    verify(process).setNewOBObject(true);
-    verify(process).setModule(module);
-    verify(process).setSearchKey("TEST_KEY");
-    verify(process).setName("Test Report");
-    verify(process).setDescription("Test Description");
-    verify(process).setHelpComment("Test Help");
-    verify(process).setUIPattern("OBUIAPP_Report");
-    verify(process).setDataAccessLevel("3");
-    verify(process).setJavaClassName("org.openbravo.client.application.report.BaseReportActionHandler");
-    verify(process).setActive(true);
-    verify(obDal).save(process);
-    verify(obDal).flush();
+    verifyProcessCreation();
   }
 
   /**
@@ -348,13 +317,9 @@ class ProcessDefinitionJasperTest {
   void testCreateReportDefinitionShouldCreateReportDefinition() {
     when(obProvider.get(ReportDefinition.class)).thenReturn(reportDefinition);
 
-    service.createReportDefinition(process, "web/test/report.jrxml");
+    service.createReportDefinition(process, REPORT_PATH_VALUE);
 
-    verify(reportDefinition).setActive(true);
-    verify(reportDefinition).setProcessDefintion(process);
-    verify(reportDefinition).setPDFTemplate("web/test/report.jrxml");
-    verify(obDal).save(reportDefinition);
-    verify(obDal).flush();
+    verifyReportDefinitionCreation();
   }
 
   /**
@@ -365,13 +330,11 @@ class ProcessDefinitionJasperTest {
   void testGetWithValidParametersAndParametersShouldCreateProcessWithParameters() {
     setupValidRequestParamsWithParameters();
     setupMocksForSuccessfulCreationWithParameters();
-
-    messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_RecordCreated"))
-        .thenReturn("Record created successfully");
+    setupRecordCreatedMessage();
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Record created successfully", responseVars.get("message"));
+    assertSuccessResponse();
     verify(obProvider, atLeastOnce()).get(Parameter.class);
     verify(obDal, atLeastOnce()).save(any(Parameter.class));
   }
@@ -387,7 +350,7 @@ class ProcessDefinitionJasperTest {
     when(obProvider.get(Process.class)).thenReturn(process);
     when(obProvider.get(ReportDefinition.class)).thenReturn(reportDefinition);
     when(obProvider.get(Parameter.class)).thenReturn(parameter);
-    utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
+    utilsMock.when(() -> Utils.getModuleByPrefix(TEST_PREFIX)).thenReturn(module);
 
     when(obDal.createCriteria(Reference.class)).thenReturn(referenceCriteria);
     when(referenceCriteria.add(any())).thenReturn(referenceCriteria);
@@ -395,25 +358,46 @@ class ProcessDefinitionJasperTest {
     when(referenceCriteria.uniqueResult()).thenReturn(null);
 
     messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_NullReference"))
-        .thenReturn("Reference cannot be null");
+        .thenReturn(REFERENCE_NULL_ERROR);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Reference cannot be null", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals(REFERENCE_NULL_ERROR, responseVars.get(ERROR));
   }
 
   /**
    * Populates requestParams with the minimal valid payload without Parameters.
    */
   private void setupValidRequestParams() {
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("SearchKey", "TEST_KEY");
-    requestParams.put("ReportName", "Test Report");
-    requestParams.put("Description", "Test Description");
-    requestParams.put("HelpComment", "Test Help");
-    requestParams.put("ReportPath", "web/test/report.jrxml");
-    requestParams.put("Parameters", "[]");
+    requestParams.put(PREFIX, TEST_PREFIX);
+    requestParams.put(SEARCH_KEY, TEST_KEY);
+    requestParams.put(REPORT_NAME, TEST_REPORT);
+    requestParams.put("Description", TEST_DESCRIPTION);
+    requestParams.put("HelpComment", TEST_HELP);
+    requestParams.put(REPORT_PATH, REPORT_PATH_VALUE);
+    requestParams.put(PARAMETERS, "[]");
+  }
+
+  /**
+   * Populates requestParams excluding one parameter to test missing parameter scenarios.
+   *
+   * @param excludedParam the parameter key to exclude
+   */
+  private void setupRequestParamsWithoutParam(String excludedParam) {
+    if (!PREFIX.equals(excludedParam)) {
+      requestParams.put(PREFIX, TEST_PREFIX);
+    }
+    if (!SEARCH_KEY.equals(excludedParam)) {
+      requestParams.put(SEARCH_KEY, TEST_KEY);
+    }
+    if (!REPORT_NAME.equals(excludedParam)) {
+      requestParams.put(REPORT_NAME, TEST_REPORT);
+    }
+    if (!REPORT_PATH.equals(excludedParam)) {
+      requestParams.put(REPORT_PATH, REPORT_PATH_VALUE);
+    }
+    requestParams.put(PARAMETERS, "[]");
   }
 
   /**
@@ -421,7 +405,7 @@ class ProcessDefinitionJasperTest {
    */
   private void setupValidRequestParamsWithParameters() {
     setupValidRequestParams();
-    requestParams.put("Parameters",
+    requestParams.put(PARAMETERS,
         "[{\"BD_NAME\":\"test\",\"NAME\":\"Test\",\"LENGTH\":\"10\",\"SEQNO\":\"10\",\"REFERENCE\":\"String\"}]");
   }
 
@@ -437,16 +421,33 @@ class ProcessDefinitionJasperTest {
   }
 
   /**
+   * Stubs the OBDal prefix criteria to return null (invalid prefix).
+   */
+  private void setupPrefixCriteriaReturningNull() {
+    when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCriteria);
+    when(prefixCriteria.add(any())).thenReturn(prefixCriteria);
+    when(prefixCriteria.createAlias(anyString(), anyString())).thenReturn(prefixCriteria);
+    when(prefixCriteria.setMaxResults(anyInt())).thenReturn(prefixCriteria);
+    when(prefixCriteria.uniqueResult()).thenReturn(null);
+  }
+
+  /**
    * Prepares common happy-path stubs for creating Process and ReportDefinition (and Menu if
    * needed), including module resolution by prefix.
    */
   private void setupMocksForSuccessfulCreation() {
     setupPrefixValidation();
+    setupBasicMocksForCreation();
+  }
 
+  /**
+   * Sets up basic mocks needed for entity creation.
+   */
+  private void setupBasicMocksForCreation() {
     when(obProvider.get(Process.class)).thenReturn(process);
     when(obProvider.get(ReportDefinition.class)).thenReturn(reportDefinition);
     when(obProvider.get(Menu.class)).thenReturn(menu);
-    utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
+    utilsMock.when(() -> Utils.getModuleByPrefix(TEST_PREFIX)).thenReturn(module);
   }
 
   /**
@@ -454,11 +455,111 @@ class ProcessDefinitionJasperTest {
    */
   private void setupMocksForSuccessfulCreationWithParameters() {
     setupMocksForSuccessfulCreation();
-
     when(obProvider.get(Parameter.class)).thenReturn(parameter);
+    setupReferenceCriteria();
+  }
+
+  /**
+   * Sets up reference criteria to return a valid reference.
+   */
+  private void setupReferenceCriteria() {
     when(obDal.createCriteria(Reference.class)).thenReturn(referenceCriteria);
     when(referenceCriteria.add(any())).thenReturn(referenceCriteria);
     when(referenceCriteria.setMaxResults(anyInt())).thenReturn(referenceCriteria);
     when(referenceCriteria.uniqueResult()).thenReturn(reference);
+  }
+
+  /**
+   * Sets up reference criteria to return null (invalid reference).
+   */
+  private void setupReferenceCriteriaReturningNull() {
+    when(obDal.createCriteria(Reference.class)).thenReturn(referenceCriteria);
+    when(referenceCriteria.add(any())).thenReturn(referenceCriteria);
+    when(referenceCriteria.setMaxResults(anyInt())).thenReturn(referenceCriteria);
+    when(referenceCriteria.uniqueResult()).thenReturn(null);
+  }
+
+  /**
+   * Sets up the mock for the record created success message.
+   */
+  private void setupRecordCreatedMessage() {
+    messageMock.when(() -> OBMessageUtils.getI18NMessage("COPDEV_RecordCreated"))
+        .thenReturn(RECORD_CREATED_SUCCESS);
+  }
+
+  /**
+   * Sets up the mock for a missing parameter error message.
+   *
+   * @param paramName the parameter name
+   * @param errorMessage the expected error message
+   */
+  private void setupMissingParameterMessage(String paramName, String errorMessage) {
+    messageMock.when(() -> OBMessageUtils.getI18NMessage(ERR_MISSING_PARAMETER, new String[]{paramName}))
+        .thenReturn(errorMessage);
+  }
+
+  /**
+   * Sets up the mock for an incorrect format error message.
+   *
+   * @param path the invalid path
+   * @param errorMessage the expected error message
+   */
+  private void setupIncorrectFormatMessage(String path, String errorMessage) {
+    messageMock.when(() -> OBMessageUtils.getI18NMessage(
+        "COPDEV_IncorrectFormat",
+        new String[]{path}
+    )).thenReturn(errorMessage);
+  }
+
+
+  // ========== Helper Methods - Assertions ==========
+
+  /**
+   * Asserts that a success response is present in responseVars.
+   */
+  private void assertSuccessResponse() {
+    assertEquals(RECORD_CREATED_SUCCESS, responseVars.get("message"));
+    assertFalse(responseVars.containsKey(ERROR));
+  }
+
+  /**
+   * Asserts that an error response is present in responseVars with the expected message.
+   *
+   * @param expectedError the expected error message
+   */
+  private void assertErrorResponse(String expectedError) {
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals(expectedError, responseVars.get(ERROR));
+  }
+
+  // ========== Helper Methods - Verification ==========
+
+  /**
+   * Verifies that the process was created with the correct properties.
+   */
+  private void verifyProcessCreation() {
+    verify(process).setNewOBObject(true);
+    verify(process).setModule(module);
+    verify(process).setSearchKey(TEST_KEY);
+    verify(process).setName(TEST_REPORT);
+    verify(process).setDescription(TEST_DESCRIPTION);
+    verify(process).setHelpComment(TEST_HELP);
+    verify(process).setUIPattern("OBUIAPP_Report");
+    verify(process).setDataAccessLevel("3");
+    verify(process).setJavaClassName("org.openbravo.client.application.report.BaseReportActionHandler");
+    verify(process).setActive(true);
+    verify(obDal).save(process);
+    verify(obDal).flush();
+  }
+
+  /**
+   * Verifies that the report definition was created with the correct properties.
+   */
+  private void verifyReportDefinitionCreation() {
+    verify(reportDefinition).setActive(true);
+    verify(reportDefinition).setProcessDefintion(process);
+    verify(reportDefinition).setPDFTemplate(REPORT_PATH_VALUE);
+    verify(obDal).save(reportDefinition);
+    verify(obDal).flush();
   }
 }

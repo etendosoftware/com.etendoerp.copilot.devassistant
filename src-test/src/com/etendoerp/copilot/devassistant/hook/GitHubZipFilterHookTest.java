@@ -1,5 +1,6 @@
 package com.etendoerp.copilot.devassistant.hook;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.PATH_PATTERN_JAVA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -211,7 +212,7 @@ class GitHubZipFilterHookTest {
    */
   @Test
   void testExecWithMultiplePathFilesShouldFailOnDownload() {
-    when(pathFile1.getPathFile()).thenReturn("/owner/repo/tree/main/src/*.java");
+    when(pathFile1.getPathFile()).thenReturn(PATH_PATTERN_JAVA);
     pathFileList.add(pathFile1);
     pathFileList.add(pathFile2);
 
@@ -226,7 +227,7 @@ class GitHubZipFilterHookTest {
    */
   @Test
   void testExecShouldCleanupTempFilesOnError() {
-    when(pathFile1.getPathFile()).thenReturn("/owner/repo/tree/main/src/*.java");
+    when(pathFile1.getPathFile()).thenReturn(PATH_PATTERN_JAVA);
     pathFileList.add(pathFile1);
 
     setupPathFileCriteriaMocks();
@@ -247,7 +248,7 @@ class GitHubZipFilterHookTest {
    */
   @Test
   void testExecWithExistingAttachmentShouldAttemptDelete() {
-    when(pathFile1.getPathFile()).thenReturn("/owner/repo/tree/main/src/*.java");
+    when(pathFile1.getPathFile()).thenReturn(PATH_PATTERN_JAVA);
     pathFileList.add(pathFile1);
 
     setupPathFileCriteriaMocks();
@@ -411,7 +412,7 @@ class GitHubZipFilterHookTest {
    */
   @Test
   void testExecVerifiesPathFileRetrieval() {
-    when(pathFile1.getPathFile()).thenReturn("/owner/repo/tree/main/src/*.java");
+    when(pathFile1.getPathFile()).thenReturn(PATH_PATTERN_JAVA);
     pathFileList.add(pathFile1);
 
     setupPathFileCriteriaMocks();

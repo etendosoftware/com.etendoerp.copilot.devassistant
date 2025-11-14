@@ -1,5 +1,15 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.DB_PREFIX;
+import static com.etendoerp.copilot.devassistant.TestConstants.DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.TAB_CREATED;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.TAB_CREATED_MSG;
+import static com.etendoerp.copilot.devassistant.TestConstants.TAB_LEVEL;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_TABLE;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_TABLE_CAMEL;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_WINDOW;
+import static com.etendoerp.copilot.devassistant.TestConstants.WINDOW_123;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -155,13 +165,13 @@ class RegisterTabTest {
     when(existingTab.getName()).thenReturn("Existing Tab");
     when(existingTab.getId()).thenReturn("existingTab123");
     when(existingTab.getWindow()).thenReturn(window);
-    when(window.getName()).thenReturn("Test Window");
+    when(window.getName()).thenReturn(TEST_WINDOW);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("Existing Tab"));
-    assertTrue(responseVars.get("error").contains("existingTab123"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("Existing Tab"));
+    assertTrue(responseVars.get(ERROR).contains("existingTab123"));
     verify(obDal, never()).save(any(Tab.class));
   }
 
@@ -174,10 +184,10 @@ class RegisterTabTest {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
 
-    when(table.getName()).thenReturn("test_table");
+    when(table.getName()).thenReturn(TEST_TABLE);
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     ArgumentCaptor<Tab> tabCaptor = ArgumentCaptor.forClass(Tab.class);
 
@@ -199,8 +209,8 @@ class RegisterTabTest {
 
     when(table.getName()).thenReturn("Test_Table_Name");
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -213,13 +223,13 @@ class RegisterTabTest {
   @Test
   void testGetWithTabLevel0ShouldAppendHeader() {
     setupValidRequestParams();
-    requestParams.put("TabLevel", "0");
+    requestParams.put(TAB_LEVEL, "0");
     setupMocksForSuccessfulCreation();
 
-    when(table.getName()).thenReturn("Test_Table");
+    when(table.getName()).thenReturn(TEST_TABLE_CAMEL);
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -232,13 +242,13 @@ class RegisterTabTest {
   @Test
   void testGetWithTabLevelGreaterThan0ShouldNotAppendHeader() {
     setupValidRequestParams();
-    requestParams.put("TabLevel", "1");
+    requestParams.put(TAB_LEVEL, "1");
     setupMocksForSuccessfulCreation();
 
-    when(table.getName()).thenReturn("Test_Table");
+    when(table.getName()).thenReturn(TEST_TABLE_CAMEL);
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -257,8 +267,8 @@ class RegisterTabTest {
     when(table.getDataPackage()).thenReturn(dataPackage);
     when(dataPackage.getId()).thenReturn("package123");
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -280,8 +290,8 @@ class RegisterTabTest {
     when(dataPackage.getId()).thenReturn("package123");
     when(differentPackage.getId()).thenReturn("differentPackage456");
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -298,8 +308,8 @@ class RegisterTabTest {
 
     when(table.getDataPackage()).thenReturn(null);
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -314,13 +324,13 @@ class RegisterTabTest {
   void testGetWhenExceptionOccursShouldRollbackAndReturnError() {
     setupValidRequestParams();
 
-    utilsMock.when(() -> Utils.getTableByDBName("test_table"))
+    utilsMock.when(() -> Utils.getTableByDBName(TEST_TABLE))
         .thenThrow(new RuntimeException("Database error"));
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Database error", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Database error", responseVars.get(ERROR));
     verify(obDal).rollbackAndClose();
   }
 
@@ -333,8 +343,8 @@ class RegisterTabTest {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -351,8 +361,8 @@ class RegisterTabTest {
     requestParams.put("SequenceNumber", "100");
     setupMocksForSuccessfulCreation();
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -366,11 +376,11 @@ class RegisterTabTest {
   @Test
   void testGetWithTabLevel2ShouldSetCorrectly() {
     setupValidRequestParams();
-    requestParams.put("TabLevel", "2");
+    requestParams.put(TAB_LEVEL, "2");
     setupMocksForSuccessfulCreation();
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -385,8 +395,8 @@ class RegisterTabTest {
     setupValidRequestParams();
     setupMocksForSuccessfulCreation();
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
-        .thenReturn("Tab created");
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
+        .thenReturn(TAB_CREATED_MSG);
 
     service.get(requestParams, responseVars);
 
@@ -406,10 +416,10 @@ class RegisterTabTest {
     when(tab.getId()).thenReturn("tab123");
     when(tab.getTabLevel()).thenReturn(1L);
     when(tab.getTable()).thenReturn(table);
-    when(table.getName()).thenReturn("Test_Table");
-    when(window.getName()).thenReturn("Test Window");
+    when(table.getName()).thenReturn(TEST_TABLE_CAMEL);
+    when(window.getName()).thenReturn(TEST_WINDOW);
 
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabCreated"))
+    messageMock.when(() -> OBMessageUtils.messageBD(TAB_CREATED))
         .thenReturn("Tab '%s' (ID: %s) created at level %s for table '%s' in window '%s'");
 
     service.get(requestParams, responseVars);
@@ -433,13 +443,13 @@ class RegisterTabTest {
    * - DBPrefix
    */
   private void setupValidRequestParams() {
-    requestParams.put("WindowID", "window123");
-    requestParams.put("TabLevel", "1");
-    requestParams.put("Description", "Test description");
+    requestParams.put("WindowID", WINDOW_123);
+    requestParams.put(TAB_LEVEL, "1");
+    requestParams.put(DESCRIPTION, "Test description");
     requestParams.put("HelpComment", "Test help comment");
-    requestParams.put("TableName", "test_table");
+    requestParams.put("TableName", TEST_TABLE);
     requestParams.put("SequenceNumber", "10");
-    requestParams.put("DBPrefix", "TEST");
+    requestParams.put(DB_PREFIX, "TEST");
   }
 
   /**
@@ -448,12 +458,12 @@ class RegisterTabTest {
    * Tab instance via OBProvider.
    */
   private void setupMocksForSuccessfulCreation() {
-    utilsMock.when(() -> Utils.getTableByDBName("test_table")).thenReturn(table);
+    utilsMock.when(() -> Utils.getTableByDBName(TEST_TABLE)).thenReturn(table);
     utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
     utilsMock.when(() -> Utils.getDataPackage(module)).thenReturn(dataPackage);
 
-    when(obDal.get(Window.class, "window123")).thenReturn(window);
-    when(table.getName()).thenReturn("Test_Table");
+    when(obDal.get(Window.class, WINDOW_123)).thenReturn(window);
+    when(table.getName()).thenReturn(TEST_TABLE_CAMEL);
 
     when(window.getADTabList()).thenReturn(tabList);
     when(obProvider.get(Tab.class)).thenReturn(tab);
@@ -464,13 +474,13 @@ class RegisterTabTest {
    * the same table in the target window.
    */
   private void setupMocksWithExistingTab() {
-    utilsMock.when(() -> Utils.getTableByDBName("test_table")).thenReturn(table);
+    utilsMock.when(() -> Utils.getTableByDBName(TEST_TABLE)).thenReturn(table);
     utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
     utilsMock.when(() -> Utils.getDataPackage(module)).thenReturn(dataPackage);
 
-    when(obDal.get(Window.class, "window123")).thenReturn(window);
+    when(obDal.get(Window.class, WINDOW_123)).thenReturn(window);
     when(table.getId()).thenReturn("table123");
-    when(table.getName()).thenReturn("Test_Table");
+    when(table.getName()).thenReturn(TEST_TABLE_CAMEL);
 
     tabList.add(existingTab);
     when(window.getADTabList()).thenReturn(tabList);

@@ -1,5 +1,18 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERR_MISSING_REFERENCE_LIST;
+import static com.etendoerp.copilot.devassistant.TestConstants.MESSAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.MSG_REFERENCE_CREATED;
+import static com.etendoerp.copilot.devassistant.TestConstants.NAME_REFERENCE;
+import static com.etendoerp.copilot.devassistant.TestConstants.PREFIX;
+import static com.etendoerp.copilot.devassistant.TestConstants.REFERENCE_CREATED_SUCCESS;
+import static com.etendoerp.copilot.devassistant.TestConstants.REFERENCE_LIST;
+import static com.etendoerp.copilot.devassistant.TestConstants.REFERENCE_LIST_ITEMS;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_HELP;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_REFERENCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -112,15 +125,12 @@ class CreateReferenceTest {
   @Test
   void testGetWithValidParametersShouldCreateReferenceSuccessfully() {
     setupValidRequestParams();
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupSuccessfulCreationWithMessage();
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Reference created successfully", responseVars.get("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertEquals(REFERENCE_CREATED_SUCCESS, responseVars.get(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
     verify(obDal, atLeastOnce()).save(any(Reference.class));
     verify(obDal, times(3)).save(any(List.class)); // 3 items in the list
     verify(obDal).flush();
@@ -131,15 +141,12 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithMissingReferenceListShouldReturnError() {
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
+    setupBaseParamsWithoutReferenceList();
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("ReferenceList parameter is missing", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals(ERR_MISSING_REFERENCE_LIST, responseVars.get(ERROR));
   }
 
   /**
@@ -147,15 +154,14 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithMissingPrefixShouldReturnError() {
-    requestParams.put("ReferenceList", "Item1,Item2,Item3");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
+    requestParams.put(REFERENCE_LIST, REFERENCE_LIST_ITEMS);
+    setupBaseParamsWithoutReferenceList();
+    requestParams.remove(PREFIX);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Prefix parameter is missing", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Prefix parameter is missing", responseVars.get(ERROR));
   }
 
   /**
@@ -163,15 +169,14 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithMissingNameReferenceShouldReturnError() {
-    requestParams.put("ReferenceList", "Item1,Item2,Item3");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
+    requestParams.put(REFERENCE_LIST, REFERENCE_LIST_ITEMS);
+    setupBaseParamsWithoutReferenceList();
+    requestParams.remove(NAME_REFERENCE);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("NameReference parameter is missing", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("NameReference parameter is missing", responseVars.get(ERROR));
   }
 
   /**
@@ -179,15 +184,14 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithMissingHelpShouldReturnError() {
-    requestParams.put("ReferenceList", "Item1,Item2,Item3");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Description", "Test Description");
+    requestParams.put(REFERENCE_LIST, REFERENCE_LIST_ITEMS);
+    setupBaseParamsWithoutReferenceList();
+    requestParams.remove("Help");
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Help parameter is missing", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Help parameter is missing", responseVars.get(ERROR));
   }
 
   /**
@@ -195,15 +199,14 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithMissingDescriptionShouldReturnError() {
-    requestParams.put("ReferenceList", "Item1,Item2,Item3");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
+    requestParams.put(REFERENCE_LIST, REFERENCE_LIST_ITEMS);
+    setupBaseParamsWithoutReferenceList();
+    requestParams.remove(DESCRIPTION);
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Description parameter is missing", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Description parameter is missing", responseVars.get(ERROR));
   }
 
   /**
@@ -211,16 +214,13 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithEmptyReferenceListShouldReturnError() {
-    requestParams.put("ReferenceList", "");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
+    setupBaseParamsWithoutReferenceList();
+    requestParams.put(REFERENCE_LIST, "");
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("ReferenceList parameter is missing", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals(ERR_MISSING_REFERENCE_LIST, responseVars.get(ERROR));
   }
 
   /**
@@ -228,16 +228,16 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithBlankParametersShouldReturnError() {
-    requestParams.put("ReferenceList", "   ");
-    requestParams.put("Prefix", "   ");
-    requestParams.put("NameReference", "   ");
+    requestParams.put(REFERENCE_LIST, "   ");
+    requestParams.put(PREFIX, "   ");
+    requestParams.put(NAME_REFERENCE, "   ");
     requestParams.put("Help", "   ");
-    requestParams.put("Description", "   ");
+    requestParams.put(DESCRIPTION, "   ");
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("ReferenceList parameter is missing", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals(ERR_MISSING_REFERENCE_LIST, responseVars.get(ERROR));
   }
 
   /**
@@ -245,20 +245,13 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithSingleItemShouldCreateOneReferenceListItem() {
-    requestParams.put("ReferenceList", "SingleItem");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
-
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupValidRequestParams();
+    requestParams.put(REFERENCE_LIST, "SingleItem");
+    setupSuccessfulCreationWithMessage();
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Reference created successfully", responseVars.get("message"));
+    assertEquals(REFERENCE_CREATED_SUCCESS, responseVars.get(MESSAGE));
     verify(obDal, times(1)).save(any(List.class));
   }
 
@@ -267,16 +260,9 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithItemsWithSpacesShouldTrimItems() {
-    requestParams.put("ReferenceList", " Item1 , Item2 , Item3 ");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
-
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupValidRequestParams();
+    requestParams.put(REFERENCE_LIST, " Item1 , Item2 , Item3 ");
+    setupSuccessfulCreationWithMessage();
 
     ArgumentCaptor<List> listCaptor = ArgumentCaptor.forClass(List.class);
 
@@ -292,16 +278,9 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithDuplicateItemsShouldGenerateUniqueSearchKeys() {
-    requestParams.put("ReferenceList", "Active,Active Status,Activated");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
-
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupValidRequestParams();
+    requestParams.put(REFERENCE_LIST, "Active,Active Status,Activated");
+    setupSuccessfulCreationWithMessage();
 
     ArgumentCaptor<String> searchKeyCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -318,20 +297,13 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithShortItemsShouldGenerateSearchKeys() {
-    requestParams.put("ReferenceList", "A,B,C");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
-
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupValidRequestParams();
+    requestParams.put(REFERENCE_LIST, "A,B,C");
+    setupSuccessfulCreationWithMessage();
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Reference created successfully", responseVars.get("message"));
+    assertEquals(REFERENCE_CREATED_SUCCESS, responseVars.get(MESSAGE));
     verify(obDal, times(3)).save(any(List.class));
   }
 
@@ -341,19 +313,16 @@ class CreateReferenceTest {
   @Test
   void testGetCreatesReferenceWithCorrectProperties() {
     setupValidRequestParams();
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupSuccessfulCreationWithMessage();
 
     service.get(requestParams, responseVars);
 
     verify(reference).setNewOBObject(true);
-    verify(reference).setName("Test Reference");
+    verify(reference).setName(TEST_REFERENCE);
     verify(reference).setModule(module);
     verify(reference).setParentReference(parentReference);
-    verify(reference).setHelpComment("Test Help");
-    verify(reference).setDescription("Test Description");
+    verify(reference).setHelpComment(TEST_HELP);
+    verify(reference).setDescription(TEST_DESCRIPTION);
     verify(obDal).save(reference);
   }
 
@@ -363,10 +332,7 @@ class CreateReferenceTest {
   @Test
   void testGetCreatesReferenceListItemsWithCorrectProperties() {
     setupValidRequestParams();
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupSuccessfulCreationWithMessage();
 
     service.get(requestParams, responseVars);
 
@@ -392,8 +358,8 @@ class CreateReferenceTest {
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Database error", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Database error", responseVars.get(ERROR));
   }
 
   /**
@@ -401,20 +367,16 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithManyItemsShouldCreateAllItems() {
-    requestParams.put("ReferenceList", "Item1,Item2,Item3,Item4,Item5,Item6,Item7,Item8,Item9,Item10");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
-
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupValidRequestParams();
+    requestParams.put(
+        REFERENCE_LIST,
+        "Item1,Item2,Item3,Item4,Item5,Item6,Item7,Item8,Item9,Item10"
+    );
+    setupSuccessfulCreationWithMessage();
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Reference created successfully", responseVars.get("message"));
+    assertEquals(REFERENCE_CREATED_SUCCESS, responseVars.get(MESSAGE));
     verify(obDal, times(10)).save(any(List.class));
   }
 
@@ -423,33 +385,35 @@ class CreateReferenceTest {
    */
   @Test
   void testGetWithSpecialCharactersShouldHandleCorrectly() {
-    requestParams.put("ReferenceList", "Item-1,Item_2,Item.3");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
-
-    setupMocksForSuccessfulCreation();
-
-    messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_ReferenceCreated"))
-        .thenReturn("Reference created successfully");
+    setupValidRequestParams();
+    requestParams.put(REFERENCE_LIST, "Item-1,Item_2,Item.3");
+    setupSuccessfulCreationWithMessage();
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Reference created successfully", responseVars.get("message"));
+    assertEquals(REFERENCE_CREATED_SUCCESS, responseVars.get(MESSAGE));
     verify(obDal, times(3)).save(any(List.class));
   }
-
 
   /**
    * Populates requestParams with a minimal valid payload shared across tests.
    */
   private void setupValidRequestParams() {
-    requestParams.put("ReferenceList", "Item1,Item2,Item3");
-    requestParams.put("Prefix", "TEST");
-    requestParams.put("NameReference", "Test Reference");
-    requestParams.put("Help", "Test Help");
-    requestParams.put("Description", "Test Description");
+    requestParams.put(REFERENCE_LIST, REFERENCE_LIST_ITEMS);
+    requestParams.put(PREFIX, "TEST");
+    requestParams.put(NAME_REFERENCE, TEST_REFERENCE);
+    requestParams.put("Help", TEST_HELP);
+    requestParams.put(DESCRIPTION, TEST_DESCRIPTION);
+  }
+
+  /**
+   * Populates requestParams with all mandatory parameters except the reference list.
+   */
+  private void setupBaseParamsWithoutReferenceList() {
+    requestParams.put(PREFIX, "TEST");
+    requestParams.put(NAME_REFERENCE, TEST_REFERENCE);
+    requestParams.put("Help", TEST_HELP);
+    requestParams.put(DESCRIPTION, TEST_DESCRIPTION);
   }
 
   /**
@@ -463,5 +427,14 @@ class CreateReferenceTest {
 
     when(obDal.get(Reference.class, "17")).thenReturn(parentReference);
     when(reference.getModule()).thenReturn(module);
+  }
+
+  /**
+   * Configures common mocks and a localized success message for the happy-path creation flow.
+   */
+  private void setupSuccessfulCreationWithMessage() {
+    setupMocksForSuccessfulCreation();
+    messageMock.when(() -> OBMessageUtils.messageBD(MSG_REFERENCE_CREATED))
+        .thenReturn(REFERENCE_CREATED_SUCCESS);
   }
 }
