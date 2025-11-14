@@ -1,5 +1,27 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.COLUMN;
+import static com.etendoerp.copilot.devassistant.TestConstants.COLUMN_123;
+import static com.etendoerp.copilot.devassistant.TestConstants.COLUMN_ID;
+import static com.etendoerp.copilot.devassistant.TestConstants.DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.ELEMENT;
+import static com.etendoerp.copilot.devassistant.TestConstants.HELP_COMMENT;
+import static com.etendoerp.copilot.devassistant.TestConstants.MESSAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.NEW_DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.NEW_HELP_COMMENT;
+import static com.etendoerp.copilot.devassistant.TestConstants.ORIGINAL_ELEMENT_NAME;
+import static com.etendoerp.copilot.devassistant.TestConstants.PRINT;
+import static com.etendoerp.copilot.devassistant.TestConstants.PRINT_TEXT;
+import static com.etendoerp.copilot.devassistant.TestConstants.READ_ELEMENTS;
+import static com.etendoerp.copilot.devassistant.TestConstants.RESPONSE;
+import static com.etendoerp.copilot.devassistant.TestConstants.TABLE_123;
+import static com.etendoerp.copilot.devassistant.TestConstants.TABLE_ID;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_COLUMN;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_COLUMN_UPPER;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.VALID_DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.WRITE_ELEMENTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -87,7 +109,6 @@ class ElementsHandlerTest {
 
     obDalMock.when(OBDal::getInstance).thenReturn(obDal);
 
-    // Mock messages
     messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_WrongMode"))
         .thenReturn("Wrong mode specified");
     messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_InvalidElementID"))
@@ -114,9 +135,7 @@ class ElementsHandlerTest {
    */
   @Test
   void testGetWithInvalidModeShouldThrowException() {
-    parameters.put("Mode", "INVALID_MODE");
-
-    // Execute & Verify
+    setMode("INVALID_MODE");
     assertThrows(OBException.class, () -> elementsHandler.get(parameters, responseVars));
   }
 
@@ -125,9 +144,6 @@ class ElementsHandlerTest {
    */
   @Test
   void testGetWithNullModeShouldThrowException() {
-    // Setup - Mode not provided
-
-    // Execute & Verify
     assertThrows(OBException.class, () -> elementsHandler.get(parameters, responseVars));
   }
 
@@ -136,9 +152,7 @@ class ElementsHandlerTest {
    */
   @Test
   void testGetWithEmptyModeShouldThrowException() {
-    parameters.put("Mode", "");
-
-    // Execute & Verify
+    setMode("");
     assertThrows(OBException.class, () -> elementsHandler.get(parameters, responseVars));
   }
 
@@ -148,31 +162,18 @@ class ElementsHandlerTest {
    */
   @Test
   void testReadModeWithValidTableShouldReturnColumnsWithMissingData() {
-    parameters.put("Mode", "READ_ELEMENTS");
-    parameters.put("TableID", "table123");
-
     columnList.add(column1);
     columnList.add(column2);
 
-    when(obDal.get(Table.class, "table123")).thenReturn(table);
-    when(table.getADColumnList()).thenReturn(columnList);
-
-    when(column1.getName()).thenReturn("Column1");
-    when(column1.getId()).thenReturn("col1");
-    when(column1.getDescription()).thenReturn(null);
-    when(column1.getHelpComment()).thenReturn(null);
-
-    when(column2.getName()).thenReturn("Column2");
-    when(column2.getId()).thenReturn("col2");
-    when(column2.getDescription()).thenReturn("Valid description");
-    when(column2.getHelpComment()).thenReturn(null);
+    setupReadMode(TABLE_123, columnList);
+    mockColumn(column1, "Column1", "col1", null, null);
+    mockColumn(column2, "Column2", "col2", VALID_DESCRIPTION, null);
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("response"));
-    assertFalse(responseVars.containsKey("error"));
-
-    String response = responseVars.get("response");
+    assertTrue(responseVars.containsKey(RESPONSE));
+    assertFalse(responseVars.containsKey(ERROR));
+    String response = responseVars.get(RESPONSE);
     assertTrue(response.contains("Column1"));
     assertTrue(response.contains("Column2"));
     assertTrue(response.contains("missing"));
@@ -199,7 +200,7 @@ class ElementsHandlerTest {
 
     assertTrue(responseVars.containsKey("response"));
     assertEquals("[]", responseVars.get("response"));
-    assertFalse(responseVars.containsKey("error"));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -208,24 +209,15 @@ class ElementsHandlerTest {
    */
   @Test
   void testReadModeWithColumnMissingOnlyDescriptionShouldReportIt() {
-    parameters.put("Mode", "READ_ELEMENTS");
-    parameters.put("TableID", "table123");
-
     columnList.add(column1);
+    setupReadMode(TABLE_123, columnList);
 
-    when(obDal.get(Table.class, "table123")).thenReturn(table);
-    when(table.getADColumnList()).thenReturn(columnList);
-
-    when(column1.getName()).thenReturn("TestColumn");
-    when(column1.getId()).thenReturn("col1");
-    when(column1.getDescription()).thenReturn("");
-    when(column1.getHelpComment()).thenReturn("Valid help");
+    mockColumn(column1, TEST_COLUMN, "col1", "", "Valid help");
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("response"));
-    String response = responseVars.get("response");
-    assertTrue(response.contains("TestColumn"));
+    String response = responseVars.get(RESPONSE);
+    assertTrue(response.contains(TEST_COLUMN));
     assertTrue(response.contains("missing a description"));
   }
 
@@ -235,24 +227,15 @@ class ElementsHandlerTest {
    */
   @Test
   void testReadModeWithColumnMissingOnlyHelpCommentShouldReportIt() {
-    parameters.put("Mode", "READ_ELEMENTS");
-    parameters.put("TableID", "table123");
-
     columnList.add(column1);
+    setupReadMode(TABLE_123, columnList);
 
-    when(obDal.get(Table.class, "table123")).thenReturn(table);
-    when(table.getADColumnList()).thenReturn(columnList);
-
-    when(column1.getName()).thenReturn("TestColumn");
-    when(column1.getId()).thenReturn("col1");
-    when(column1.getDescription()).thenReturn("Valid description");
-    when(column1.getHelpComment()).thenReturn("");
+    mockColumn(column1, TEST_COLUMN, "col1", VALID_DESCRIPTION, "");
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("response"));
-    String response = responseVars.get("response");
-    assertTrue(response.contains("TestColumn"));
+    String response = responseVars.get(RESPONSE);
+    assertTrue(response.contains(TEST_COLUMN));
     assertTrue(response.contains("missing a help comment"));
   }
 
@@ -261,16 +244,12 @@ class ElementsHandlerTest {
    */
   @Test
   void testReadModeWithEmptyColumnListShouldReturnEmptyArray() {
-    parameters.put("Mode", "READ_ELEMENTS");
-    parameters.put("TableID", "table123");
-
-    when(obDal.get(Table.class, "table123")).thenReturn(table);
-    when(table.getADColumnList()).thenReturn(new ArrayList<>());
+    setupReadMode(TABLE_123, new ArrayList<>());
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("response"));
-    assertEquals("[]", responseVars.get("response"));
+    assertTrue(responseVars.containsKey(RESPONSE));
+    assertEquals("[]", responseVars.get(RESPONSE));
   }
 
   /**
@@ -279,29 +258,27 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithValidParametersShouldUpdateColumnAndElement() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
+    setupWriteMode(COLUMN_123);
     parameters.put("Name", "New Name");
-    parameters.put("Description", "New Description");
-    parameters.put("HelpComment", "New Help Comment");
+    parameters.put(DESCRIPTION, NEW_DESCRIPTION);
+    parameters.put(HELP_COMMENT, NEW_HELP_COMMENT);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("TEST_COLUMN");
+    when(column1.getName()).thenReturn(TEST_COLUMN_UPPER);
     when(column1.getApplicationElement()).thenReturn(element);
-    when(element.getName()).thenReturn("Original Element Name");
+    when(element.getName()).thenReturn(ORIGINAL_ELEMENT_NAME);
     when(element.getPrintText()).thenReturn("Original Print Text");
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
 
     verify(column1).setName("TEST COLUMN");
-    verify(column1).setDescription("New Description");
-    verify(column1).setHelpComment("New Help Comment");
+    verify(column1).setDescription(NEW_DESCRIPTION);
+    verify(column1).setHelpComment(NEW_HELP_COMMENT);
     verify(element).setName("New Name");
-    verify(element).setDescription("New Description");
-    verify(element).setHelpComment("New Help Comment");
+    verify(element).setDescription(NEW_DESCRIPTION);
+    verify(element).setHelpComment(NEW_HELP_COMMENT);
     verify(obDal).flush();
   }
 
@@ -310,13 +287,13 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithNullColumnIdShouldReturnError() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", null);
+    setMode(WRITE_ELEMENTS);
+    parameters.put(COLUMN_ID, null);
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("Invalid element ID"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("Invalid element ID"));
   }
 
   /**
@@ -325,15 +302,14 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithInvalidColumnIdShouldReturnError() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "invalidCol");
-
+    setMode(WRITE_ELEMENTS);
+    parameters.put(COLUMN_ID, "invalidCol");
     when(obDal.get(Column.class, "invalidCol")).thenReturn(null);
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("not found"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("not found"));
   }
 
   /**
@@ -342,18 +318,16 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithColumnWithoutElementShouldReturnError() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
-    parameters.put("Description", "Test Description");
+    setupWriteMode(COLUMN_123);
+    parameters.put(DESCRIPTION, TEST_DESCRIPTION);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("TEST_COLUMN");
+    when(column1.getName()).thenReturn(TEST_COLUMN_UPPER);
     when(column1.getApplicationElement()).thenReturn(null);
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("Element not found"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("Element not found"));
   }
 
   /**
@@ -362,16 +336,14 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithEMPrefixColumnShouldNotReplaceUnderscores() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
-    parameters.put("Description", "Test Description");
-    parameters.put("HelpComment", "Test Help");
+    setupWriteMode(COLUMN_123);
+    parameters.put(DESCRIPTION, TEST_DESCRIPTION);
+    parameters.put(HELP_COMMENT, "Test Help");
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
     when(column1.getName()).thenReturn("EM_TEST_COLUMN");
     when(column1.getApplicationElement()).thenReturn(element);
     when(element.getName()).thenReturn("Element Name");
-    when(element.getPrintText()).thenReturn("Print Text");
+    when(element.getPrintText()).thenReturn(PRINT_TEXT);
 
     elementsHandler.get(parameters, responseVars);
 
@@ -385,20 +357,18 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithNullNameShouldUseElementName() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
+    setupWriteMode(COLUMN_123);
     parameters.put("Name", null);
-    parameters.put("Description", "Test Description");
+    parameters.put(DESCRIPTION, TEST_DESCRIPTION);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("TEST_COLUMN");
+    when(column1.getName()).thenReturn(TEST_COLUMN_UPPER);
     when(column1.getApplicationElement()).thenReturn(element);
     when(element.getName()).thenReturn("Original_Element_Name");
-    when(element.getPrintText()).thenReturn("Print Text");
+    when(element.getPrintText()).thenReturn(PRINT_TEXT);
 
     elementsHandler.get(parameters, responseVars);
 
-    verify(element).setName("Original Element Name");
+    verify(element).setName(ORIGINAL_ELEMENT_NAME);
   }
 
   /**
@@ -407,20 +377,18 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithBlankNameShouldUseElementName() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
+    setupWriteMode(COLUMN_123);
     parameters.put("Name", "");
-    parameters.put("Description", "Test Description");
+    parameters.put(DESCRIPTION, TEST_DESCRIPTION);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("TEST_COLUMN");
+    when(column1.getName()).thenReturn(TEST_COLUMN_UPPER);
     when(column1.getApplicationElement()).thenReturn(element);
     when(element.getName()).thenReturn("Original_Element_Name");
-    when(element.getPrintText()).thenReturn("Print Text");
+    when(element.getPrintText()).thenReturn(PRINT_TEXT);
 
     elementsHandler.get(parameters, responseVars);
 
-    verify(element).setName("Original Element Name");
+    verify(element).setName(ORIGINAL_ELEMENT_NAME);
   }
 
   /**
@@ -429,15 +397,13 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithBlankElementNameShouldUseColumnName() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
-    parameters.put("Description", "Test Description");
+    setupWriteMode(COLUMN_123);
+    parameters.put(DESCRIPTION, TEST_DESCRIPTION);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
     when(column1.getName()).thenReturn("COLUMN_NAME");
     when(column1.getApplicationElement()).thenReturn(element);
     when(element.getName()).thenReturn("");
-    when(element.getPrintText()).thenReturn("Print Text");
+    when(element.getPrintText()).thenReturn(PRINT_TEXT);
 
     elementsHandler.get(parameters, responseVars);
 
@@ -450,11 +416,9 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithBlankPrintTextShouldUseColumnName() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
-    parameters.put("Description", "Test Description");
+    setupWriteMode(COLUMN_123);
+    parameters.put(DESCRIPTION, TEST_DESCRIPTION);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
     when(column1.getName()).thenReturn("COLUMN_NAME");
     when(column1.getApplicationElement()).thenReturn(element);
     when(element.getName()).thenReturn("Element Name");
@@ -471,12 +435,10 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeShouldReplaceUnderscoresWithSpaces() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
+    setupWriteMode(COLUMN_123);
     parameters.put("Name", "New_Element_Name");
-    parameters.put("Description", "Description");
+    parameters.put(DESCRIPTION, DESCRIPTION);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
     when(column1.getName()).thenReturn("TEST_COLUMN_NAME");
     when(column1.getApplicationElement()).thenReturn(element);
     when(element.getName()).thenReturn("Original_Name");
@@ -495,18 +457,16 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithOnlyRequiredParametersShouldWork() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
+    setupWriteMode(COLUMN_123);
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("COLUMN");
+    when(column1.getName()).thenReturn(COLUMN);
     when(column1.getApplicationElement()).thenReturn(element);
-    when(element.getName()).thenReturn("Element");
-    when(element.getPrintText()).thenReturn("Print");
+    when(element.getName()).thenReturn(ELEMENT);
+    when(element.getPrintText()).thenReturn(PRINT);
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
+    assertTrue(responseVars.containsKey(MESSAGE));
     verify(obDal).flush();
   }
 
@@ -516,16 +476,14 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithNullDescriptionShouldSetNull() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
-    parameters.put("Description", null);
-    parameters.put("HelpComment", "Help");
+    setupWriteMode(COLUMN_123);
+    parameters.put(DESCRIPTION, null);
+    parameters.put(HELP_COMMENT, "Help");
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("COLUMN");
+    when(column1.getName()).thenReturn(COLUMN);
     when(column1.getApplicationElement()).thenReturn(element);
-    when(element.getName()).thenReturn("Element");
-    when(element.getPrintText()).thenReturn("Print");
+    when(element.getName()).thenReturn(ELEMENT);
+    when(element.getPrintText()).thenReturn(PRINT);
 
     elementsHandler.get(parameters, responseVars);
 
@@ -538,21 +496,19 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeWithSpecialCharactersShouldProcess() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
+    setupWriteMode(COLUMN_123);
     parameters.put("Name", "Name with <special> & characters");
-    parameters.put("Description", "Description with symbols: @#$%");
+    parameters.put(DESCRIPTION, "Description with symbols: @#$%");
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("COLUMN");
+    when(column1.getName()).thenReturn(COLUMN);
     when(column1.getApplicationElement()).thenReturn(element);
-    when(element.getName()).thenReturn("Element");
-    when(element.getPrintText()).thenReturn("Print");
+    when(element.getName()).thenReturn(ELEMENT);
+    when(element.getPrintText()).thenReturn(PRINT);
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
   /**
@@ -561,15 +517,13 @@ class ElementsHandlerTest {
    */
   @Test
   void testWriteModeShouldCallFlushToPersistChanges() {
-    parameters.put("Mode", "WRITE_ELEMENTS");
-    parameters.put("ColumnID", "col123");
-    parameters.put("Description", "Test");
+    setupWriteMode(COLUMN_123);
+    parameters.put(DESCRIPTION, "Test");
 
-    when(obDal.get(Column.class, "col123")).thenReturn(column1);
-    when(column1.getName()).thenReturn("COLUMN");
+    when(column1.getName()).thenReturn(COLUMN);
     when(column1.getApplicationElement()).thenReturn(element);
-    when(element.getName()).thenReturn("Element");
-    when(element.getPrintText()).thenReturn("Print");
+    when(element.getName()).thenReturn(ELEMENT);
+    when(element.getPrintText()).thenReturn(PRINT);
 
     elementsHandler.get(parameters, responseVars);
 
@@ -582,35 +536,19 @@ class ElementsHandlerTest {
    */
   @Test
   void testReadModeWithMultipleColumnsMissingDataShouldListAll() {
-    parameters.put("Mode", "READ_ELEMENTS");
-    parameters.put("TableID", "table123");
-
     columnList.add(column1);
     columnList.add(column2);
     columnList.add(column3);
 
-    when(obDal.get(Table.class, "table123")).thenReturn(table);
-    when(table.getADColumnList()).thenReturn(columnList);
+    setupReadMode(TABLE_123, columnList);
 
-    when(column1.getName()).thenReturn("Col1");
-    when(column1.getId()).thenReturn("col1");
-    when(column1.getDescription()).thenReturn(null);
-    when(column1.getHelpComment()).thenReturn("Help");
-
-    when(column2.getName()).thenReturn("Col2");
-    when(column2.getId()).thenReturn("col2");
-    when(column2.getDescription()).thenReturn("Desc");
-    when(column2.getHelpComment()).thenReturn(null);
-
-    when(column3.getName()).thenReturn("Col3");
-    when(column3.getId()).thenReturn("col3");
-    when(column3.getDescription()).thenReturn(null);
-    when(column3.getHelpComment()).thenReturn(null);
+    mockColumn(column1, "Col1", "col1", null, "Help");
+    mockColumn(column2, "Col2", "col2", "Desc", null);
+    mockColumn(column3, "Col3", "col3", null, null);
 
     elementsHandler.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("response"));
-    String response = responseVars.get("response");
+    String response = responseVars.get(RESPONSE);
     assertTrue(response.contains("Col1"));
     assertTrue(response.contains("Col2"));
     assertTrue(response.contains("Col3"));
@@ -621,15 +559,72 @@ class ElementsHandlerTest {
    */
   @Test
   void testGetShouldNotModifyInputParameters() {
-    parameters.put("Mode", "READ_ELEMENTS");
-    parameters.put("TableID", "table123");
+    setMode(READ_ELEMENTS);
+    parameters.put(TABLE_ID, TABLE_123);
     Map<String, String> originalParams = new HashMap<>(parameters);
 
-    when(obDal.get(Table.class, "table123")).thenReturn(table);
-    when(table.getADColumnList()).thenReturn(new ArrayList<>());
+    setupReadMode(TABLE_123, new ArrayList<>());
 
     elementsHandler.get(parameters, responseVars);
 
     assertEquals(originalParams, parameters);
+  }
+
+  /**
+   * Sets the Mode parameter in the request parameter map.
+   *
+   * @param mode the mode value to assign (e.g., READ_ELEMENTS or WRITE_ELEMENTS)
+   */
+  private void setMode(String mode) {
+    parameters.put("Mode", mode);
+  }
+
+  /**
+   * Performs the common setup required for READ_ELEMENTS tests.
+   * <p>
+   * This method injects the TableID parameter, configures the mocked OBDal
+   * to return the provided table, and wires its associated column list.
+   *
+   * @param tableId the ID of the table to be used in the test
+   * @param cols    the list of mocked columns that belong to the table
+   */
+  private void setupReadMode(String tableId, List<Column> cols) {
+    setMode(READ_ELEMENTS);
+    parameters.put("TableID", tableId);
+    when(obDal.get(Table.class, tableId)).thenReturn(table);
+    when(table.getADColumnList()).thenReturn(cols);
+  }
+
+  /**
+   * Performs the common setup required for WRITE_ELEMENTS tests.
+   * <p>
+   * This method sets the mode and ColumnID parameter, and configures the mocked
+   * OBDal to return the corresponding mocked Column instance.
+   *
+   * @param columnId the ID of the column to be used in the test
+   */
+  private void setupWriteMode(String columnId) {
+    setMode(WRITE_ELEMENTS);
+    parameters.put(COLUMN_ID, columnId);
+    when(obDal.get(Column.class, columnId)).thenReturn(column1);
+  }
+
+  /**
+   * Mocks a Column instance with the provided metadata.
+   * <p>
+   * This helper reduces boilerplate in tests by setting the column's name, ID,
+   * description, and help comment in a single call.
+   *
+   * @param col  the mocked Column instance
+   * @param name the column's name
+   * @param id   the column's unique identifier
+   * @param desc the description value to mock (may be null)
+   * @param help the help comment value to mock (may be null)
+   */
+  private void mockColumn(Column col, String name, String id, String desc, String help) {
+    when(col.getName()).thenReturn(name);
+    when(col.getId()).thenReturn(id);
+    when(col.getDescription()).thenReturn(desc);
+    when(col.getHelpComment()).thenReturn(help);
   }
 }

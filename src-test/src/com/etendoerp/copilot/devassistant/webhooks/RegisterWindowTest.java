@@ -1,5 +1,12 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.DB_PREFIX;
+import static com.etendoerp.copilot.devassistant.TestConstants.DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.HELP_COMMENT;
+import static com.etendoerp.copilot.devassistant.TestConstants.MESSAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_WINDOW;
+import static com.etendoerp.copilot.devassistant.TestConstants.WINDOW_123;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,7 +46,24 @@ import org.openbravo.model.ad.ui.Window;
 import org.openbravo.model.common.enterprise.Organization;
 
 /**
- * Unit tests for {@link RegisterWindow}
+ * Unit tests for {@link RegisterWindow}.
+ *
+ * <p>This suite validates the behavior of the RegisterWindow.get method, ensuring that:
+ * <ul>
+ *   <li>Input parameter validation is enforced (DB Prefix, Name, Description, Help).</li>
+ *   <li>Modules are correctly resolved through DB prefix lookup via ModuleDBPrefix.</li>
+ *   <li>Only modules in development mode are accepted.</li>
+ *   <li>Modules must contain at least one associated DataPackage.</li>
+ *   <li>Window and Menu entities are correctly instantiated, initialized, linked and persisted.</li>
+ *   <li>Client and Organization values are taken from the current OBContext.</li>
+ *   <li>Error cases properly trigger rollback and populate the responseVars "error" key.</li>
+ *   <li>Success cases populate the "message" key and flush changes successfully.</li>
+ *   <li>Special characters, long descriptions and edge-case inputs are handled gracefully.</li>
+ *   <li>The method under test does not mutate the original input parameters map.</li>
+ * </ul>
+ *
+ * <p>Static components (OBDal, OBProvider, OBContext, OBMessageUtils) are mocked
+ * to fully isolate the logic from the database and the DAL infrastructure.
  */
 @ExtendWith(MockitoExtension.class)
 class RegisterWindowTest {
@@ -89,6 +113,17 @@ class RegisterWindowTest {
   private Map<String, String> responseVars;
   private List<DataPackage> dataPackageList;
 
+  /**
+   * Initializes static mocks (OBDal, OBProvider, OBContext, OBMessageUtils)
+   * and prepares the request/response maps before each test.
+   * <p>
+   * Ensures a clean and isolated testing environment by providing:
+   * <ul>
+   *   <li>A mocked DAL context</li>
+   *   <li>Mocked providers for creating Window and Menu instances</li>
+   *   <li>Mocked message translations for predictable outputs</li>
+   * </ul>
+   */
   @BeforeEach
   void setUp() {
     obDalMock = mockStatic(OBDal.class);
@@ -115,6 +150,10 @@ class RegisterWindowTest {
 
   }
 
+  /**
+   * Closes all static mocks after each test execution to avoid
+   * cross-test interference and maintain full mock isolation.
+   */
   @AfterEach
   void tearDown() {
     obDalMock.close();
@@ -123,69 +162,91 @@ class RegisterWindowTest {
     messageMock.close();
   }
 
+  /**
+   * Verifies that providing all required parameters results in:
+   * - Successful creation of a Window and its associated Menu.
+   * - Proper persistence through save() and flush().
+   * - A success message being returned in responseVars.
+   */
   @Test
   void testGetWithValidParametersShouldCreateWindowAndMenu() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
-    parameters.put("Description", "Test Description");
-    parameters.put("HelpComment", "Test Help");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
+    parameters.put(DESCRIPTION, "Test Description");
+    parameters.put(HELP_COMMENT, "Test Help");
 
     setupSuccessfulScenario();
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("message").contains("Test Window"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(MESSAGE).contains(TEST_WINDOW));
 
     verify(obDal).save(any(Window.class));
     verify(obDal).save(any(Menu.class));
     verify(obDal).flush();
   }
 
+  /**
+   * Ensures that if the DB Prefix parameter is missing,
+   * the service returns a meaningful error message and performs rollback.
+   */
   @Test
   void testGetWithMissingDBPrefixShouldReturnError() {
-    parameters.put("Name", "Test Window");
-    parameters.put("Description", "Test Description");
+    parameters.put("Name", TEST_WINDOW);
+    parameters.put(DESCRIPTION, "Test Description");
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertFalse(responseVars.containsKey("message"));
-    assertTrue(responseVars.get("error").contains("prefix cannot be null"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertFalse(responseVars.containsKey(MESSAGE));
+    assertTrue(responseVars.get(ERROR).contains("prefix cannot be null"));
 
     verify(obDal).rollbackAndClose();
     verify(obDal, never()).flush();
   }
 
+  /**
+   * Ensures null DB Prefix values are treated as missing,
+   * producing an error response and rolling back the DAL transaction.
+   */
   @Test
   void testGetWithNullDBPrefixShouldReturnError() {
-    parameters.put("DBPrefix", null);
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, null);
+    parameters.put("Name", TEST_WINDOW);
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Missing parameter, prefix cannot be null.", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Missing parameter, prefix cannot be null.", responseVars.get(ERROR));
     verify(obDal).rollbackAndClose();
   }
 
+  /**
+   * Ensures an empty DB Prefix string is treated as invalid,
+   * triggering an error response and a rollback operation.
+   */
   @Test
   void testGetWithEmptyDBPrefixShouldReturnError() {
-    parameters.put("DBPrefix", "");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "");
+    parameters.put("Name", TEST_WINDOW);
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("prefix cannot be null"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("prefix cannot be null"));
     verify(obDal).rollbackAndClose();
   }
 
+  /**
+   * Validates that when the DB Prefix cannot be resolved to a ModuleDBPrefix entry,
+   * the service returns a 'prefix not found' error and rolls back the transaction.
+   */
   @Test
   void testGetWithNonExistentPrefixShouldReturnError() {
-    parameters.put("DBPrefix", "NONEXISTENT");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "NONEXISTENT");
+    parameters.put("Name", TEST_WINDOW);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
@@ -194,16 +255,20 @@ class RegisterWindowTest {
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("Prefix"));
-    assertTrue(responseVars.get("error").contains("not found"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("Prefix"));
+    assertTrue(responseVars.get(ERROR).contains("not found"));
     verify(obDal).rollbackAndClose();
   }
 
+  /**
+   * Ensures modules not flagged as 'in development' are rejected,
+   * returning a specific error and preventing entity creation.
+   */
   @Test
   void testGetWithModuleNotInDevelopmentShouldReturnError() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
@@ -215,15 +280,19 @@ class RegisterWindowTest {
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("not in development"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("not in development"));
     verify(obDal).rollbackAndClose();
   }
 
+  /**
+   * Confirms that modules with no associated DataPackage entries
+   * are invalid for window creation and produce the corresponding error.
+   */
   @Test
   void testGetWithModuleWithoutDataPackageShouldReturnError() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
@@ -236,48 +305,61 @@ class RegisterWindowTest {
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertTrue(responseVars.get("error").contains("does not have a data package"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertTrue(responseVars.get(ERROR).contains("does not have a data package"));
     verify(obDal).rollbackAndClose();
   }
 
+  /**
+   * Verifies that only required parameters (DB Prefix and Name)
+   * are enough to successfully create a Window and a Menu.
+   */
   @Test
   void testGetWithMinimalParametersShouldCreateWindow() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     setupSuccessfulScenario();
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
     verify(obDal).save(any(Window.class));
     verify(obDal).save(any(Menu.class));
     verify(obDal).flush();
   }
 
+  /**
+   * Ensures the service uses all provided parameters (Name, Description, Help)
+   * when creating the Window and persists all fields correctly.
+   */
   @Test
   void testGetWithAllParametersShouldCreateWindowWithAllFields() {
-    parameters.put("DBPrefix", "TEST");
+    parameters.put(DB_PREFIX, "TEST");
     parameters.put("Name", "Complete Window");
-    parameters.put("Description", "Complete Description");
-    parameters.put("HelpComment", "Complete Help Comment");
+    parameters.put(DESCRIPTION, "Complete Description");
+    parameters.put(HELP_COMMENT, "Complete Help Comment");
 
     setupSuccessfulScenario();
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
     verify(obDal, times(2)).save(any());
     verify(obDal).flush();
   }
 
+  /**
+   * Confirms that the newly created Window is assigned:
+   * - The correct Window type.
+   * - Sales transaction flag set to true.
+   */
   @Test
   void testGetShouldCreateWindowWithCorrectType() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     setupSuccessfulScenario();
 
@@ -287,10 +369,15 @@ class RegisterWindowTest {
     verify(window).setSalesTransaction(true);
   }
 
+  /**
+   * Validates that the created Menu entity:
+   * - Uses the correct action value.
+   * - Has summaryLevel=false, active=true, openlinkinbrowser=false.
+   */
   @Test
   void testGetShouldCreateMenuWithCorrectAction() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     setupSuccessfulScenario();
 
@@ -302,10 +389,14 @@ class RegisterWindowTest {
     verify(menu).setOpenlinkinbrowser(false);
   }
 
+  /**
+   * Ensures both the Window and the Menu are assigned to the same module
+   * resolved from the DB Prefix.
+   */
   @Test
   void testGetShouldSetWindowAndMenuToSameModule() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     setupSuccessfulScenario();
 
@@ -315,10 +406,13 @@ class RegisterWindowTest {
     verify(menu).setModule(module);
   }
 
+  /**
+   * Confirms the Menu correctly references the newly created Window entity.
+   */
   @Test
   void testGetShouldSetMenuWindowReference() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     setupSuccessfulScenario();
 
@@ -327,38 +421,52 @@ class RegisterWindowTest {
     verify(menu).setWindow(window);
   }
 
+  /**
+   * Ensures that any exception thrown during the process triggers:
+   * - A rollbackAndClose() call.
+   * - An appropriate error message in responseVars.
+   * - No flush() invocation.
+   */
   @Test
   void testGetShouldRollbackOnException() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenThrow(new RuntimeException("Database error"));
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(ERROR));
     verify(obDal).rollbackAndClose();
     verify(obDal, never()).flush();
   }
 
+  /**
+   * Verifies that Window creation succeeds even when the Name or Description
+   * contains special characters, ensuring safe handling of such inputs.
+   */
   @Test
   void testGetWithSpecialCharactersInNameShouldProcess() {
-    parameters.put("DBPrefix", "TEST");
+    parameters.put(DB_PREFIX, "TEST");
     parameters.put("Name", "Test-Window_123");
-    parameters.put("Description", "Test & Special <Characters>");
+    parameters.put(DESCRIPTION, "Test & Special <Characters>");
 
     setupSuccessfulScenario();
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
+  /**
+   * Ensures the Window and Menu objects are flagged as new OBObjects,
+   * which is required for correct DAL persistence.
+   */
   @Test
   void testGetShouldSetNewOBObjectFlags() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     setupSuccessfulScenario();
 
@@ -368,10 +476,14 @@ class RegisterWindowTest {
     verify(menu).setNewOBObject(true);
   }
 
+  /**
+   * Validates that Window and Menu inherit Client and Organization values
+   * from the current OBContext.
+   */
   @Test
   void testGetShouldSetClientAndOrganizationFromContext() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     setupSuccessfulScenario();
     when(obContext.getCurrentClient()).thenReturn(client);
@@ -385,25 +497,33 @@ class RegisterWindowTest {
     verify(menu).setOrganization(organization);
   }
 
+  /**
+   * Confirms that large Description and HelpComment inputs are accepted
+   * and processed without errors.
+   */
   @Test
   void testGetWithLongDescriptionShouldProcess() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
-    parameters.put("Description", "A".repeat(500));
-    parameters.put("HelpComment", "B".repeat(500));
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
+    parameters.put(DESCRIPTION, "A".repeat(500));
+    parameters.put(HELP_COMMENT, "B".repeat(500));
 
     setupSuccessfulScenario();
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertTrue(responseVars.containsKey(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
   }
 
+  /**
+   * Ensures that when multiple DataPackages exist for a module,
+   * the service uses the first one in the list for Window creation.
+   */
   @Test
   void testGetShouldUseFirstDataPackageFromList() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
 
     DataPackage firstPackage = mock(DataPackage.class);
     DataPackage secondPackage = mock(DataPackage.class);
@@ -421,20 +541,24 @@ class RegisterWindowTest {
 
     when(obProvider.get(Window.class)).thenReturn(window);
     when(obProvider.get(Menu.class)).thenReturn(menu);
-    when(window.getName()).thenReturn("Test Window");
-    when(window.getId()).thenReturn("window123");
+    when(window.getName()).thenReturn(TEST_WINDOW);
+    when(window.getId()).thenReturn(WINDOW_123);
     when(window.getModule()).thenReturn(module);
 
     registerWindow.get(parameters, responseVars);
 
-    assertTrue(responseVars.containsKey("message"));
+    assertTrue(responseVars.containsKey(MESSAGE));
     verify(module).getDataPackageList();
   }
 
+  /**
+   * Verifies that the input parameters map remains unchanged after execution,
+   * ensuring the method does not mutate caller-provided data.
+   */
   @Test
   void testGetShouldNotModifyInputParameters() {
-    parameters.put("DBPrefix", "TEST");
-    parameters.put("Name", "Test Window");
+    parameters.put(DB_PREFIX, "TEST");
+    parameters.put("Name", TEST_WINDOW);
     Map<String, String> originalParams = new HashMap<>(parameters);
 
     setupSuccessfulScenario();
@@ -444,6 +568,20 @@ class RegisterWindowTest {
     assertEquals(originalParams, parameters);
   }
 
+  /**
+   * Prepares all required mocks for a successful RegisterWindow execution.
+   *
+   * <p>This includes:
+   * <ul>
+   *   <li>Resolving the DB prefix into a ModuleDBPrefix</li>
+   *   <li>Validating the module is in development mode</li>
+   *   <li>Providing at least one DataPackage associated with the module</li>
+   *   <li>Mocking Window and Menu instantiation via OBProvider</li>
+   *   <li>Mocking common getters such as window name, ID and module</li>
+   * </ul>
+   *
+   * <p>This helper removes repeated setup logic across multiple tests.
+   */
   private void setupSuccessfulScenario() {
     dataPackageList.add(dataPackage);
 
@@ -458,8 +596,8 @@ class RegisterWindowTest {
 
     when(obProvider.get(Window.class)).thenReturn(window);
     when(obProvider.get(Menu.class)).thenReturn(menu);
-    when(window.getName()).thenReturn("Test Window");
-    when(window.getId()).thenReturn("window123");
+    when(window.getName()).thenReturn(TEST_WINDOW);
+    when(window.getId()).thenReturn(WINDOW_123);
     when(window.getModule()).thenReturn(module);
   }
 }

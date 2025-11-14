@@ -1,5 +1,14 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
+
+import static com.etendoerp.copilot.devassistant.TestConstants.FIELDS_REGISTERED;
+import static com.etendoerp.copilot.devassistant.TestConstants.MESSAGE;
+import static com.etendoerp.copilot.devassistant.TestConstants.MODULE_123;
+import static com.etendoerp.copilot.devassistant.TestConstants.SUCCESS;
+import static com.etendoerp.copilot.devassistant.TestConstants.TAB;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_DESCRIPTION;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_HELP_COMMENT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -143,17 +152,17 @@ class RegisterFieldsTest {
     setupValidRequestParams();
     setupMocksForSuccessfulRegistration();
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
     when(obError.getMessage()).thenReturn("Fields registered successfully");
 
     service.get(requestParams, responseVars);
 
-    assertEquals("Success - Fields registered successfully", responseVars.get("message"));
-    assertFalse(responseVars.containsKey("error"));
+    assertEquals("Success - Fields registered successfully", responseVars.get(MESSAGE));
+    assertFalse(responseVars.containsKey(ERROR));
     verify(obDal).refresh(tab);
     verify(obDal).refresh(module);
     verify(obDal, atLeastOnce()).save(any(Field.class));
@@ -167,15 +176,15 @@ class RegisterFieldsTest {
   @Test
   void testGetWithNonExistentTabShouldReturnError() {
     setupValidRequestParams();
-    when(obDal.get(Tab.class, "tab123")).thenReturn(null);
+    when(obDal.get(Tab.class, TAB)).thenReturn(null);
 
     messageMock.when(() -> OBMessageUtils.messageBD("COPDEV_TabNotFound"))
         .thenReturn("Tab with ID %s not found");
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Tab with ID tab123 not found", responseVars.get("error"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Tab with ID tab123 not found", responseVars.get(ERROR));
     verify(obDal, never()).save(any());
   }
 
@@ -188,20 +197,20 @@ class RegisterFieldsTest {
     setupValidRequestParams();
     setupMocksForSuccessfulRegistration();
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
-    verify(field1).setHelpComment("Test help comment");
-    verify(field1).setDescription("Test description");
+    verify(field1).setHelpComment(TEST_HELP_COMMENT);
+    verify(field1).setDescription(TEST_DESCRIPTION);
     verify(field1).setShowInGridView(true);
-    verify(field2).setHelpComment("Test help comment");
-    verify(field2).setDescription("Test description");
+    verify(field2).setHelpComment(TEST_HELP_COMMENT);
+    verify(field2).setDescription(TEST_DESCRIPTION);
     verify(field2).setShowInGridView(true);
   }
 
@@ -214,12 +223,12 @@ class RegisterFieldsTest {
     setupValidRequestParams();
     setupMocksForSuccessfulRegistrationWithKeyColumn();
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -227,8 +236,8 @@ class RegisterFieldsTest {
     verify(keyField, never()).setDescription(anyString());
     verify(keyField, never()).setShowInGridView(anyBoolean());
 
-    verify(field1).setHelpComment("Test help comment");
-    verify(field2).setHelpComment("Test help comment");
+    verify(field1).setHelpComment(TEST_HELP_COMMENT);
+    verify(field2).setHelpComment(TEST_HELP_COMMENT);
   }
 
   /**
@@ -243,12 +252,12 @@ class RegisterFieldsTest {
     when(field1.getName()).thenReturn("field_name_with_underscores");
     when(field2.getName()).thenReturn("another_field_name");
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -268,12 +277,12 @@ class RegisterFieldsTest {
     when(field1.getName()).thenReturn(null);
     when(field2.getName()).thenReturn("field_name");
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -292,18 +301,18 @@ class RegisterFieldsTest {
 
     when(element1.getModule()).thenReturn(module);
     when(element2.getModule()).thenReturn(module);
-    when(module.getId()).thenReturn("module123");
+    when(module.getId()).thenReturn(MODULE_123);
     when(element1.getName()).thenReturn("element_name_one");
     when(element2.getName()).thenReturn("element_name_two");
     when(element1.getPrintText()).thenReturn("print_text_one");
     when(element2.getPrintText()).thenReturn("print_text_two");
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -326,15 +335,15 @@ class RegisterFieldsTest {
     Module differentModule = mock(Module.class);
     when(element1.getModule()).thenReturn(differentModule);
     when(element2.getModule()).thenReturn(differentModule);
-    when(module.getId()).thenReturn("module123");
+    when(module.getId()).thenReturn(MODULE_123);
     when(differentModule.getId()).thenReturn("differentModule456");
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -355,17 +364,17 @@ class RegisterFieldsTest {
     setupMocksForSuccessfulRegistration();
 
     when(element1.getModule()).thenReturn(module);
-    when(module.getId()).thenReturn("module123");
+    when(module.getId()).thenReturn(MODULE_123);
     when(element1.getName()).thenReturn("");
     when(element1.getPrintText()).thenReturn("");
     when(column1.getName()).thenReturn("column_name");
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<String> printTextCaptor = ArgumentCaptor.forClass(String.class);
@@ -389,12 +398,12 @@ class RegisterFieldsTest {
     when(element1.getModule()).thenReturn(null);
     when(element2.getModule()).thenReturn(null);
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -412,7 +421,7 @@ class RegisterFieldsTest {
     setupValidRequestParams();
     setupMocksForSuccessfulRegistration();
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
     when(obError.getType()).thenReturn("Error");
@@ -421,9 +430,9 @@ class RegisterFieldsTest {
 
     service.get(requestParams, responseVars);
 
-    assertTrue(responseVars.containsKey("error"));
-    assertEquals("Error - Process execution failed", responseVars.get("error"));
-    assertFalse(responseVars.containsKey("message"));
+    assertTrue(responseVars.containsKey(ERROR));
+    assertEquals("Error - Process execution failed", responseVars.get(ERROR));
+    assertFalse(responseVars.containsKey(MESSAGE));
   }
 
   /**
@@ -433,20 +442,20 @@ class RegisterFieldsTest {
   @Test
   void testGetWithEmptyFieldListShouldNotThrowException() {
     setupValidRequestParams();
-    when(obDal.get(Tab.class, "tab123")).thenReturn(tab);
+    when(obDal.get(Tab.class, TAB)).thenReturn(tab);
     utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
-    when(tab.getId()).thenReturn("tab123");
+    when(tab.getId()).thenReturn(TAB);
     when(tab.getADFieldList()).thenReturn(new ArrayList<>());
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
     when(obError.getMessage()).thenReturn("No fields to register");
 
     assertDoesNotThrow(() -> service.get(requestParams, responseVars));
-    assertEquals("Success - No fields to register", responseVars.get("message"));
+    assertEquals("Success - No fields to register", responseVars.get(MESSAGE));
   }
 
   /**
@@ -458,12 +467,12 @@ class RegisterFieldsTest {
     setupValidRequestParams();
     setupMocksForSuccessfulRegistration();
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -476,16 +485,16 @@ class RegisterFieldsTest {
    * changes to the database.
    */
   @Test
-  void testGet_ShouldCallFlushAfterSavingFields() {
+  void testGetShouldCallFlushAfterSavingFields() {
     setupValidRequestParams();
     setupMocksForSuccessfulRegistration();
 
-    utilsMock.when(() -> Utils.execPInstanceProcess("174", "tab123"))
+    utilsMock.when(() -> Utils.execPInstanceProcess("174", TAB))
         .thenReturn(obError);
 
-    when(obError.getType()).thenReturn("Success");
-    when(obError.getTitle()).thenReturn("Success");
-    when(obError.getMessage()).thenReturn("Fields registered");
+    when(obError.getType()).thenReturn(SUCCESS);
+    when(obError.getTitle()).thenReturn(SUCCESS);
+    when(obError.getMessage()).thenReturn(FIELDS_REGISTERED);
 
     service.get(requestParams, responseVars);
 
@@ -496,9 +505,9 @@ class RegisterFieldsTest {
    * Populates requestParams with a valid set of inputs used by most tests.
    */
   private void setupValidRequestParams() {
-    requestParams.put("WindowTabID", "tab123");
-    requestParams.put("HelpComment", "Test help comment");
-    requestParams.put("Description", "Test description");
+    requestParams.put("WindowTabID", TAB);
+    requestParams.put("HelpComment", TEST_HELP_COMMENT);
+    requestParams.put("Description", TEST_DESCRIPTION);
     requestParams.put("DBPrefix", "TEST");
   }
 
@@ -507,9 +516,9 @@ class RegisterFieldsTest {
    * field list with two regular fields and wires their Column and Element data.
    */
   private void setupMocksForSuccessfulRegistration() {
-    when(obDal.get(Tab.class, "tab123")).thenReturn(tab);
+    when(obDal.get(Tab.class, TAB)).thenReturn(tab);
     utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
-    when(tab.getId()).thenReturn("tab123");
+    when(tab.getId()).thenReturn(TAB);
 
     fieldList.add(field1);
     fieldList.add(field2);
@@ -524,9 +533,9 @@ class RegisterFieldsTest {
    * key column that should be ignored during updates.
    */
   private void setupMocksForSuccessfulRegistrationWithKeyColumn() {
-    when(obDal.get(Tab.class, "tab123")).thenReturn(tab);
+    when(obDal.get(Tab.class, TAB)).thenReturn(tab);
     utilsMock.when(() -> Utils.getModuleByPrefix("TEST")).thenReturn(module);
-    when(tab.getId()).thenReturn("tab123");
+    when(tab.getId()).thenReturn(TAB);
 
     fieldList.add(field1);
     fieldList.add(field2);

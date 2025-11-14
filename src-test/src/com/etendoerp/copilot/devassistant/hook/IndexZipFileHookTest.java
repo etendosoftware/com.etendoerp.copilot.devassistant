@@ -1,5 +1,14 @@
 package com.etendoerp.copilot.devassistant.hook;
 
+import static com.etendoerp.copilot.devassistant.TestConstants.CONTENT1;
+import static com.etendoerp.copilot.devassistant.TestConstants.CONTENT2;
+import static com.etendoerp.copilot.devassistant.TestConstants.COPILOT_FILE;
+import static com.etendoerp.copilot.devassistant.TestConstants.FILE1;
+import static com.etendoerp.copilot.devassistant.TestConstants.FILE2;
+import static com.etendoerp.copilot.devassistant.TestConstants.ORG123;
+import static com.etendoerp.copilot.devassistant.TestConstants.SOURCE_PATH;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_CONTENT;
+import static com.etendoerp.copilot.devassistant.TestConstants.TEST_FILE_TXT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -189,8 +198,8 @@ class IndexZipFileHookTest {
    */
   @Test
   void testGetCodeIndexZipFileWithSingleFileShouldCreateZip() throws IOException {
-    Path testFile = tempDir.resolve("test.txt");
-    Files.writeString(testFile, "test content");
+    Path testFile = tempDir.resolve(TEST_FILE_TXT);
+    Files.writeString(testFile, TEST_CONTENT);
 
     String[] searchPaths = {testFile.toString()};
     File zipFile = IndexZipFileHook.getCodeIndexZipFile(searchPaths);
@@ -211,10 +220,10 @@ class IndexZipFileHookTest {
     Path subDir = tempDir.resolve("subdir");
     Files.createDirectories(subDir);
 
-    Path file1 = tempDir.resolve("file1.txt");
-    Path file2 = subDir.resolve("file2.txt");
-    Files.writeString(file1, "content1");
-    Files.writeString(file2, "content2");
+    Path file1 = tempDir.resolve(FILE1);
+    Path file2 = subDir.resolve(FILE2);
+    Files.writeString(file1, CONTENT1);
+    Files.writeString(file2, CONTENT2);
 
     String[] searchPaths = {tempDir.toString()};
     File zipFile = IndexZipFileHook.getCodeIndexZipFile(searchPaths);
@@ -232,8 +241,8 @@ class IndexZipFileHookTest {
     Path file1 = tempDir.resolve("test1.txt");
     Path file2 = tempDir.resolve("test2.txt");
     Path file3 = tempDir.resolve("other.log");
-    Files.writeString(file1, "content1");
-    Files.writeString(file2, "content2");
+    Files.writeString(file1, CONTENT1);
+    Files.writeString(file2, CONTENT2);
     Files.writeString(file3, "content3");
 
     String[] searchPaths = { tempDir + File.separator + "*.txt"};
@@ -297,10 +306,10 @@ class IndexZipFileHookTest {
    */
   @Test
   void testGetCodeIndexZipFileWithMultiplePathsShouldIncludeAll() throws IOException {
-    Path file1 = tempDir.resolve("file1.txt");
-    Path file2 = tempDir.resolve("file2.txt");
-    Files.writeString(file1, "content1");
-    Files.writeString(file2, "content2");
+    Path file1 = tempDir.resolve(FILE1);
+    Path file2 = tempDir.resolve(FILE2);
+    Files.writeString(file1, CONTENT1);
+    Files.writeString(file2, CONTENT2);
 
     String[] searchPaths = {file1.toString(), file2.toString()};
     File zipFile = IndexZipFileHook.getCodeIndexZipFile(searchPaths);
@@ -315,8 +324,8 @@ class IndexZipFileHookTest {
    */
   @Test
   void testGetCodeIndexZipFileWithPathsContainingSpacesShouldTrim() throws IOException {
-    Path testFile = tempDir.resolve("test.txt");
-    Files.writeString(testFile, "test content");
+    Path testFile = tempDir.resolve(TEST_FILE_TXT);
+    Files.writeString(testFile, TEST_CONTENT);
 
     String[] searchPaths = {"  " + testFile + "  "};
     File zipFile = IndexZipFileHook.getCodeIndexZipFile(searchPaths);
@@ -357,11 +366,9 @@ class IndexZipFileHookTest {
    */
   @Test
   void testGetAttachmentWhenAttachmentExistsShouldReturnAttachment() {
-    when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(attachment);
-    when(copilotFile.getId()).thenReturn("copilotFile123");
+    mockAttachmentCriteria(attachment);
+
+    when(copilotFile.getId()).thenReturn(COPILOT_FILE);
     when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
 
     Attachment result = IndexZipFileHook.getAttachment(copilotFile);
@@ -375,11 +382,9 @@ class IndexZipFileHookTest {
    */
   @Test
   void testGetAttachmentWhenNoAttachmentExistsShouldReturnNull() {
-    when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(null);
-    when(copilotFile.getId()).thenReturn("copilotFile123");
+    mockAttachmentCriteria(null);
+
+    when(copilotFile.getId()).thenReturn(COPILOT_FILE);
     when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
 
     Attachment result = IndexZipFileHook.getAttachment(copilotFile);
@@ -394,15 +399,15 @@ class IndexZipFileHookTest {
    */
   @Test
   void testExecWithValidPathsShouldCreateAndUploadZip() throws IOException {
-    Path testFile = tempDir.resolve("test.txt");
-    Files.writeString(testFile, "test content");
+    Path testFile = tempDir.resolve(TEST_FILE_TXT);
+    Files.writeString(testFile, TEST_CONTENT);
 
     setupExecMocks(testFile.toString());
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
     verify(attachManager).upload(any(), eq(IndexZipFileHook.COPILOT_FILE_TAB_ID),
-        eq("copilotFile123"), eq("org123"), any(File.class));
+        eq(COPILOT_FILE), eq(ORG123), any(File.class));
   }
 
   /**
@@ -410,11 +415,11 @@ class IndexZipFileHookTest {
    */
   @Test
   void testExecWithExistingAttachmentShouldDeleteBeforeUpload() throws IOException {
-    Path testFile = tempDir.resolve("test.txt");
-    Files.writeString(testFile, "test content");
+    Path testFile = tempDir.resolve(TEST_FILE_TXT);
+    Files.writeString(testFile, TEST_CONTENT);
 
     setupExecMocks(testFile.toString());
-    when(attachmentCriteria.uniqueResult()).thenReturn(attachment);
+    mockAttachmentCriteria(attachment);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
@@ -427,23 +432,15 @@ class IndexZipFileHookTest {
    */
   @Test
   void testExecWithSourcePathTokenShouldReplaceToken() throws IOException {
-    Path testFile = tempDir.resolve("test.txt");
-    Files.writeString(testFile, "test content");
+    Path testFile = tempDir.resolve(TEST_FILE_TXT);
+    Files.writeString(testFile, TEST_CONTENT);
 
     when(pathFile1.getPathFile()).thenReturn("@source.path@/test.txt");
     pathFileList.add(pathFile1);
 
-    properties.setProperty("source.path", tempDir.toString());
-    when(propertiesProvider.getOpenbravoProperties()).thenReturn(properties);
-    when(copilotFile.getCOPDEVKnowledgePathFilesList()).thenReturn(pathFileList);
-    when(copilotFile.getId()).thenReturn("copilotFile123");
-    when(copilotFile.getOrganization()).thenReturn(organization);
-    when(organization.getId()).thenReturn("org123");
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
-    when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(null);
+    properties.setProperty(SOURCE_PATH, tempDir.toString());
+    setupExecCommonMocks();
+    mockAttachmentCriteria(null);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
     verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
@@ -457,7 +454,7 @@ class IndexZipFileHookTest {
     when(pathFile1.getPathFile()).thenReturn("/nonexistent/path");
     pathFileList.add(pathFile1);
 
-    properties.setProperty("source.path", "/some/path");
+    properties.setProperty(SOURCE_PATH, "/some/path");
     when(propertiesProvider.getOpenbravoProperties()).thenReturn(properties);
     when(copilotFile.getCOPDEVKnowledgePathFilesList()).thenReturn(pathFileList);
 
@@ -476,8 +473,8 @@ class IndexZipFileHookTest {
    */
   @Test
   void testExecShouldCleanupTempFile() throws IOException {
-    Path testFile = tempDir.resolve("test.txt");
-    Files.writeString(testFile, "test content");
+    Path testFile = tempDir.resolve(TEST_FILE_TXT);
+    Files.writeString(testFile, TEST_CONTENT);
 
     setupExecMocks(testFile.toString());
 
@@ -491,30 +488,34 @@ class IndexZipFileHookTest {
    */
   @Test
   void testExecWithMultiplePathsShouldProcessAll() throws IOException {
-    Path file1 = tempDir.resolve("file1.txt");
-    Path file2 = tempDir.resolve("file2.txt");
-    Files.writeString(file1, "content1");
-    Files.writeString(file2, "content2");
+    Path file1 = tempDir.resolve(FILE1);
+    Path file2 = tempDir.resolve(FILE2);
+    Files.writeString(file1, CONTENT1);
+    Files.writeString(file2, CONTENT2);
 
     when(pathFile1.getPathFile()).thenReturn(file1.toString());
     when(pathFile2.getPathFile()).thenReturn(file2.toString());
     pathFileList.add(pathFile1);
     pathFileList.add(pathFile2);
 
-    properties.setProperty("source.path", tempDir.toString());
-    when(propertiesProvider.getOpenbravoProperties()).thenReturn(properties);
-    when(copilotFile.getCOPDEVKnowledgePathFilesList()).thenReturn(pathFileList);
-    when(copilotFile.getId()).thenReturn("copilotFile123");
-    when(copilotFile.getOrganization()).thenReturn(organization);
-    when(organization.getId()).thenReturn("org123");
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
-    when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(null);
+    properties.setProperty(SOURCE_PATH, tempDir.toString());
+    setupExecCommonMocks();
+    mockAttachmentCriteria(null);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
     verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
+  }
+
+  /**
+   * Configures common mocks used by exec() tests for path/file handling and DAL access.
+   */
+  private void setupExecCommonMocks() {
+    when(propertiesProvider.getOpenbravoProperties()).thenReturn(properties);
+    when(copilotFile.getCOPDEVKnowledgePathFilesList()).thenReturn(pathFileList);
+    when(copilotFile.getId()).thenReturn(COPILOT_FILE);
+    when(copilotFile.getOrganization()).thenReturn(organization);
+    when(organization.getId()).thenReturn(ORG123);
+    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
   }
 
   /**
@@ -526,17 +527,21 @@ class IndexZipFileHookTest {
     when(pathFile1.getPathFile()).thenReturn(filePath);
     pathFileList.add(pathFile1);
 
-    properties.setProperty("source.path", tempDir.toString());
-    when(propertiesProvider.getOpenbravoProperties()).thenReturn(properties);
-    when(copilotFile.getCOPDEVKnowledgePathFilesList()).thenReturn(pathFileList);
-    when(copilotFile.getId()).thenReturn("copilotFile123");
-    when(copilotFile.getOrganization()).thenReturn(organization);
-    when(organization.getId()).thenReturn("org123");
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
+    properties.setProperty(SOURCE_PATH, tempDir.toString());
+    setupExecCommonMocks();
+    mockAttachmentCriteria(null);
+  }
+
+  /**
+   * Configures the Attachment criteria mocks to return the specified result.
+   *
+   * @param attachmentResult the Attachment instance to be returned by uniqueResult(),
+   *                         or {@code null} if no attachment is expected.
+   */
+  private void mockAttachmentCriteria(Attachment attachmentResult) {
     when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
     when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
     when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(null);
+    when(attachmentCriteria.uniqueResult()).thenReturn(attachmentResult);
   }
 }
-
