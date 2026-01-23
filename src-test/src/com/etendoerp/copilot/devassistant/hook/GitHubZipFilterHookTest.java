@@ -53,6 +53,7 @@ import org.openbravo.model.ad.utility.Attachment;
 
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
+import com.etendoerp.copilot.util.CopilotConstants;
 import com.etendoerp.copilot.util.FileUtils;
 
 /**
@@ -255,7 +256,7 @@ class GitHubZipFilterHookTest {
     }
 
     // Verify cleanup was called
-    fileUtilsMock.verify(() -> FileUtils.cleanupTempFile(any(), eq(true)), atLeastOnce());
+    fileUtilsMock.verify(() -> FileUtils.cleanupTempFileIfNeeded(eq(copilotFile), any()), atLeastOnce());
   }
 
   /**
@@ -288,9 +289,9 @@ class GitHubZipFilterHookTest {
     when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
     when(attachmentCriteria.uniqueResult()).thenReturn(attachment);
     when(copilotFile.getId()).thenReturn("copilotFile123");
-    when(obDal.get(Table.class, GitHubZipFilterHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
+    when(obDal.get(Table.class, CopilotConstants.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
 
-    Attachment result = GitHubZipFilterHook.getAttachment(copilotFile);
+    Attachment result = FileUtils.getAttachment(copilotFile);
 
     assertNotNull(result);
     assertEquals(attachment, result);
@@ -306,9 +307,9 @@ class GitHubZipFilterHookTest {
     when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
     when(attachmentCriteria.uniqueResult()).thenReturn(null);
     when(copilotFile.getId()).thenReturn("copilotFile123");
-    when(obDal.get(Table.class, GitHubZipFilterHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
+    when(obDal.get(Table.class, CopilotConstants.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
 
-    Attachment result = GitHubZipFilterHook.getAttachment(copilotFile);
+    Attachment result = FileUtils.getAttachment(copilotFile);
 
     assertNull(result);
   }

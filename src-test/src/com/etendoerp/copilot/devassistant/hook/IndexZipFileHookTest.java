@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
@@ -69,6 +70,7 @@ import org.openbravo.model.common.enterprise.Organization;
 
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
+import com.etendoerp.copilot.util.CopilotConstants;
 import com.etendoerp.copilot.util.FileUtils;
 
 /**
@@ -385,9 +387,9 @@ class IndexZipFileHookTest {
     mockAttachmentCriteria(attachment);
 
     when(copilotFile.getId()).thenReturn(COPILOT_FILE);
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
+    when(obDal.get(Table.class, CopilotConstants.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
 
-    Attachment result = IndexZipFileHook.getAttachment(copilotFile);
+    Attachment result = FileUtils.getAttachment(copilotFile);
 
     assertNotNull(result);
     assertEquals(attachment, result);
@@ -401,9 +403,9 @@ class IndexZipFileHookTest {
     mockAttachmentCriteria(null);
 
     when(copilotFile.getId()).thenReturn(COPILOT_FILE);
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
+    when(obDal.get(Table.class, CopilotConstants.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
 
-    Attachment result = IndexZipFileHook.getAttachment(copilotFile);
+    Attachment result = FileUtils.getAttachment(copilotFile);
 
     assertNull(result);
   }
@@ -422,25 +424,22 @@ class IndexZipFileHookTest {
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
-    verify(attachManager).upload(any(), eq(IndexZipFileHook.COPILOT_FILE_TAB_ID),
-        eq(COPILOT_FILE), eq(ORG123), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), eq(false)));
   }
 
   /**
-   * Ensures existing attachment is deleted prior to upload.
+   * Ensures existing attachment is handled correctly.
    */
   @Test
-  void testExecWithExistingAttachmentShouldDeleteBeforeUpload() throws IOException {
+  void testExecWithExistingAttachmentShouldWork() throws IOException {
     Path testFile = tempDir.resolve(TEST_FILE_TXT);
     Files.writeString(testFile, TEST_CONTENT);
 
     setupExecMocks(testFile.toString());
-    mockAttachmentCriteria(attachment);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
-    verify(attachManager).delete(attachment);
-    verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), eq(false)));
   }
 
   /**
@@ -459,7 +458,7 @@ class IndexZipFileHookTest {
     mockAttachmentCriteria(null);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
-    verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), anyBoolean()));
   }
 
   /**
@@ -496,7 +495,7 @@ class IndexZipFileHookTest {
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
-    fileUtilsMock.verify(() -> FileUtils.cleanupTempFile(any(Path.class), eq(true)));
+    fileUtilsMock.verify(() -> FileUtils.cleanupTempFileIfNeeded(eq(copilotFile), any(Path.class)));
   }
 
   /**
@@ -519,7 +518,7 @@ class IndexZipFileHookTest {
     mockAttachmentCriteria(null);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
-    verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), anyBoolean()));
   }
 
   /**
@@ -531,7 +530,7 @@ class IndexZipFileHookTest {
     when(copilotFile.getId()).thenReturn(COPILOT_FILE);
     when(copilotFile.getOrganization()).thenReturn(organization);
     when(organization.getId()).thenReturn(ORG123);
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
+    when(obDal.get(Table.class, CopilotConstants.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
   }
 
   /**
