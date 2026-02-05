@@ -13,7 +13,6 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -27,13 +26,9 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.session.OBPropertiesProvider;
-import org.openbravo.base.weld.WeldUtils;
-import org.openbravo.client.application.attachment.AttachImplementationManager;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.datamodel.Table;
-import org.openbravo.model.ad.utility.Attachment;
 
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
@@ -46,9 +41,6 @@ import com.etendoerp.copilot.util.FileUtils;
  */
 public class IndexZipFileHook implements CopilotFileHook {
 
-  // Tab ID for CopilotFile
-  public static final String COPILOT_FILE_TAB_ID = "09F802E423924081BC2947A64DDB5AF5";
-  public static final String COPILOT_FILE_AD_TABLE_ID = "6B246B1B3A6F4DE8AFC208E07DB29CE2";
   protected static final String[] IGNORE_STRINGS = { ".git", "node_modules", ".idea", "/.", "/venv/", "/.venv/" };
   private static final Logger log = LogManager.getLogger(IndexZipFileHook.class);
 
@@ -315,23 +307,6 @@ public class IndexZipFileHook implements CopilotFileHook {
   }
 
   /**
-   * Retrieves the attachment associated with the given CopilotFile.
-   * This method creates a criteria query to find an attachment that matches the specified CopilotFile.
-   *
-   * @param targetInstance
-   *     The CopilotFile instance for which the attachment is to be retrieved.
-   * @return The Attachment associated with the given CopilotFile, or null if no attachment is found.
-   */
-  public static Attachment getAttachment(CopilotFile targetInstance) {
-    OBCriteria<Attachment> attchCriteria = OBDal.getInstance().createCriteria(Attachment.class);
-    attchCriteria.add(Restrictions.eq(Attachment.PROPERTY_RECORD, targetInstance.getId()));
-    attchCriteria.add(Restrictions.eq(Attachment.PROPERTY_TABLE,
-        OBDal.getInstance().get(Table.class, COPILOT_FILE_AD_TABLE_ID)));
-    attchCriteria.add(Restrictions.ne(Attachment.PROPERTY_ID, targetInstance.getId()));
-    return (Attachment) attchCriteria.setMaxResults(1).uniqueResult();
-  }
-
-  /**
    * Executes the hook for a given CopilotFile.
    *
    * @param hookObject
@@ -344,6 +319,7 @@ public class IndexZipFileHook implements CopilotFileHook {
     if (log.isDebugEnabled()) {
       log.debug(String.format("IndexZipFile for file: %s executed start", hookObject.getName()));
     }
+    Path zipPath = null;
     try {
       List<KnowledgePathFile> pathList = hookObject.getCOPDEVKnowledgePathFilesList();
       Properties props = OBPropertiesProvider.getInstance().getOpenbravoProperties();
@@ -355,43 +331,15 @@ public class IndexZipFileHook implements CopilotFileHook {
           .toArray(String[]::new);
 
       File zip = getCodeIndexZipFile(realPaths);
-      AttachImplementationManager aim = WeldUtils.getInstanceFromStaticBeanManager(
-          AttachImplementationManager.class);
-
-      // Remove existing attachment if present
-      Attachment existing = getAttachment(hookObject);
-      if (existing != null) {
-        aim.delete(existing);
-      }
-      aim.upload(
-          new HashMap<>(),
-          COPILOT_FILE_TAB_ID,
-          hookObject.getId(),
-          hookObject.getOrganization().getId(),
-          zip
-      );
-      FileUtils.cleanupTempFile(zip.toPath(), true);
+      zipPath = zip.toPath();
+      FileUtils.processFileAttachment(hookObject, zipPath, isMultiClient());
 
     } catch (Exception e) {
       throw new OBException(
           String.format(OBMessageUtils.messageBD("COPDEV_ErrorAttachingFile")), e
       );
-    }
-  }
-
-  /**
-   * Removes the attachment associated with the given CopilotFile.
-   * This method retrieves the attachment for the specified CopilotFile and deletes it using the provided AttachImplementationManager.
-   *
-   * @param aim
-   *     The AttachImplementationManager instance used to delete the attachment.
-   * @param hookObject
-   *     The CopilotFile instance for which the attachment is to be removed.
-   */
-  private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
-    Attachment attachment = getAttachment(hookObject);
-    if (attachment != null) {
-      aim.delete(attachment);
+    } finally {
+      FileUtils.cleanupTempFileIfNeeded(hookObject, zipPath);
     }
   }
 
