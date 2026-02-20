@@ -2,6 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 from typing import Dict, Type
 
+from copilot.baseutils.logging_envvar import read_optional_env_var
 from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils.models import get_openai_client
@@ -150,8 +151,8 @@ class XMLTranslationTool(ToolWrapper):
                 None if no untranslated elements were found.
         """
         client = get_openai_client()
-        business_requirement = os.getenv("BUSINESS_TOPIC", "ERP")
-        model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        business_requirement = read_optional_env_var("business.topic", "ERP")
+        model = read_optional_env_var("openai.model", "gpt-4o-mini")
         with open(filepath, "r") as file:
             first_line = file.readline().strip()
             content = file.read()
