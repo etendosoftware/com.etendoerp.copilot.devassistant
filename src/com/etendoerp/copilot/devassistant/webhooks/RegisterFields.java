@@ -68,24 +68,20 @@ public class RegisterFields extends BaseWebhookService {
       OBDal.getInstance().refresh(module);
       List<Field> fields = tab.getADFieldList();
       fields.stream()
-          .filter(field -> !field.getColumn().isKeyColumn())  // Ignore key columns
+          .filter(field -> field.getColumn() != null && !field.getColumn().isKeyColumn())
           .forEach(field -> {
 
-            // Update element names and print text for fields
+            // Update element names and print text for fields (only if element exists and belongs to our module)
             Element element = field.getColumn().getApplicationElement();
-            String elementName = element.getName();
-            String elementPrinTxt = element.getPrintText();
-            if (StringUtils.isBlank(elementName)) {
-              elementName = field.getColumn().getName();
-            }
-            if (StringUtils.isBlank(elementPrinTxt)) {
-              elementPrinTxt = field.getColumn().getName();
-            }
-            if (element.getModule() != null && module != null
-                    && StringUtils.equals(element.getModule().getId(), module.getId())) {
+            if (element != null) {
+              String elementName = StringUtils.defaultIfEmpty(element.getName(), field.getColumn().getName());
+              String elementPrinTxt = StringUtils.defaultIfEmpty(element.getPrintText(), field.getColumn().getName());
+              if (element.getModule() != null && module != null
+                      && StringUtils.equals(element.getModule().getId(), module.getId())) {
                 element.setName(StringUtils.replace(elementName, "_", " "));
                 element.setPrintText(StringUtils.replace(elementPrinTxt, "_", " "));
                 OBDal.getInstance().save(element);
+              }
             }
 
             // Set help comment, description, and show field in grid view

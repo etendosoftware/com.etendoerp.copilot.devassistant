@@ -91,7 +91,8 @@ public class RegisterTab extends BaseWebhookService {
       String windowId = parameter.get(WINDOW_ID);
       String tabLevel = parameter.get(TAB_LEVEL);
       String description = parameter.get(DESCRIPTION);
-      String helpComment = parameter.get(HELP_COMMENT);
+      // Fix Bug 2: HelpComment is required at DB level; default to description if missing
+      String helpComment = StringUtils.defaultIfEmpty(parameter.get(HELP_COMMENT), description);
       String tableNae = parameter.get(TABLE_NAME);
       String sequenceNumber = parameter.get(SEQUENCE_NUMBER);
       String dbPrefix = parameter.get(DB_PREFIX);

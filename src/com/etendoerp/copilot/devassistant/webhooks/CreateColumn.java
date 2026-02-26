@@ -23,6 +23,8 @@ import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.domain.ReferencedTable;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
+import org.openbravo.model.ad.ui.Element;
+import org.openbravo.dal.service.OBCriteria;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.webhookevents.services.BaseWebhookService;
@@ -133,6 +135,8 @@ public class CreateColumn extends BaseWebhookService {
         newCol.setLength(Long.valueOf(length));
       }
       OBDal.getInstance().save(newCol);
+      // Fix Bug 1: create AD_ELEMENT so RegisterFields doesn't fail with NullPointer
+      ensureElementLinked(newCol, name, module);
       OBDal.getInstance().flush();
       messageArray.put(String.format(OBMessageUtils.messageBD("COPDEV_ColumnAddedSucc"), newCol.getId()));
 
@@ -454,5 +458,39 @@ public class CreateColumn extends BaseWebhookService {
 
   private static Pair<String, Integer> getPair(String type, int length) {
     return Pair.of(type, length);
+  }
+
+  /**
+   * Ensures the column has an AD_ELEMENT linked to it.
+   * If the element doesn't exist, creates one. This prevents RegisterFields
+   * from failing with NullPointer when calling element.getName().
+   * Fixes Bug 1.
+   *
+   * @param col    The column to link the element to.
+   * @param name   The display name to use for the element.
+   * @param module The module the element belongs to.
+   */
+  private void ensureElementLinked(Column col, String name, org.openbravo.model.ad.module.Module module) {
+    if (col.getApplicationElement() != null) {
+      return;
+    }
+    String dbColName = col.getDBColumnName();
+    OBCriteria<Element> crit = OBDal.getInstance().createCriteria(Element.class);
+    crit.add(Restrictions.ilike(Element.PROPERTY_DBCOLUMNNAME, dbColName, MatchMode.EXACT));
+    crit.setMaxResults(1);
+    Element element = (Element) crit.uniqueResult();
+    if (element == null) {
+      element = OBProvider.getInstance().get(Element.class);
+      element.setNewOBObject(true);
+      element.setClient(col.getClient());
+      element.setOrganization(col.getOrganization());
+      element.setDBColumnName(dbColName);
+      element.setName(name);
+      element.setPrintText(name);
+      element.setModule(module);
+      OBDal.getInstance().save(element);
+    }
+    col.setApplicationElement(element);
+    OBDal.getInstance().save(col);
   }
 }

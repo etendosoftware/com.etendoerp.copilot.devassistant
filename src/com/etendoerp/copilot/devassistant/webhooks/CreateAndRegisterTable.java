@@ -244,6 +244,12 @@ public class CreateAndRegisterTable extends BaseWebhookService {
       offset++;
     }
 
+    if (result.length() > MAX_LENGTH) {
+      throw new org.openbravo.base.exception.OBException(
+          String.format("Constraint name '%s' exceeds the maximum length of %d characters. " +
+              "Shorten the table or column name.", result, MAX_LENGTH));
+    }
+
     return result;
   }
 

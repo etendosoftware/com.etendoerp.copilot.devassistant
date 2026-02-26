@@ -54,7 +54,8 @@ public class RegisterWindow extends BaseWebhookService {
       String dbPrefix = parameter.get("DBPrefix");
       String name = parameter.get("Name");
       String description = parameter.get("Description");
-      String helpComment = parameter.get("HelpComment");
+      // Fix Bug 2: HelpComment is required at DB level; default to description if missing
+      String helpComment = StringUtils.defaultIfEmpty(parameter.get("HelpComment"), description);
 
       // Validating required parameters
       if ( StringUtils.isEmpty(dbPrefix)) {

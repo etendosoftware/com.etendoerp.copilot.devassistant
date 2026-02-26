@@ -1,11 +1,14 @@
 package com.etendoerp.copilot.devassistant;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
@@ -14,7 +17,9 @@ import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
+import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
@@ -26,8 +31,9 @@ import org.openbravo.model.common.enterprise.Organization;
  */
 public class TableRegistrationUtils {
 
+  private static final Logger LOG = LogManager.getLogger();
   public static final String REGISTER_COLUMNS_PROCESS = "173";
-
+  private static final String SEARCH_REFERENCE_ID = "30";
 
   private TableRegistrationUtils() {
     throw new AssertionError("Utility class - do not instantiate");
@@ -48,9 +54,38 @@ public class TableRegistrationUtils {
     }
     List<DataPackage> dataPackList = getDataPackageList(module);
     if (dataPackList.isEmpty()) {
-      throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ModNotDP"), module.getName()));
+      // Fix Bug 2: auto-create the package so modules created via SQL don't fail
+      return createDataPackage(module);
     }
     return dataPackList.get(0);
+  }
+
+  /**
+   * Auto-creates a DataPackage for a module that was created without one (e.g., via SQL directly).
+   * Fixes Bug 2: CreateAndRegisterTable failing with "Module has not a datapackage".
+   *
+   * @param module The module to create a package for.
+   * @return The newly created DataPackage.
+   */
+  private static DataPackage createDataPackage(Module module) {
+    LOG.info("Module '{}' has no DataPackage, auto-creating one", module.getName());
+    Client client = OBDal.getInstance().get(Client.class, "0");
+    Organization org = OBDal.getInstance().get(Organization.class, "0");
+    String javaPackage = StringUtils.defaultIfEmpty(module.getJavaPackage(), module.getName().toLowerCase().replace(" ", "."));
+
+    DataPackage pkg = OBProvider.getInstance().get(DataPackage.class);
+    pkg.setNewOBObject(true);
+    pkg.setClient(client);
+    pkg.setOrganization(org);
+    pkg.setModule(module);
+    pkg.setName(module.getName());
+    pkg.setDescription(module.getName() + " Package");
+    pkg.setJavaPackage(javaPackage);
+    pkg.setActive(true);
+    OBDal.getInstance().save(pkg);
+    OBDal.getInstance().flush();
+    LOG.info("DataPackage auto-created for module '{}'", module.getName());
+    return pkg;
   }
 
   /**
@@ -173,6 +208,16 @@ public class TableRegistrationUtils {
     OBDal.getInstance().save(adTable);
     OBDal.getInstance().flush();
 
+    // Fix Bug 6+7: Register all physical columns (PK + standard) into AD_COLUMN
+    try {
+      executeRegisterColumns(adTable.getId());
+    } catch (Exception e) {
+      LOG.warn("Could not auto-register columns for table {}: {}", tableName, e.getMessage());
+    }
+
+    // Fix Bug 8: createdby/updatedby must use reference '30' (Search), not '18' (Table)
+    fixAuditColumnReferences(adTable);
+
     return adTable;
   }
 
@@ -211,5 +256,34 @@ public class TableRegistrationUtils {
   public static String executeRegisterColumns(String recordId) throws ServletException {
     OBError myMessage = Utils.execPInstanceProcess(REGISTER_COLUMNS_PROCESS, recordId);
     return myMessage.getTitle() + " - " + myMessage.getMessage();
+  }
+
+  /**
+   * Fixes the AD_COLUMN reference for createdby and updatedby columns.
+   * These must use reference '30' (Search) instead of '18' (Table) so that
+   * Hibernate can resolve the FK to AD_User correctly.
+   * Fixes Bug 8.
+   *
+   * @param adTable The table whose audit columns need to be fixed.
+   */
+  private static void fixAuditColumnReferences(Table adTable) {
+    Reference searchRef = OBDal.getInstance().get(Reference.class, SEARCH_REFERENCE_ID);
+    if (searchRef == null) {
+      LOG.warn("Search reference '{}' not found, skipping audit column fix", SEARCH_REFERENCE_ID);
+      return;
+    }
+    OBDal.getInstance().refresh(adTable);
+    OBCriteria<Column> crit = OBDal.getInstance().createCriteria(Column.class);
+    crit.add(Restrictions.eq(Column.PROPERTY_TABLE, adTable));
+    crit.add(Restrictions.in(Column.PROPERTY_DBCOLUMNNAME, Arrays.asList("createdby", "updatedby")));
+    List<Column> auditCols = crit.list();
+    for (Column col : auditCols) {
+      col.setReference(searchRef);
+      OBDal.getInstance().save(col);
+    }
+    if (!auditCols.isEmpty()) {
+      OBDal.getInstance().flush();
+      LOG.info("Fixed reference for createdby/updatedby columns in table {}", adTable.getDBTableName());
+    }
   }
 }
