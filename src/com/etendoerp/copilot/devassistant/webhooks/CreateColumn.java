@@ -101,8 +101,14 @@ public class CreateColumn extends BaseWebhookService {
     String prefix = getPrefix(module);
     String prefixForConstraint = prefix;
     if (isExternal) {
-      columnName = "EM_" + prefix + "_" + columnName;
-      name = "EM_" + prefix + "_ " + name;
+      // Avoid prefix duplication: if columnName already starts with the prefix, don't add it again
+      if (StringUtils.startsWithIgnoreCase(columnName, prefix + "_")) {
+        columnName = "EM_" + columnName;
+        name = "EM_ " + name;
+      } else {
+        columnName = "EM_" + prefix + "_" + columnName;
+        name = "EM_" + prefix + "_ " + name;
+      }
       prefixForConstraint = "EM_" + prefix;
     }
 
@@ -112,8 +118,10 @@ public class CreateColumn extends BaseWebhookService {
     }
 
     try {
+      boolean nullable = StringUtils.equalsIgnoreCase(canBeNull, "true")
+          || StringUtils.equalsIgnoreCase(canBeNull, "Y");
       JSONObject response = addColumn(prefix, dbTableName, columnName, reference, defaultParam,
-          StringUtils.equalsIgnoreCase(canBeNull, "true"));
+          nullable);
       handleFKCase(reference, columnName, prefixForConstraint, table, dbTableName, messageArray);
 
       Column newCol = OBProvider.getInstance().get(Column.class);

@@ -73,7 +73,10 @@ public class CreateModule extends BaseWebhookService {
       OBContext.setAdminMode(true);
       try {
         Module module = createModule(name, javaPackage, description, version, author, type);
-        createModuleDBPrefix(module, normalizedPrefix);
+        // Templates (Type=T) cannot have DB prefixes — DB trigger blocks it
+        if (!StringUtils.equalsIgnoreCase(type, "T")) {
+          createModuleDBPrefix(module, normalizedPrefix);
+        }
         createDataPackage(module);
         OBDal.getInstance().flush();
 
