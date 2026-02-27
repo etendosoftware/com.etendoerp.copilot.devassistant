@@ -174,6 +174,9 @@ public class CreateColumn extends BaseWebhookService {
       OBDal.getInstance().refresh(module);
       moduleDBPrefixList = module.getModuleDBPrefixList();
     }
+    if (moduleDBPrefixList.isEmpty()) {
+      throw new OBException(String.format("Module '%s' has no database prefix configured.", module.getName()));
+    }
     return moduleDBPrefixList.get(0).getName();
   }
 

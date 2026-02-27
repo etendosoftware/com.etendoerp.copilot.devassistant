@@ -203,12 +203,20 @@ public class CreateView extends BaseWebhookService {
    *     If a database error occurs.
    */
   private void createAndVerifyView(String viewDbName, String querySelect) throws SQLException {
-    Connection conn = null;
-    PreparedStatement statement = null;
-    try {
-      conn = OBDal.getInstance().getConnection();
-      String query = String.format("CREATE OR REPLACE VIEW public.%s AS %s", viewDbName, querySelect);
-      statement = conn.prepareStatement(query);
+    // Validate the view name to prevent SQL injection (identifiers can't be parameterized)
+    if (viewDbName == null || !viewDbName.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+      throw new OBException("Invalid view name: " + viewDbName);
+    }
+    // querySelect is validated by checkProyections() which executes it in a subquery first.
+    // Strip trailing semicolons to prevent statement chaining.
+    String safeQuery = querySelect.trim();
+    if (safeQuery.endsWith(";")) {
+      safeQuery = safeQuery.substring(0, safeQuery.length() - 1);
+    }
+
+    Connection conn = OBDal.getInstance().getConnection();
+    String query = String.format("CREATE OR REPLACE VIEW public.%s AS %s", viewDbName, safeQuery);
+    try (PreparedStatement statement = conn.prepareStatement(query)) {
       boolean resultBool = statement.execute();
       LOG.debug("Query executed and returned: {}", resultBool);
 
@@ -216,17 +224,7 @@ public class CreateView extends BaseWebhookService {
       LOG.debug("Transaction committed after creating view");
 
       verifyViewExists(conn, viewDbName);
-
       logViewColumns(conn, viewDbName);
-
-    } finally {
-      if (statement != null) {
-        try {
-          statement.close();
-        } catch (SQLException e) {
-          LOG.error("Error closing statement: {}", e.getMessage(), e);
-        }
-      }
     }
   }
 
@@ -346,30 +344,34 @@ public class CreateView extends BaseWebhookService {
     if (querySelect.endsWith(";")) {
       querySelect = querySelect.substring(0, querySelect.length() - 1);
     }
+    if (viewDbName == null || !viewDbName.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+      throw new OBException("Invalid view name: " + viewDbName);
+    }
     String query = String.format("SELECT * FROM (%s) AS %s LIMIT 0", querySelect, viewDbName);
     Connection conn = OBDal.getInstance().getConnection();
-    try {
-      PreparedStatement statement = conn.prepareStatement(query);
+    try (PreparedStatement statement = conn.prepareStatement(query)) {
       statement.execute();
-      ResultSet resultSet = statement.getResultSet();
+      try (ResultSet resultSet = statement.getResultSet()) {
+        List<String> columnList = new ArrayList<>();
+        int columnCount = resultSet.getMetaData().getColumnCount();
+        for (int i = 1; i <= columnCount; i++) {
+          String columnName = resultSet.getMetaData().getColumnName(i);
+          LOG.debug("Column Name: {}", columnName);
+          columnList.add(columnName);
+        }
+        LOG.debug("Column List: {}", Arrays.toString(columnList.toArray()));
 
-      List<String> columnList = new ArrayList<>();
-      int columnCount = resultSet.getMetaData().getColumnCount();
-      for (int i = 1; i <= columnCount; i++) {
-        String columnName = resultSet.getMetaData().getColumnName(i);
-        LOG.debug("Column Name: {}", columnName);
-        columnList.add(columnName);
+        List<String> mandatoryColumns = Arrays.asList("ad_client_id", "ad_org_id", "isactive", "created", "createdby",
+            "updated", "updatedby", viewDbName + "_id");
+        List<String> missingCols = mandatoryColumns.stream().filter(
+            col -> columnList.stream().noneMatch(c -> StringUtils.equalsIgnoreCase(c, col))).collect(Collectors.toList());
+        if (!missingCols.isEmpty()) {
+          throw new OBException(
+              String.format(OBMessageUtils.messageBD("COPDEV_ProjectionColumnNotFound"), missingCols.toString()));
+        }
       }
-      LOG.debug("Column List: {}", Arrays.toString(columnList.toArray()));
-
-      List<String> mandatoryColumns = Arrays.asList("ad_client_id", "ad_org_id", "isactive", "created", "createdby",
-          "updated", "updatedby", viewDbName + "_id");
-      List<String> missingCols = mandatoryColumns.stream().filter(
-          col -> columnList.stream().noneMatch(c -> StringUtils.equalsIgnoreCase(c, col))).collect(Collectors.toList());
-      if (!missingCols.isEmpty()) {
-        throw new OBException(
-            String.format(OBMessageUtils.messageBD("COPDEV_ProjectionColumnNotFound"), missingCols.toString()));
-      }
+    } catch (OBException e) {
+      throw e;
     } catch (Exception e) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_InvalidQuery"), e.getMessage()));
     }

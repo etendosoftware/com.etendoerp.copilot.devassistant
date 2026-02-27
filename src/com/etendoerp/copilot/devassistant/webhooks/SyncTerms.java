@@ -65,14 +65,18 @@ public class SyncTerms extends BaseWebhookService {
       // Search for elements to clean
       OBCriteria<Element> elemCrit = OBDal.getInstance().createCriteria(Element.class);
       elemCrit.add(Restrictions.in(Element.PROPERTY_MODULE, modInDevList));
-      elemCrit.add(Restrictions.or(Restrictions.eq(Element.PROPERTY_NAME, Element.PROPERTY_DBCOLUMNNAME),
-          Restrictions.eq(Element.PROPERTY_DBCOLUMNNAME, Element.PROPERTY_PRINTTEXT)));
+      elemCrit.add(Restrictions.or(Restrictions.eqProperty(Element.PROPERTY_NAME, Element.PROPERTY_DBCOLUMNNAME),
+          Restrictions.eqProperty(Element.PROPERTY_DBCOLUMNNAME, Element.PROPERTY_PRINTTEXT)));
       List<Element> elemList = elemCrit.list();
 
       // Clean-up element names and print texts
       for (Element element : elemList) {
-        element.setName(StringUtils.replaceChars(StringUtils.capitalize(element.getName()), "_", " "));
-        element.setPrintText(StringUtils.replaceChars(StringUtils.capitalize(element.getPrintText()), "_", " "));
+        if (element.getName() != null) {
+          element.setName(StringUtils.replaceChars(StringUtils.capitalize(element.getName()), "_", " "));
+        }
+        if (element.getPrintText() != null) {
+          element.setPrintText(StringUtils.replaceChars(StringUtils.capitalize(element.getPrintText()), "_", " "));
+        }
         OBDal.getInstance().save(element);
       }
       OBDal.getInstance().flush();

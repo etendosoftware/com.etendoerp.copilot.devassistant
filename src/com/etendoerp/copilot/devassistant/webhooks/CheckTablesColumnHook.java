@@ -2,6 +2,10 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -126,10 +130,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       var columnInAD = CreateColumn.getDbType(column.getReference());
       String typeInAD = columnInAD.getLeft();
       // check if the column in DB has the same type as in AD and the same length
-      var query = String.format(
-          "SELECT column_name, udt_name, character_maximum_length " + "FROM information_schema.columns " + "WHERE table_name ilike '%s' AND column_name ilike '%s'",
-          column.getTable().getDBTableName(), column.getDBColumnName());
-      JSONObject result = Utils.executeQuery(query);
+      JSONObject result = queryColumnInfo(column.getTable().getDBTableName(), column.getDBColumnName());
       JSONArray resultArr = result.optJSONArray("result");
       if (resultArr == null || resultArr.length() <= 0) {
         return error.length() > 0 ? error : null;
@@ -142,11 +143,11 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       int lengthInDB = columnInfo.optInt("character_maximum_length", -1);
 
       if (needToApplyChangesInDB(column, typeInAD, typeInDB, lengthInDB)) {
-
-        query = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s%s", column.getTable().getDBTableName(),
-            column.getDBColumnName(),
-            typeInAD, getLength(column));
-        execAndLog(query, error);
+        String safeTableName = validateIdentifier(column.getTable().getDBTableName());
+        String safeColumnName = validateIdentifier(column.getDBColumnName());
+        String alterQuery = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s%s",
+            safeTableName, safeColumnName, typeInAD, getLength(column));
+        execAndLog(alterQuery, error);
       }
 
       return error.length() > 0 ? error : null;
@@ -270,7 +271,11 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       return false;
     }
 
-    return !StringUtils.equalsIgnoreCase(typeInAD, typeInDB) || column.getLength() != lengthInDB;
+    if (lengthInDB == -1) {
+      // No length info from DB (e.g., text type) — only compare types
+      return !StringUtils.equalsIgnoreCase(typeInAD, typeInDB);
+    }
+    return !StringUtils.equalsIgnoreCase(typeInAD, typeInDB) || !Long.valueOf(lengthInDB).equals(column.getLength());
   }
 
   /**
@@ -385,5 +390,44 @@ public class CheckTablesColumnHook extends BaseWebhookService {
     List<Tab> tabs = criteria.list();
 
     return tabs.isEmpty() ? null : tabs.get(0);
+  }
+
+  /**
+   * Queries the information_schema for column type info using a parameterized query.
+   */
+  private static JSONObject queryColumnInfo(String tableName, String columnName) throws JSONException {
+    Connection conn = OBDal.getInstance().getConnection();
+    JSONObject response = new JSONObject();
+    JSONArray rows = new JSONArray();
+    String query = "SELECT column_name, udt_name, character_maximum_length "
+        + "FROM information_schema.columns "
+        + "WHERE lower(table_name) = lower(?) AND lower(column_name) = lower(?)";
+    try (PreparedStatement ps = conn.prepareStatement(query)) {
+      ps.setString(1, tableName);
+      ps.setString(2, columnName);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          JSONObject row = new JSONObject();
+          row.put("column_name", rs.getString("column_name"));
+          row.put("udt_name", rs.getString("udt_name"));
+          row.put("character_maximum_length", rs.getObject("character_maximum_length"));
+          rows.put(row);
+        }
+      }
+    } catch (SQLException e) {
+      log.error("Error querying column info", e);
+    }
+    response.put("result", rows);
+    return response;
+  }
+
+  /**
+   * Validates that a SQL identifier contains only safe characters (letters, digits, underscores).
+   */
+  private static String validateIdentifier(String identifier) {
+    if (identifier == null || !identifier.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+      throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
+    }
+    return identifier;
   }
 }

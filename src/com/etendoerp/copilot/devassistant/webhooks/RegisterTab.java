@@ -126,7 +126,7 @@ public class RegisterTab extends BaseWebhookService {
       }
 
       // Ensuring the tab name starts with an uppercase letter
-      if (!Character.isUpperCase(name.charAt(0))) {
+      if (StringUtils.isNotEmpty(name) && !Character.isUpperCase(name.charAt(0))) {
         name = Character.toUpperCase(name.charAt(0)) + StringUtils.substring(name, 1);
       }
 
