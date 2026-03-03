@@ -303,7 +303,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
     if (StringUtils.isBlank(tableName)) {
       throw new org.openbravo.base.exception.OBException("Table name cannot be empty.");
     }
-    if (!tableName.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+    if (!tableName.matches("[a-zA-Z_]\\w*")) {
       throw new org.openbravo.base.exception.OBException(
           String.format("Invalid table name '%s'. Only letters, digits, and underscores are allowed.", tableName));
     }

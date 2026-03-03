@@ -40,6 +40,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
   private static final String TABLE_ID = "18";
   public static final String ERROR = "error";
   private static final String REFERENCE_INTEGER_ID = "11";
+  private static final String UDT_NAME = "udt_name";
+  private static final String CHARACTER_MAXIMUM_LENGTH = "character_maximum_length";
 
   @Override
   /**
@@ -136,11 +138,11 @@ public class CheckTablesColumnHook extends BaseWebhookService {
         return error.length() > 0 ? error : null;
       }
       JSONObject columnInfo = resultArr.getJSONObject(0);
-      String typeInDB = columnInfo.optString("udt_name");
+      String typeInDB = columnInfo.optString(UDT_NAME);
       if (StringUtils.equalsIgnoreCase(typeInDB, "bpchar")) {
         typeInDB = "character";
       }
-      int lengthInDB = columnInfo.optInt("character_maximum_length", -1);
+      int lengthInDB = columnInfo.optInt(CHARACTER_MAXIMUM_LENGTH, -1);
 
       if (needToApplyChangesInDB(column, typeInAD, typeInDB, lengthInDB)) {
         String safeTableName = validateIdentifier(column.getTable().getDBTableName());
@@ -399,7 +401,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
     Connection conn = OBDal.getInstance().getConnection();
     JSONObject response = new JSONObject();
     JSONArray rows = new JSONArray();
-    String query = "SELECT column_name, udt_name, character_maximum_length "
+    String query = "SELECT column_name, " + UDT_NAME + ", " + CHARACTER_MAXIMUM_LENGTH + " "
         + "FROM information_schema.columns "
         + "WHERE lower(table_name) = lower(?) AND lower(column_name) = lower(?)";
     try (PreparedStatement ps = conn.prepareStatement(query)) {
@@ -409,8 +411,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
         while (rs.next()) {
           JSONObject row = new JSONObject();
           row.put("column_name", rs.getString("column_name"));
-          row.put("udt_name", rs.getString("udt_name"));
-          row.put("character_maximum_length", rs.getObject("character_maximum_length"));
+          row.put(UDT_NAME, rs.getString(UDT_NAME));
+          row.put(CHARACTER_MAXIMUM_LENGTH, rs.getObject(CHARACTER_MAXIMUM_LENGTH));
           rows.put(row);
         }
       }
@@ -425,7 +427,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    * Validates that a SQL identifier contains only safe characters (letters, digits, underscores).
    */
   private static String validateIdentifier(String identifier) {
-    if (identifier == null || !identifier.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+    if (identifier == null || !identifier.matches("[a-zA-Z_]\\w*")) {
       throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
     }
     return identifier;

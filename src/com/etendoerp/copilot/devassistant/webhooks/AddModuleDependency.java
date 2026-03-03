@@ -75,7 +75,7 @@ public class AddModuleDependency extends BaseWebhookService {
 
       OBContext.setAdminMode(true);
       try {
-        ModuleDependency dep = createDependency(module, dependsOnModule,
+        createDependency(module, dependsOnModule,
             firstVersion, lastVersion, isIncluded, enforcement);
         OBDal.getInstance().flush();
 

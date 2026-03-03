@@ -80,14 +80,7 @@ public class CreateColumn extends BaseWebhookService {
         moduleId);
     var reference = OBDal.getInstance().get(Reference.class, referenceID);
     var isExternal = module != table.getDataPackage().getModule();
-    if (isTableDirRef(reference) && isExternal) {
-      //the table dir cannot be used in when is an em_ column
-      throw new OBException(OBMessageUtils.messageBD("COPDEV_ExternalTableDirRef"));
-    }
-
-    if (isTableDirRef(reference)) {
-      validateTableDir(table, columnName);
-    }
+    validateTableDirReference(reference, table, columnName, isExternal);
 
     if (Boolean.FALSE.equals(module.isInDevelopment())) {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_ModuleNotInDevelopment"));
@@ -152,6 +145,16 @@ public class CreateColumn extends BaseWebhookService {
       responseVars.put("response", response.toString());
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
+    }
+  }
+
+  private static void validateTableDirReference(Reference reference, Table table, String columnName,
+      boolean isExternal) {
+    if (isTableDirRef(reference) && isExternal) {
+      throw new OBException(OBMessageUtils.messageBD("COPDEV_ExternalTableDirRef"));
+    }
+    if (isTableDirRef(reference)) {
+      validateTableDir(table, columnName);
     }
   }
 

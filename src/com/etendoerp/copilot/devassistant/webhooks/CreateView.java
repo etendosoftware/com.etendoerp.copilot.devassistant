@@ -204,7 +204,7 @@ public class CreateView extends BaseWebhookService {
    */
   private void createAndVerifyView(String viewDbName, String querySelect) throws SQLException {
     // Validate the view name to prevent SQL injection (identifiers can't be parameterized)
-    if (viewDbName == null || !viewDbName.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+    if (viewDbName == null || !viewDbName.matches("[a-zA-Z_]\\w*")) {
       throw new OBException("Invalid view name: " + viewDbName);
     }
     // querySelect is validated by checkProyections() which executes it in a subquery first.
@@ -344,7 +344,7 @@ public class CreateView extends BaseWebhookService {
     if (querySelect.endsWith(";")) {
       querySelect = querySelect.substring(0, querySelect.length() - 1);
     }
-    if (viewDbName == null || !viewDbName.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+    if (viewDbName == null || !viewDbName.matches("[a-zA-Z_]\\w*")) {
       throw new OBException("Invalid view name: " + viewDbName);
     }
     String query = String.format("SELECT * FROM (%s) AS %s LIMIT 0", querySelect, viewDbName);
