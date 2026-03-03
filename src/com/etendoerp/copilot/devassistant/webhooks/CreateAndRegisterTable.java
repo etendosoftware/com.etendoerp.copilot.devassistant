@@ -282,6 +282,8 @@ public class CreateAndRegisterTable extends BaseWebhookService {
         + "WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = ?";
 
     int count = 0;
+    // OBDal.getInstance().getConnection() returns the Hibernate session connection.
+    // It must NOT be closed here; only PreparedStatement and ResultSet are closed via try-with-resources.
     Connection conn = OBDal.getInstance().getConnection();
     try (PreparedStatement ps = conn.prepareStatement(query)) {
       ps.setString(1, constraintName);
@@ -307,9 +309,9 @@ public class CreateAndRegisterTable extends BaseWebhookService {
       throw new org.openbravo.base.exception.OBException(
           String.format("Invalid table name '%s'. Only letters, digits, and underscores are allowed.", tableName));
     }
-    if (tableName.length() > 63) {
+    if (tableName.length() > 30) {
       throw new org.openbravo.base.exception.OBException(
-          String.format("Table name '%s' exceeds PostgreSQL's 63-character limit (%d chars).",
+          String.format("Table name '%s' exceeds Etendo's 30-character limit (%d chars).",
               tableName, tableName.length()));
     }
   }

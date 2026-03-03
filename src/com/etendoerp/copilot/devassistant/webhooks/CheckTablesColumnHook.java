@@ -145,6 +145,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
       int lengthInDB = columnInfo.optInt(CHARACTER_MAXIMUM_LENGTH, -1);
 
       if (needToApplyChangesInDB(column, typeInAD, typeInDB, lengthInDB)) {
+        // 'column' is an OB entity loaded from AD_Column via OBCriteria, so its table name
+        // and column name are already sourced from verified AD metadata. validateIdentifier
+        // ensures only safe ASCII identifiers are used in the DDL statement.
         String safeTableName = validateIdentifier(column.getTable().getDBTableName());
         String safeColumnName = validateIdentifier(column.getDBColumnName());
         String alterQuery = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s%s",
@@ -398,6 +401,9 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    * Queries the information_schema for column type info using a parameterized query.
    */
   private static JSONObject queryColumnInfo(String tableName, String columnName) throws JSONException {
+    // OBDal.getInstance().getConnection() returns the Hibernate session connection.
+    // It must NOT be closed here; its lifecycle is managed by the DAL/Hibernate session.
+    // Only PreparedStatement and ResultSet are closed via try-with-resources.
     Connection conn = OBDal.getInstance().getConnection();
     JSONObject response = new JSONObject();
     JSONArray rows = new JSONArray();
@@ -427,7 +433,8 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    * Validates that a SQL identifier contains only safe characters (letters, digits, underscores).
    */
   private static String validateIdentifier(String identifier) {
-    if (identifier == null || !identifier.matches("[a-zA-Z_]\\w*")) {
+    // Use explicit character class to avoid locale-dependent behavior of \w (which may match Unicode)
+    if (identifier == null || !identifier.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
       throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
     }
     return identifier;

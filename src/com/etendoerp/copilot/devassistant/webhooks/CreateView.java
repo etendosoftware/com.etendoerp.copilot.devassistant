@@ -214,14 +214,15 @@ public class CreateView extends BaseWebhookService {
       safeQuery = safeQuery.substring(0, safeQuery.length() - 1);
     }
 
+    // OBDal.getInstance().getConnection() returns the Hibernate session connection.
+    // It must NOT be closed here; its lifecycle is managed by the DAL/Hibernate session.
+    // The DDL (CREATE OR REPLACE VIEW) is visible within the current transaction,
+    // so no explicit commit is needed — the DAL commits at request completion.
     Connection conn = OBDal.getInstance().getConnection();
     String query = String.format("CREATE OR REPLACE VIEW public.%s AS %s", viewDbName, safeQuery);
     try (PreparedStatement statement = conn.prepareStatement(query)) {
       boolean resultBool = statement.execute();
       LOG.debug("Query executed and returned: {}", resultBool);
-
-      conn.commit();
-      LOG.debug("Transaction committed after creating view");
 
       verifyViewExists(conn, viewDbName);
       logViewColumns(conn, viewDbName);
