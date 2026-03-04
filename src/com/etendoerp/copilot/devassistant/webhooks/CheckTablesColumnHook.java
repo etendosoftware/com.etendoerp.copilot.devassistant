@@ -36,6 +36,7 @@ public class CheckTablesColumnHook extends BaseWebhookService {
 
   private static final Logger log = LogManager.getLogger();
   private static final int MAX_COLUMN_NAME_LENGTH = 30;
+  private static final String INVALID_SQL_IDENTIFIER_MSG = "Invalid SQL identifier: ";
   private static final String TABLE_DIR_ID = "19";
   private static final String TABLE_ID = "18";
   public static final String ERROR = "error";
@@ -434,16 +435,16 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    */
   private static String validateIdentifier(String identifier) {
     if (identifier == null || identifier.isEmpty()) {
-      throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
+      throw new org.openbravo.base.exception.OBException(INVALID_SQL_IDENTIFIER_MSG + identifier);
     }
     char first = identifier.charAt(0);
     if (!Character.isLetter(first) && first != '_') {
-      throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
+      throw new org.openbravo.base.exception.OBException(INVALID_SQL_IDENTIFIER_MSG + identifier);
     }
     for (int i = 1; i < identifier.length(); i++) {
       char c = identifier.charAt(i);
       if (!Character.isLetterOrDigit(c) && c != '_') {
-        throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
+        throw new org.openbravo.base.exception.OBException(INVALID_SQL_IDENTIFIER_MSG + identifier);
       }
     }
     return identifier;
