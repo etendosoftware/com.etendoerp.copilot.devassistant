@@ -14,6 +14,7 @@ import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDependency;
 import org.openbravo.model.ad.system.Client;

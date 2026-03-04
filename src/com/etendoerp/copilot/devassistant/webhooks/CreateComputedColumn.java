@@ -2,7 +2,6 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +13,7 @@ import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.domain.Reference;

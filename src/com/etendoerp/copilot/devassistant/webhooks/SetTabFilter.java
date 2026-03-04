@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.ui.Tab;
 
 import com.etendoerp.webhookevents.services.BaseWebhookService;
