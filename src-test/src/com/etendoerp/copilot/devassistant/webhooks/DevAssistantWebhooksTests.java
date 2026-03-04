@@ -499,6 +499,16 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     RequestContext.get().setVariableSecureApp(vars);
     OBDal.getInstance().flush();
 
+    // Evict the Module from the Hibernate session before deleting its associated DataPackage.
+    // If the Module was loaded earlier (e.g. in setUp), its dataPackageList is already
+    // initialized. Deleting DataPackage and flushing while Module is in session causes
+    // "deleted object would be re-saved by cascade" because Hibernate cascades the Module →
+    // DataPackage relationship on flush. Evicting the Module breaks that reference.
+    Module modToEvict = OBDal.getInstance().get(Module.class, testModuleId);
+    if (modToEvict != null) {
+      OBDal.getInstance().getSession().evict(modToEvict);
+    }
+
     ModuleDBPrefix modPrefix = OBDal.getInstance().get(ModuleDBPrefix.class, testModulePrefixId);
     if (modPrefix != null) {
       OBDal.getInstance().remove(modPrefix);
@@ -507,6 +517,7 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     if (dataPackage != null) {
       OBDal.getInstance().remove(dataPackage);
     }
+    OBDal.getInstance().flush();
     Module mod = OBDal.getInstance().get(Module.class, testModuleId);
     // Remove AD_ELEMENT records created by CreateColumn (ensureElementLinked) before removing the
     // module — otherwise the ad_element_ad_module FK constraint prevents module deletion.
