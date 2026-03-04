@@ -433,9 +433,18 @@ public class CheckTablesColumnHook extends BaseWebhookService {
    * Validates that a SQL identifier contains only safe characters (letters, digits, underscores).
    */
   private static String validateIdentifier(String identifier) {
-    // Use explicit character class to avoid locale-dependent behavior of \w (which may match Unicode)
-    if (identifier == null || !identifier.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
+    if (identifier == null || identifier.isEmpty()) {
       throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
+    }
+    char first = identifier.charAt(0);
+    if (!Character.isLetter(first) && first != '_') {
+      throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
+    }
+    for (int i = 1; i < identifier.length(); i++) {
+      char c = identifier.charAt(i);
+      if (!Character.isLetterOrDigit(c) && c != '_') {
+        throw new org.openbravo.base.exception.OBException("Invalid SQL identifier: " + identifier);
+      }
     }
     return identifier;
   }

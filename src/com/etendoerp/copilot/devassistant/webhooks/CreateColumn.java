@@ -248,7 +248,7 @@ public class CreateColumn extends BaseWebhookService {
         TABLE_REFERECE_ID);
   }
 
-  private void validateTableDir(Table table, String columnName) {
+  private static void validateTableDir(Table table, String columnName) {
     //if is tableDir, must be end with _id
     if (StringUtils.endsWithIgnoreCase(columnName, "_id")) {
       throw new OBException(OBMessageUtils.messageBD("COPDEV_TableDirWrongName"));
@@ -273,7 +273,7 @@ public class CreateColumn extends BaseWebhookService {
   }
 
 
-  private boolean isTableDirRef(Reference reference) {
+  private static boolean isTableDirRef(Reference reference) {
     return StringUtils.equals(reference.getId(), TABLEDIR_REFERENCE_ID);
   }
 
