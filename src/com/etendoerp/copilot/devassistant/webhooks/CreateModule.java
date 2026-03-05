@@ -89,6 +89,12 @@ public class CreateModule extends BaseWebhookService {
     } catch (Exception e) {
       LOG.error("Error creating module: {}", e.getMessage(), e);
       responseVars.put("error", e.getMessage());
+      clearSessionIfPresent();
+    }
+  }
+
+  private void clearSessionIfPresent() {
+    if (OBDal.getInstance().getSession() != null) {
       OBDal.getInstance().getSession().clear();
     }
   }

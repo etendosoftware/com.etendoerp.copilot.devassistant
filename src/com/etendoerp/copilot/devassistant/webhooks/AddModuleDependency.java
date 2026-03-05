@@ -92,6 +92,12 @@ public class AddModuleDependency extends BaseWebhookService {
     } catch (Exception e) {
       LOG.error("Error adding module dependency: {}", e.getMessage(), e);
       responseVars.put("error", e.getMessage());
+      clearSessionIfPresent();
+    }
+  }
+
+  private void clearSessionIfPresent() {
+    if (OBDal.getInstance().getSession() != null) {
       OBDal.getInstance().getSession().clear();
     }
   }

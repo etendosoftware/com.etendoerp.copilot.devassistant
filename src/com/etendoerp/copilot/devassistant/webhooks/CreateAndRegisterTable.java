@@ -80,6 +80,12 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
+      clearSessionIfPresent();
+    }
+  }
+
+  private void clearSessionIfPresent() {
+    if (OBDal.getInstance().getSession() != null) {
       OBDal.getInstance().getSession().clear();
     }
   }
