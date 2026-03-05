@@ -23,7 +23,6 @@ import static com.etendoerp.copilot.devassistant.TestConstants.TEST_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -216,19 +215,17 @@ class CreateModuleTest extends BaseWebhookTest {
   @SuppressWarnings("unchecked")
   private void setupSuccessfulScenario() {
     OBCriteria<Module> moduleCrit = mockCriteria(Module.class);
-    lenient().when(moduleCrit.uniqueResult()).thenReturn(null);
+    when(moduleCrit.uniqueResult()).thenReturn(null);
 
     OBCriteria<ModuleDBPrefix> prefixCrit = mockCriteria(ModuleDBPrefix.class);
-    lenient().when(prefixCrit.uniqueResult()).thenReturn(null);
+    when(prefixCrit.uniqueResult()).thenReturn(null);
 
-    lenient().when(obDal.get(Client.class, "0")).thenReturn(client);
-    lenient().when(obDal.get(Organization.class, "0")).thenReturn(organization);
-    lenient().when(obProvider.get(Module.class)).thenReturn(module);
-    lenient().when(obProvider.get(ModuleDBPrefix.class)).thenReturn(moduleDBPrefix);
-    lenient().when(obProvider.get(DataPackage.class)).thenReturn(dataPackage);
-    lenient().when(obContext.getUser()).thenReturn(user);
-    lenient().when(module.getId()).thenReturn("newmod123");
-    lenient().when(module.getName()).thenReturn(TEST_MODULE_NAME);
-    lenient().when(module.getJavaPackage()).thenReturn(TEST_JAVA_PACKAGE);
+    stubClientOrgUser();
+    when(obProvider.get(Module.class)).thenReturn(module);
+    when(obProvider.get(ModuleDBPrefix.class)).thenReturn(moduleDBPrefix);
+    when(obProvider.get(DataPackage.class)).thenReturn(dataPackage);
+    when(module.getId()).thenReturn("newmod123");
+    when(module.getName()).thenReturn(TEST_MODULE_NAME);
+    when(module.getJavaPackage()).thenReturn(TEST_JAVA_PACKAGE);
   }
 }

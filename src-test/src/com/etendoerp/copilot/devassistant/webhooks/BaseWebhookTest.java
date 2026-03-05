@@ -29,6 +29,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
@@ -46,6 +48,7 @@ import com.etendoerp.copilot.devassistant.Utils;
  * Base class for webhook unit tests. Provides common mock setup for
  * OBDal, OBProvider, OBContext, OBMessageUtils, and Utils static mocks.
  */
+@MockitoSettings(strictness = Strictness.LENIENT)
 abstract class BaseWebhookTest {
 
   @Mock protected OBDal obDal;
