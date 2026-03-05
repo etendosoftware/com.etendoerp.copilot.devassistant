@@ -38,6 +38,8 @@ import org.openbravo.model.ad.access.User;
 import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.common.enterprise.Organization;
 
+import org.openbravo.base.structure.BaseOBObject;
+
 import com.etendoerp.copilot.devassistant.Utils;
 
 /**
@@ -87,7 +89,7 @@ abstract class BaseWebhookTest {
   }
 
   @SuppressWarnings("unchecked")
-  protected <T> OBCriteria<T> mockCriteria(Class<T> entityClass) {
+  protected <T extends BaseOBObject> OBCriteria<T> mockCriteria(Class<T> entityClass) {
     OBCriteria<T> crit = mock(OBCriteria.class);
     when(obDal.createCriteria(entityClass)).thenReturn(crit);
     when(crit.add(any())).thenReturn(crit);
