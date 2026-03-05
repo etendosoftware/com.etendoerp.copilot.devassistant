@@ -20,32 +20,22 @@ import static com.etendoerp.copilot.devassistant.TestConstants.ERROR;
 import static com.etendoerp.copilot.devassistant.TestConstants.MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openbravo.dal.core.OBContext;
-import org.openbravo.dal.service.OBDal;
-import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.ui.Tab;
 
 /**
  * Unit tests for {@link SetTabFilter}.
  */
 @ExtendWith(MockitoExtension.class)
-class SetTabFilterTest {
+class SetTabFilterTest extends BaseWebhookTest {
 
   private static final String TAB_ID = "TabID";
   private static final String WHERE_CLAUSE = "WhereClause";
@@ -53,43 +43,14 @@ class SetTabFilterTest {
   private static final String ORDER_BY_CLAUSE = "OrderByClause";
   private static final String TEST_TAB_ID = "tab123";
   private static final String TEST_WHERE = "e.iscourse = 'Y'";
-  private static final String TEST_TAB_NAME = TEST_TAB_NAME;
-  private static final String TEST_HQL_WHERE = TEST_HQL_WHERE;
-  private static final String TEST_ORDER_BY = TEST_ORDER_BY;
+  private static final String TEST_TAB_NAME = "Course Tab";
+  private static final String TEST_HQL_WHERE = "as e where e.course = true";
+  private static final String TEST_ORDER_BY = "e.name ASC";
 
   @InjectMocks
   private SetTabFilter setTabFilter;
 
-  @Mock private OBDal obDal;
-  @Mock private OBContext obContext;
   @Mock private Tab tab;
-
-  private MockedStatic<OBDal> obDalMock;
-  private MockedStatic<OBContext> obContextMock;
-  private MockedStatic<OBMessageUtils> messageMock;
-
-  private Map<String, String> parameters;
-  private Map<String, String> responseVars;
-
-  @BeforeEach
-  void setUp() {
-    obDalMock = mockStatic(OBDal.class);
-    obContextMock = mockStatic(OBContext.class);
-    messageMock = mockStatic(OBMessageUtils.class);
-
-    obDalMock.when(OBDal::getInstance).thenReturn(obDal);
-    obContextMock.when(OBContext::getOBContext).thenReturn(obContext);
-
-    parameters = new HashMap<>();
-    responseVars = new HashMap<>();
-  }
-
-  @AfterEach
-  void tearDown() {
-    obDalMock.close();
-    obContextMock.close();
-    messageMock.close();
-  }
 
   @Test
   void testGetWithMissingTabIDShouldReturnError() {
@@ -146,21 +107,24 @@ class SetTabFilterTest {
     assertTrue(responseVars.get(ERROR).contains("not found"));
   }
 
+  private void stubTabFound() {
+    when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
+    when(tab.getName()).thenReturn(TEST_TAB_NAME);
+    when(tab.getId()).thenReturn(TEST_TAB_ID);
+  }
+
   @Test
   void testGetWithValidParametersShouldSetFilter() {
     parameters.put(TAB_ID, TEST_TAB_ID);
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
 
-    when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn(TEST_TAB_NAME);
-    when(tab.getId()).thenReturn(TEST_TAB_ID);
+    stubTabFound();
 
     setTabFilter.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey(MESSAGE));
     assertFalse(responseVars.containsKey(ERROR));
     assertTrue(responseVars.get(MESSAGE).contains("Filter set"));
-
     verify(tab).setSQLWhereClause(TEST_WHERE);
     verify(obDal).save(tab);
     verify(obDal).flush();
@@ -172,9 +136,7 @@ class SetTabFilterTest {
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
     parameters.put(HQL_WHERE_CLAUSE, TEST_HQL_WHERE);
 
-    when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn(TEST_TAB_NAME);
-    when(tab.getId()).thenReturn(TEST_TAB_ID);
+    stubTabFound();
 
     setTabFilter.get(parameters, responseVars);
 
@@ -189,9 +151,7 @@ class SetTabFilterTest {
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
     parameters.put(ORDER_BY_CLAUSE, TEST_ORDER_BY);
 
-    when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn(TEST_TAB_NAME);
-    when(tab.getId()).thenReturn(TEST_TAB_ID);
+    stubTabFound();
 
     setTabFilter.get(parameters, responseVars);
 
@@ -206,9 +166,7 @@ class SetTabFilterTest {
     parameters.put(HQL_WHERE_CLAUSE, TEST_HQL_WHERE);
     parameters.put(ORDER_BY_CLAUSE, TEST_ORDER_BY);
 
-    when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn(TEST_TAB_NAME);
-    when(tab.getId()).thenReturn(TEST_TAB_ID);
+    stubTabFound();
 
     setTabFilter.get(parameters, responseVars);
 
@@ -226,9 +184,7 @@ class SetTabFilterTest {
     parameters.put(TAB_ID, TEST_TAB_ID);
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
 
-    when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn(TEST_TAB_NAME);
-    when(tab.getId()).thenReturn(TEST_TAB_ID);
+    stubTabFound();
 
     setTabFilter.get(parameters, responseVars);
 
@@ -243,9 +199,7 @@ class SetTabFilterTest {
     parameters.put(TAB_ID, TEST_TAB_ID);
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
 
-    when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn(TEST_TAB_NAME);
-    when(tab.getId()).thenReturn(TEST_TAB_ID);
+    stubTabFound();
 
     setTabFilter.get(parameters, responseVars);
 

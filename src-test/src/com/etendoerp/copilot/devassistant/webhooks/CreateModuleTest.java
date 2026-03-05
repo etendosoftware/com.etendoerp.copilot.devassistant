@@ -23,31 +23,17 @@ import static com.etendoerp.copilot.devassistant.TestConstants.TEST_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openbravo.base.provider.OBProvider;
-import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
-import org.openbravo.dal.service.OBDal;
-import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.access.User;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
@@ -58,7 +44,7 @@ import org.openbravo.model.common.enterprise.Organization;
  * Unit tests for {@link CreateModule}.
  */
 @ExtendWith(MockitoExtension.class)
-class CreateModuleTest {
+class CreateModuleTest extends BaseWebhookTest {
 
   private static final String JAVA_PACKAGE = "JavaPackage";
   private static final String TEST_JAVA_PACKAGE = "com.test.newmodule";
@@ -67,44 +53,9 @@ class CreateModuleTest {
   @InjectMocks
   private CreateModule createModule;
 
-  @Mock private OBDal obDal;
-  @Mock private OBProvider obProvider;
-  @Mock private OBContext obContext;
   @Mock private Module module;
   @Mock private ModuleDBPrefix moduleDBPrefix;
   @Mock private DataPackage dataPackage;
-  @Mock private Client client;
-  @Mock private Organization organization;
-  @Mock private User user;
-  private MockedStatic<OBDal> obDalMock;
-  private MockedStatic<OBProvider> obProviderMock;
-  private MockedStatic<OBContext> obContextMock;
-  private MockedStatic<OBMessageUtils> messageMock;
-
-  private Map<String, String> parameters;
-  private Map<String, String> responseVars;
-
-  @BeforeEach
-  void setUp() {
-    obDalMock = mockStatic(OBDal.class);
-    obProviderMock = mockStatic(OBProvider.class);
-    obContextMock = mockStatic(OBContext.class);
-    messageMock = mockStatic(OBMessageUtils.class);
-
-    obDalMock.when(OBDal::getInstance).thenReturn(obDal);
-    obProviderMock.when(OBProvider::getInstance).thenReturn(obProvider);
-    obContextMock.when(OBContext::getOBContext).thenReturn(obContext);
-    parameters = new HashMap<>();
-    responseVars = new HashMap<>();
-  }
-
-  @AfterEach
-  void tearDown() {
-    obDalMock.close();
-    obProviderMock.close();
-    obContextMock.close();
-    messageMock.close();
-  }
 
   @Test
   void testGetWithMissingNameShouldReturnError() {
@@ -164,7 +115,6 @@ class CreateModuleTest {
     assertTrue(responseVars.containsKey(MESSAGE));
     assertFalse(responseVars.containsKey(ERROR));
     assertTrue(responseVars.get(MESSAGE).contains("Module created successfully"));
-    // Module + ModuleDBPrefix + DataPackage = 3 saves
     verify(obDal, times(3)).save(any());
     verify(obDal).flush();
   }
@@ -175,10 +125,7 @@ class CreateModuleTest {
     parameters.put(JAVA_PACKAGE, TEST_JAVA_PACKAGE);
     parameters.put(DB_PREFIX, TEST_PREFIX);
 
-    OBCriteria<Module> moduleCrit = mock(OBCriteria.class);
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCrit);
-    when(moduleCrit.add(any())).thenReturn(moduleCrit);
-    when(moduleCrit.setMaxResults(anyInt())).thenReturn(moduleCrit);
+    OBCriteria<Module> moduleCrit = mockCriteria(Module.class);
     when(moduleCrit.uniqueResult()).thenReturn(module);
 
     createModule.get(parameters, responseVars);
@@ -193,16 +140,10 @@ class CreateModuleTest {
     parameters.put(JAVA_PACKAGE, TEST_JAVA_PACKAGE);
     parameters.put(DB_PREFIX, TEST_PREFIX);
 
-    OBCriteria<Module> moduleCrit = mock(OBCriteria.class);
-    when(obDal.createCriteria(Module.class)).thenReturn(moduleCrit);
-    when(moduleCrit.add(any())).thenReturn(moduleCrit);
-    when(moduleCrit.setMaxResults(anyInt())).thenReturn(moduleCrit);
+    OBCriteria<Module> moduleCrit = mockCriteria(Module.class);
     when(moduleCrit.uniqueResult()).thenReturn(null);
 
-    OBCriteria<ModuleDBPrefix> prefixCrit = mock(OBCriteria.class);
-    when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCrit);
-    when(prefixCrit.add(any())).thenReturn(prefixCrit);
-    when(prefixCrit.setMaxResults(anyInt())).thenReturn(prefixCrit);
+    OBCriteria<ModuleDBPrefix> prefixCrit = mockCriteria(ModuleDBPrefix.class);
     when(prefixCrit.uniqueResult()).thenReturn(moduleDBPrefix);
 
     createModule.get(parameters, responseVars);
@@ -224,7 +165,6 @@ class CreateModuleTest {
 
     assertTrue(responseVars.containsKey(MESSAGE));
     assertFalse(responseVars.containsKey(ERROR));
-    // Module + DataPackage = 2 saves (no ModuleDBPrefix for templates)
     verify(obDal, times(2)).save(any());
   }
 
@@ -275,16 +215,10 @@ class CreateModuleTest {
 
   @SuppressWarnings("unchecked")
   private void setupSuccessfulScenario() {
-    OBCriteria<Module> moduleCrit = mock(OBCriteria.class);
-    lenient().when(obDal.createCriteria(Module.class)).thenReturn(moduleCrit);
-    lenient().when(moduleCrit.add(any())).thenReturn(moduleCrit);
-    lenient().when(moduleCrit.setMaxResults(anyInt())).thenReturn(moduleCrit);
+    OBCriteria<Module> moduleCrit = mockCriteria(Module.class);
     lenient().when(moduleCrit.uniqueResult()).thenReturn(null);
 
-    OBCriteria<ModuleDBPrefix> prefixCrit = mock(OBCriteria.class);
-    lenient().when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCrit);
-    lenient().when(prefixCrit.add(any())).thenReturn(prefixCrit);
-    lenient().when(prefixCrit.setMaxResults(anyInt())).thenReturn(prefixCrit);
+    OBCriteria<ModuleDBPrefix> prefixCrit = mockCriteria(ModuleDBPrefix.class);
     lenient().when(prefixCrit.uniqueResult()).thenReturn(null);
 
     lenient().when(obDal.get(Client.class, "0")).thenReturn(client);

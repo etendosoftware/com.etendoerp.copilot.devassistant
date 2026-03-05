@@ -25,33 +25,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openbravo.base.provider.OBProvider;
-import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
-import org.openbravo.dal.service.OBDal;
-import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.access.User;
 import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.module.Module;
-import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.ad.ui.Tab;
-import org.openbravo.model.common.enterprise.Organization;
 
 import com.etendoerp.copilot.devassistant.Utils;
 import com.etendoerp.etendorx.data.OpenAPITab;
@@ -61,7 +47,7 @@ import com.etendoerp.openapi.data.OpenAPIRequest;
  * Unit tests for {@link RegisterHeadlessEndpoint}.
  */
 @ExtendWith(MockitoExtension.class)
-class RegisterHeadlessEndpointTest {
+class RegisterHeadlessEndpointTest extends BaseWebhookTest {
 
   private static final String REQUEST_NAME = "RequestName";
   private static final String TAB_ID = "TabID";
@@ -72,49 +58,11 @@ class RegisterHeadlessEndpointTest {
   @InjectMocks
   private RegisterHeadlessEndpoint registerHeadlessEndpoint;
 
-  @Mock private OBDal obDal;
-  @Mock private OBProvider obProvider;
-  @Mock private OBContext obContext;
   @Mock private Module module;
   @Mock private Tab tab;
   @Mock private Table table;
   @Mock private OpenAPIRequest openAPIRequest;
   @Mock private OpenAPITab openAPITab;
-  @Mock private Client client;
-  @Mock private Organization organization;
-  @Mock private User user;
-  private MockedStatic<OBDal> obDalMock;
-  private MockedStatic<OBProvider> obProviderMock;
-  private MockedStatic<OBContext> obContextMock;
-  private MockedStatic<OBMessageUtils> messageMock;
-  private MockedStatic<Utils> utilsMock;
-
-  private Map<String, String> parameters;
-  private Map<String, String> responseVars;
-
-  @BeforeEach
-  void setUp() {
-    obDalMock = mockStatic(OBDal.class);
-    obProviderMock = mockStatic(OBProvider.class);
-    obContextMock = mockStatic(OBContext.class);
-    messageMock = mockStatic(OBMessageUtils.class);
-    utilsMock = mockStatic(Utils.class);
-
-    obDalMock.when(OBDal::getInstance).thenReturn(obDal);
-    obProviderMock.when(OBProvider::getInstance).thenReturn(obProvider);
-    obContextMock.when(OBContext::getOBContext).thenReturn(obContext);
-    parameters = new HashMap<>();
-    responseVars = new HashMap<>();
-  }
-
-  @AfterEach
-  void tearDown() {
-    obDalMock.close();
-    obProviderMock.close();
-    obContextMock.close();
-    messageMock.close();
-    utilsMock.close();
-  }
 
   @Test
   void testGetWithMissingRequestNameShouldReturnError() {
@@ -175,7 +123,6 @@ class RegisterHeadlessEndpointTest {
     assertTrue(responseVars.containsKey(MESSAGE));
     assertFalse(responseVars.containsKey(ERROR));
     assertTrue(responseVars.get(MESSAGE).contains(TEST_REQUEST));
-    // OpenAPIRequest + OpenAPITab = 2 saves
     verify(obDal, times(2)).save(any());
     verify(obDal).flush();
   }
@@ -189,6 +136,7 @@ class RegisterHeadlessEndpointTest {
     setupSuccessfulScenario();
     utilsMock.when(() -> Utils.getTableByDBName("m_product")).thenReturn(table);
 
+    @SuppressWarnings("unchecked")
     OBCriteria<Tab> tabCrit = mock(OBCriteria.class);
     when(obDal.createCriteria(Tab.class)).thenReturn(tabCrit);
     when(tabCrit.add(any())).thenReturn(tabCrit);
@@ -226,10 +174,7 @@ class RegisterHeadlessEndpointTest {
     utilsMock.when(() -> Utils.getModuleByID(MODULE_123)).thenReturn(module);
     when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
 
-    OBCriteria<OpenAPIRequest> reqCrit = mock(OBCriteria.class);
-    when(obDal.createCriteria(OpenAPIRequest.class)).thenReturn(reqCrit);
-    when(reqCrit.add(any())).thenReturn(reqCrit);
-    when(reqCrit.setMaxResults(anyInt())).thenReturn(reqCrit);
+    OBCriteria<OpenAPIRequest> reqCrit = mockCriteria(OpenAPIRequest.class);
     when(reqCrit.uniqueResult()).thenReturn(openAPIRequest);
 
     registerHeadlessEndpoint.get(parameters, responseVars);
@@ -247,6 +192,7 @@ class RegisterHeadlessEndpointTest {
     utilsMock.when(() -> Utils.getModuleByID(MODULE_123)).thenReturn(module);
     utilsMock.when(() -> Utils.getTableByDBName("no_tab_table")).thenReturn(table);
 
+    @SuppressWarnings("unchecked")
     OBCriteria<Tab> tabCrit = mock(OBCriteria.class);
     when(obDal.createCriteria(Tab.class)).thenReturn(tabCrit);
     when(tabCrit.add(any())).thenReturn(tabCrit);
@@ -292,21 +238,15 @@ class RegisterHeadlessEndpointTest {
     assertTrue(responseVars.get(MESSAGE).contains("/sws/com.etendoerp.etendorx.datasource/" + TEST_REQUEST));
   }
 
-  @SuppressWarnings("unchecked")
   private void setupSuccessfulScenario() {
     utilsMock.when(() -> Utils.getModuleByID(MODULE_123)).thenReturn(module);
 
-    OBCriteria<OpenAPIRequest> reqCrit = mock(OBCriteria.class);
-    when(obDal.createCriteria(OpenAPIRequest.class)).thenReturn(reqCrit);
-    when(reqCrit.add(any())).thenReturn(reqCrit);
-    when(reqCrit.setMaxResults(anyInt())).thenReturn(reqCrit);
+    OBCriteria<OpenAPIRequest> reqCrit = mockCriteria(OpenAPIRequest.class);
     when(reqCrit.uniqueResult()).thenReturn(null);
 
-    when(obDal.get(Client.class, "0")).thenReturn(client);
-    when(obDal.get(Organization.class, "0")).thenReturn(organization);
+    stubClientOrgUser();
     when(obProvider.get(OpenAPIRequest.class)).thenReturn(openAPIRequest);
     when(obProvider.get(OpenAPITab.class)).thenReturn(openAPITab);
-    when(obContext.getUser()).thenReturn(user);
     when(openAPIRequest.getId()).thenReturn("req123");
     when(openAPIRequest.getName()).thenReturn(TEST_REQUEST);
     when(tab.getName()).thenReturn("Product");

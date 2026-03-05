@@ -23,37 +23,18 @@ import static com.etendoerp.copilot.devassistant.TestConstants.MODULE_ID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openbravo.base.exception.OBException;
-import org.openbravo.base.provider.OBProvider;
-import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
-import org.openbravo.dal.service.OBDal;
-import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.access.User;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDependency;
-import org.openbravo.model.ad.system.Client;
-import org.openbravo.model.common.enterprise.Organization;
 
 import com.etendoerp.copilot.devassistant.Utils;
 
@@ -61,7 +42,7 @@ import com.etendoerp.copilot.devassistant.Utils;
  * Unit tests for {@link AddModuleDependency}.
  */
 @ExtendWith(MockitoExtension.class)
-class AddModuleDependencyTest {
+class AddModuleDependencyTest extends BaseWebhookTest {
 
   private static final String DEPENDS_ON_MODULE_ID = "DependsOnModuleID";
   private static final String DEPENDS_ON_JAVA_PACKAGE = "DependsOnJavaPackage";
@@ -71,47 +52,9 @@ class AddModuleDependencyTest {
   @InjectMocks
   private AddModuleDependency addModuleDependency;
 
-  @Mock private OBDal obDal;
-  @Mock private OBProvider obProvider;
-  @Mock private OBContext obContext;
   @Mock private Module module;
   @Mock private Module dependsOnModule;
   @Mock private ModuleDependency moduleDependency;
-  @Mock private Client client;
-  @Mock private Organization organization;
-  @Mock private User user;
-  private MockedStatic<OBDal> obDalMock;
-  private MockedStatic<OBProvider> obProviderMock;
-  private MockedStatic<OBContext> obContextMock;
-  private MockedStatic<OBMessageUtils> messageMock;
-  private MockedStatic<Utils> utilsMock;
-
-  private Map<String, String> parameters;
-  private Map<String, String> responseVars;
-
-  @BeforeEach
-  void setUp() {
-    obDalMock = mockStatic(OBDal.class);
-    obProviderMock = mockStatic(OBProvider.class);
-    obContextMock = mockStatic(OBContext.class);
-    messageMock = mockStatic(OBMessageUtils.class);
-    utilsMock = mockStatic(Utils.class);
-
-    obDalMock.when(OBDal::getInstance).thenReturn(obDal);
-    obProviderMock.when(OBProvider::getInstance).thenReturn(obProvider);
-    obContextMock.when(OBContext::getOBContext).thenReturn(obContext);
-    parameters = new HashMap<>();
-    responseVars = new HashMap<>();
-  }
-
-  @AfterEach
-  void tearDown() {
-    obDalMock.close();
-    obProviderMock.close();
-    obContextMock.close();
-    messageMock.close();
-    utilsMock.close();
-  }
 
   @Test
   void testGetWithMissingModuleIDShouldReturnError() {
@@ -196,10 +139,7 @@ class AddModuleDependencyTest {
     utilsMock.when(() -> Utils.getModuleByID(MODULE_123)).thenReturn(module);
     when(obDal.get(Module.class, DEPENDS_MODULE_ID)).thenReturn(dependsOnModule);
 
-    OBCriteria<ModuleDependency> depCrit = mock(OBCriteria.class);
-    when(obDal.createCriteria(ModuleDependency.class)).thenReturn(depCrit);
-    when(depCrit.add(any())).thenReturn(depCrit);
-    when(depCrit.setMaxResults(anyInt())).thenReturn(depCrit);
+    OBCriteria<ModuleDependency> depCrit = mockCriteria(ModuleDependency.class);
     when(depCrit.uniqueResult()).thenReturn(moduleDependency);
 
     when(module.getJavaPackage()).thenReturn("com.test.module");
@@ -257,7 +197,6 @@ class AddModuleDependencyTest {
     assertFalse(responseVars.containsKey(ERROR));
   }
 
-  @SuppressWarnings("unchecked")
   private void setupSuccessfulScenario() {
     utilsMock.when(() -> Utils.getModuleByID(MODULE_123)).thenReturn(module);
 
@@ -265,15 +204,10 @@ class AddModuleDependencyTest {
     when(dependsOnModule.getJavaPackage()).thenReturn(DEPENDS_PACKAGE);
     when(dependsOnModule.getName()).thenReturn("Dependency Module");
 
-    OBCriteria<ModuleDependency> depCrit = mock(OBCriteria.class);
-    when(obDal.createCriteria(ModuleDependency.class)).thenReturn(depCrit);
-    when(depCrit.add(any())).thenReturn(depCrit);
-    when(depCrit.setMaxResults(anyInt())).thenReturn(depCrit);
+    OBCriteria<ModuleDependency> depCrit = mockCriteria(ModuleDependency.class);
     when(depCrit.uniqueResult()).thenReturn(null);
 
-    when(obDal.get(Client.class, "0")).thenReturn(client);
-    when(obDal.get(Organization.class, "0")).thenReturn(organization);
+    stubClientOrgUser();
     when(obProvider.get(ModuleDependency.class)).thenReturn(moduleDependency);
-    when(obContext.getUser()).thenReturn(user);
   }
 }
