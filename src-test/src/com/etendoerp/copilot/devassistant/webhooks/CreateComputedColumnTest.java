@@ -68,6 +68,7 @@ class CreateComputedColumnTest {
   private static final String TEST_SQL = "(SELECT name FROM m_product LIMIT 1)";
   private static final String TEST_COL_NAME = "computed_col";
   private static final String TEST_DISPLAY_NAME = "Computed Column";
+  private static final String TEST_TABLE_NAME = TEST_TABLE_NAME;
 
   @InjectMocks
   private CreateComputedColumn createComputedColumn;
@@ -205,10 +206,10 @@ class CreateComputedColumnTest {
     parameters.put("Name", TEST_DISPLAY_NAME);
     parameters.put(SQL_LOGIC, TEST_SQL);
     parameters.put(MODULE_ID, MODULE_123);
-    parameters.put("TableName", "c_order");
+    parameters.put("TableName", TEST_TABLE_NAME);
 
     setupSuccessfulScenario();
-    utilsMock.when(() -> Utils.getTableByDBName("c_order")).thenReturn(table);
+    utilsMock.when(() -> Utils.getTableByDBName(TEST_TABLE_NAME)).thenReturn(table);
 
     createComputedColumn.get(parameters, responseVars);
 
@@ -250,7 +251,7 @@ class CreateComputedColumnTest {
     when(colCrit.add(any())).thenReturn(colCrit);
     when(colCrit.setMaxResults(anyInt())).thenReturn(colCrit);
     when(colCrit.uniqueResult()).thenReturn(column);
-    when(table.getDBTableName()).thenReturn("c_order");
+    when(table.getDBTableName()).thenReturn(TEST_TABLE_NAME);
 
     createComputedColumn.get(parameters, responseVars);
 

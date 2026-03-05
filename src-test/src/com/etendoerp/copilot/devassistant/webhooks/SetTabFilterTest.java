@@ -53,6 +53,9 @@ class SetTabFilterTest {
   private static final String ORDER_BY_CLAUSE = "OrderByClause";
   private static final String TEST_TAB_ID = "tab123";
   private static final String TEST_WHERE = "e.iscourse = 'Y'";
+  private static final String TEST_TAB_NAME = TEST_TAB_NAME;
+  private static final String TEST_HQL_WHERE = TEST_HQL_WHERE;
+  private static final String TEST_ORDER_BY = TEST_ORDER_BY;
 
   @InjectMocks
   private SetTabFilter setTabFilter;
@@ -149,7 +152,7 @@ class SetTabFilterTest {
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
 
     when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn("Course Tab");
+    when(tab.getName()).thenReturn(TEST_TAB_NAME);
     when(tab.getId()).thenReturn(TEST_TAB_ID);
 
     setTabFilter.get(parameters, responseVars);
@@ -167,44 +170,44 @@ class SetTabFilterTest {
   void testGetWithHQLWhereClauseShouldSetBoth() {
     parameters.put(TAB_ID, TEST_TAB_ID);
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
-    parameters.put(HQL_WHERE_CLAUSE, "as e where e.course = true");
+    parameters.put(HQL_WHERE_CLAUSE, TEST_HQL_WHERE);
 
     when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn("Course Tab");
+    when(tab.getName()).thenReturn(TEST_TAB_NAME);
     when(tab.getId()).thenReturn(TEST_TAB_ID);
 
     setTabFilter.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey(MESSAGE));
     verify(tab).setSQLWhereClause(TEST_WHERE);
-    verify(tab).setHqlwhereclause("as e where e.course = true");
+    verify(tab).setHqlwhereclause(TEST_HQL_WHERE);
   }
 
   @Test
   void testGetWithOrderByClauseShouldSetIt() {
     parameters.put(TAB_ID, TEST_TAB_ID);
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
-    parameters.put(ORDER_BY_CLAUSE, "e.name ASC");
+    parameters.put(ORDER_BY_CLAUSE, TEST_ORDER_BY);
 
     when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn("Course Tab");
+    when(tab.getName()).thenReturn(TEST_TAB_NAME);
     when(tab.getId()).thenReturn(TEST_TAB_ID);
 
     setTabFilter.get(parameters, responseVars);
 
     assertTrue(responseVars.containsKey(MESSAGE));
-    verify(tab).setSQLOrderByClause("e.name ASC");
+    verify(tab).setSQLOrderByClause(TEST_ORDER_BY);
   }
 
   @Test
   void testGetWithAllOptionalParametersShouldSetAll() {
     parameters.put(TAB_ID, TEST_TAB_ID);
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
-    parameters.put(HQL_WHERE_CLAUSE, "as e where e.course = true");
-    parameters.put(ORDER_BY_CLAUSE, "e.name ASC");
+    parameters.put(HQL_WHERE_CLAUSE, TEST_HQL_WHERE);
+    parameters.put(ORDER_BY_CLAUSE, TEST_ORDER_BY);
 
     when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn("Course Tab");
+    when(tab.getName()).thenReturn(TEST_TAB_NAME);
     when(tab.getId()).thenReturn(TEST_TAB_ID);
 
     setTabFilter.get(parameters, responseVars);
@@ -212,8 +215,8 @@ class SetTabFilterTest {
     assertTrue(responseVars.containsKey(MESSAGE));
     assertFalse(responseVars.containsKey(ERROR));
     verify(tab).setSQLWhereClause(TEST_WHERE);
-    verify(tab).setHqlwhereclause("as e where e.course = true");
-    verify(tab).setSQLOrderByClause("e.name ASC");
+    verify(tab).setHqlwhereclause(TEST_HQL_WHERE);
+    verify(tab).setSQLOrderByClause(TEST_ORDER_BY);
     verify(obDal).save(tab);
     verify(obDal).flush();
   }
@@ -224,7 +227,7 @@ class SetTabFilterTest {
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
 
     when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn("Course Tab");
+    when(tab.getName()).thenReturn(TEST_TAB_NAME);
     when(tab.getId()).thenReturn(TEST_TAB_ID);
 
     setTabFilter.get(parameters, responseVars);
@@ -241,7 +244,7 @@ class SetTabFilterTest {
     parameters.put(WHERE_CLAUSE, TEST_WHERE);
 
     when(obDal.get(Tab.class, TEST_TAB_ID)).thenReturn(tab);
-    when(tab.getName()).thenReturn("Course Tab");
+    when(tab.getName()).thenReturn(TEST_TAB_NAME);
     when(tab.getId()).thenReturn(TEST_TAB_ID);
 
     setTabFilter.get(parameters, responseVars);
