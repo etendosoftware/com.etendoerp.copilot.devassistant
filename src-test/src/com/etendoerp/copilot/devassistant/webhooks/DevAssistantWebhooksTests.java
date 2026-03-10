@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.model.ad.datamodel.Table;
+import org.openbravo.model.ad.ui.Element;
 import org.openbravo.model.ad.module.DataPackage;
 import org.openbravo.model.ad.module.Module;
 import org.openbravo.model.ad.module.ModuleDBPrefix;
@@ -497,6 +499,16 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     RequestContext.get().setVariableSecureApp(vars);
     OBDal.getInstance().flush();
 
+    // Evict the Module from the Hibernate session before deleting its associated DataPackage.
+    // If the Module was loaded earlier (e.g. in setUp), its dataPackageList is already
+    // initialized. Deleting DataPackage and flushing while Module is in session causes
+    // "deleted object would be re-saved by cascade" because Hibernate cascades the Module →
+    // DataPackage relationship on flush. Evicting the Module breaks that reference.
+    Module modToEvict = OBDal.getInstance().get(Module.class, testModuleId);
+    if (modToEvict != null) {
+      OBDal.getInstance().getSession().evict(modToEvict);
+    }
+
     ModuleDBPrefix modPrefix = OBDal.getInstance().get(ModuleDBPrefix.class, testModulePrefixId);
     if (modPrefix != null) {
       OBDal.getInstance().remove(modPrefix);
@@ -505,7 +517,19 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     if (dataPackage != null) {
       OBDal.getInstance().remove(dataPackage);
     }
+    OBDal.getInstance().flush();
     Module mod = OBDal.getInstance().get(Module.class, testModuleId);
+    // Remove AD_ELEMENT records created by CreateColumn (ensureElementLinked) before removing the
+    // module — otherwise the ad_element_ad_module FK constraint prevents module deletion.
+    OBCriteria<Element> elemCriteria = OBDal.getInstance().createCriteria(Element.class);
+    elemCriteria.add(Restrictions.eq(Element.PROPERTY_MODULE, mod));
+    List<Element> elements = elemCriteria.list();
+    for (Element elem : elements) {
+      OBDal.getInstance().remove(elem);
+    }
+    if (!elements.isEmpty()) {
+      OBDal.getInstance().flush();
+    }
     OBDal.getInstance().remove(mod);
     OBDal.getInstance().flush();
 
