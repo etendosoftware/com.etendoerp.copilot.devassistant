@@ -17,14 +17,10 @@
 package com.etendoerp.copilot.devassistant.hook;
 
 import static com.etendoerp.copilot.devassistant.TestConstants.PATH_PATTERN_JAVA;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mockStatic;
@@ -48,8 +44,6 @@ import org.openbravo.client.application.attachment.AttachImplementationManager;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.datamodel.Table;
-import org.openbravo.model.ad.utility.Attachment;
 
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
@@ -83,16 +77,7 @@ class GitHubZipFilterHookTest {
   private KnowledgePathFile pathFile2;
 
   @Mock
-  private Attachment attachment;
-
-  @Mock
-  private Table table;
-
-  @Mock
   private OBCriteria<KnowledgePathFile> pathFileCriteria;
-
-  @Mock
-  private OBCriteria<Attachment> attachmentCriteria;
 
   private MockedStatic<OBDal> obDalMock;
   private MockedStatic<WeldUtils> weldMock;
@@ -255,7 +240,7 @@ class GitHubZipFilterHookTest {
     }
 
     // Verify cleanup was called
-    fileUtilsMock.verify(() -> FileUtils.cleanupTempFile(any(), eq(true)), atLeastOnce());
+    fileUtilsMock.verify(() -> FileUtils.cleanupTempFileIfNeeded(eq(copilotFile), any()), atLeastOnce());
   }
 
   /**
@@ -276,41 +261,6 @@ class GitHubZipFilterHookTest {
     }
 
     verify(pathFile1, atLeastOnce()).getPathFile();
-  }
-
-  /**
-   * Verifies that getAttachment returns an Attachment when the query finds one.
-   */
-  @Test
-  void testGetAttachmentWhenAttachmentExistsShouldReturnAttachment() {
-    when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(attachment);
-    when(copilotFile.getId()).thenReturn("copilotFile123");
-    when(obDal.get(Table.class, GitHubZipFilterHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
-
-    Attachment result = GitHubZipFilterHook.getAttachment(copilotFile);
-
-    assertNotNull(result);
-    assertEquals(attachment, result);
-  }
-
-  /**
-   * Verifies that getAttachment returns null when no attachment is found by the query.
-   */
-  @Test
-  void testGetAttachmentWhenNoAttachmentExistsShouldReturnNull() {
-    when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(null);
-    when(copilotFile.getId()).thenReturn("copilotFile123");
-    when(obDal.get(Table.class, GitHubZipFilterHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
-
-    Attachment result = GitHubZipFilterHook.getAttachment(copilotFile);
-
-    assertNull(result);
   }
 
   /**

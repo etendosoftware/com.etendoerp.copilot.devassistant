@@ -16,7 +16,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -32,13 +31,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
-import org.openbravo.base.weld.WeldUtils;
-import org.openbravo.client.application.attachment.AttachImplementationManager;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.datamodel.Table;
-import org.openbravo.model.ad.utility.Attachment;
 
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
@@ -55,8 +50,6 @@ public class GitHubZipFilterHook implements CopilotFileHook {
 
   private static final Logger log = LogManager.getLogger(GitHubZipFilterHook.class);
   private static final String[] IGNORE_STRINGS = { ".git", "node_modules", ".idea", "/.", "/venv/", "/.venv/" };
-  public static final String COPILOT_FILE_TAB_ID = "09F802E423924081BC2947A64DDB5AF5";
-  public static final String COPILOT_FILE_AD_TABLE_ID = "6B246B1B3A6F4DE8AFC208E07DB29CE2";
   private static final String GITHUB_BASE_URL = "https://github.com";
   private static final Pattern OWNER_REPO_PATTERN = Pattern.compile("^/([^/]+)/([^/]+)/tree/([^/]+)/");
   private static final Pattern EXTENSION_PATTERN = Pattern.compile("\\.([a-zA-Z0-9*]+)$");
@@ -69,7 +62,7 @@ public class GitHubZipFilterHook implements CopilotFileHook {
   @Override
   public void exec(CopilotFile hookObject) throws OBException {
     List<Path> extractedPaths = new ArrayList<>();
-    File finalZip = null;
+    Path finalZip = null;
     Set<Path> filesToZip = new HashSet<>();
 
     try {
@@ -88,16 +81,15 @@ public class GitHubZipFilterHook implements CopilotFileHook {
 
       // 4. Create and attach the ZIP
       Path basePath = extractedPaths.get(0);
-      finalZip = createZip(filesToZip, basePath);
-      log.debug("Created filtered ZIP file: {}", finalZip.getAbsolutePath());
+      finalZip = createZip(filesToZip, basePath).toPath();
+      log.debug("Created filtered ZIP file: {}", finalZip.toAbsolutePath());
 
-      attachZipFile(hookObject, finalZip);
-
+      FileUtils.processFileAttachment(hookObject, finalZip, isMultiClient());
 
     } catch (Exception e) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_ErrorAttachingFile")), e);
     } finally {
-      cleanup(finalZip, extractedPaths);
+      cleanup(finalZip, extractedPaths, hookObject);
     }
   }
 
@@ -231,26 +223,14 @@ public class GitHubZipFilterHook implements CopilotFileHook {
   }
 
   /**
-   * Attaches the filtered ZIP file to the CopilotFile record.
-   * @param hookObject The CopilotFile to attach the ZIP to.
-   * @param finalZip The ZIP file to attach.
-   */
-  private void attachZipFile(CopilotFile hookObject, File finalZip) {
-    AttachImplementationManager aim = WeldUtils.getInstanceFromStaticBeanManager(AttachImplementationManager.class);
-    removeAttachment(aim, hookObject);
-
-    aim.upload(new HashMap<>(), COPILOT_FILE_TAB_ID, hookObject.getId(), hookObject.getOrganization().getId(), finalZip);
-    log.debug("Successfully attached ZIP file to CopilotFile ID: {}", hookObject.getId());
-  }
-
-  /**
    * Cleans up temporary files and directories.
    * @param finalZip The final ZIP file to delete.
    * @param extractedPaths The list of extracted directories to delete.
+   * @param hookObject The Copilot file object.
    */
-  private void cleanup(File finalZip, List<Path> extractedPaths) {
+  private void cleanup(Path finalZip, List<Path> extractedPaths, CopilotFile hookObject) {
     // Delete the final ZIP file if it exists
-    FileUtils.cleanupTempFile(finalZip != null ? finalZip.toPath() : null, true);
+    FileUtils.cleanupTempFileIfNeeded(hookObject, finalZip);
 
     // Delete extracted directories
     for (Path extractedPath : extractedPaths) {
@@ -423,33 +403,5 @@ public class GitHubZipFilterHook implements CopilotFileHook {
       }
     }
     return zipFile;
-  }
-
-  /**
-   * Removes any existing attachment from the CopilotFile.
-   * @param aim The AttachImplementationManager to use.
-   * @param hookObject The CopilotFile to remove the attachment from.
-   */
-  private void removeAttachment(AttachImplementationManager aim, CopilotFile hookObject) {
-    Attachment attachment = getAttachment(hookObject);
-    if (attachment != null) {
-      aim.delete(attachment);
-    }
-  }
-
-  /**
-   * Retrieves the attachment associated with the specified CopilotFile record.
-   * This method queries the database to find an attachment linked to the given CopilotFile,
-   * ensuring it matches the correct table and record ID, and is not the same as the target instance ID.
-   * @param targetInstance The CopilotFile instance to retrieve the attachment for.
-   * @return The Attachment object associated with the CopilotFile, or null if no attachment is found.
-   */
-  public static Attachment getAttachment(CopilotFile targetInstance) {
-    OBCriteria<Attachment> attchCriteria = OBDal.getInstance().createCriteria(Attachment.class);
-    attchCriteria.add(Restrictions.eq(Attachment.PROPERTY_RECORD, targetInstance.getId()));
-    attchCriteria.add(Restrictions.eq(Attachment.PROPERTY_TABLE,
-        OBDal.getInstance().get(Table.class, COPILOT_FILE_AD_TABLE_ID)));
-    attchCriteria.add(Restrictions.ne(Attachment.PROPERTY_ID, targetInstance.getId()));
-    return (Attachment) attchCriteria.setMaxResults(1).uniqueResult();
   }
 }

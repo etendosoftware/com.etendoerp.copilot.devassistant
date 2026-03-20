@@ -26,14 +26,12 @@ import static com.etendoerp.copilot.devassistant.TestConstants.SOURCE_PATH;
 import static com.etendoerp.copilot.devassistant.TestConstants.TEST_CONTENT;
 import static com.etendoerp.copilot.devassistant.TestConstants.TEST_FILE_TXT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
@@ -60,12 +58,8 @@ import org.openbravo.base.exception.OBException;
 import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.base.weld.WeldUtils;
 import org.openbravo.client.application.attachment.AttachImplementationManager;
-import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
-import org.openbravo.model.ad.datamodel.Table;
-import org.openbravo.model.ad.utility.Attachment;
-import org.openbravo.model.common.enterprise.Organization;
 
 import com.etendoerp.copilot.data.CopilotFile;
 import com.etendoerp.copilot.devassistant.KnowledgePathFile;
@@ -116,22 +110,10 @@ class IndexZipFileHookTest {
   private CopilotFile copilotFile;
 
   @Mock
-  private Organization organization;
-
-  @Mock
   private KnowledgePathFile pathFile1;
 
   @Mock
   private KnowledgePathFile pathFile2;
-
-  @Mock
-  private Attachment attachment;
-
-  @Mock
-  private Table table;
-
-  @Mock
-  private OBCriteria<Attachment> attachmentCriteria;
 
   private MockedStatic<OBDal> obDalMock;
   private MockedStatic<OBPropertiesProvider> propertiesMock;
@@ -378,37 +360,6 @@ class IndexZipFileHookTest {
   }
 
   /**
-   * Ensures an existing attachment is correctly returned from OBDal.
-   */
-  @Test
-  void testGetAttachmentWhenAttachmentExistsShouldReturnAttachment() {
-    mockAttachmentCriteria(attachment);
-
-    when(copilotFile.getId()).thenReturn(COPILOT_FILE);
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
-
-    Attachment result = IndexZipFileHook.getAttachment(copilotFile);
-
-    assertNotNull(result);
-    assertEquals(attachment, result);
-  }
-
-  /**
-   * Ensures null is returned when no attachment exists.
-   */
-  @Test
-  void testGetAttachmentWhenNoAttachmentExistsShouldReturnNull() {
-    mockAttachmentCriteria(null);
-
-    when(copilotFile.getId()).thenReturn(COPILOT_FILE);
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
-
-    Attachment result = IndexZipFileHook.getAttachment(copilotFile);
-
-    assertNull(result);
-  }
-
-  /**
    * Ensures a valid execution creates a ZIP and uploads it correctly.
    *
    * @throws IOException if the test file cannot be created
@@ -422,25 +373,22 @@ class IndexZipFileHookTest {
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
-    verify(attachManager).upload(any(), eq(IndexZipFileHook.COPILOT_FILE_TAB_ID),
-        eq(COPILOT_FILE), eq(ORG123), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), eq(false)));
   }
 
   /**
-   * Ensures existing attachment is deleted prior to upload.
+   * Ensures existing attachment is handled correctly.
    */
   @Test
-  void testExecWithExistingAttachmentShouldDeleteBeforeUpload() throws IOException {
+  void testExecWithExistingAttachmentShouldWork() throws IOException {
     Path testFile = tempDir.resolve(TEST_FILE_TXT);
     Files.writeString(testFile, TEST_CONTENT);
 
     setupExecMocks(testFile.toString());
-    mockAttachmentCriteria(attachment);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
-    verify(attachManager).delete(attachment);
-    verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), eq(false)));
   }
 
   /**
@@ -456,10 +404,9 @@ class IndexZipFileHookTest {
 
     properties.setProperty(SOURCE_PATH, tempDir.toString());
     setupExecCommonMocks();
-    mockAttachmentCriteria(null);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
-    verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), anyBoolean()));
   }
 
   /**
@@ -496,7 +443,7 @@ class IndexZipFileHookTest {
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
 
-    fileUtilsMock.verify(() -> FileUtils.cleanupTempFile(any(Path.class), eq(true)));
+    fileUtilsMock.verify(() -> FileUtils.cleanupTempFileIfNeeded(eq(copilotFile), any(Path.class)));
   }
 
   /**
@@ -516,10 +463,9 @@ class IndexZipFileHookTest {
 
     properties.setProperty(SOURCE_PATH, tempDir.toString());
     setupExecCommonMocks();
-    mockAttachmentCriteria(null);
 
     assertDoesNotThrow(() -> hook.exec(copilotFile));
-    verify(attachManager).upload(any(), any(), any(), any(), any(File.class));
+    fileUtilsMock.verify(() -> FileUtils.processFileAttachment(eq(copilotFile), any(Path.class), anyBoolean()));
   }
 
   /**
@@ -528,10 +474,6 @@ class IndexZipFileHookTest {
   private void setupExecCommonMocks() {
     when(propertiesProvider.getOpenbravoProperties()).thenReturn(properties);
     when(copilotFile.getCOPDEVKnowledgePathFilesList()).thenReturn(pathFileList);
-    when(copilotFile.getId()).thenReturn(COPILOT_FILE);
-    when(copilotFile.getOrganization()).thenReturn(organization);
-    when(organization.getId()).thenReturn(ORG123);
-    when(obDal.get(Table.class, IndexZipFileHook.COPILOT_FILE_AD_TABLE_ID)).thenReturn(table);
   }
 
   /**
@@ -545,19 +487,5 @@ class IndexZipFileHookTest {
 
     properties.setProperty(SOURCE_PATH, tempDir.toString());
     setupExecCommonMocks();
-    mockAttachmentCriteria(null);
-  }
-
-  /**
-   * Configures the Attachment criteria mocks to return the specified result.
-   *
-   * @param attachmentResult the Attachment instance to be returned by uniqueResult(),
-   *                         or {@code null} if no attachment is expected.
-   */
-  private void mockAttachmentCriteria(Attachment attachmentResult) {
-    when(obDal.createCriteria(Attachment.class)).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.add(any())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.setMaxResults(anyInt())).thenReturn(attachmentCriteria);
-    when(attachmentCriteria.uniqueResult()).thenReturn(attachmentResult);
   }
 }
