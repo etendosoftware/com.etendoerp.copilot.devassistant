@@ -2,6 +2,9 @@ package com.etendoerp.copilot.devassistant.webhooks;
 
 import static com.etendoerp.copilot.devassistant.Utils.logExecutionInit;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +64,7 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
       name = getDefaultName(name);
       tableName = determineTableName(name, prefix, tableName);
+      validateTableName(tableName);
       javaClass = TableRegistrationUtils.determineJavaClassName(name, javaClass);
 
       // Step 2: Create the table in the database
@@ -76,6 +80,12 @@ public class CreateAndRegisterTable extends BaseWebhookService {
 
     } catch (Exception e) {
       responseVars.put("error", e.getMessage());
+      clearSessionIfPresent();
+    }
+  }
+
+  private void clearSessionIfPresent() {
+    if (OBDal.getInstance().getSession() != null) {
       OBDal.getInstance().getSession().clear();
     }
   }
@@ -244,6 +254,12 @@ public class CreateAndRegisterTable extends BaseWebhookService {
       offset++;
     }
 
+    if (result.length() > MAX_LENGTH) {
+      throw new org.openbravo.base.exception.OBException(
+          String.format("Constraint name '%s' exceeds the maximum length of %d characters. " +
+              "Shorten the table or column name.", result, MAX_LENGTH));
+    }
+
     return result;
   }
 
@@ -268,28 +284,41 @@ public class CreateAndRegisterTable extends BaseWebhookService {
    * @return The count of existing constraints with the given name.
    */
   private static int checkConstraintExists(String constraintName) {
-    String query = String.format(
-        "SELECT count(1) FROM information_schema.table_constraints " +
-            "WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = '%s';",
-        constraintName);
+    String query = "SELECT count(1) FROM information_schema.table_constraints "
+        + "WHERE constraint_type = 'FOREIGN KEY' AND constraint_name = ?";
 
     int count = 0;
-    try {
-      JSONObject response = Utils.executeQuery(query);
-      if (response == null) {
-        return count;
+    // OBDal.getInstance().getConnection() returns the Hibernate session connection.
+    // It must NOT be closed here; only PreparedStatement and ResultSet are closed via try-with-resources.
+    Connection conn = OBDal.getInstance().getConnection();
+    try (PreparedStatement ps = conn.prepareStatement(query)) {
+      ps.setString(1, constraintName);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          count = rs.getInt(1);
+        }
       }
-
-      JSONArray resultArray = response.getJSONArray("result");
-      if (resultArray == null || resultArray.length() == 0) {
-        return count;
-      }
-
-      JSONObject resultObject = resultArray.getJSONObject(0);
-      count = resultObject.getInt("count");
     } catch (Exception e) {
       LOG.error("Error checking constraint name '{}': {}", constraintName, e.getMessage(), e);
     }
     return count;
+  }
+
+  /**
+   * Validates the table name: must be a valid SQL identifier and not exceed PostgreSQL's 63-char limit.
+   */
+  private static void validateTableName(String tableName) {
+    if (StringUtils.isBlank(tableName)) {
+      throw new org.openbravo.base.exception.OBException("Table name cannot be empty.");
+    }
+    if (!tableName.matches("[a-zA-Z_]\\w*")) {
+      throw new org.openbravo.base.exception.OBException(
+          String.format("Invalid table name '%s'. Only letters, digits, and underscores are allowed.", tableName));
+    }
+    if (tableName.length() > 30) {
+      throw new org.openbravo.base.exception.OBException(
+          String.format("Table name '%s' exceeds Etendo's 30-character limit (%d chars).",
+              tableName, tableName.length()));
+    }
   }
 }

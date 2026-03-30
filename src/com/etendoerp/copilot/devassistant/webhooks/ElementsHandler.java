@@ -52,7 +52,7 @@ public class ElementsHandler extends BaseWebhookService {
       String helpComment = parameter.get("HelpComment");
       Column column = OBDal.getInstance().get(Column.class, columnId);
       if (column == null) {
-        throw new IllegalArgumentException("Column with ID " + columnId + " not found.");
+        throw new OBException("Column with ID " + columnId + " not found.");
       }
       if (!column.getName().startsWith("EM_")) {
         column.setName(StringUtils.replace(column.getName(), "_", " "));
@@ -61,7 +61,7 @@ public class ElementsHandler extends BaseWebhookService {
       column.setHelpComment(helpComment);
       Element element = column.getApplicationElement();
       if (element == null) {
-        throw new IllegalArgumentException("Element not found.");
+        throw new OBException("Element not found for column " + column.getName());
       }
 
       String elementName = StringUtils.isBlank(name) ? element.getName() : name;
@@ -95,7 +95,7 @@ public class ElementsHandler extends BaseWebhookService {
     Table table = OBDal.getInstance().get(Table.class, tableId);
 
     if (table == null) {
-      throw new IllegalArgumentException("Table with ID " + tableId + " not found.");
+      throw new OBException("Table with ID " + tableId + " not found.");
     }
 
     List<Column> columns = table.getADColumnList();
