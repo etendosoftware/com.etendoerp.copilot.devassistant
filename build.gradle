@@ -7,7 +7,7 @@
 */
 
 group          = "com.etendoerp"
-version        = "2.13.1"
+version        = "2.13.2"
 description    = "Developer's assistant for Copilot"
 ext.artifact   = "copilot.devassistant"
 ext.repository = "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
@@ -53,6 +53,6 @@ repositories {
 */
 dependencies {
     implementation('com.etendoerp:copilot:2.13.1')
-    implementation('com.etendoerp:copilot.toolpack:2.13.1')
+    implementation('com.etendoerp:copilot.toolpack:2.13.2')
     implementation('com.etendoerp.platform:etendo-core:[25.1.0,26.1.0)')
 }
