@@ -42,6 +42,7 @@ import org.openbravo.base.exception.OBException;
 import org.openbravo.base.weld.WeldUtils;
 import org.openbravo.client.application.attachment.AttachImplementationManager;
 import org.openbravo.dal.service.OBCriteria;
+import org.openbravo.dal.service.Restriction;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 
@@ -397,7 +398,7 @@ class GitHubZipFilterHookTest {
    */
   private void setupPathFileCriteriaMocks() {
     when(obDal.createCriteria(KnowledgePathFile.class)).thenReturn(pathFileCriteria);
-    when(pathFileCriteria.add(any())).thenReturn(pathFileCriteria);
+    when(pathFileCriteria.add(any(Restriction.class))).thenReturn(pathFileCriteria);
     when(pathFileCriteria.list()).thenReturn(pathFileList);
   }
 

@@ -2,7 +2,7 @@ package com.etendoerp.copilot.devassistant.eventhandler;
 
 import java.util.List;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;

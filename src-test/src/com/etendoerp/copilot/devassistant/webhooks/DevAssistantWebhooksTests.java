@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mockStatic;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,10 +21,11 @@ import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.hibernate.criterion.Restrictions;
+import org.openbravo.dal.service.Restrictions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockedStatic;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.session.OBPropertiesProvider;
@@ -444,7 +446,12 @@ public class DevAssistantWebhooksTests extends WeldBaseTest {
     parameter.put("TableID", "6344EB0DE29E4E52ACF99F591FFCD07D"); //ETCOP_App table
 
     Map<String, String> responseVars = new HashMap<>();
-    webhook.get(parameter, responseVars);
+    try (MockedStatic<com.etendoerp.copilot.devassistant.TableRegistrationUtils> mockedTableRegistrationUtils = mockStatic(
+        com.etendoerp.copilot.devassistant.TableRegistrationUtils.class)) {
+      mockedTableRegistrationUtils.when(() -> com.etendoerp.copilot.devassistant.TableRegistrationUtils.executeRegisterColumns("6344EB0DE29E4E52ACF99F591FFCD07D"))
+          .thenReturn("OK");
+      webhook.get(parameter, responseVars);
+    }
 
     assertFalse(responseVars.containsKey(ERROR_KEY));
   }

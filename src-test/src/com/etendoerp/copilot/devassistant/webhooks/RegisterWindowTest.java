@@ -51,6 +51,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
+import org.openbravo.dal.service.Restriction;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.DataPackage;
@@ -265,7 +266,7 @@ class RegisterWindowTest {
     parameters.put("Name", TEST_WINDOW);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
-    when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
+    when(modulePrefixCriteria.add(any(Restriction.class))).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.setMaxResults(anyInt())).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.uniqueResult()).thenReturn(null);
 
@@ -287,7 +288,7 @@ class RegisterWindowTest {
     parameters.put("Name", TEST_WINDOW);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
-    when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
+    when(modulePrefixCriteria.add(any(Restriction.class))).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.setMaxResults(anyInt())).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.uniqueResult()).thenReturn(moduleDBPrefix);
     when(moduleDBPrefix.getModule()).thenReturn(module);
@@ -311,7 +312,7 @@ class RegisterWindowTest {
     parameters.put("Name", TEST_WINDOW);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
-    when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
+    when(modulePrefixCriteria.add(any(Restriction.class))).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.setMaxResults(anyInt())).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.uniqueResult()).thenReturn(moduleDBPrefix);
     when(moduleDBPrefix.getModule()).thenReturn(module);
@@ -547,7 +548,7 @@ class RegisterWindowTest {
     dataPackageList.add(secondPackage);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
-    when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
+    when(modulePrefixCriteria.add(any(Restriction.class))).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.setMaxResults(anyInt())).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.uniqueResult()).thenReturn(moduleDBPrefix);
     when(moduleDBPrefix.getModule()).thenReturn(module);
@@ -602,7 +603,7 @@ class RegisterWindowTest {
     dataPackageList.add(dataPackage);
 
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(modulePrefixCriteria);
-    when(modulePrefixCriteria.add(any())).thenReturn(modulePrefixCriteria);
+    when(modulePrefixCriteria.add(any(Restriction.class))).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.setMaxResults(anyInt())).thenReturn(modulePrefixCriteria);
     when(modulePrefixCriteria.uniqueResult()).thenReturn(moduleDBPrefix);
     when(moduleDBPrefix.getModule()).thenReturn(module);

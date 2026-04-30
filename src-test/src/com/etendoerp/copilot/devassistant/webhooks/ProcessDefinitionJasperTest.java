@@ -66,6 +66,7 @@ import org.openbravo.client.application.Process;
 import org.openbravo.client.application.ReportDefinition;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
+import org.openbravo.dal.service.Restriction;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.domain.Reference;
@@ -368,7 +369,7 @@ class ProcessDefinitionJasperTest {
     utilsMock.when(() -> Utils.getModuleByPrefix(TEST_PREFIX)).thenReturn(module);
 
     when(obDal.createCriteria(Reference.class)).thenReturn(referenceCriteria);
-    when(referenceCriteria.add(any())).thenReturn(referenceCriteria);
+    when(referenceCriteria.add(any(Restriction.class))).thenReturn(referenceCriteria);
     when(referenceCriteria.setMaxResults(anyInt())).thenReturn(referenceCriteria);
     when(referenceCriteria.uniqueResult()).thenReturn(null);
 
@@ -429,7 +430,7 @@ class ProcessDefinitionJasperTest {
    */
   private void setupPrefixValidation() {
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCriteria);
-    when(prefixCriteria.add(any())).thenReturn(prefixCriteria);
+    when(prefixCriteria.add(any(Restriction.class))).thenReturn(prefixCriteria);
     when(prefixCriteria.createAlias(anyString(), anyString())).thenReturn(prefixCriteria);
     when(prefixCriteria.setMaxResults(anyInt())).thenReturn(prefixCriteria);
     when(prefixCriteria.uniqueResult()).thenReturn(moduleDBPrefix);
@@ -440,7 +441,7 @@ class ProcessDefinitionJasperTest {
    */
   private void setupPrefixCriteriaReturningNull() {
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCriteria);
-    when(prefixCriteria.add(any())).thenReturn(prefixCriteria);
+    when(prefixCriteria.add(any(Restriction.class))).thenReturn(prefixCriteria);
     when(prefixCriteria.createAlias(anyString(), anyString())).thenReturn(prefixCriteria);
     when(prefixCriteria.setMaxResults(anyInt())).thenReturn(prefixCriteria);
     when(prefixCriteria.uniqueResult()).thenReturn(null);
@@ -479,7 +480,7 @@ class ProcessDefinitionJasperTest {
    */
   private void setupReferenceCriteria() {
     when(obDal.createCriteria(Reference.class)).thenReturn(referenceCriteria);
-    when(referenceCriteria.add(any())).thenReturn(referenceCriteria);
+    when(referenceCriteria.add(any(Restriction.class))).thenReturn(referenceCriteria);
     when(referenceCriteria.setMaxResults(anyInt())).thenReturn(referenceCriteria);
     when(referenceCriteria.uniqueResult()).thenReturn(reference);
   }
