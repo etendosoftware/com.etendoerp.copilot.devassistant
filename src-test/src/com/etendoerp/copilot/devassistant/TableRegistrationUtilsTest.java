@@ -54,6 +54,9 @@ import org.openbravo.model.ad.module.ModuleDBPrefix;
 @ExtendWith(MockitoExtension.class)
 class TableRegistrationUtilsTest {
 
+  private static final String TEST_TABLE_NAME = "test_table";
+  private static final String MODULE_ID = "module-1";
+
   @Mock
   private OBDal obDal;
 
@@ -120,7 +123,7 @@ class TableRegistrationUtilsTest {
 
   @Test
   void testDetermineJavaClassNameShouldBuildCamelCaseWhenJavaClassIsLiteralNull() {
-    String result = TableRegistrationUtils.determineJavaClassName("test_table", "null");
+    String result = TableRegistrationUtils.determineJavaClassName(TEST_TABLE_NAME, "null");
 
     assertEquals("TestTable", result);
   }
@@ -139,7 +142,7 @@ class TableRegistrationUtilsTest {
     when(tableCriteria.setMaxResults(1)).thenReturn(tableCriteria);
     when(tableCriteria.uniqueResult()).thenReturn(null);
 
-    assertDoesNotThrow(() -> assertTrue(TableRegistrationUtils.alreadyExistTable("test_table")));
+    assertDoesNotThrow(() -> assertTrue(TableRegistrationUtils.alreadyExistTable(TEST_TABLE_NAME)));
   }
 
   @Test
@@ -150,20 +153,20 @@ class TableRegistrationUtilsTest {
     when(tableCriteria.uniqueResult()).thenReturn(table);
 
     OBException exception = assertThrows(OBException.class,
-        () -> TableRegistrationUtils.alreadyExistTable("test_table"));
+        () -> TableRegistrationUtils.alreadyExistTable(TEST_TABLE_NAME));
 
     assertEquals("Table name already used", exception.getMessage());
   }
 
   @Test
   void testGetModuleAndPrefixShouldReturnModuleAndLowercasePrefix() {
-    utilsMock.when(() -> Utils.getModuleByID("module-1")).thenReturn(module);
+    utilsMock.when(() -> Utils.getModuleByID(MODULE_ID)).thenReturn(module);
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCriteria);
     when(prefixCriteria.add(any(Restriction.class))).thenReturn(prefixCriteria);
     when(prefixCriteria.list()).thenReturn(List.of(moduleDBPrefix));
     when(moduleDBPrefix.getName()).thenReturn("TEST");
 
-    Object[] result = TableRegistrationUtils.getModuleAndPrefix("module-1");
+    Object[] result = TableRegistrationUtils.getModuleAndPrefix(MODULE_ID);
 
     assertSame(module, result[0]);
     assertEquals("test", result[1]);
@@ -171,13 +174,13 @@ class TableRegistrationUtilsTest {
 
   @Test
   void testGetModuleAndPrefixShouldThrowWhenPrefixListIsEmpty() {
-    utilsMock.when(() -> Utils.getModuleByID("module-1")).thenReturn(module);
+    utilsMock.when(() -> Utils.getModuleByID(MODULE_ID)).thenReturn(module);
     when(obDal.createCriteria(ModuleDBPrefix.class)).thenReturn(prefixCriteria);
     when(prefixCriteria.add(any(Restriction.class))).thenReturn(prefixCriteria);
     when(prefixCriteria.list()).thenReturn(List.of());
 
     OBException exception = assertThrows(OBException.class,
-        () -> TableRegistrationUtils.getModuleAndPrefix("module-1"));
+        () -> TableRegistrationUtils.getModuleAndPrefix(MODULE_ID));
 
     assertEquals("Module prefix not found for module-1", exception.getMessage());
   }

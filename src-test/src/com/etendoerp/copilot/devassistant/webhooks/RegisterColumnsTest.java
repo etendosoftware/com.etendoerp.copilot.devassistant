@@ -48,6 +48,9 @@ import com.etendoerp.copilot.devassistant.Utils;
 @ExtendWith(MockitoExtension.class)
 class RegisterColumnsTest {
 
+  private static final String TABLE_NAME_PARAM = "TableName";
+  private static final String TABLE_ID = "table-1";
+
   @InjectMocks
   private RegisterColumns registerColumns;
 
@@ -89,14 +92,14 @@ class RegisterColumnsTest {
   void testGetShouldReturnMessageWhenColumnsAreRegistered() {
     Map<String, String> params = new HashMap<>();
     Map<String, String> responseVars = new HashMap<>();
-    params.put("TableName", "C_Order");
+    params.put(TABLE_NAME_PARAM, "C_Order");
 
     when(obDal.createCriteria(Table.class)).thenReturn(tableCriteria);
     when(tableCriteria.add(any(Restriction.class))).thenReturn(tableCriteria);
     when(tableCriteria.setMaxResults(1)).thenReturn(tableCriteria);
     when(tableCriteria.uniqueResult()).thenReturn(table);
-    when(table.getId()).thenReturn("table-1");
-    tableRegUtilsMock.when(() -> TableRegistrationUtils.executeRegisterColumns("table-1"))
+    when(table.getId()).thenReturn(TABLE_ID);
+    tableRegUtilsMock.when(() -> TableRegistrationUtils.executeRegisterColumns(TABLE_ID))
         .thenReturn("Success - Columns registered");
 
     registerColumns.get(params, responseVars);
@@ -108,7 +111,7 @@ class RegisterColumnsTest {
   void testGetShouldReturnFormattedMessageWhenTableDoesNotExist() {
     Map<String, String> params = new HashMap<>();
     Map<String, String> responseVars = new HashMap<>();
-    params.put("TableName", "UNKNOWN_TABLE");
+    params.put(TABLE_NAME_PARAM, "UNKNOWN_TABLE");
 
     when(obDal.createCriteria(Table.class)).thenReturn(tableCriteria);
     when(tableCriteria.add(any(Restriction.class))).thenReturn(tableCriteria);
@@ -124,14 +127,14 @@ class RegisterColumnsTest {
   void testGetShouldStoreErrorWhenExecutionFails() {
     Map<String, String> params = new HashMap<>();
     Map<String, String> responseVars = new HashMap<>();
-    params.put("TableName", "C_Order");
+    params.put(TABLE_NAME_PARAM, "C_Order");
 
     when(obDal.createCriteria(Table.class)).thenReturn(tableCriteria);
     when(tableCriteria.add(any(Restriction.class))).thenReturn(tableCriteria);
     when(tableCriteria.setMaxResults(1)).thenReturn(tableCriteria);
     when(tableCriteria.uniqueResult()).thenReturn(table);
-    when(table.getId()).thenReturn("table-1");
-    tableRegUtilsMock.when(() -> TableRegistrationUtils.executeRegisterColumns("table-1"))
+    when(table.getId()).thenReturn(TABLE_ID);
+    tableRegUtilsMock.when(() -> TableRegistrationUtils.executeRegisterColumns(TABLE_ID))
         .thenThrow(new RuntimeException("Process failed"));
 
     registerColumns.get(params, responseVars);

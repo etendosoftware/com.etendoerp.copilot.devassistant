@@ -51,6 +51,8 @@ import org.openbravo.model.ad.module.Module;
 @ExtendWith(MockitoExtension.class)
 class UtilsTest {
 
+  private static final String DEBUG_MESSAGE = "debug-message";
+
   @Mock
   private Logger logger;
 
@@ -98,18 +100,18 @@ class UtilsTest {
   void testLogIfDebugShouldWriteWhenLoggerIsInDebugMode() {
     when(logger.isDebugEnabled()).thenReturn(true);
 
-    Utils.logIfDebug(logger, "debug-message");
+    Utils.logIfDebug(logger, DEBUG_MESSAGE);
 
-    verify(logger).debug("debug-message");
+    verify(logger).debug(DEBUG_MESSAGE);
   }
 
   @Test
   void testLogIfDebugShouldSkipWhenLoggerIsNotInDebugMode() {
     when(logger.isDebugEnabled()).thenReturn(false);
 
-    Utils.logIfDebug(logger, "debug-message");
+    Utils.logIfDebug(logger, DEBUG_MESSAGE);
 
-    verify(logger, never()).debug("debug-message");
+    verify(logger, never()).debug(DEBUG_MESSAGE);
   }
 
   @Test
