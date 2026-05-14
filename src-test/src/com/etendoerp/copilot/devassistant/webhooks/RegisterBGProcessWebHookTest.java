@@ -40,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
+import org.openbravo.dal.service.Restriction;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.ad.module.Module;
@@ -138,7 +139,7 @@ class RegisterBGProcessWebHookTest {
     params.put("PreventConcurrent", "true");
 
     when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
+    when(moduleCriteria.add(any(Restriction.class))).thenReturn(moduleCriteria);
     when(moduleCriteria.setMaxResults(anyInt())).thenReturn(moduleCriteria);
     when(moduleCriteria.uniqueResult()).thenReturn(module);
 
@@ -221,7 +222,7 @@ class RegisterBGProcessWebHookTest {
   @Test
   void testGetModuleShouldReturnModuleFromCriteria() {
     when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
+    when(moduleCriteria.add(any(Restriction.class))).thenReturn(moduleCriteria);
     when(moduleCriteria.setMaxResults(anyInt())).thenReturn(moduleCriteria);
     when(moduleCriteria.uniqueResult()).thenReturn(module);
 

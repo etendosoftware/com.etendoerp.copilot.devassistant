@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.hibernate.criterion.Restrictions;
+import org.openbravo.dal.service.Restrictions;
 import org.junit.Before;
 import org.junit.Test;
 import org.openbravo.base.secureApp.VariablesSecureApp;

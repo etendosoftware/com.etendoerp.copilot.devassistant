@@ -44,6 +44,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openbravo.dal.service.OBCriteria;
+import org.openbravo.dal.service.Restriction;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.module.Module;
 
@@ -226,7 +227,7 @@ class JavaPackageRetrieverTest {
 
     assertTrue(responseVars.containsKey("info"));
     assertEquals(JAVA_PACKAGE, responseVars.get("info"));
-    verify(moduleCriteria).add(any());
+    verify(moduleCriteria).add(any(Restriction.class));
   }
 
   /**
@@ -302,7 +303,7 @@ class JavaPackageRetrieverTest {
     javaPackageRetriever.get(parameters, responseVars);
 
     verify(obDal).createCriteria(Module.class);
-    verify(moduleCriteria).add(any());
+    verify(moduleCriteria).add(any(Restriction.class));
     verify(moduleCriteria).list();
   }
 
@@ -418,7 +419,7 @@ class JavaPackageRetrieverTest {
    */
   private void setupCriteriaReturning(List<Module> moduleList) {
     when(obDal.createCriteria(Module.class)).thenReturn(moduleCriteria);
-    when(moduleCriteria.add(any())).thenReturn(moduleCriteria);
+    when(moduleCriteria.add(any(Restriction.class))).thenReturn(moduleCriteria);
     when(moduleCriteria.list()).thenReturn(moduleList);
   }
 

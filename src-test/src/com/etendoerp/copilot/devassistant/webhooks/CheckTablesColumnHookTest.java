@@ -1,6 +1,7 @@
 package com.etendoerp.copilot.devassistant.webhooks;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mockStatic;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +10,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
-import org.hibernate.criterion.Restrictions;
+import org.mockito.MockedStatic;
+import org.openbravo.dal.service.Restrictions;
 import org.junit.Before;
 import org.junit.Test;
 import org.openbravo.base.secureApp.VariablesSecureApp;
@@ -75,12 +77,17 @@ public class CheckTablesColumnHookTest extends WeldBaseTest {
     params.put(TABLE_ID, EXISTING_TABLE_ID);
     params.put("ModuleID", moduleId);
     Map<String, String> resp = new HashMap<>();
-    hook.get(params, resp);
+
+    try (MockedStatic<com.etendoerp.copilot.devassistant.TableRegistrationUtils> mockedTableRegistrationUtils = mockStatic(
+        com.etendoerp.copilot.devassistant.TableRegistrationUtils.class)) {
+      mockedTableRegistrationUtils.when(() -> com.etendoerp.copilot.devassistant.TableRegistrationUtils.executeRegisterColumns(EXISTING_TABLE_ID))
+          .thenReturn("OK");
+      hook.get(params, resp);
+    }
 
     assertFalse("Should not return error for valid table", resp.containsKey(CheckTablesColumnHook.ERROR));
     assertTrue(resp.containsKey(MESSAGE));
 
-    // Parse the message (JSON array of errors). It can be empty or contain objects.
     String raw = resp.get(MESSAGE);
     JSONArray arr = new JSONArray(raw);
     // Basic sanity: all entries (if any) must contain an 'error' key or be empty objects
@@ -103,15 +110,21 @@ public class CheckTablesColumnHookTest extends WeldBaseTest {
     // Ensure no column uses this module id
     OBCriteria<Column> criteria = OBDal.getInstance().createCriteria(Column.class);
     criteria.add(Restrictions.eq(Column.PROPERTY_TABLE, table));
-    criteria.add(Restrictions.sqlRestriction("ad_module_id = ?", impossibleModuleId, org.hibernate.type.StringType.INSTANCE));
-    assertTrue("Precondition: No columns should match fake module", criteria.list().isEmpty());
+    assertTrue("Precondition: No columns should match fake module",
+        criteria.list().stream().noneMatch(column -> impossibleModuleId.equals(column.getModule().getId())));
 
     CheckTablesColumnHook hook = new CheckTablesColumnHook();
     Map<String, String> params = new HashMap<>();
     params.put(TABLE_ID, EXISTING_TABLE_ID);
     params.put("ModuleID", impossibleModuleId);
     Map<String, String> resp = new HashMap<>();
-    hook.get(params, resp);
+
+    try (MockedStatic<com.etendoerp.copilot.devassistant.TableRegistrationUtils> mockedTableRegistrationUtils = mockStatic(
+        com.etendoerp.copilot.devassistant.TableRegistrationUtils.class)) {
+      mockedTableRegistrationUtils.when(() -> com.etendoerp.copilot.devassistant.TableRegistrationUtils.executeRegisterColumns(EXISTING_TABLE_ID))
+          .thenReturn("OK");
+      hook.get(params, resp);
+    }
 
     assertFalse(resp.containsKey(CheckTablesColumnHook.ERROR));
     assertTrue(resp.containsKey(MESSAGE));

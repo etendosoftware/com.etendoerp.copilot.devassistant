@@ -12,8 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
+import org.openbravo.dal.service.Restrictions;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.service.OBDal;
@@ -239,14 +238,14 @@ public class CreateColumn extends BaseWebhookService {
     String targetTable = StringUtils.substring(columnName, 0, columnName.length() - 3);
     //check if the table exists
     var tableCrit = OBDal.getInstance().createCriteria(Table.class);
-    tableCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, targetTable, MatchMode.EXACT));
+    tableCrit.add(Restrictions.ilike(Table.PROPERTY_DBTABLENAME, targetTable));
     List<Table> tables = tableCrit.list();
     if (tables.isEmpty()) {
       throw new OBException(String.format(OBMessageUtils.messageBD("COPDEV_TableDirTableNotFound"), targetTable));
     }
     //check if the column already exists
     var columnCrit = OBDal.getInstance().createCriteria(Column.class);
-    columnCrit.add(Restrictions.ilike(Column.PROPERTY_DBCOLUMNNAME, columnName, MatchMode.EXACT));
+    columnCrit.add(Restrictions.ilike(Column.PROPERTY_DBCOLUMNNAME, columnName));
     columnCrit.add(Restrictions.eq(Column.PROPERTY_TABLE, table));
     List<Column> columns = columnCrit.list();
     if (!columns.isEmpty()) {
