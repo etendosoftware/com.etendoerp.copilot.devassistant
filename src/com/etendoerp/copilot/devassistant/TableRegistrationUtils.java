@@ -196,7 +196,13 @@ public class TableRegistrationUtils {
       }
       return formattedName.toString();
     }
-    return javaClass;
+    // AD_TABLE.CLASSNAME holds the BARE class name; the package comes from AD_PACKAGE. Storing a
+    // fully-qualified name here makes entity generation concatenate the two and emit the class into
+    // a doubled package (com.x.data.com.x.data.Foo), so the entity exists under a name nobody can
+    // import. Callers hand over an FQN often enough — the alter-db skill documents the parameter
+    // that way — that accepting it silently is worse than normalising it here.
+    return StringUtils.substringAfterLast(javaClass, ".").isEmpty() ? javaClass
+        : StringUtils.substringAfterLast(javaClass, ".");
   }
 
   /**

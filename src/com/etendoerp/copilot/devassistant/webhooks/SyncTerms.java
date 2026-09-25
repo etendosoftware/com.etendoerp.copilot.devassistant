@@ -65,8 +65,11 @@ public class SyncTerms extends BaseWebhookService {
       // Search for elements to clean
       OBCriteria<Element> elemCrit = OBDal.getInstance().createCriteria(Element.class);
       elemCrit.add(Restrictions.in(Element.PROPERTY_MODULE, modInDevList));
-      elemCrit.add(Restrictions.or(Restrictions.eq(Element.PROPERTY_NAME, Element.PROPERTY_DBCOLUMNNAME),
-          Restrictions.eq(Element.PROPERTY_DBCOLUMNNAME, Element.PROPERTY_PRINTTEXT)));
+      // eqProperty, not eq: Restrictions.eq compares a property against a literal VALUE, so passing
+      // a property NAME as the second argument built "name = 'columnName'" and matched nothing. The
+      // intent is to find elements whose name is still the raw DB column name.
+      elemCrit.add(Restrictions.or(Restrictions.eqProperty(Element.PROPERTY_NAME, Element.PROPERTY_DBCOLUMNNAME),
+          Restrictions.eqProperty(Element.PROPERTY_DBCOLUMNNAME, Element.PROPERTY_PRINTTEXT)));
       List<Element> elemList = elemCrit.list();
 
       // Clean-up element names and print texts

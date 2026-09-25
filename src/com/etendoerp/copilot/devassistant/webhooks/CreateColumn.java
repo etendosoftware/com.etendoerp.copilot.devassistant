@@ -39,7 +39,10 @@ public class CreateColumn extends BaseWebhookService {
   private static final String VARCHAR32 = "character varying(32)";
   private static final String VARCHAR60 = "character varying(60)";
   private static final String CHAR1 = "character(1)";
-  public static final String TABLEDIR_REFERENCE_ID = "17";
+  // AD reference ids: 17 = List, 18 = Table, 19 = TableDir. This used to say "17", which meant
+  // every TableDir column silently lost its physical FK while every List column was mistaken for
+  // a TableDir and had a bogus FK derived from its own name.
+  public static final String TABLEDIR_REFERENCE_ID = "19";
   private static final String TABLE_REFERECE_ID = "18";
   public static final String VARCHAR200 = "character varying(200)";
   public static final String VARCHAR255 = "character varying(255)";
@@ -72,6 +75,9 @@ public class CreateColumn extends BaseWebhookService {
     String referenceID = parameter.get("referenceID");
     String columnName = parameter.get("columnNameDB");
     String canBeNull = parameter.get("canBeNull");
+    boolean nullable = parseNullable(canBeNull);
+    String lengthOverride = parameter.get("length");
+    boolean isParent = parseFlag(parameter.get("isParent"));
 
     Table table = OBDal.getInstance().get(Table.class, tableId);
     org.openbravo.model.ad.module.Module module = OBDal.getInstance().get(org.openbravo.model.ad.module.Module.class,
@@ -110,8 +116,8 @@ public class CreateColumn extends BaseWebhookService {
     }
 
     try {
-      JSONObject response = addColumn(prefix, dbTableName, columnName, reference, defaultParam,
-          StringUtils.equalsIgnoreCase(canBeNull, "true"));
+      JSONObject response = addColumn(prefix, dbTableName, columnName, reference, defaultParam, nullable,
+          parseLength(lengthOverride));
       handleFKCase(reference, columnName, prefixForConstraint, table, dbTableName, messageArray);
 
       Column newCol = OBProvider.getInstance().get(Column.class);
@@ -128,10 +134,16 @@ public class CreateColumn extends BaseWebhookService {
       if (StringUtils.isNotEmpty(defaultParam)) {
         newCol.setDefaultValue(defaultParam.replace("'", ""));
       }
-      Integer length = getDbType(reference).getRight();
-      if (length != null) {
-        newCol.setLength(Long.valueOf(length));
+      newCol.setMandatory(!nullable);
+      newCol.setLinkToParentColumn(isParent);
+      // AD_COLUMN.length drives both the UI input size and the exported model. Leaving it at 0
+      // renders the field uneditable, so fall back to a sane per-type value when the DDL type
+      // carries no length of its own (timestamps, numerics, text).
+      Integer ddlLength = parseLength(lengthOverride);
+      if (ddlLength == null) {
+        ddlLength = getDbType(reference).getRight();
       }
+      newCol.setLength(Long.valueOf(adFieldLength(getDbType(reference).getLeft(), ddlLength)));
       OBDal.getInstance().save(newCol);
       OBDal.getInstance().flush();
       messageArray.put(String.format(OBMessageUtils.messageBD("COPDEV_ColumnAddedSucc"), newCol.getId()));
@@ -285,6 +297,20 @@ public class CreateColumn extends BaseWebhookService {
    */
   public static JSONObject addColumn(String prefix, String tableName, String column, Reference reference,
       String defaultValue, boolean canBeNull) throws SQLException {
+    return addColumn(prefix, tableName, column, reference, defaultValue, canBeNull, null);
+  }
+
+  /**
+   * Same as {@link #addColumn(String, String, String, Reference, String, boolean)}, but lets the
+   * caller pin the column size instead of accepting the per-reference default. Needed whenever the
+   * column has to match an existing one (a migration target, a mirrored column), where the default
+   * would silently narrow or widen it.
+   *
+   * @param lengthOverride
+   *     explicit size for a length-bearing type, or null to keep the per-reference default
+   */
+  public static JSONObject addColumn(String prefix, String tableName, String column, Reference reference,
+      String defaultValue, boolean canBeNull, Integer lengthOverride) throws SQLException {
 
     if (StringUtils.isBlank(column)) {
       column = String.format(OBMessageUtils.messageBD("COPDEV_DefaultColumnName"));
@@ -295,6 +321,10 @@ public class CreateColumn extends BaseWebhookService {
     var dbTypeTuple = getDbType(reference);
     String dbTypeName = dbTypeTuple.getLeft();
     Integer length = dbTypeTuple.getRight();
+    if (lengthOverride != null && length != null) {
+      // Only length-bearing types can be resized; a timestamp must never become timestamp(19).
+      length = lengthOverride;
+    }
     String dbType = dbTypeName + (length != null ? "(" + length + ")" : "");
 
     String defaultState = StringUtils.isNotEmpty(defaultValue) ? " DEFAULT " + prepareDefaultValue(defaultValue,
@@ -446,6 +476,50 @@ public class CreateColumn extends BaseWebhookService {
       return mapping.get(parentRefName);
     }
     throw new OBException(OBMessageUtils.messageBD("COPDEV_ColumnTypeNotFound") + columnType.getName());
+  }
+
+  /**
+   * Reads a boolean-ish webhook parameter. Accepts true/false, Y/N and yes/no, because the webhook
+   * is called both from generated JSON and by hand.
+   */
+  private static boolean parseFlag(String raw) {
+    return StringUtils.equalsAnyIgnoreCase(StringUtils.trimToEmpty(raw), "true", "y", "yes", "1");
+  }
+
+  /**
+   * Reads {@code canBeNull}. Defaults to nullable when the parameter is absent, which is the safer
+   * side: an unwanted NOT NULL blocks every insert, an unwanted NULL does not.
+   */
+  private static boolean parseNullable(String raw) {
+    return StringUtils.isBlank(raw) || parseFlag(raw);
+  }
+
+  /** Reads an optional numeric parameter, returning null when absent or not a number. */
+  private static Integer parseLength(String raw) {
+    try {
+      return StringUtils.isBlank(raw) ? null : Integer.valueOf(StringUtils.trim(raw));
+    } catch (NumberFormatException e) {
+      LOG.warn("Ignoring non-numeric length parameter: {}", raw);
+      return null;
+    }
+  }
+
+  /**
+   * Resolves the value stored in {@code AD_COLUMN.length}. Types that carry their own size use it;
+   * the rest get the conventional AD length for their kind, never 0 — a zero-length column renders
+   * as a zero-width input box and cannot be edited.
+   */
+  private static int adFieldLength(String dbTypeName, Integer ddlLength) {
+    if (ddlLength != null) {
+      return ddlLength;
+    }
+    if (StringUtils.equals(dbTypeName, TIMESTAMP_WITHOUT_TIME_ZONE)) {
+      return 19;
+    }
+    if (StringUtils.equals(dbTypeName, NUMERIC)) {
+      return 10;
+    }
+    return 2000;
   }
 
   private static Pair<String, Integer> getPair(String type) {
